@@ -1,4 +1,4 @@
-name: Tomohub
+name: Build and Push Containers
 
 on:
   push:
