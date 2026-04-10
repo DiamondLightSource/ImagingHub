@@ -39,9 +39,9 @@ const Guide: React.FC = () => {
         </Typography>
         <Typography variant="h6">Further information</Typography>
         <Typography variant="body1" gutterBottom>
-          Please visit Tomohub's
+          Please visit ImagingHub's
           <a
-            href="https://github.com/DiamondLightSource/TomoHub"
+            href="https://github.com/DiamondLightSource/ImagingHub"
             target="_blank"
           >
             {" "}
@@ -53,7 +53,7 @@ const Guide: React.FC = () => {
         <Typography variant="body1">
           To{" "}
           <a
-            href="https://github.com/DiamondLightSource/TomoHub/issues/new?template=Blank+issue"
+            href="https://github.com/DiamondLightSource/ImagingHub/issues/new?template=Blank+issue"
             target="_blank"
           >
             report
