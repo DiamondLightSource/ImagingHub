@@ -224,14 +224,6 @@ function Header() {
         width: "60%", // Consider making this responsive or removing if not needed
       }}
     >
-      <Typography
-        variant="h3"
-        component="h2"
-        gutterBottom
-        sx={{ fontWeight: "bold", color: "primary.main" }}
-      >
-        TomoHub | GUI for HTTOMO
-      </Typography>
       <ButtonGroup
         variant="outlined"
         aria-label="main navigation button group"
