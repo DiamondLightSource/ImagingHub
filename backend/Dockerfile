@@ -3,8 +3,8 @@ FROM python:3.12-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install git (required for pip to install from GitHub)
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && apt-get install -y gcc git && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file first to leverage Docker layer caching
 COPY requirements.txt .
@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install git+https://github.com/DiamondLightSource/httomo-backends.git --no-deps
 
 # Install additional dependencies
-RUN pip install httomolibgpu --no-deps
+RUN pip install httomolibgpu tomobar --no-deps
 
 # Copy the rest of the application files
 COPY . .
