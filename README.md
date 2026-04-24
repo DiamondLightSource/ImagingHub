@@ -35,6 +35,7 @@ npm run dev
 ```
 cd ImagingHub/backend
 pip install -r requirements.txt
+pip install tomobar --no-deps
 pip install httomolibgpu --no-deps
 pip install httomo_backends --no-deps
 uvicorn main:app --reload
