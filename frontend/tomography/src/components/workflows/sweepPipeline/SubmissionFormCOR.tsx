@@ -6,6 +6,9 @@ import {
   Snackbar,
   Stack,
   Typography,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
   useTheme,
 } from "@mui/material";
 import { JSONObject } from "../../../types";
@@ -61,6 +64,9 @@ const SubmissionFormCOR = (props: {
     // seed with any prepopulated values
     return (props.prepopulatedParameters as JSONObject) ?? ({} as JSONObject);
   });
+
+  const [isNormalisationChecked, setIsNormalisationChecked] =
+    useState<boolean>(true);
 
   // Derived child slices
   const sweepValues = useMemo<SweepValues>(() => {
@@ -154,21 +160,11 @@ const SubmissionFormCOR = (props: {
       }
     }
 
-    return [
+    let pipeline = [
       {
         method: method,
         module_path: module_path,
         parameters: updatedLoaderParams,
-      },
-      {
-        method: "normalize",
-        module_path: "tomopy.prep.normalize",
-        parameters: { cutoff: null, averaging: "mean" },
-      },
-      {
-        method: "minus_log",
-        module_path: "tomopy.prep.normalize",
-        parameters: {},
       },
       {
         method: "recon",
@@ -185,6 +181,25 @@ const SubmissionFormCOR = (props: {
         },
       },
     ];
+
+    const normalisationMethods = [
+      {
+        method: "normalize",
+        module_path: "tomopy.prep.normalize",
+        parameters: { cutoff: null, averaging: "mean" },
+      },
+      {
+        method: "minus_log",
+        module_path: "tomopy.prep.normalize",
+        parameters: {},
+      },
+    ];
+
+    if (isNormalisationChecked) {
+      pipeline = [pipeline[0], ...normalisationMethods, pipeline[1]];
+    }
+
+    return pipeline;
   };
 
   // ---- Submit handler (validate just before submit) ----
@@ -290,6 +305,24 @@ const SubmissionFormCOR = (props: {
       )}
 
       <Divider />
+
+      <Typography variant="h6">Pipeline Configuration</Typography>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isNormalisationChecked}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setIsNormalisationChecked(e.target.checked);
+              }}
+              slotProps={{
+                input: { "aria-label": "controlled" },
+              }}
+            />
+          }
+          label="Apply normalisation to raw data"
+        />
+      </FormGroup>
 
       <Typography variant="h6">Parameter Sweep Configuration</Typography>
       <ParameterSweepForm values={sweepValues} onChange={setSweepValues} />
