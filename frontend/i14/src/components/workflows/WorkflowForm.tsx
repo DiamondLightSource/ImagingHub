@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import { visitRegex } from "@diamondlightsource/sci-react-ui";
 
 type FormData = { visit: string; workflow: string };
 
@@ -20,6 +21,7 @@ const initialData: FormData = {
 
 export const WorkflowForm: FC = () => {
   const [data, setData] = useState<FormData>(initialData);
+  const visitMatch = visitRegex.exec(data.visit);
 
   const openInNewTab = (url: string) => {
     const w = window.open(url, "_blank");
@@ -27,6 +29,7 @@ export const WorkflowForm: FC = () => {
   };
 
   const openLink = () => {
+    if (!visitMatch) return;
     const linkString = `https://workflows.diamond.ac.uk/templates/${data.workflow}/${data.visit}`;
     openInNewTab(linkString);
   };
@@ -85,9 +88,13 @@ export const WorkflowForm: FC = () => {
                 const value = e.target.value;
                 setData((prev) => ({ ...prev, visit: value }));
               }}
+              helperText={
+                visitMatch ? "" : "Expected format: xx12345-1"
+              }
+              error={!visitMatch}
             />
 
-            <Button variant="contained" type="submit" >
+            <Button variant="contained" type="submit" disabled={!visitMatch}>
               Submit
             </Button>
           </Stack>
