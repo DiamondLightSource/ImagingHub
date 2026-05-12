@@ -1,5 +1,5 @@
 from utils.methods import METHOD_CATEGORIES
-from fastapi import HTTPException,APIRouter
+from fastapi import HTTPException, APIRouter
 from utils.generator import generate_method_template
 from typing import Dict, List
 from Models.MethodsTemplate import AllTemplates
@@ -10,6 +10,7 @@ methods_router = APIRouter(
     prefix="/methods",
     tags=["methods"],
 )
+
 
 def get_methods_templates(module_methods: Dict[str, List[str]]) -> Dict:
     """
@@ -39,12 +40,15 @@ def create_category_endpoint(category: str):
             return AllTemplates(root=result)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
     return endpoint
+
 
 # Register all category endpoints
 for category in METHOD_CATEGORIES.keys():
     endpoint = create_category_endpoint(category)
     methods_router.get(f"/{category}", response_model=AllTemplates)(endpoint)
+
 
 def filter_pipelines_with_tomopy(pipelines: dict) -> dict:
     """
@@ -68,12 +72,14 @@ def filter_pipelines_with_tomopy(pipelines: dict) -> dict:
 
     return filtered_pipelines
 
+
 @methods_router.get("/fullpipelines")
 async def get_full_pipelines():
     try:
         return filter_pipelines_with_tomopy(process_all_yaml_files())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # Main endpoint for all methods
 @methods_router.get("/", response_model=AllTemplates)
@@ -86,4 +92,3 @@ async def get_all_methods():
         return AllTemplates(root=all_templates)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
