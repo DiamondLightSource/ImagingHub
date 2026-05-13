@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 
@@ -70,7 +70,9 @@ export const WorkflowForm: FC = () => {
     },
   ];
 
-	const option = workflowOptions.find(option => option.value === data.workflow);
+  const option = workflowOptions.find(
+    (option) => option.value === data.workflow
+  );
 
   return (
     <Grid container justifyContent="center" spacing={1}>
@@ -88,29 +90,29 @@ export const WorkflowForm: FC = () => {
               Workflow
             </InputLabel>
             <Grid>
-            <Select
-              labelId="workflow-select-label"
-              label="Workflow"
-              variant="outlined"
-              size="small"
-              name="workflow"
-              value={data.workflow}
-              onChange={(e: SelectChangeEvent<string>) =>
-                setData((prev) => ({ ...prev, workflow: e.target.value }))
-              }
-            >
-              {workflowOptions.map((opt) => (
-                <MenuItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </MenuItem>
-              ))}
-            </Select>
-						<Tooltip title={option.desc}>
-							<IconButton>
-								<InfoIcon/>
-							</IconButton>
-						</Tooltip>
-						</Grid>
+              <Select
+                labelId="workflow-select-label"
+                label="Workflow"
+                variant="outlined"
+                size="small"
+                name="workflow"
+                value={data.workflow}
+                onChange={(e: SelectChangeEvent<string>) =>
+                  setData((prev) => ({ ...prev, workflow: e.target.value }))
+                }
+              >
+                {workflowOptions.map((opt) => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Tooltip title={option.desc}>
+                <IconButton>
+                  <InfoIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
             <TextField
               name="visit"
               label="Visit"
@@ -123,9 +125,7 @@ export const WorkflowForm: FC = () => {
                 const value = e.target.value;
                 setData((prev) => ({ ...prev, visit: value }));
               }}
-              helperText={
-                visitMatch ? "" : "Expected format: xx12345-1"
-              }
+              helperText={visitMatch ? "" : "Expected format: xx12345-1"}
               error={!visitMatch}
             />
 

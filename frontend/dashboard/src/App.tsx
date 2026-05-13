@@ -44,11 +44,7 @@ const Dashboard: React.FC = () => {
             desc="Web app for HTTomo"
             linkTarget="tomography"
           />
-          <AppCard
-            name="I14"
-            desc="I14 workflow submission"
-            linkTarget="i14"
-          />
+          <AppCard name="I14" desc="I14 workflow submission" linkTarget="i14" />
         </Grid2>
       </Container>
     </>
