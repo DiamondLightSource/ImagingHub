@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
         </Typography>
         <Grid2 display="flex">
           <AppCard
-            name="ImagingHub"
+            name="Tomography"
             desc="Web app for HTTomo"
             linkTarget="tomography"
           />
