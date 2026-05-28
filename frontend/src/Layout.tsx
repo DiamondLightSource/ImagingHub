@@ -64,6 +64,9 @@ const Layout = () => {
               <NavLink to="/i14" linkComponent={RouterNavLink}>
                 I14
               </NavLink>
+              <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
+                ePSIC
+              </NavLink>
             </NavLinks>
           }
           rightSlot={
