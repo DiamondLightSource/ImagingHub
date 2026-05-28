@@ -33,7 +33,6 @@ export const WorkflowForm: FC = () => {
 
   const openLink = () => {
     if (!visitMatch) return;
-    console.log(`https://workflows.diamond.ac.uk/templates/${data.workflow}/${data.visit}`)
     const linkString = `https://workflows.diamond.ac.uk/templates/${data.workflow}/${data.visit}`;
     openInNewTab(linkString);
   };
