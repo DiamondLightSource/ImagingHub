@@ -9,11 +9,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { visitRegex } from "@diamondlightsource/sci-react-ui";
 
 import { initialData } from "../../data/form";
-import { templateOptions } from "../../data/templates";
 import OptionSelect from "./OptionSelect";
+import { dataToOptions } from "../../api/services";
+import { templateOptions } from "../../data/templates";
+import visitArray from "../../data/visits.json";
 
 import type { WorkflowFormData, Option } from "../../types/workflowFields";
 
@@ -23,17 +24,17 @@ export const WorkflowForm: FC = () => {
   const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
     return (templateOptions ?? []).filter((o) => o.value.includes(toggle));
   };
+  const visitOptions: Option[] = useMemo(() => dataToOptions(visitArray), []);
 
   const [data, setData] = useState<WorkflowFormData>(() => {
     const defaultTechnique =
       techniques.find((t) => initialData.template.includes(t)) ?? techniques[0];
     return {
       ...initialData,
+      visit: visitOptions[0]?.value ?? initialData.visit,
       technique: defaultTechnique,
     };
   });
-
-  const visitMatch = visitRegex.exec(data.visit);
 
   const filteredTemplateOptions: Option[] = getFilteredTemplates(
     data.technique
@@ -93,21 +94,13 @@ export const WorkflowForm: FC = () => {
                 setData((prev) => ({ ...prev, template: e.target.value }))
               }
             />
-
-            <TextField
-              name="visit"
+            <OptionSelect
               label="Visit"
-              variant="outlined"
-              size="small"
-              placeholder="Visit"
-              type="text"
               value={data.visit}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                setData((prev) => ({ ...prev, visit: value }));
-              }}
-              helperText={visitMatch ? "" : "Expected format: xx12345-1"}
-              error={!visitMatch}
+              options={visitOptions}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, visit: e.target.value }))
+              }
             />
 
             <TextField
@@ -123,7 +116,7 @@ export const WorkflowForm: FC = () => {
               }}
             />
 
-            <Button variant="contained" type="submit" disabled={!visitMatch}>
+            <Button variant="contained" type="submit">
               Open workflow form in a new tab
             </Button>
           </Stack>
