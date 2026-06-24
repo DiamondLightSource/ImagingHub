@@ -1,4 +1,5 @@
 import { Box, Divider, Grid2 as Grid, Stack, Typography } from "@mui/material";
+import { SessionSelector } from "./components/SessionSelector";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -9,11 +10,7 @@ export const App: React.FC = () => {
       <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
         <Stack spacing={VERTICAL_SPACING}>
           <Typography variant="h5">Session</Typography>
-          <PlaceholderComponent
-            placeholderText="Session selector component placeholder"
-            height={100}
-            width={500}
-          />
+          <SessionSelector />
           <Divider sx={{ width: "100%" }} />
           <Typography variant="h5">Scan</Typography>
           <PlaceholderComponent
