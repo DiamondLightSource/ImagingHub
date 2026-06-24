@@ -10,10 +10,10 @@ import {
   TextField,
   Tooltip,
   Typography,
-  NumberField 
+  NumberField,
 } from "@mui/material";
 
-type FormRes = { cpus: string, gpus: string, nprocs: string; memory: string };
+type FormRes = { cpus: string; gpus: string; nprocs: string; memory: string };
 
 const initialData: FormRes = {
   cpus: "1",
@@ -42,7 +42,7 @@ export const ResourceForm: FC = () => {
             value={res.cpus}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, cpus: value}));
+              setRes((prev) => ({ ...prev, cpus: value }));
             }}
           />
           <TextField
@@ -55,7 +55,7 @@ export const ResourceForm: FC = () => {
             value={res.gpus}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, gpus: value}));
+              setRes((prev) => ({ ...prev, gpus: value }));
             }}
           />
           <TextField
@@ -68,7 +68,7 @@ export const ResourceForm: FC = () => {
             value={res.nprocs}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, nprocs: value}));
+              setRes((prev) => ({ ...prev, nprocs: value }));
             }}
           />
           <TextField
@@ -81,7 +81,7 @@ export const ResourceForm: FC = () => {
             value={res.memory}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, memory: value}));
+              setRes((prev) => ({ ...prev, memory: value }));
             }}
           />
         </Stack>
