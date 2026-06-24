@@ -2,6 +2,7 @@ import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { default as TomographyApp } from "../tomography/src/App";
 import { App as I14App } from "../i14/src/App";
 import { App as EpsicApp } from "../ePSIC/src/App";
+import { App as UnifiedApp } from "../unified/src/App";
 import { default as Dashboard } from "../dashboard/src/App";
 import { default as Layout } from "./Layout";
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Route path="tomography/*" element={<TomographyApp />} />
           <Route path="i14/*" element={<I14App />} />
           <Route path="ePSIC/*" element={<EpsicApp />} />
+          <Route path="unified/*" element={<UnifiedApp />} />
         </Route>
       </Routes>
     </BrowserRouter>
