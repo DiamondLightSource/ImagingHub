@@ -1,5 +1,6 @@
 import { Box, Divider, Grid2 as Grid, Stack, Typography } from "@mui/material";
 import { SessionSelector } from "./components/SessionSelector";
+import { ScanSelector } from "./components/ScanSelector";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -13,11 +14,7 @@ export const App: React.FC = () => {
           <SessionSelector />
           <Divider sx={{ width: "100%" }} />
           <Typography variant="h5">Scan</Typography>
-          <PlaceholderComponent
-            placeholderText="Scan selector component placeholder"
-            height={100}
-            width={500}
-          />
+          <ScanSelector />
           <Divider sx={{ width: "100%" }} />
           <Typography variant="h5">App</Typography>
           <PlaceholderComponent
