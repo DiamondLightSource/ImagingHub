@@ -10,9 +10,7 @@ import { Box, LinearProgress, Modal, Typography } from "@mui/material";
 interface CropPageProps {
   setVisit: (
     value:
-      | Visit
-      | undefined
-      | ((prevState: Visit | undefined) => Visit | undefined)
+      Visit | undefined | ((prevState: Visit | undefined) => Visit | undefined)
   ) => void;
 }
 

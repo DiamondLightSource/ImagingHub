@@ -4,7 +4,7 @@ import {
   CardContent,
   Container,
   Divider,
-  Grid2,
+  Grid,
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
         <Typography fontSize={30} display="flex" justifyContent="center">
           ImagingHub
         </Typography>
-        <Grid2 display="flex">
+        <Grid display="flex">
           <AppCard
             name="Tomography"
             desc="Web app for HTTomo"
@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
             desc="ePSIC workflow submission"
             linkTarget="ePSIC"
           />
-        </Grid2>
+        </Grid>
       </Container>
     </>
   );
