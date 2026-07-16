@@ -1,4 +1,4 @@
-import { Box, Divider, Grid2 as Grid, Stack, Typography } from "@mui/material";
+import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 import { SessionSelector } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
 

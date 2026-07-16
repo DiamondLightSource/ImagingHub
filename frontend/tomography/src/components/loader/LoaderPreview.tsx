@@ -10,7 +10,7 @@ import {
   IconButton,
   ToggleButton,
   ToggleButtonGroup,
-  Grid2,
+  Grid,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
@@ -116,8 +116,8 @@ const LoaderPreview: React.FC<LoaderPreviewProps> = ({ onClose }) => {
           <Typography variant="subtitle2" gutterBottom>
             Start Position
           </Typography>
-          <Grid2 container spacing={1} alignItems="center">
-            <Grid2 size="grow">
+          <Grid container spacing={1} alignItems="center">
+            <Grid size="grow">
               <TextField
                 label="Custom Start"
                 variant="outlined"
@@ -165,8 +165,8 @@ const LoaderPreview: React.FC<LoaderPreviewProps> = ({ onClose }) => {
                   ),
                 }}
               />
-            </Grid2>
-            <Grid2>
+            </Grid>
+            <Grid>
               <Button
                 variant="outlined"
                 onClick={() => setShowStartOffset(!showStartOffset)}
@@ -175,8 +175,8 @@ const LoaderPreview: React.FC<LoaderPreviewProps> = ({ onClose }) => {
               >
                 {showStartOffset ? "Remove Offset" : "Add Offset"}
               </Button>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </Box>
 
         {/* Start Offset */}
@@ -200,8 +200,8 @@ const LoaderPreview: React.FC<LoaderPreviewProps> = ({ onClose }) => {
           <Typography variant="subtitle2" gutterBottom>
             Stop Position
           </Typography>
-          <Grid2 container spacing={1} alignItems="center">
-            <Grid2 size="grow">
+          <Grid container spacing={1} alignItems="center">
+            <Grid size="grow">
               <TextField
                 label="Custom Stop"
                 variant="outlined"
@@ -248,8 +248,8 @@ const LoaderPreview: React.FC<LoaderPreviewProps> = ({ onClose }) => {
                   ),
                 }}
               />
-            </Grid2>
-            <Grid2>
+            </Grid>
+            <Grid>
               <Button
                 variant="outlined"
                 onClick={() => setShowStopOffset(!showStopOffset)}
@@ -258,8 +258,8 @@ const LoaderPreview: React.FC<LoaderPreviewProps> = ({ onClose }) => {
               >
                 {showStopOffset ? "Remove Offset" : "Add Offset"}
               </Button>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </Box>
 
         {/* Stop Offset */}
