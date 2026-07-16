@@ -75,67 +75,65 @@ export const WorkflowForm: FC = () => {
   );
 
   return (
-    <Grid container justifyContent="center" spacing={1}>
-      <Grid size={6}>
-        <Typography variant="h4">I14 Workflows</Typography>
+    <Stack>
+      <Typography variant="h4">I14 Workflows</Typography>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            openLink();
-          }}
-        >
-          <Stack direction="column" spacing={2}>
-            <InputLabel size="small" id="workflow-select-label">
-              Workflow
-            </InputLabel>
-            <Grid>
-              <Select
-                labelId="workflow-select-label"
-                label="Workflow"
-                variant="outlined"
-                size="small"
-                name="workflow"
-                value={data.workflow}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setData((prev) => ({ ...prev, workflow: e.target.value }))
-                }
-              >
-                {workflowOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Tooltip title={option.desc}>
-                <IconButton>
-                  <InfoIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <TextField
-              name="visit"
-              label="Visit"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          openLink();
+        }}
+      >
+        <Stack direction="column" spacing={2}>
+          <InputLabel size="small" id="workflow-select-label">
+            Workflow
+          </InputLabel>
+          <Grid>
+            <Select
+              labelId="workflow-select-label"
+              label="Workflow"
               variant="outlined"
               size="small"
-              placeholder="Visit"
-              type="text"
-              value={data.visit}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                setData((prev) => ({ ...prev, visit: value }));
-              }}
-              helperText={visitMatch ? "" : "Expected format: xx12345-1"}
-              error={!visitMatch}
-            />
+              name="workflow"
+              value={data.workflow}
+              onChange={(e: SelectChangeEvent<string>) =>
+                setData((prev) => ({ ...prev, workflow: e.target.value }))
+              }
+            >
+              {workflowOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+            <Tooltip title={option.desc}>
+              <IconButton>
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+          <TextField
+            name="visit"
+            label="Visit"
+            variant="outlined"
+            size="small"
+            placeholder="Visit"
+            type="text"
+            value={data.visit}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              setData((prev) => ({ ...prev, visit: value }));
+            }}
+            helperText={visitMatch ? "" : "Expected format: xx12345-1"}
+            error={!visitMatch}
+          />
 
-            <Button variant="contained" type="submit" disabled={!visitMatch}>
-              Submit
-            </Button>
-          </Stack>
-        </form>
-      </Grid>
-    </Grid>
+          <Button variant="contained" type="submit" disabled={!visitMatch}>
+            Submit
+          </Button>
+        </Stack>
+      </form>
+    </Stack>
   );
 };
 
