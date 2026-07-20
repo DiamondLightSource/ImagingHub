@@ -20,7 +20,7 @@ export const MethodHeader: React.FC<MethodHeaderProps> = ({
   onRemoveMethod,
 }) => (
   <>
-    <Grid item xs={9}>
+    <Grid size={{ xs: 9 }}>
       <Typography sx={{ fontSize: "0.9rem", fontWeight: "bold" }}>
         {id}
         <IconButton size="small" href={linkToDoc} target="_blank">
@@ -28,7 +28,7 @@ export const MethodHeader: React.FC<MethodHeaderProps> = ({
         </IconButton>
       </Typography>
     </Grid>
-    <Grid item xs={3}>
+    <Grid size={{ xs: 3 }}>
       <Stack direction="row" justifyContent="flex-end" spacing={1}>
         <IconButton onClick={onRemoveMethod} disabled={!isMethodAdded}>
           <DeleteIcon />
