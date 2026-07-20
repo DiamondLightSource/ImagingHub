@@ -103,17 +103,13 @@ export const proxyService = {
     tiffUrl: string,
     page: number,
     downsample_rate: number = 1
-  ): Promise<string> => {
+  ): Promise<Uint8ClampedArray> => {
     const response = await apiClient.get(
       `/proxy/tiff-pages?url=${encodeURIComponent(tiffUrl)}&page=${page}&downsample_rate=${downsample_rate}`,
       {
         responseType: "arraybuffer",
       }
     );
-
-    // Convert ArrayBuffer to base64 data URL instead of blob URL
-    const base64 = new Uint8Array(response.data).toBase64();
-
-    return `data:image/png;base64,${base64}`;
+    return new Uint8ClampedArray(response.data);
   },
 };
