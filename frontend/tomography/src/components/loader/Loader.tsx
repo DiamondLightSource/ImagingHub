@@ -301,7 +301,7 @@ const Loader: React.FC = () => {
         />
       ) : (
         <Grid container spacing={2} sx={{ mb: 1 }}>
-          <Grid item xs={4}>
+          <Grid size={{ xs: 4 }}>
             <TextField
               label="Start angle"
               variant="outlined"
@@ -321,7 +321,7 @@ const Loader: React.FC = () => {
               placeholder="First angle"
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={{ xs: 4 }}>
             <TextField
               label="Stop angle"
               variant="outlined"
@@ -341,7 +341,7 @@ const Loader: React.FC = () => {
               placeholder="Last angle"
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={{ xs: 4 }}>
             <TextField
               label="Total angle"
               variant="outlined"
@@ -366,7 +366,7 @@ const Loader: React.FC = () => {
 
       {showExtraFields && (
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6 }}>
             <Typography variant="subtitle1" gutterBottom>
               Darks
             </Typography>
@@ -397,7 +397,7 @@ const Loader: React.FC = () => {
               placeholder="dataset that contains the darks data"
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6 }}>
             <Typography variant="subtitle1" gutterBottom>
               Flats
             </Typography>

@@ -1,6 +1,6 @@
 import {
   Box,
-  Grid2,
+  Grid,
   Slider,
   Input,
   Button,
@@ -77,8 +77,8 @@ export default function ImageNavbar({
 
   return (
     <Box style={{ display: "grid", height: "15vh", minHeight: "100px" }}>
-      <Grid2 container spacing={6} sx={{ alignItems: "center" }}>
-        <Grid2 size="grow">
+      <Grid container spacing={6} sx={{ alignItems: "center" }}>
+        <Grid size="grow">
           <Slider
             style={{ margin: "15px" }}
             value={
@@ -88,8 +88,8 @@ export default function ImageNavbar({
             aria-labelledby="input-slider"
             max={totalImages - 1}
           />
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <Tooltip title="Current viewing angle">
             <Input
               value={currentImageIndex}
@@ -104,8 +104,8 @@ export default function ImageNavbar({
               }}
             />
           </Tooltip>
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <Typography>Selection Mode</Typography>
           <Box display="flex" justifyContent="center" sx={{ padding: "5px" }}>
             <Select
@@ -137,11 +137,11 @@ export default function ImageNavbar({
               <InfoIcon fontSize="small" />
             </Tooltip>
           </Box>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
 
-      <Grid2 container spacing={2} sx={{ alignItems: "center" }}>
-        <Grid2 size="grow">
+      <Grid container spacing={2} sx={{ alignItems: "center" }}>
+        <Grid size="grow">
           <Tooltip title="Undo last action">
             <Button
               variant="outlined"
@@ -152,8 +152,8 @@ export default function ImageNavbar({
               <Undo />
             </Button>
           </Tooltip>
-        </Grid2>
-        <Grid2 size="grow">
+        </Grid>
+        <Grid size="grow">
           <Tooltip title="Show selection at each angle">
             <Button
               variant="outlined"
@@ -193,8 +193,8 @@ export default function ImageNavbar({
               {animationPlaying ? <StopOutlined /> : <PlayArrowOutlined />}
             </Button>
           </Tooltip>
-        </Grid2>
-        <Grid2 size="grow">
+        </Grid>
+        <Grid size="grow">
           <Tooltip title="Remove current selection">
             <Button
               variant="outlined"
@@ -207,8 +207,8 @@ export default function ImageNavbar({
               <DeleteOutline />
             </Button>
           </Tooltip>
-        </Grid2>
-        <Grid2 size="grow">
+        </Grid>
+        <Grid size="grow">
           <Tooltip title="Remove all selections">
             <Button
               variant="outlined"
@@ -221,8 +221,8 @@ export default function ImageNavbar({
               <Clear />
             </Button>
           </Tooltip>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

@@ -30,7 +30,7 @@ export const MethodParameter: React.FC<MethodParameterProps> = ({
     : undefined;
 
   return (
-    <Grid item xs={6}>
+    <Grid size={{ xs: 6 }}>
       <ParameterInputFactory
         paramName={paramName}
         paramDetails={paramDetails}

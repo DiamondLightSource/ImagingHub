@@ -53,9 +53,7 @@ interface SubmissionProps {
   /** The set function for a user visit */
   setVisit: (
     value:
-      | Visit
-      | undefined
-      | ((prevState: Visit | undefined) => Visit | undefined)
+      Visit | undefined | ((prevState: Visit | undefined) => Visit | undefined)
   ) => void;
   /** Optional prepopulated parameters */
   prepopulatedParameters?: JSONObject;

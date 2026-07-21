@@ -109,7 +109,8 @@ const SweepResultViewer: React.FC<SweepResultViewerProps> = ({
       setLoadingStates((prev) => ({ ...prev, [centerValue]: true }));
 
       try {
-        const imageUrl = await proxyService.getTiffPage(tiffUrl, pageIndex);
+        const imageData = await proxyService.getTiffPage(tiffUrl, pageIndex);
+        const imageUrl = `data:image/png;base64,${new Uint8Array(imageData).toBase64()}`;
 
         setCenterImages((prev) => ({
           ...prev,

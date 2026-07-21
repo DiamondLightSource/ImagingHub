@@ -1,4 +1,4 @@
-import { Box, Button, Grid2, Tooltip } from "@mui/material";
+import { Box, Button, Grid, Tooltip } from "@mui/material";
 import SaveOutlined from "@mui/icons-material/SaveOutlined";
 import FileOpenOutlined from "@mui/icons-material/FileOpenOutlined";
 import { useLoader, PreviewType } from "../../contexts/LoaderContext";
@@ -19,9 +19,9 @@ export default function Contextbar({
 
   return (
     <Box style={{ height: "6vh", minHeight: "50px" }}>
-      <Grid2 container spacing={2} sx={{ alignItems: "center" }}>
-        <Grid2 size={1} />
-        <Grid2 size={1}>
+      <Grid container spacing={2} sx={{ alignItems: "center" }}>
+        <Grid size={1} />
+        <Grid size={1}>
           <Tooltip title="Re-fill projections fetch form">
             <Button
               variant="outlined"
@@ -33,9 +33,9 @@ export default function Contextbar({
               <FileOpenOutlined fontSize="large" />
             </Button>
           </Tooltip>
-        </Grid2>
-        <Grid2 size={8} />
-        <Grid2 size={1}>
+        </Grid>
+        <Grid size={8} />
+        <Grid size={1}>
           <Tooltip title="Save loader preview configuration">
             <Button
               variant="outlined"
@@ -117,9 +117,9 @@ export default function Contextbar({
               <SaveOutlined fontSize="large" />
             </Button>
           </Tooltip>
-        </Grid2>
-        <Grid2 size={1} />
-      </Grid2>
+        </Grid>
+        <Grid size={1} />
+      </Grid>
     </Box>
   );
 }

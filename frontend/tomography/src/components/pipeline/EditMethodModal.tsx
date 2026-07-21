@@ -259,7 +259,7 @@ export const EditMethodModal: React.FC<EditMethodModalProps> = ({
             <Grid container spacing={2}>
               {Object.entries(methodSchema.parameters).map(
                 ([paramName, paramDetails]) => (
-                  <Grid item xs={12} sm={6} key={paramName}>
+                  <Grid size={{ xs: 12, sm: 6 }} key={paramName}>
                     <ParameterInputFactory
                       paramName={paramName}
                       paramDetails={paramDetails}
