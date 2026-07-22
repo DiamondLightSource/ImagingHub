@@ -1,15 +1,9 @@
-import React, { FC, ChangeEvent, useState } from "react";
+import { FC, ChangeEvent, useState } from "react";
 import {
-  Button,
-  MenuItem,
-  IconButton,
   InputLabel,
   Grid,
-  Select,
   Stack,
   TextField,
-  Tooltip,
-  Typography,
 } from "@mui/material";
 
 type FormRes = { cpus: string; gpus: string; nprocs: string; memory: string };
@@ -37,7 +31,7 @@ export const ResourceForm: FC = () => {
             variant="outlined"
             size="small"
             placeholder="8"
-            type="text"
+            type="number"
             value={res.cpus}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
@@ -50,7 +44,7 @@ export const ResourceForm: FC = () => {
             variant="outlined"
             size="small"
             placeholder="1"
-            type="text"
+            type="number"
             value={res.gpus}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
@@ -63,7 +57,7 @@ export const ResourceForm: FC = () => {
             variant="outlined"
             size="small"
             placeholder="8"
-            type="text"
+            type="number"
             value={res.nprocs}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
