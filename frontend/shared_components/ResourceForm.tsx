@@ -10,7 +10,6 @@ import {
   TextField,
   Tooltip,
   Typography,
-  NumberField,
 } from "@mui/material";
 
 type FormRes = { cpus: string; gpus: string; nprocs: string; memory: string };
@@ -26,8 +25,8 @@ export const ResourceForm: FC = () => {
   const [res, setRes] = useState<FormRes>(initialData);
 
   return (
-    <Grid container justifyContent="center" spacing={1}>
-      <Grid size={3}>
+    <Grid container justifyContent="start" spacing={1}>
+      <Grid size={8}>
         <Stack direction="column" spacing={2}>
           <InputLabel size="small" id="workflow-select-label">
             Resources
@@ -60,7 +59,7 @@ export const ResourceForm: FC = () => {
           />
           <TextField
             name="nprocs"
-            label="nprocs"
+            label="number of processes"
             variant="outlined"
             size="small"
             placeholder="8"
