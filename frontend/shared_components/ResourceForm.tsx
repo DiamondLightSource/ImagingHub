@@ -1,10 +1,5 @@
 import { FC, ChangeEvent, useState } from "react";
-import {
-  InputLabel,
-  Grid,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { InputLabel, Grid, Stack, TextField } from "@mui/material";
 
 type FormRes = { cpus: string; gpus: string; nprocs: string; memory: string };
 
