@@ -19,8 +19,8 @@ VITE_KEYCLOAK_URL = "https://identity-test.diamond.ac.uk"
 VITE_KEYCLOAK_REALM = "dls"
 VITE_KEYCLOAK_CLIENT_ID = "ImagingHubDev"
 VITE_KEYCLOAK_SCOPE = "openid profile posix-uid email"
-VITE_GRAPHQL_HTTP_ENDPOINT = "https://workflows.diamond.ac.uk/graphql"
-VITE_GRAPHQL_WS_ENDPOINT = "wss://workflows.diamond.ac.uk/graphql/ws"
+VITE_GRAPHQL_HTTP_ENDPOINT = "https://graph-nightly.diamond.ac.uk/graphql"
+VITE_GRAPHQL_WS_ENDPOINT = "wss://graph-nightly.diamond.ac.uk/graphql/ws"
 ```
 
 #### Install dependencies and generate code from GraphQL schema

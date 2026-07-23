@@ -3,7 +3,7 @@
   "projects": {
     "tomography": {
       "language": "typescript",
-      "schema": "src/workflows.graphql",
+      "schema": "src/supergraph.graphql",
       "eagerEsModules": true
     }
   },
