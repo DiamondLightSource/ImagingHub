@@ -11,8 +11,8 @@ import {
 import keycloak from "./keycloak";
 import { createClient } from "graphql-ws";
 
-const HTTP_ENDPOINT = "https://workflows.diamond.ac.uk/graphql";
-const WS_ENDPOINT = "wss://workflows.diamond.ac.uk/graphql/ws";
+const HTTP_ENDPOINT = import.meta.env.VITE_GRAPHQL_HTTP_ENDPOINT;
+const WS_ENDPOINT = import.meta.env.VITE_GRAPHQL_WS_ENDPOINT;
 
 const fetchFn: FetchFunction = async (request, variables) => {
   // Refresh token if needed (minValidity in seconds)
