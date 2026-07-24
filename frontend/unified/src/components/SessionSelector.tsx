@@ -6,6 +6,28 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
+import { useLazyLoadQuery } from "react-relay";
+import { graphql } from "relay-runtime";
+import { SessionSelectorTestQuery as SessionSelectorTestQueryType } from "./__generated__/SessionSelectorTestQuery.graphql";
+
+const testInstrumentSessionQuery = graphql`
+  query SessionSelectorTestQuery {
+    account(username: "twi18192") {
+      proposalRoles {
+        proposal {
+          proposalNumber
+          proposalCategory
+          title
+          instrumentSessions {
+            startTime
+            endTime
+            instrumentSessionNumber
+          }
+        }
+      }
+    }
+  }
+`;
 
 enum SessionSelectionMode {
   Latest = "Latest",
@@ -20,6 +42,11 @@ export const SessionSelector: React.FC = () => {
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [textInputValue, setTextInputValue] = useState<string>("");
+  const sessions = useLazyLoadQuery<SessionSelectorTestQueryType>(
+    testInstrumentSessionQuery,
+    {}
+  );
+  console.log("sessions: ", sessions);
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>
