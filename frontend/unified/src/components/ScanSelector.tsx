@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Chip,
   TextField,
@@ -193,6 +194,7 @@ export const ScanSelector: React.FC = () => {
           {ScanSelectionMode.Single}
         </ToggleButton>
         <ToggleButton
+          data-testid="multiple-scan-toggle"
           sx={{ textTransform: "none" }}
           value={ScanSelectionMode.Multiple}
         >
