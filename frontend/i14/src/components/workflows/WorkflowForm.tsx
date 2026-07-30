@@ -59,7 +59,7 @@ export const WorkflowForm: FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}`;
+    const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}?outputFolder=${data.outpath}`;
     openInNewTab(url);
   };
 
@@ -108,6 +108,19 @@ export const WorkflowForm: FC = () => {
               }}
               helperText={visitMatch ? "" : "Expected format: xx12345-1"}
               error={!visitMatch}
+            />
+
+            <TextField
+              name="outpath"
+              label="Output path"
+              variant="outlined"
+              size="small"
+              placeholder="Output path"
+              type="text"
+              value={data.outpath}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setData((prev) => ({ ...prev, outpath: e.target.value }));
+              }}
             />
 
             <Button variant="contained" type="submit" disabled={!visitMatch}>
