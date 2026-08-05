@@ -1,6 +1,6 @@
-import type { Option } from "../types/workflowFormData";
+import type { Option } from "../types/workflowFields";
 
-export const workflowOptions: Option[] = [
+export const templateOptions: Option[] = [
   {
     label: "DPC",
     value: "dpc-batch",

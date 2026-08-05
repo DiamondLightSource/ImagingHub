@@ -12,32 +12,31 @@ import {
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 
 import { initialData } from "../../data/form";
-import { workflowOptions } from "../../data/workflows";
+import { templateOptions } from "../../data/templates";
 import OptionSelect from "./OptionSelect";
 
 import type { WorkflowFormData, Option } from "../../types/workflowFields";
 
 export const WorkflowForm: FC = () => {
-  const workflowGroups = ["dpc", "xanes", "xrd"] as const;
-  type ToggleGroup = (typeof workflowGroups)[number];
-  const getFilteredWorkflows = (toggle: ToggleGroup): Option[] => {
-    return (workflowOptions ?? []).filter((o) => o.value.includes(toggle));
+  const techniques = ["dpc", "xanes", "xrd"] as const;
+  type ToggleGroup = (typeof techniques)[number];
+  const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
+    return (templateOptions ?? []).filter((o) => o.value.includes(toggle));
   };
 
   const [data, setData] = useState<WorkflowFormData>(() => {
-    const defaultGroup =
-      workflowGroups.find((g) => initialData.workflow.includes(g)) ??
-      workflowGroups[0];
+    const defaultTechnique =
+      techniques.find((t) => initialData.template.includes(t)) ?? techniques[0];
     return {
       ...initialData,
-      group: defaultGroup,
+      technique: defaultTechnique,
     };
   });
 
   const visitMatch = visitRegex.exec(data.visit);
 
-  const filteredWorkflowOptions: Option[] = getFilteredWorkflows(
-    data.group as ToggleGroup
+  const filteredTemplateOptions: Option[] = getFilteredTemplates(
+    data.technique
   );
 
   const handleToggleChange = (
@@ -45,11 +44,11 @@ export const WorkflowForm: FC = () => {
     next: ToggleGroup | null
   ) => {
     if (!next) return;
-    const filteredWorkflows = getFilteredWorkflows(next);
+    const filteredTemplates = getFilteredTemplates(next);
     setData((prev) => ({
       ...prev,
-      group: next,
-      workflow: filteredWorkflows[0].value,
+      technique: next,
+      template: filteredTemplates[0].value,
     }));
   };
 
@@ -60,7 +59,7 @@ export const WorkflowForm: FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = `https://workflows.diamond.ac.uk/templates/${data.workflow}/${data.visit}`;
+    const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}`;
     openInNewTab(url);
   };
 
@@ -75,23 +74,23 @@ export const WorkflowForm: FC = () => {
               <FormLabel>Technique</FormLabel>
               <ToggleButtonGroup
                 exclusive
-                value={data.group as ToggleGroup}
+                value={data.technique}
                 onChange={handleToggleChange}
-                aria-label="Workflow group"
+                aria-label="Technique"
               >
-                {workflowGroups.map((g) => (
-                  <ToggleButton key={g} value={g}>
-                    {g.toUpperCase()}
+                {techniques.map((t) => (
+                  <ToggleButton key={t} value={t}>
+                    {t.toUpperCase()}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
             </Stack>
             <OptionSelect
               label="Template"
-              value={data.workflow}
-              options={filteredWorkflowOptions}
+              value={data.template}
+              options={filteredTemplateOptions}
               onChange={(e) =>
-                setData((prev) => ({ ...prev, workflow: e.target.value }))
+                setData((prev) => ({ ...prev, template: e.target.value }))
               }
             />
 
