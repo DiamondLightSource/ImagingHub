@@ -14,9 +14,16 @@ import {
   regexToVisit,
 } from "@diamondlightsource/sci-react-ui";
 import { useSubscription } from "@apollo/client/react";
-import { gql } from "@apollo/client";
+import { gql, type TypedDocumentNode } from "@apollo/client";
+import type {
+  WorkflowStatusSubscriptionSubscription,
+  WorkflowStatusSubscriptionSubscriptionVariables,
+} from "./__generated__/WorkflowStatus.generated";
 
-const WORKFLOW_STATUS_SUBSCRIPTION = gql`
+const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
+  WorkflowStatusSubscriptionSubscription,
+  WorkflowStatusSubscriptionSubscriptionVariables
+> = gql`
   subscription WorkflowStatusSubscription($visit: VisitInput!, $name: String!) {
     workflow(visit: $visit, name: $name) {
       status {
@@ -160,7 +167,10 @@ function getStatusText(status: string) {
   }
 }
 
-function getLogArtifacts(data: any | null | undefined, statusType: StatusType) {
+function getLogArtifacts(
+  data: WorkflowStatusSubscriptionSubscription | null | undefined,
+  statusType: StatusType
+) {
   if (!data?.workflow?.status || !("tasks" in data.workflow.status)) {
     return [];
   }
@@ -199,7 +209,7 @@ function getLogArtifacts(data: any | null | undefined, statusType: StatusType) {
 interface WorkflowStatusProps {
   workflow: string;
   visit: string;
-  onWorkflowDataChange?: (data) => void;
+  onWorkflowDataChange?: (data: WorkflowStatusSubscriptionSubscription) => void;
 }
 
 const WorkflowStatus: React.FC<WorkflowStatusProps> = ({

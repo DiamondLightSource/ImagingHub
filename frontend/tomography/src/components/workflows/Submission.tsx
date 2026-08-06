@@ -6,19 +6,19 @@ import SubmissionFormCOR from "./sweepPipeline/SubmissionFormCOR";
 import React from "react";
 import { JSONObject } from "../../types";
 import SubmissionFormRawProjections from "./rawProjections/SubmissionFormRawProjections";
-import { gql } from "@apollo/client";
+import { type TypedDocumentNode, gql } from "@apollo/client";
 import { useSuspenseQuery, useMutation } from "@apollo/client/react";
+import {
+  type WorkflowTemplateQuery,
+  type WorkflowTemplateQueryVariables,
+  type SubmitWorkflowTemplateMutation,
+  type SubmitWorkflowTemplateMutationVariables,
+} from "./__generated__/Submission.generated";
 
-export type WorkflowTemplate = {
-  name: string;
-  maintainer: string;
-  title: string;
-  description: string;
-  arguments: JSON;
-  uiSchema: JSON;
-};
-
-export const GET_WORKFLOW_TEMPLATE = gql`
+export const GET_WORKFLOW_TEMPLATE: TypedDocumentNode<
+  WorkflowTemplateQuery,
+  WorkflowTemplateQueryVariables
+> = gql`
   query workflowTemplate($name: String!) {
     workflowTemplate(name: $name) {
       name
@@ -31,7 +31,10 @@ export const GET_WORKFLOW_TEMPLATE = gql`
   }
 `;
 
-export const SUBMIT_WORKFLOW_TEMPLATE = gql`
+export const SUBMIT_WORKFLOW_TEMPLATE: TypedDocumentNode<
+  SubmitWorkflowTemplateMutation,
+  SubmitWorkflowTemplateMutationVariables
+> = gql`
   mutation submitWorkflowTemplate(
     $name: String!
     $visit: VisitInput!

@@ -18,7 +18,7 @@ import {
 } from "@diamondlightsource/sci-react-ui";
 import Loader from "../../loader/Loader";
 import { useLoader } from "../../../contexts/LoaderContext";
-import { WorkflowTemplate } from "../Submission";
+import { type WorkflowTemplateQuery } from "../__generated__/Submission.generated";
 import WorkflowStatus from "../WorkflowStatus";
 import SweepResultViewer from "./SweepResultViewer";
 import ParameterSweepForm, { SweepValues } from "./ParameterSweepForm";
@@ -33,7 +33,7 @@ import {
 import { ErrorObject } from "ajv";
 
 const SubmissionFormCOR = (props: {
-  template: WorkflowTemplate;
+  template: WorkflowTemplateQuery["workflowTemplate"];
   prepopulatedParameters?: JSONObject;
   visit?: Visit;
   onSubmit: (

@@ -22,10 +22,10 @@ import { useHTTOMOConfig } from "../../hooks/useHTTOMOConfig";
 import React from "react";
 
 import { GpuJobWorkflowParametersForm } from "./GpuJobWorkflowParametersForm";
-import { WorkflowTemplate } from "./Submission";
+import { type WorkflowTemplateQuery } from "./__generated__/Submission.generated";
 
 const SubmissionFormGPURun = (props: {
-  template: WorkflowTemplate;
+  template: WorkflowTemplateQuery["workflowTemplate"];
   prepopulatedParameters?: JSONObject;
   visit?: Visit;
   onSubmit: (

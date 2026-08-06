@@ -30,4 +30,4 @@ venv
 .env
 .env.development
 
-frontend/src/components/workflows/__generated__/
+frontend/**/__generated__/

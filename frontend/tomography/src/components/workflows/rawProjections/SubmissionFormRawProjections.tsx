@@ -18,7 +18,8 @@ import { useTifURLContext } from "../../../contexts/CropContext";
 import MandatoryParametersForm from "./MandatoryParametersForm";
 import ProjectionsForm from "./ProjectionsForm";
 import AdvancedParameters from "./AdvancedParametersForm";
-import { WorkflowTemplate } from "../Submission";
+import { type WorkflowTemplateQuery } from "../__generated__/Submission.generated";
+import { type WorkflowStatusSubscriptionSubscription } from "../__generated__/WorkflowStatus.generated";
 
 export type RawProjectionWorkflowArguments = {
   input: string;
@@ -57,7 +58,7 @@ export enum ProjectionIndicesMethod {
 }
 
 interface SubmissionFormRawProjectionsProps {
-  template: WorkflowTemplate;
+  template: WorkflowTemplateQuery["workflowTemplate"];
   prepopulatedParameters?: JSONObject;
   visit?: Visit;
   onSubmit: (
@@ -188,7 +189,7 @@ export default function SubmissionFormRawProjections({
     submitWorkflow(visit, parameters, workflowSuccessfullySubmitted);
   }
 
-  function onWorkflowDataChange(data) {
+  function onWorkflowDataChange(data: WorkflowStatusSubscriptionSubscription) {
     const c = data.workflow.status;
     if (c === null || c === undefined) {
       return;
