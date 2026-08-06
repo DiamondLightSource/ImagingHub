@@ -1,4 +1,3 @@
-import { useFragment } from "react-relay";
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Alert,
@@ -19,8 +18,7 @@ import {
 } from "@diamondlightsource/sci-react-ui";
 import Loader from "../../loader/Loader";
 import { useLoader } from "../../../contexts/LoaderContext";
-import { SubmissionFormSharedFragment$key } from "../__generated__/SubmissionFormSharedFragment.graphql";
-import { sharedFragment } from "../Submission";
+import { type WorkflowTemplateQuery } from "../__generated__/Submission.generated";
 import WorkflowStatus from "../WorkflowStatus";
 import SweepResultViewer from "./SweepResultViewer";
 import ParameterSweepForm, { SweepValues } from "./ParameterSweepForm";
@@ -35,7 +33,7 @@ import {
 import { ErrorObject } from "ajv";
 
 const SubmissionFormCOR = (props: {
-  template: SubmissionFormSharedFragment$key;
+  template: WorkflowTemplateQuery["workflowTemplate"];
   prepopulatedParameters?: JSONObject;
   visit?: Visit;
   onSubmit: (
@@ -44,7 +42,6 @@ const SubmissionFormCOR = (props: {
     onSuccess?: (workflowName: string) => void
   ) => void;
 }) => {
-  const data = useFragment(sharedFragment, props.template);
   const theme = useTheme();
 
   // ---- Loader context (unchanged) ----
@@ -56,7 +53,7 @@ const SubmissionFormCOR = (props: {
   } = useLoader();
 
   // ---- AJV and schema from GraphQL ----
-  const schema = data.arguments as unknown as object; // the real JSON schema
+  const schema = props.template.arguments as unknown as object; // the real JSON schema
   const ajv = useMemo(() => buildAjv(), [schema]);
 
   // ---- Local state (parent holds everything) ----
@@ -254,7 +251,8 @@ const SubmissionFormCOR = (props: {
   const handleCloseSnackbar = () => setSubmitted(false);
 
   const formWidth =
-    (data.uiSchema?.options?.formWidth as string | undefined) ?? "100%";
+    (props.template.uiSchema?.options?.formWidth as string | undefined) ??
+    "100%";
 
   return (
     <Stack
@@ -263,10 +261,11 @@ const SubmissionFormCOR = (props: {
       sx={{ width: formWidth }}
     >
       <Typography variant="h4" align="center">
-        Workflow: {data.title ? data.title : data.name}
+        Workflow:{" "}
+        {props.template.title ? props.template.title : props.template.name}
       </Typography>
       <Typography variant="body1" align="center">
-        {data.description}
+        {props.template.description}
       </Typography>
 
       <Divider />

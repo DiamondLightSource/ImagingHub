@@ -28,7 +28,7 @@ VITE_GRAPHQL_WS_ENDPOINT = "wss://graph-nightly.diamond.ac.uk/graphql/ws"
 ```
 cd ImagingHub/frontend
 npm i
-npm run relay
+npm run codegen
 npm run dev
 ```
 

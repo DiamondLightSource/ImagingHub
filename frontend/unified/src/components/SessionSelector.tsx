@@ -6,12 +6,11 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
-import { useLazyLoadQuery } from "react-relay";
-import { graphql } from "relay-runtime";
-import { SessionSelectorTestQuery as SessionSelectorTestQueryType } from "./__generated__/SessionSelectorTestQuery.graphql";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
-const testInstrumentSessionQuery = graphql`
-  query SessionSelectorTestQuery {
+const SESSION_QUERY = gql`
+  query sessionQuery {
     account(username: "twi18192") {
       proposalRoles {
         proposal {
@@ -42,10 +41,7 @@ export const SessionSelector: React.FC = () => {
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [textInputValue, setTextInputValue] = useState<string>("");
-  const sessions = useLazyLoadQuery<SessionSelectorTestQueryType>(
-    testInstrumentSessionQuery,
-    {}
-  );
+  const sessions = useQuery(SESSION_QUERY, {});
   console.log("sessions: ", sessions);
 
   return (

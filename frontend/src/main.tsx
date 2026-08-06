@@ -5,19 +5,28 @@ import { CssBaseline } from "@mui/material";
 import {
   ThemeProvider,
   DiamondDSTheme,
+  AuthProvider,
 } from "@diamondlightsource/sci-react-ui";
-import { RelayEnvironmentProvider } from "react-relay";
-import { getRelayEnvironment } from "./RelayEnvironment";
+import { ApolloProvider } from "@apollo/client/react";
+import { apolloClient } from "./ApolloClient";
+import { updateTokenStore } from "./token";
 
-getRelayEnvironment().then((environment) => {
-  createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-      <ThemeProvider theme={DiamondDSTheme} defaultMode="light">
-        <CssBaseline />
-        <RelayEnvironmentProvider environment={environment}>
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <AuthProvider
+      keycloakConfig={{
+        url: import.meta.env.VITE_KEYCLOAK_URL,
+        realm: import.meta.env.VITE_KEYCLOAK_REALM,
+        clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+      }}
+      onTokenChange={updateTokenStore}
+    >
+      <ApolloProvider client={apolloClient}>
+        <ThemeProvider theme={DiamondDSTheme} defaultMode="light">
+          <CssBaseline />
           <App />
-        </RelayEnvironmentProvider>
-      </ThemeProvider>
-    </StrictMode>
-  );
-});
+        </ThemeProvider>
+      </ApolloProvider>
+    </AuthProvider>
+  </StrictMode>
+);

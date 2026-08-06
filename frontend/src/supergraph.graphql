@@ -899,9 +899,9 @@ type ErrorDetails {
 }
 
 input JSONOperator @oneOf {
-  stringOperator: StringOperatorInput = null
-  datetimeOperator: DatetimeOperatorInput = null
-  numericOperator: NumericOperatorInput = null
+  stringOperator: StringOperatorInput
+  datetimeOperator: DatetimeOperatorInput
+  numericOperator: NumericOperatorInput
 }
 
 input JSONOperatorInput {

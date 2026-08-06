@@ -11,17 +11,15 @@ import {
   VisitInput,
   visitToText,
 } from "@diamondlightsource/sci-react-ui";
-import { SubmissionFormSharedFragment$key } from "../__generated__/SubmissionFormSharedFragment.graphql";
 import { JSONObject } from "../../../types";
 import { useState } from "react";
 import WorkflowStatus from "../WorkflowStatus";
-import { WorkflowStatusSubscription$data } from "../__generated__/WorkflowStatusSubscription.graphql";
-import { useFragment } from "react-relay";
 import { useTifURLContext } from "../../../contexts/CropContext";
-import { sharedFragment } from "../Submission";
 import MandatoryParametersForm from "./MandatoryParametersForm";
 import ProjectionsForm from "./ProjectionsForm";
 import AdvancedParameters from "./AdvancedParametersForm";
+import { type WorkflowTemplateQuery } from "../__generated__/Submission.generated";
+import { type WorkflowStatusSubscriptionSubscription } from "../__generated__/WorkflowStatus.generated";
 
 export type RawProjectionWorkflowArguments = {
   input: string;
@@ -60,7 +58,7 @@ export enum ProjectionIndicesMethod {
 }
 
 interface SubmissionFormRawProjectionsProps {
-  template: SubmissionFormSharedFragment$key;
+  template: WorkflowTemplateQuery["workflowTemplate"];
   prepopulatedParameters?: JSONObject;
   visit?: Visit;
   onSubmit: (
@@ -80,7 +78,6 @@ export default function SubmissionFormRawProjections({
   const firstIndex = 100;
   const lastIndex = 3700;
 
-  const templateData = useFragment(sharedFragment, template);
   const theme = useTheme();
   const { setTifURL } = useTifURLContext();
   const [workflowSubmitted, setWorkflowSubmitted] = useState(false);
@@ -93,12 +90,12 @@ export default function SubmissionFormRawProjections({
   const [submittedWorkflowArguments, setSubmittedWorkflowArguments] =
     useState<RawProjectionWorkflowArguments>({
       input: "",
-      "tmpdir-path": templateData.arguments.properties["tmpdir-path"].default,
+      "tmpdir-path": template.arguments.properties["tmpdir-path"].default,
       "dataset-path": "",
-      memory: templateData.arguments.properties.memory.default,
-      nprocs: Number(templateData.arguments.properties.nprocs.default),
+      memory: template.arguments.properties.memory.default,
+      nprocs: Number(template.arguments.properties.nprocs.default),
       "output-filename":
-        templateData.arguments.properties["output-filename"].default,
+        template.arguments.properties["output-filename"].default,
     });
   const [submittedVisit, setSubmittedVisit] = useState<undefined | Visit>(
     undefined
@@ -192,7 +189,7 @@ export default function SubmissionFormRawProjections({
     submitWorkflow(visit, parameters, workflowSuccessfullySubmitted);
   }
 
-  function onWorkflowDataChange(data: WorkflowStatusSubscription$data) {
+  function onWorkflowDataChange(data: WorkflowStatusSubscriptionSubscription) {
     const c = data.workflow.status;
     if (c === null || c === undefined) {
       return;

@@ -1,4 +1,3 @@
-import { useFragment, graphql } from "react-relay";
 import { useState } from "react";
 import {
   Divider,
@@ -15,19 +14,18 @@ import {
   VisitInput,
   visitToText,
 } from "@diamondlightsource/sci-react-ui";
-import { SubmissionFormSharedFragment$key } from "./__generated__/SubmissionFormSharedFragment.graphql";
 import Loader from "../loader/Loader";
 import { useLoader } from "../../contexts/LoaderContext";
 import { useMethods } from "../../contexts/MethodsContext";
-import { sharedFragment } from "./Submission";
 import WorkflowStatus from "./WorkflowStatus";
 import { useHTTOMOConfig } from "../../hooks/useHTTOMOConfig";
 import React from "react";
 
 import { GpuJobWorkflowParametersForm } from "./GpuJobWorkflowParametersForm";
+import { type WorkflowTemplateQuery } from "./__generated__/Submission.generated";
 
 const SubmissionFormGPURun = (props: {
-  template: SubmissionFormSharedFragment$key;
+  template: WorkflowTemplateQuery["workflowTemplate"];
   prepopulatedParameters?: JSONObject;
   visit?: Visit;
   onSubmit: (
@@ -36,7 +34,6 @@ const SubmissionFormGPURun = (props: {
     onSuccess?: (workflowName: string) => void
   ) => void;
 }) => {
-  const data = useFragment(sharedFragment, props.template);
   const theme = useTheme();
   const {
     method,
@@ -54,10 +51,10 @@ const SubmissionFormGPURun = (props: {
   const [inputPath, setInputPath] = useState("");
   const [outputPath, setOutputPath] = useState("");
   const [nProcs, setNProcs] = useState(
-    Number(data.arguments.properties.nprocs.default)
+    Number(props.template.arguments.properties.nprocs.default)
   );
   const [memory, setMemory] = useState(
-    data.arguments.properties.memory.default
+    props.template.arguments.properties.memory.default
   );
   const [isInputPathValid, setIsInputPathValid] = useState(false);
   const [isOutputPathValid, setIsOutputPathValid] = useState(false);
@@ -75,7 +72,7 @@ const SubmissionFormGPURun = (props: {
     return JSON.stringify(combinedData);
   };
 
-  const validator = new Ajv().compile(data.arguments);
+  const validator = new Ajv().compile(props.template.arguments);
 
   const onClick = (visit: Visit, _?: object) => {
     if (
@@ -117,7 +114,8 @@ const SubmissionFormGPURun = (props: {
   };
 
   const formWidth =
-    (data.uiSchema?.options?.formWidth as string | undefined) ?? "100%";
+    (props.template.uiSchema?.options?.formWidth as string | undefined) ??
+    "100%";
 
   return (
     <Stack
@@ -126,10 +124,11 @@ const SubmissionFormGPURun = (props: {
       sx={{ width: formWidth }}
     >
       <Typography variant="h4" align="center">
-        Workflow: {data.title ? data.title : data.name}
+        Workflow:{" "}
+        {props.template.title ? props.template.title : props.template.name}
       </Typography>
       <Typography variant="body1" align="center">
-        {data.description}
+        {props.template.description}
       </Typography>
 
       <Divider />
