@@ -1,38 +1,38 @@
-import { useState } from "react";
-import { useLazyLoadQuery, useMutation } from "react-relay/hooks";
-import { graphql } from "relay-runtime";
+import { useState, Suspense } from "react";
 import { Box } from "@mui/material";
 import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 import SubmissionFormGPURun from "./SubmissionFormGPURun";
 import SubmissionFormCOR from "./sweepPipeline/SubmissionFormCOR";
-import { SubmissionQuery as SubmissionQueryType } from "./__generated__/SubmissionQuery.graphql";
-import { SubmissionMutation as SubmissionMutationType } from "./__generated__/SubmissionMutation.graphql";
 import React from "react";
 import { JSONObject } from "../../types";
 import SubmissionFormRawProjections from "./rawProjections/SubmissionFormRawProjections";
+import { gql } from "@apollo/client";
+import { useSuspenseQuery, useMutation } from "@apollo/client/react";
 
-const submissionQuery = graphql`
-  query SubmissionQuery($name: String!) {
+export type WorkflowTemplate = {
+  name: string;
+  maintainer: string;
+  title: string;
+  description: string;
+  arguments: JSON;
+  uiSchema: JSON;
+};
+
+export const GET_WORKFLOW_TEMPLATE = gql`
+  query workflowTemplate($name: String!) {
     workflowTemplate(name: $name) {
-      ...SubmissionFormSharedFragment
+      name
+      maintainer
+      title
+      description
+      arguments
+      uiSchema
     }
   }
 `;
 
-// Add this shared fragment
-const sharedFragment = graphql`
-  fragment SubmissionFormSharedFragment on WorkflowTemplate {
-    name
-    maintainer
-    title
-    description
-    arguments
-    uiSchema
-  }
-`;
-
-const submissionMutation = graphql`
-  mutation SubmissionMutation(
+export const SUBMIT_WORKFLOW_TEMPLATE = gql`
+  mutation submitWorkflowTemplate(
     $name: String!
     $visit: VisitInput!
     $parameters: JSON!
@@ -66,14 +66,17 @@ export default function Submission({
   setVisit,
   visit,
 }: SubmissionProps) {
-  const data = useLazyLoadQuery<SubmissionQueryType>(submissionQuery, {
-    name: workflowName,
+  const { data } = useSuspenseQuery(GET_WORKFLOW_TEMPLATE, {
+    variables: {
+      name: workflowName,
+    },
   });
 
   const [submissionResults, setSubmissionResults] = useState([]);
 
-  const [commitMutation] =
-    useMutation<SubmissionMutationType>(submissionMutation);
+  const [commitMutation, { data: mutationData }] = useMutation(
+    SUBMIT_WORKFLOW_TEMPLATE
+  );
 
   function submitWorkflow(
     visit: Visit,
@@ -86,33 +89,33 @@ export default function Submission({
         visit: visit,
         parameters: parameters,
       },
-      onCompleted: (response, errors) => {
-        if (errors?.length) {
-          console.error("GraphQL errors:", errors);
-          setSubmissionResults((prev) => [
-            {
-              type: "graphQLError",
-              errors: errors,
-            },
-            ...prev,
-          ]);
-        } else {
-          const submittedName = response.submitWorkflowTemplate.name;
-          setVisit(visit);
-          setSubmissionResults((prev) => [
-            {
-              type: "success",
-              message: `${visitToText(visit)}/${submittedName}`,
-            },
-            ...prev,
-          ]);
+      onCompleted: (response) => {
+        // TODO: check if this should be moved into the `onError` handler
+        // if (errors?.length) {
+        //   console.error("GraphQL errors:", errors);
+        //   setSubmissionResults((prev) => [
+        //     {
+        //       type: "graphQLError",
+        //       errors: errors,
+        //     },
+        //     ...prev,
+        //   ]);
+        // } else {
+        const submittedName = response.submitWorkflowTemplate.name;
+        setVisit(visit);
+        setSubmissionResults((prev) => [
+          {
+            type: "success",
+            message: `${visitToText(visit)}/${submittedName}`,
+          },
+          ...prev,
+        ]);
 
-          // Call the success callback with workflow name
-          if (onSuccess) {
-            onSuccess(submittedName);
-          } else {
-            console.log("No onSuccess callback provided");
-          }
+        // Call the success callback with workflow name
+        if (onSuccess) {
+          onSuccess(submittedName);
+        } else {
+          console.log("No onSuccess callback provided");
         }
       },
       onError: (err) => {
@@ -136,16 +139,24 @@ export default function Submission({
       onSubmit: submitWorkflow,
     };
 
-    switch (workflowName) {
-      case "httomo-cor-sweep":
-        return <SubmissionFormCOR {...commonProps} />;
-      case "httomo-gpu-job":
-        return <SubmissionFormGPURun {...commonProps} />;
-      case "extract-raw-projections":
-        return <SubmissionFormRawProjections {...commonProps} />;
-      default:
-        return <p>invalid workflow name</p>;
+    function switchOnWorkflowTemplate(workflowName: string) {
+      switch (workflowName) {
+        case "httomo-cor-sweep":
+          return <SubmissionFormCOR {...commonProps} />;
+        case "httomo-gpu-job":
+          return <SubmissionFormGPURun {...commonProps} />;
+        case "extract-raw-projections":
+          return <SubmissionFormRawProjections {...commonProps} />;
+        default:
+          return <p>invalid workflow name</p>;
+      }
     }
+
+    return (
+      <Suspense fallback={<p>Loading...</p>}>
+        {switchOnWorkflowTemplate(workflowName)}
+      </Suspense>
+    );
   };
 
   return (
@@ -194,5 +205,3 @@ const SubmittedMessagesList = ({ messages }: { messages: any[] }) => {
     </>
   );
 };
-
-export { sharedFragment };

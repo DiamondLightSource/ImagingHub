@@ -1,14 +1,15 @@
 import React from "react";
 import { Outlet, NavLink as RouterNavLink } from "react-router-dom";
-import { Box, CssBaseline, styled } from "@mui/material";
+import { Box, CssBaseline, styled, Alert } from "@mui/material";
 import {
   Footer,
   Navbar,
   NavLink,
   NavLinks,
   User,
+  useAuth,
+  ProgressDelayed,
 } from "@diamondlightsource/sci-react-ui";
-import keycloak from "./keycloak";
 
 const AppContainer = styled(Box)({
   display: "flex",
@@ -29,23 +30,19 @@ const MainContainer = styled(Box)({
 });
 
 const Layout = () => {
-  // Determine the username to display
-  let username = "Guest User";
+  const auth = useAuth();
 
-  if (keycloak.authenticated && keycloak.tokenParsed) {
-    username =
-      keycloak.tokenParsed.preferred_username ||
-      keycloak.tokenParsed.name ||
-      keycloak.tokenParsed.email ||
-      "Authenticated User";
+  if (auth.errors) {
+    return <Alert severity="error">{auth.errors.join(", ")}</Alert>;
   }
 
-  // Handle logout
-  const handleLogout = () => {
-    if (keycloak.authenticated) {
-      keycloak.logout();
-    }
-  };
+  if (!auth.initialised) {
+    return <ProgressDelayed />;
+  }
+
+  if (!auth.authenticated) {
+    auth.login();
+  }
 
   return (
     <>
@@ -69,15 +66,7 @@ const Layout = () => {
               </NavLink>
             </NavLinks>
           }
-          rightSlot={
-            <User
-              color="white"
-              onLogout={handleLogout}
-              user={{
-                fedid: username,
-              }}
-            />
-          }
+          rightSlot={<User color="white" auth={auth} />}
         ></Navbar>
         <MainContainer>
           <Outlet />

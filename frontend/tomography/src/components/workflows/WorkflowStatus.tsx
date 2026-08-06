@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -13,14 +13,10 @@ import {
   visitRegex,
   regexToVisit,
 } from "@diamondlightsource/sci-react-ui";
-import { graphql, GraphQLSubscriptionConfig } from "relay-runtime";
-import { useSubscription } from "react-relay";
-import {
-  WorkflowStatusSubscription as WorkflowStatusSubscriptionType,
-  WorkflowStatusSubscription$data,
-} from "./__generated__/WorkflowStatusSubscription.graphql";
+import { useSubscription } from "@apollo/client/react";
+import { gql } from "@apollo/client";
 
-const subscription = graphql`
+const WORKFLOW_STATUS_SUBSCRIPTION = gql`
   subscription WorkflowStatusSubscription($visit: VisitInput!, $name: String!) {
     workflow(visit: $visit, name: $name) {
       status {
@@ -164,10 +160,7 @@ function getStatusText(status: string) {
   }
 }
 
-function getLogArtifacts(
-  data: WorkflowStatusSubscription$data | null | undefined,
-  statusType: StatusType
-) {
+function getLogArtifacts(data: any | null | undefined, statusType: StatusType) {
   if (!data?.workflow?.status || !("tasks" in data.workflow.status)) {
     return [];
   }
@@ -206,7 +199,7 @@ function getLogArtifacts(
 interface WorkflowStatusProps {
   workflow: string;
   visit: string;
-  onWorkflowDataChange?: (data: WorkflowStatusSubscription$data) => void;
+  onWorkflowDataChange?: (data) => void;
 }
 
 const WorkflowStatus: React.FC<WorkflowStatusProps> = ({
@@ -215,29 +208,27 @@ const WorkflowStatus: React.FC<WorkflowStatusProps> = ({
   onWorkflowDataChange,
 }) => {
   const [workflowFinished, setWorkflowFinished] = useState(false);
-  const [data, setData] = useState<
-    undefined | null | WorkflowStatusSubscription$data
-  >(undefined);
+  const { data } = useSubscription(WORKFLOW_STATUS_SUBSCRIPTION, {
+    variables: {
+      name: workflow,
+      visit: parseVisit(visit),
+    },
+  });
 
-  // the subscriptionHandler component will change data when it receives some
-  // this will trigger a re-render
-  // every variable that depends on data should automatically be refreshed with the workflow
+  if (
+    onWorkflowDataChange !== undefined &&
+    data !== null &&
+    data !== undefined
+  ) {
+    onWorkflowDataChange(data);
+  }
 
-  useEffect(() => {
-    if (
-      onWorkflowDataChange !== undefined &&
-      data !== null &&
-      data !== undefined
-    ) {
-      onWorkflowDataChange(data);
-    }
-  }, [onWorkflowDataChange, data]);
-
+  // TODO: check if this is necessary
   // if parsedVisit is changed the subscriptionHandler object is re-rendered, creating a new subscription
   // we useMemo so a new object is not created every re-render of this component
-  const parsedVisit = useMemo(() => {
-    return parseVisit(visit);
-  }, [visit]);
+  // const parsedVisit = useMemo(() => {
+  //   return parseVisit(visit);
+  // }, [visit]);
 
   const statusType: StatusType =
     data?.workflow?.status?.__typename ?? "Unknown";
@@ -253,17 +244,6 @@ const WorkflowStatus: React.FC<WorkflowStatusProps> = ({
     setWorkflowFinished(true);
     // TODO: clean up the subscription here??? (stop subscribing, delete objects?)
   }
-
-  const subscriptionConfig: GraphQLSubscriptionConfig<WorkflowStatusSubscriptionType> =
-    useMemo(() => {
-      return {
-        variables: { visit: parsedVisit, name: workflow },
-        subscription: subscription,
-        onNext: setData,
-      };
-    }, [parsedVisit, workflow, setData]);
-
-  useSubscription(subscriptionConfig);
 
   return (
     <Box
