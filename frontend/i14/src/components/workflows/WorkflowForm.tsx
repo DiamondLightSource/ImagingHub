@@ -1,118 +1,99 @@
-import React, { FC, ChangeEvent, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import {
   Button,
-  MenuItem,
-  IconButton,
-  InputLabel,
-  Grid,
-  Select,
-  Stack,
+  FormLabel,
   TextField,
-  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+  Grid,
+  Stack,
   Typography,
 } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
-import type { SelectChangeEvent } from "@mui/material/Select";
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 
-type FormData = { visit: string; workflow: string };
+import { initialData } from "../../data/form";
+import { templateOptions } from "../../data/templates";
+import OptionSelect from "./OptionSelect";
 
-const initialData: FormData = {
-  visit: "cm23467-2",
-  workflow: "dpc-batch",
-};
+import type { WorkflowFormData, Option } from "../../types/workflowFields";
 
 export const WorkflowForm: FC = () => {
-  const [data, setData] = useState<FormData>(initialData);
+  const techniques = ["dpc", "xanes", "xrd"] as const;
+  type ToggleGroup = (typeof techniques)[number];
+  const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
+    return (templateOptions ?? []).filter((o) => o.value.includes(toggle));
+  };
+
+  const [data, setData] = useState<WorkflowFormData>(() => {
+    const defaultTechnique =
+      techniques.find((t) => initialData.template.includes(t)) ?? techniques[0];
+    return {
+      ...initialData,
+      technique: defaultTechnique,
+    };
+  });
+
   const visitMatch = visitRegex.exec(data.visit);
+
+  const filteredTemplateOptions: Option[] = getFilteredTemplates(
+    data.technique
+  );
+
+  const handleToggleChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    next: ToggleGroup | null
+  ) => {
+    if (!next) return;
+    const filteredTemplates = getFilteredTemplates(next);
+    setData((prev) => ({
+      ...prev,
+      technique: next,
+      template: filteredTemplates[0].value,
+    }));
+  };
 
   const openInNewTab = (url: string) => {
     const w = window.open(url, "_blank");
-    if (w) w.focus();
+    w?.focus();
   };
 
-  const openLink = () => {
-    if (!visitMatch) return;
-    const linkString = `https://workflows.diamond.ac.uk/templates/${data.workflow}/${data.visit}`;
-    openInNewTab(linkString);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}?outputFolder=${data.outpath}`;
+    openInNewTab(url);
   };
-
-  const workflowOptions = [
-    {
-      label: "DPC",
-      value: "dpc-batch",
-      desc: "DPC imaging produces an image of the phase shifts to the X-ray beam as a result of interaction with the sample by measuring the gradient of the phase and retrieving the phase shifts by a straightforward integration step.",
-    },
-    {
-      label: "XANES Auto-processing",
-      value: "xanes",
-      desc: "XANES is a utility which attempts to stack a sequence of datasets acquired at different energy for a particular line group and perform alignment based on a line group.",
-    },
-    {
-      label: "XANES Point",
-      value: "xanes-point",
-      desc: "XANES-point is a utility which takes in a scan file (inpath) and a line group (edge_element), performs windowing of this line group, and saves a two-column text file (outpath): the first column is the energy in keV, and the second column is the summed windowed MCA intensity across the 4 channels.",
-    },
-    {
-      label: "XANES Sparse",
-      value: "xanes-sparse",
-      desc: "XANES-sparse is a utility which takes the last scan file of a sparse XANES scan (inpath), defines the 2D full grid, inserts the data in the correct rows, stack the images, and completes the missing data by using looped alternating steepest descent (ASD).",
-    },
-    {
-      label: "XRD 1D",
-      value: "xrd1d-batch",
-      desc: "XRD can be used to spatially map changes in crystallographic direction, d-spacing or strain across a sample.",
-    },
-    {
-      label: "XRD 2D",
-      value: "xrd2d-batch",
-      desc: "XRD 2D is a utility which performs Azimuthal integration (ExcaliburXRDIntegration) and saves result to a nxs file",
-    },
-  ];
-
-  const option = workflowOptions.find(
-    (option) => option.value === data.workflow
-  );
 
   return (
     <Grid container justifyContent="center" spacing={1}>
-      <Grid size={6}>
+      <Grid item s={6}>
         <Typography variant="h4">I14 Workflows</Typography>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            openLink();
-          }}
-        >
+        <br />
+        <form onSubmit={handleSubmit}>
           <Stack direction="column" spacing={2}>
-            <InputLabel size="small" id="workflow-select-label">
-              Workflow
-            </InputLabel>
-            <Grid>
-              <Select
-                labelId="workflow-select-label"
-                label="Workflow"
-                variant="outlined"
-                size="small"
-                name="workflow"
-                value={data.workflow}
-                onChange={(e: SelectChangeEvent<string>) =>
-                  setData((prev) => ({ ...prev, workflow: e.target.value }))
-                }
+            <Stack direction="column" spacing={0}>
+              <FormLabel>Technique</FormLabel>
+              <ToggleButtonGroup
+                exclusive
+                value={data.technique}
+                onChange={handleToggleChange}
+                aria-label="Technique"
               >
-                {workflowOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
+                {techniques.map((t) => (
+                  <ToggleButton key={t} value={t}>
+                    {t.toUpperCase()}
+                  </ToggleButton>
                 ))}
-              </Select>
-              <Tooltip title={option.desc}>
-                <IconButton>
-                  <InfoIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
+              </ToggleButtonGroup>
+            </Stack>
+            <OptionSelect
+              label="Template"
+              value={data.template}
+              options={filteredTemplateOptions}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, template: e.target.value }))
+              }
+            />
+
             <TextField
               name="visit"
               label="Visit"
@@ -129,8 +110,21 @@ export const WorkflowForm: FC = () => {
               error={!visitMatch}
             />
 
+            <TextField
+              name="outpath"
+              label="Output path"
+              variant="outlined"
+              size="small"
+              placeholder="Output path"
+              type="text"
+              value={data.outpath}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setData((prev) => ({ ...prev, outpath: e.target.value }));
+              }}
+            />
+
             <Button variant="contained" type="submit" disabled={!visitMatch}>
-              Submit
+              Open workflow form in a new tab
             </Button>
           </Stack>
         </form>

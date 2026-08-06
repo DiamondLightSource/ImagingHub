@@ -3,12 +3,18 @@
   "projects": {
     "tomography": {
       "language": "typescript",
-      "schema": "src/workflows.graphql",
+      "schema": "src/supergraph.graphql",
+      "eagerEsModules": true
+    },
+    "unified": {
+      "language": "typescript",
+      "schema": "src/supergraph.graphql",
       "eagerEsModules": true
     }
   },
   "sources": {
-    "tomography/src": "tomography"
+    "tomography/src": "tomography",
+    "unified/src": "unified"
   },
   "excludes": ["**/node_modules/**", "**/__mocks__/**", "**/__generated__/**"]
 }
