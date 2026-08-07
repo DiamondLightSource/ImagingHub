@@ -6,10 +6,17 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
-import { gql } from "@apollo/client";
+import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
+import {
+  SessionQueryQuery,
+  SessionQueryQueryVariables,
+} from "./__generated__/SessionSelector.generated";
 
-const SESSION_QUERY = gql`
+const SESSION_QUERY: TypedDocumentNode<
+  SessionQueryQuery,
+  SessionQueryQueryVariables
+> = gql`
   query sessionQuery {
     account(username: "twi18192") {
       proposalRoles {
