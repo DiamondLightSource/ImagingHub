@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Chip,
   TextField,
@@ -13,7 +14,7 @@ import {
   SessionQueryQueryVariables,
 } from "./__generated__/SessionSelector.generated";
 
-const SESSION_QUERY: TypedDocumentNode<
+export const SESSION_QUERY: TypedDocumentNode<
   SessionQueryQuery,
   SessionQueryQueryVariables
 > = gql`
@@ -41,15 +42,24 @@ enum SessionSelectionMode {
 }
 
 export const SessionSelector: React.FC = () => {
-  // TODO: initial value based on fetching latest session associated with logged-in user
-  const [session] = useState<string>("latest-session");
   // TODO: initial value based on the initial session
   const [beamline] = useState<string>("Beamline: depends-on-session");
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [textInputValue, setTextInputValue] = useState<string>("");
-  const sessions = useQuery(SESSION_QUERY, {});
-  console.log("sessions: ", sessions);
+  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  if (data === undefined) {
+    return <p>Data undefined</p>;
+  }
+
+  const proposal = data.account?.proposalRoles[0].proposal;
+  const latestSessionNumber =
+    proposal?.instrumentSessions[proposal?.instrumentSessions.length - 1]
+      .instrumentSessionNumber;
+  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${latestSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>
@@ -78,12 +88,13 @@ export const SessionSelector: React.FC = () => {
         </ToggleButton>
       </ToggleButtonGroup>
       <TextField
+        data-testid="session-selector-input"
         variant="outlined"
         label="Session"
         disabled={sessionSelectionMode === SessionSelectionMode.Latest}
         value={
           sessionSelectionMode === SessionSelectionMode.Latest
-            ? session
+            ? latestSession
             : textInputValue
         }
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
