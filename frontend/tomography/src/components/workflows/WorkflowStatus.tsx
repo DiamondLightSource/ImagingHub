@@ -20,7 +20,7 @@ import type {
   WorkflowStatusSubscriptionSubscriptionVariables,
 } from "./__generated__/WorkflowStatus.generated";
 
-const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
+export const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
   WorkflowStatusSubscriptionSubscription,
   WorkflowStatusSubscriptionSubscriptionVariables
 > = gql`
@@ -38,8 +38,6 @@ const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
             id
             name
             status
-            depends
-            dependencies
             stepType
             artifacts {
               name
@@ -56,8 +54,6 @@ const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
             id
             name
             status
-            depends
-            dependencies
             stepType
             artifacts {
               name
@@ -74,8 +70,6 @@ const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
             id
             name
             status
-            depends
-            dependencies
             stepType
             artifacts {
               name
@@ -92,8 +86,6 @@ const WORKFLOW_STATUS_SUBSCRIPTION: TypedDocumentNode<
             id
             name
             status
-            depends
-            dependencies
             stepType
             artifacts {
               name
