@@ -38,11 +38,13 @@ const OptionSelect: FC<Props> = ({ label, value, options, onChange }) => {
             </option>
           ))}
         </Select>
-        <Tooltip title={selected?.desc ?? ""}>
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
+        {selected?.desc && (
+          <Tooltip title={selected.desc}>
+            <IconButton size="small">
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        )}
       </Grid>
     </FormControl>
   );
