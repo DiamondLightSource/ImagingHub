@@ -19,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
         realm: import.meta.env.VITE_KEYCLOAK_REALM,
         clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
       }}
+      keycloakInitOptions={{ scope: import.meta.env.VITE_KEYCLOAK_SCOPE }}
       onTokenChange={updateTokenStore}
     >
       <ApolloProvider client={apolloClient}>
