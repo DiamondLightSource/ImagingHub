@@ -1,24 +1,16 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC } from "react";
 import {
   Button,
-  FormLabel,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Grid,
   Stack,
-  Typography,
   FormGroup,
   FormControlLabel,
   Switch,
 } from "@mui/material";
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
-
-import { initialData } from "../data/form";
-import { templateOptions } from "../data/templates";
 import OptionSelect from "./OptionSelect";
-
-import type { WorkflowFormData, Option } from "../types/workflowFields";
 
 export const techniques = ["dpc", "xanes", "xrd", "ptycho"] as const;
 

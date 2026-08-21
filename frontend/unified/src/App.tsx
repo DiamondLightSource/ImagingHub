@@ -2,7 +2,7 @@ import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 import { SessionSelector } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
 
-import { useState, MouseEvent } from "react";
+import { useState } from "react";
 
 import { initialData } from "./data/form";
 import { templateOptions } from "./data/templates";
