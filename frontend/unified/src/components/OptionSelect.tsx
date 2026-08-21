@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import type { Option } from "../../types/workflowFields";
+import type { Option } from "../types/workflowFields";
 
 type Props = {
   label: string;
