@@ -27,7 +27,7 @@ export const WorkflowForm: FC = (props: {
   currentShowAllSwitchState: boolean;
   handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
   filteredTechniques: string[];
-  templateoptions: Option[];
+  templateOptions: Option[];
 }) => {
   const visitMatch = visitRegex.exec(props.data.visit);
 
@@ -75,7 +75,7 @@ export const WorkflowForm: FC = (props: {
             <OptionSelect
               label="Template"
               value={props.data.template}
-              options={props.templateoptions}
+              options={props.templateOptions}
               onChange={(e) =>
                 props.setData((prev) => ({ ...prev, template: e.target.value }))
               }

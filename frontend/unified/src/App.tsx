@@ -120,7 +120,7 @@ export const App: React.FC = () => {
             currentShowAllSwitchState={currentShowAllSwitchState}
             handleShowAllSwitch={handleShowAllSwitch}
             filteredTechniques={BeamlineTechniquesArray[currentBeamline]}
-            templateoptions={filteredTemplateOptions}
+            templateOptions={filteredTemplateOptions}
           />
 
           <Divider sx={{ width: "100%" }} />
