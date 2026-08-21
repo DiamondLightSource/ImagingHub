@@ -39,10 +39,8 @@ export const App: React.FC = () => {
      */
     setShowAllSwitchState(event.target.checked);
     if (event.target.checked) {
-      console.log("switch on");
       setBeamline("all");
     } else {
-      console.log("switch off");
       setBeamline(initialData.beamline);
     }
   };
@@ -81,13 +79,11 @@ export const App: React.FC = () => {
   ) => {
     if (!next) return;
     const filteredTemplates = getFilteredTemplates(next);
-    console.log(`filteredTemplates: ${filteredTemplates}`);
     setData((prev) => ({
       ...prev,
       technique: next,
       template: filteredTemplates[0].value,
     }));
-    console.log(`data: ${JSON.stringify(data)}`);
   };
 
   const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {

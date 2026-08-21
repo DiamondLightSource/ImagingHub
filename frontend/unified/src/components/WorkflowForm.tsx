@@ -42,10 +42,6 @@ export const WorkflowForm: FC = (props: {
     openInNewTab(url);
   };
 
-  console.log(`data: ${JSON.stringify(props.data)}`);
-  console.log(`props.filteredTechniques: ${props.filteredTechniques}`);
-  console.log(`props.data.template: ${props.data.template}`);
-
   return (
     <Grid container justifyContent="left" spacing={1}>
       <Grid item s={6}>
