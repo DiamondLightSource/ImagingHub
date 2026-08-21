@@ -40,7 +40,7 @@ export const App: React.FC = () => {
     }
   };
 
-  function templateCheck(technique: string, templatestate: any): boolean {
+  function templateCheck(technique: string): boolean {
     /**
      * Is used during initalisation in this case to set the choosen technquie to dpc.
      * the technquie is obtained from imported inital data which should be replace in the final version.
