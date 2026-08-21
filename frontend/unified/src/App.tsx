@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
   const [currentShowAllSwitchState, setShowAllSwitchState] = useState(false);
   const [currentBeamline, setBeamline] = useState<string | null>(
-    initialData.Beamline
+    initialData.beamline
   );
 
   const handleShowAllSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +36,7 @@ export const App: React.FC = () => {
       setBeamline("all");
     } else {
       console.log("switch off");
-      setBeamline(initialData.Beamline);
+      setBeamline(initialData.beamline);
     }
   };
 

@@ -4,5 +4,5 @@ export const initialData: WorkflowFormData = {
   visit: "mg23967-1",
   template: "dpc-batch",
   outpath: "/dls/i14/data/",
-  Beamline: "I14",
+  beamline: "I14",
 };
