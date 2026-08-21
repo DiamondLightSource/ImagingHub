@@ -12,6 +12,7 @@ import {
   ToggleGroup,
   BeamlineTechniquesArray,
 } from "./components/WorkflowForm";
+import { Option, WorkflowFormData } from "./types/workflowFields";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
