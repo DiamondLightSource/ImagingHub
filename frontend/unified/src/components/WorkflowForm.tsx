@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import OptionSelect from "./OptionSelect";
+import { Option, WorkflowFormData } from "../types/workflowFields";
 
 export const techniques = ["dpc", "xanes", "xrd", "ptycho"] as const;
 
@@ -25,13 +26,16 @@ export const BeamlineTechniquesArray = {
 };
 
 export const WorkflowForm: FC = (props: {
-  data: any;
-  handleToggleChange: any;
-  setData: any;
-  currentShowAllSwitchState: any;
-  handleShowAllSwitch: any;
-  filteredTechniques: any;
-  templateoptions: any;
+  data: WorkflowFormData;
+  handleToggleChange: (
+    _event: React.MouseEvent<HTMLElement>,
+    next: ToggleGroup | null
+  ) => void;
+  setData: (_: WorkflowFormData) => void;
+  currentShowAllSwitchState: boolean;
+  handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
+  filteredTechniques: string[];
+  templateoptions: Option[];
 }) => {
   const visitMatch = visitRegex.exec(props.data.visit);
 
