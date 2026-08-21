@@ -17,14 +17,6 @@ export const techniques = ["dpc", "xanes", "xrd", "ptycho"] as const;
 
 export type ToggleGroup = (typeof techniques)[number];
 
-export const BeamlineTechniquesArray = {
-  I12: ["tomography"],
-  "I13-1": ["dpc", "xanes", "xrd", "Ptycho", "tomography"],
-  I14: ["dpc", "xanes", "xrd"],
-  ePSIC: ["dpc", "NBED", "ptycho"],
-  all: ["dpc", "xanes", "xrd", "ptycho", "nbed", "tomography"],
-};
-
 export const WorkflowForm: FC = (props: {
   data: WorkflowFormData;
   handleToggleChange: (

@@ -10,12 +10,19 @@ import {
   WorkflowForm,
   techniques,
   ToggleGroup,
-  BeamlineTechniquesArray,
 } from "./components/WorkflowForm";
 import { Option, WorkflowFormData } from "./types/workflowFields";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
+
+const BeamlineTechniquesArray = {
+  I12: ["tomography"],
+  "I13-1": ["dpc", "xanes", "xrd", "Ptycho", "tomography"],
+  I14: ["dpc", "xanes", "xrd"],
+  ePSIC: ["dpc", "NBED", "ptycho"],
+  all: ["dpc", "xanes", "xrd", "ptycho", "nbed", "tomography"],
+};
 
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
