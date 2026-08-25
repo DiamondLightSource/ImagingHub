@@ -37,7 +37,7 @@ export const WorkflowForm: FC = (props: {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = `https://workflows.diamond.ac.uk/templates/${props.template}/${props.data.visit}?outputFolder=${props.data.outpath}`;
+    const url = `https://workflows.diamond.ac.uk/templates/${props.template}`;
     openInNewTab(url);
   };
 
