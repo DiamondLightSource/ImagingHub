@@ -33,6 +33,12 @@ const BEAMLINES_DEFAULT_TECHNIQUE = {
   [Beamline.I14]: Technique.Dpc,
 };
 
+const filterTemplates = (technique: Technique) => {
+  return templateOptions.filter((option) =>
+    option.value.includes(technique.toLowerCase())
+  );
+};
+
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
   const [showAllTechniques, setShowAllTechniques] = useState(false);
@@ -40,7 +46,12 @@ export const App: React.FC = () => {
   const [technique, setTechnique] = useState<Technique>(
     BEAMLINES_DEFAULT_TECHNIQUE[currentBeamline]
   );
-  const [template, setTemplate] = useState<string>(initialData.template);
+  const [template, setTemplate] = useState<string>(() => {
+    const filteredTemplates = filterTemplates(
+      Technique[technique as keyof typeof Technique]
+    );
+    return filteredTemplates[0].value;
+  });
 
   /**
    * This state is used to keep track of the app data which contains information such as the beamline
@@ -66,12 +77,6 @@ export const App: React.FC = () => {
     );
     setTechnique(Technique[technique as keyof typeof Technique]);
     setTemplate(filteredTemplates[0].value);
-  };
-
-  const filterTemplates = (technique: Technique) => {
-    return templateOptions.filter((option) =>
-      option.value.includes(technique.toLowerCase())
-    );
   };
 
   const filterTechniques = () => {
