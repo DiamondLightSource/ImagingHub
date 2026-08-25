@@ -28,6 +28,7 @@ export const WorkflowForm: FC = (props: {
   handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
   filteredTechniques: string[];
   templateOptions: Option[];
+  technique: string;
 }) => {
   const visitMatch = visitRegex.exec(props.data.visit);
 
@@ -60,7 +61,7 @@ export const WorkflowForm: FC = (props: {
                 />
                 <ToggleButtonGroup
                   exclusive
-                  value={props.data.technique}
+                  value={props.technique}
                   onChange={props.handleToggleChange}
                   aria-label="Technique"
                 >
