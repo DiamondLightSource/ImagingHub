@@ -30,6 +30,9 @@ export const App: React.FC = () => {
   const [currentBeamline, setBeamline] = useState<string | null>(
     initialData.beamline
   );
+  const [technique, setTechnique] = useState<string>(
+    techniques.find(templateCheck) ?? techniques[0]
+  );
 
   const handleShowAllSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
     /**
@@ -53,20 +56,14 @@ export const App: React.FC = () => {
     return initialData.template.includes(technique);
   }
 
-  const [data, setData] = useState<WorkflowFormData>(() => {
-    /**
-     * This state is used to keep track of the app data which contains information such as the beamline
-     * The current template, and the visit this likely should be broken up into different states
-     * for example:
-     * data: {"visit":"mg23967-1","template":"dpc-batch","outpath":"/dls/i14/data/","Beamline":"I14","technique":"dpc"}
-     * this is then access by the WorkflowForm component to render its componenets
-     */
-    const defaultTechnique = techniques.find(templateCheck) ?? techniques[0];
-    return {
-      ...initialData,
-      technique: defaultTechnique,
-    };
-  });
+  /**
+   * This state is used to keep track of the app data which contains information such as the beamline
+   * The current template, and the visit this likely should be broken up into different states
+   * for example:
+   * data: {"visit":"mg23967-1","template":"dpc-batch","outpath":"/dls/i14/data/","Beamline":"I14","technique":"dpc"}
+   * this is then access by the WorkflowForm component to render its componenets
+   */
+  const [data, setData] = useState<WorkflowFormData>(initialData);
 
   const handleToggleChange = (
     /**
@@ -79,9 +76,9 @@ export const App: React.FC = () => {
   ) => {
     if (!next) return;
     const filteredTemplates = getFilteredTemplates(next);
+    setTechnique(next);
     setData((prev) => ({
       ...prev,
-      technique: next,
       template: filteredTemplates[0].value,
     }));
   };
@@ -99,7 +96,7 @@ export const App: React.FC = () => {
     /**
      * provides an indexing method of data to retrieve the choosen technique to the WorkflowForm component
      */
-    data.technique
+    technique
   );
 
   return (
@@ -121,6 +118,7 @@ export const App: React.FC = () => {
             handleShowAllSwitch={handleShowAllSwitch}
             filteredTechniques={BeamlineTechniquesArray[currentBeamline]}
             templateOptions={filteredTemplateOptions}
+            technique={technique}
           />
 
           <Divider sx={{ width: "100%" }} />
