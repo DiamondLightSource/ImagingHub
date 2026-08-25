@@ -6,32 +6,39 @@ import { useState } from "react";
 
 import { initialData } from "./data/form";
 import { templateOptions } from "./data/templates";
-import {
-  WorkflowForm,
-  techniques,
-  ToggleGroup,
-} from "./components/WorkflowForm";
-import { Option, WorkflowFormData } from "./types/workflowFields";
+import { WorkflowForm } from "./components/WorkflowForm";
+import { WorkflowFormData } from "./types/workflowFields";
+import { Beamline, Technique } from "./types";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
 
-const BeamlineTechniquesArray = {
-  I12: ["tomography"],
-  "I13-1": ["dpc", "xanes", "xrd", "Ptycho", "tomography"],
-  I14: ["dpc", "xanes", "xrd"],
-  ePSIC: ["dpc", "NBED", "ptycho"],
-  all: ["dpc", "xanes", "xrd", "ptycho", "nbed", "tomography"],
+const BEAMLINE_TECHNIQUES_SUBSET = {
+  [Beamline.I12]: [Technique.Tomo],
+  [Beamline["I13-1"]]: [
+    Technique.Dpc,
+    Technique.Ptycho,
+    Technique.Tomo,
+    Technique.Xanes,
+    Technique.Xrd,
+  ],
+  [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
+  [Beamline.Epsic]: [Technique.Dpc, Technique.Nbed, Technique.Ptycho],
+};
+
+const BEAMLINES_DEFAULT_TECHNIQUE = {
+  [Beamline.Epsic]: Technique.Ptycho,
+  [Beamline.I12]: Technique.Tomo,
+  [Beamline["I13-1"]]: Technique.Ptycho,
+  [Beamline.I14]: Technique.Dpc,
 };
 
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
   const [currentShowAllSwitchState, setShowAllSwitchState] = useState(false);
-  const [currentBeamline, setBeamline] = useState<string | null>(
-    initialData.beamline
-  );
-  const [technique, setTechnique] = useState<string>(
-    techniques.find(templateCheck) ?? techniques[0]
+  const [currentBeamline] = useState<Beamline>(Beamline.I14);
+  const [technique, setTechnique] = useState<Technique>(
+    BEAMLINES_DEFAULT_TECHNIQUE[currentBeamline]
   );
   const [template, setTemplate] = useState<string>(initialData.template);
 
@@ -42,20 +49,7 @@ export const App: React.FC = () => {
      * component will provide the beamline as a state. But currently using a hard coded inital data.
      */
     setShowAllSwitchState(event.target.checked);
-    if (event.target.checked) {
-      setBeamline("all");
-    } else {
-      setBeamline(initialData.beamline);
-    }
   };
-
-  function templateCheck(technique: string): boolean {
-    /**
-     * Is used during initalisation in this case to set the choosen technquie to dpc.
-     * the technquie is obtained from imported inital data which should be replace in the final version.
-     */
-    return initialData.template.includes(technique);
-  }
 
   /**
    * This state is used to keep track of the app data which contains information such as the beamline
@@ -73,29 +67,29 @@ export const App: React.FC = () => {
      * and templates
      */
     _event: React.MouseEvent<HTMLElement>,
-    next: ToggleGroup | null
+    next: string | null
   ) => {
     if (!next) return;
-    const filteredTemplates = getFilteredTemplates(next);
-    setTechnique(next);
+    const filteredTemplates = filterTemplates(
+      Technique[next as keyof typeof Technique]
+    );
+    setTechnique(Technique[next as keyof typeof Technique]);
     setTemplate(filteredTemplates[0].value);
   };
 
-  const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
-    /**
-     * Function which filters the imported list of templates from templateOptions (i.e. /frontend/unified/src/data/templates)
-     * it does this by checking where toggle which in this case is one of the elements of BeamlineTechniquesArray
-     * matches a templates value and then only shows those templates.
-     */
-    return (templateOptions ?? []).filter((o) => o.value.includes(toggle));
+  const filterTemplates = (technique: Technique) => {
+    return templateOptions.filter((option) =>
+      option.value.includes(technique.toLowerCase())
+    );
   };
 
-  const filteredTemplateOptions: Option[] = getFilteredTemplates(
-    /**
-     * provides an indexing method of data to retrieve the choosen technique to the WorkflowForm component
-     */
-    technique
-  );
+  const filterTechniques = () => {
+    if (currentShowAllSwitchState) {
+      return Object.values(Technique);
+    }
+
+    return BEAMLINE_TECHNIQUES_SUBSET[currentBeamline];
+  };
 
   return (
     <>
@@ -113,8 +107,8 @@ export const App: React.FC = () => {
             handleToggleChange={handleToggleChange}
             currentShowAllSwitchState={currentShowAllSwitchState}
             handleShowAllSwitch={handleShowAllSwitch}
-            filteredTechniques={BeamlineTechniquesArray[currentBeamline]}
-            templateOptions={filteredTemplateOptions}
+            filteredTechniques={filterTechniques()}
+            templateOptions={filterTemplates(technique)}
             technique={technique}
             template={template}
             setTemplate={setTemplate}

@@ -12,20 +12,17 @@ import {
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import OptionSelect from "./OptionSelect";
 import { Option, WorkflowFormData } from "../types/workflowFields";
-
-export const techniques = ["dpc", "xanes", "xrd", "ptycho"] as const;
-
-export type ToggleGroup = (typeof techniques)[number];
+import { Technique } from "../types";
 
 export const WorkflowForm: FC = (props: {
   data: WorkflowFormData;
   handleToggleChange: (
     _event: React.MouseEvent<HTMLElement>,
-    next: ToggleGroup | null
+    next: string | null
   ) => void;
   currentShowAllSwitchState: boolean;
   handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
-  filteredTechniques: string[];
+  filteredTechniques: Technique[];
   templateOptions: Option[];
   technique: string;
   template: string;
@@ -68,7 +65,7 @@ export const WorkflowForm: FC = (props: {
                 >
                   {props.filteredTechniques.map((t) => (
                     <ToggleButton key={t} value={t}>
-                      {t.toUpperCase()}
+                      {t}
                     </ToggleButton>
                   ))}
                 </ToggleButtonGroup>
