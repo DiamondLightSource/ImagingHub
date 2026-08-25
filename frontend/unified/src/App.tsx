@@ -35,7 +35,7 @@ const BEAMLINES_DEFAULT_TECHNIQUE = {
 
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
-  const [currentShowAllSwitchState, setShowAllSwitchState] = useState(false);
+  const [showAllTechniques, setShowAllTechniques] = useState(false);
   const [currentBeamline] = useState<Beamline>(Beamline.I14);
   const [technique, setTechnique] = useState<Technique>(
     BEAMLINES_DEFAULT_TECHNIQUE[currentBeamline]
@@ -75,7 +75,7 @@ export const App: React.FC = () => {
   };
 
   const filterTechniques = () => {
-    if (currentShowAllSwitchState) {
+    if (showAllTechniques) {
       return Object.values(Technique);
     }
 
@@ -96,9 +96,9 @@ export const App: React.FC = () => {
           <WorkflowForm
             data={data}
             handleToggleChange={handleToggleChange}
-            currentShowAllSwitchState={currentShowAllSwitchState}
+            showAllTechniques={showAllTechniques}
             handleShowAllSwitch={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setShowAllSwitchState(e.target.checked)
+              setShowAllTechniques(e.target.checked)
             }
             filteredTechniques={filterTechniques()}
             templateOptions={filterTemplates(technique)}

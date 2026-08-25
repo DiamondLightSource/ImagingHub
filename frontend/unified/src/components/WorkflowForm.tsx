@@ -20,7 +20,7 @@ export const WorkflowForm: FC = (props: {
     _event: React.MouseEvent<HTMLElement>,
     next: string | null
   ) => void;
-  currentShowAllSwitchState: boolean;
+  showAllTechniques: boolean;
   handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
   filteredTechniques: Technique[];
   templateOptions: Option[];
@@ -51,7 +51,7 @@ export const WorkflowForm: FC = (props: {
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={props.currentShowAllSwitchState}
+                      checked={props.showAllTechniques}
                       onChange={props.handleShowAllSwitch}
                     />
                   }
