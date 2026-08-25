@@ -1,0 +1,17 @@
+export enum Technique {
+  Dpc = "Dpc",
+  Nbed = "Nbed",
+  Ptycho = "Ptycho",
+  Tomo = "Tomo",
+  Xanes = "Xanes",
+  Xrd = "Xrd",
+}
+
+export enum Beamline {
+  I12,
+  "I13-1",
+  I14,
+  Epsic,
+}
+
+export type Option = { label: string; value: string; desc?: string };
