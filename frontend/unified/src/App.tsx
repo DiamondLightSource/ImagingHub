@@ -97,9 +97,22 @@ export const App: React.FC = () => {
             data={data}
             handleChangeTechnique={handleChangeTechnique}
             showAllTechniques={showAllTechniques}
-            handleShowAllTechniques={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setShowAllTechniques(e.target.checked)
-            }
+            handleShowAllTechniques={(
+              e: React.ChangeEvent<HTMLInputElement>
+            ) => {
+              setShowAllTechniques(e.target.checked);
+              const isSelectedTechniqueInSubset =
+                BEAMLINE_TECHNIQUES_SUBSET[currentBeamline].includes(technique);
+              if (!e.target.checked && !isSelectedTechniqueInSubset) {
+                const newTechnique =
+                  BEAMLINES_DEFAULT_TECHNIQUE[currentBeamline];
+                setTechnique(newTechnique);
+                const filteredTemplates = filterTemplates(
+                  Technique[newTechnique as keyof typeof Technique]
+                );
+                setTemplate(filteredTemplates[0].value);
+              }
+            }}
             filteredTechniques={filterTechniques()}
             templateOptions={filterTemplates(technique)}
             technique={technique}
