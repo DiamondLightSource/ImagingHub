@@ -33,6 +33,7 @@ export const App: React.FC = () => {
   const [technique, setTechnique] = useState<string>(
     techniques.find(templateCheck) ?? techniques[0]
   );
+  const [template, setTemplate] = useState<string>(initialData.template);
 
   const handleShowAllSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
     /**
@@ -63,7 +64,7 @@ export const App: React.FC = () => {
    * data: {"visit":"mg23967-1","template":"dpc-batch","outpath":"/dls/i14/data/","Beamline":"I14","technique":"dpc"}
    * this is then access by the WorkflowForm component to render its componenets
    */
-  const [data, setData] = useState<WorkflowFormData>(initialData);
+  const [data] = useState<WorkflowFormData>(initialData);
 
   const handleToggleChange = (
     /**
@@ -77,10 +78,7 @@ export const App: React.FC = () => {
     if (!next) return;
     const filteredTemplates = getFilteredTemplates(next);
     setTechnique(next);
-    setData((prev) => ({
-      ...prev,
-      template: filteredTemplates[0].value,
-    }));
+    setTemplate(filteredTemplates[0].value);
   };
 
   const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
@@ -113,12 +111,13 @@ export const App: React.FC = () => {
           <WorkflowForm
             data={data}
             handleToggleChange={handleToggleChange}
-            setData={setData}
             currentShowAllSwitchState={currentShowAllSwitchState}
             handleShowAllSwitch={handleShowAllSwitch}
             filteredTechniques={BeamlineTechniquesArray[currentBeamline]}
             templateOptions={filteredTemplateOptions}
             technique={technique}
+            template={template}
+            setTemplate={setTemplate}
           />
 
           <Divider sx={{ width: "100%" }} />

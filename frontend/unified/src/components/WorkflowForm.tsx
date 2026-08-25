@@ -23,12 +23,13 @@ export const WorkflowForm: FC = (props: {
     _event: React.MouseEvent<HTMLElement>,
     next: ToggleGroup | null
   ) => void;
-  setData: (_: WorkflowFormData) => void;
   currentShowAllSwitchState: boolean;
   handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
   filteredTechniques: string[];
   templateOptions: Option[];
   technique: string;
+  template: string;
+  setTemplate: (_: string) => void;
 }) => {
   const visitMatch = visitRegex.exec(props.data.visit);
 
@@ -39,7 +40,7 @@ export const WorkflowForm: FC = (props: {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = `https://workflows.diamond.ac.uk/templates/${props.data.template}/${props.data.visit}?outputFolder=${props.data.outpath}`;
+    const url = `https://workflows.diamond.ac.uk/templates/${props.template}/${props.data.visit}?outputFolder=${props.data.outpath}`;
     openInNewTab(url);
   };
 
@@ -75,11 +76,9 @@ export const WorkflowForm: FC = (props: {
             </Stack>
             <OptionSelect
               label="Template"
-              value={props.data.template}
+              value={props.template}
               options={props.templateOptions}
-              onChange={(e) =>
-                props.setData((prev) => ({ ...prev, template: e.target.value }))
-              }
+              onChange={(e) => props.setTemplate(e.target.value)}
             />
 
             <Button variant="contained" type="submit" disabled={!visitMatch}>
