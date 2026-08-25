@@ -10,8 +10,7 @@ import {
   Switch,
 } from "@mui/material";
 import OptionSelect from "./OptionSelect";
-import { Option } from "../types/workflowFields";
-import { Technique } from "../types";
+import { Option, Technique } from "../types";
 
 export const WorkflowForm: FC = (props: {
   handleChangeTechnique: (

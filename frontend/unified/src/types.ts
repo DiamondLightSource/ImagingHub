@@ -13,3 +13,5 @@ export enum Beamline {
   I14,
   Epsic,
 }
+
+export type Option = { label: string; value: string; desc?: string };
