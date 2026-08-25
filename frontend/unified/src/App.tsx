@@ -51,20 +51,20 @@ export const App: React.FC = () => {
    */
   const [data] = useState<WorkflowFormData>(initialData);
 
-  const handleToggleChange = (
+  const handleChangeTechnique = (
     /**
      * This function handles the clicking of the toggle button which choose the technique and therefore determines which
      * workflows are filtered and shown the template drop down menu this then alteres the data state with new techniques
      * and templates
      */
     _event: React.MouseEvent<HTMLElement>,
-    next: string | null
+    technique: string | null
   ) => {
-    if (!next) return;
+    if (!technique) return;
     const filteredTemplates = filterTemplates(
-      Technique[next as keyof typeof Technique]
+      Technique[technique as keyof typeof Technique]
     );
-    setTechnique(Technique[next as keyof typeof Technique]);
+    setTechnique(Technique[technique as keyof typeof Technique]);
     setTemplate(filteredTemplates[0].value);
   };
 
@@ -95,7 +95,7 @@ export const App: React.FC = () => {
           <Typography variant="h5">Technique</Typography>
           <WorkflowForm
             data={data}
-            handleToggleChange={handleToggleChange}
+            handleChangeTechnique={handleChangeTechnique}
             showAllTechniques={showAllTechniques}
             handleShowAllSwitch={(e: React.ChangeEvent<HTMLInputElement>) =>
               setShowAllTechniques(e.target.checked)

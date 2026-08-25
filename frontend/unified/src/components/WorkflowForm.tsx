@@ -16,9 +16,9 @@ import { Technique } from "../types";
 
 export const WorkflowForm: FC = (props: {
   data: WorkflowFormData;
-  handleToggleChange: (
+  handleChangeTechnique: (
     _event: React.MouseEvent<HTMLElement>,
-    next: string | null
+    technique: string | null
   ) => void;
   showAllTechniques: boolean;
   handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
@@ -60,7 +60,7 @@ export const WorkflowForm: FC = (props: {
                 <ToggleButtonGroup
                   exclusive
                   value={props.technique}
-                  onChange={props.handleToggleChange}
+                  onChange={props.handleChangeTechnique}
                   aria-label="Technique"
                 >
                   {props.filteredTechniques.map((t) => (
