@@ -97,7 +97,7 @@ export const App: React.FC = () => {
             data={data}
             handleChangeTechnique={handleChangeTechnique}
             showAllTechniques={showAllTechniques}
-            handleShowAllSwitch={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleShowAllTechniques={(e: React.ChangeEvent<HTMLInputElement>) =>
               setShowAllTechniques(e.target.checked)
             }
             filteredTechniques={filterTechniques()}

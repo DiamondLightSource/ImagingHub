@@ -21,7 +21,7 @@ export const WorkflowForm: FC = (props: {
     technique: string | null
   ) => void;
   showAllTechniques: boolean;
-  handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
+  handleShowAllTechniques: (_: React.ChangeEvent<HTMLInputElement>) => void;
   filteredTechniques: Technique[];
   templateOptions: Option[];
   technique: string;
@@ -52,7 +52,7 @@ export const WorkflowForm: FC = (props: {
                   control={
                     <Switch
                       checked={props.showAllTechniques}
-                      onChange={props.handleShowAllSwitch}
+                      onChange={props.handleShowAllTechniques}
                     />
                   }
                   label="Show all"
