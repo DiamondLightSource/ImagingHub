@@ -4,10 +4,8 @@ import { ScanSelector } from "./components/ScanSelector";
 
 import { useState } from "react";
 
-import { initialData } from "./data/form";
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
-import { WorkflowFormData } from "./types/workflowFields";
 import { Beamline, Technique } from "./types";
 
 const VERTICAL_SPACING = 2;
@@ -53,15 +51,6 @@ export const App: React.FC = () => {
     return filteredTemplates[0].value;
   });
 
-  /**
-   * This state is used to keep track of the app data which contains information such as the beamline
-   * The current template, and the visit this likely should be broken up into different states
-   * for example:
-   * data: {"visit":"mg23967-1","template":"dpc-batch","outpath":"/dls/i14/data/","Beamline":"I14","technique":"dpc"}
-   * this is then access by the WorkflowForm component to render its componenets
-   */
-  const [data] = useState<WorkflowFormData>(initialData);
-
   const handleChangeTechnique = (
     /**
      * This function handles the clicking of the toggle button which choose the technique and therefore determines which
@@ -99,7 +88,6 @@ export const App: React.FC = () => {
           <Divider sx={{ width: "100%" }} />
           <Typography variant="h5">Technique</Typography>
           <WorkflowForm
-            data={data}
             handleChangeTechnique={handleChangeTechnique}
             showAllTechniques={showAllTechniques}
             handleShowAllTechniques={(

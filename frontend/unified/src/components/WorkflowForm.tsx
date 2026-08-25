@@ -9,13 +9,11 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import OptionSelect from "./OptionSelect";
-import { Option, WorkflowFormData } from "../types/workflowFields";
+import { Option } from "../types/workflowFields";
 import { Technique } from "../types";
 
 export const WorkflowForm: FC = (props: {
-  data: WorkflowFormData;
   handleChangeTechnique: (
     _event: React.MouseEvent<HTMLElement>,
     technique: string | null
@@ -28,8 +26,6 @@ export const WorkflowForm: FC = (props: {
   template: string;
   setTemplate: (_: string) => void;
 }) => {
-  const visitMatch = visitRegex.exec(props.data.visit);
-
   const openInNewTab = (url: string) => {
     const w = window.open(url, "_blank");
     w?.focus();
@@ -78,7 +74,7 @@ export const WorkflowForm: FC = (props: {
               onChange={(e) => props.setTemplate(e.target.value)}
             />
 
-            <Button variant="contained" type="submit" disabled={!visitMatch}>
+            <Button variant="contained" type="submit">
               Open workflow form in a new tab
             </Button>
           </Stack>
