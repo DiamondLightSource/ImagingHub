@@ -42,15 +42,6 @@ export const App: React.FC = () => {
   );
   const [template, setTemplate] = useState<string>(initialData.template);
 
-  const handleShowAllSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    /**
-     * This switch handling makes use of the BeamlineTechniquesArray const to chose between the
-     * techniques specific to a Beamline and all techniques. it is assumed that a prevoius
-     * component will provide the beamline as a state. But currently using a hard coded inital data.
-     */
-    setShowAllSwitchState(event.target.checked);
-  };
-
   /**
    * This state is used to keep track of the app data which contains information such as the beamline
    * The current template, and the visit this likely should be broken up into different states
@@ -106,7 +97,9 @@ export const App: React.FC = () => {
             data={data}
             handleToggleChange={handleToggleChange}
             currentShowAllSwitchState={currentShowAllSwitchState}
-            handleShowAllSwitch={handleShowAllSwitch}
+            handleShowAllSwitch={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setShowAllSwitchState(e.target.checked)
+            }
             filteredTechniques={filterTechniques()}
             templateOptions={filterTemplates(technique)}
             technique={technique}
