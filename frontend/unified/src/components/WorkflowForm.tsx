@@ -9,28 +9,22 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import OptionSelect from "./OptionSelect";
-import { Option, WorkflowFormData } from "../types/workflowFields";
-
-export const techniques = ["dpc", "xanes", "xrd", "ptycho"] as const;
-
-export type ToggleGroup = (typeof techniques)[number];
+import { Option, Technique } from "../types";
 
 export const WorkflowForm: FC = (props: {
-  data: WorkflowFormData;
-  handleToggleChange: (
+  handleChangeTechnique: (
     _event: React.MouseEvent<HTMLElement>,
-    next: ToggleGroup | null
+    technique: string | null
   ) => void;
-  setData: (_: WorkflowFormData) => void;
-  currentShowAllSwitchState: boolean;
-  handleShowAllSwitch: (_: React.ChangeEvent<HTMLInputElement>) => void;
-  filteredTechniques: string[];
+  showAllTechniques: boolean;
+  handleShowAllTechniques: (_: React.ChangeEvent<HTMLInputElement>) => void;
+  filteredTechniques: Technique[];
   templateOptions: Option[];
+  technique: string;
+  template: string;
+  setTemplate: (_: string) => void;
 }) => {
-  const visitMatch = visitRegex.exec(props.data.visit);
-
   const openInNewTab = (url: string) => {
     const w = window.open(url, "_blank");
     w?.focus();
@@ -38,7 +32,7 @@ export const WorkflowForm: FC = (props: {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = `https://workflows.diamond.ac.uk/templates/${props.data.template}/${props.data.visit}?outputFolder=${props.data.outpath}`;
+    const url = `https://workflows.diamond.ac.uk/templates/${props.template}`;
     openInNewTab(url);
   };
 
@@ -52,21 +46,21 @@ export const WorkflowForm: FC = (props: {
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={props.currentShowAllSwitchState}
-                      onChange={props.handleShowAllSwitch}
+                      checked={props.showAllTechniques}
+                      onChange={props.handleShowAllTechniques}
                     />
                   }
                   label="Show all"
                 />
                 <ToggleButtonGroup
                   exclusive
-                  value={props.data.technique}
-                  onChange={props.handleToggleChange}
+                  value={props.technique}
+                  onChange={props.handleChangeTechnique}
                   aria-label="Technique"
                 >
                   {props.filteredTechniques.map((t) => (
                     <ToggleButton key={t} value={t}>
-                      {t.toUpperCase()}
+                      {t}
                     </ToggleButton>
                   ))}
                 </ToggleButtonGroup>
@@ -74,14 +68,12 @@ export const WorkflowForm: FC = (props: {
             </Stack>
             <OptionSelect
               label="Template"
-              value={props.data.template}
+              value={props.template}
               options={props.templateOptions}
-              onChange={(e) =>
-                props.setData((prev) => ({ ...prev, template: e.target.value }))
-              }
+              onChange={(e) => props.setTemplate(e.target.value)}
             />
 
-            <Button variant="contained" type="submit" disabled={!visitMatch}>
+            <Button variant="contained" type="submit">
               Open workflow form in a new tab
             </Button>
           </Stack>
