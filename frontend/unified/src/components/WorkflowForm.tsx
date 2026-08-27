@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import {
-  Button,
   ToggleButton,
   ToggleButtonGroup,
   Grid,
@@ -9,7 +8,6 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import OptionSelect from "./OptionSelect";
 import { Option, Technique } from "../types";
 
 export const WorkflowForm: FC = (props: {
@@ -66,16 +64,6 @@ export const WorkflowForm: FC = (props: {
                 </ToggleButtonGroup>
               </FormGroup>
             </Stack>
-            <OptionSelect
-              label="Template"
-              value={props.template}
-              options={props.templateOptions}
-              onChange={(e) => props.setTemplate(e.target.value)}
-            />
-
-            <Button variant="contained" type="submit">
-              Open workflow form in a new tab
-            </Button>
           </Stack>
         </form>
       </Grid>
