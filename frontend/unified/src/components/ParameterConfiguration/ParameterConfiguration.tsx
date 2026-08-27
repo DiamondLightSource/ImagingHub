@@ -20,6 +20,10 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     [Technique.Tomo]: <TomoParameterConfiguration template={template} />,
   };
 
+  const PlaceholderComponent = (
+    <p>No available component for {technique} technique</p>
+  );
+
   return (
     <>
       <OptionSelect
@@ -31,11 +35,9 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
       <Typography variant="h6">Options</Typography>
 
-      {
-        TECHNIQUE_TO_COMPONENT_MAPPING[
-          technique as keyof typeof TECHNIQUE_TO_COMPONENT_MAPPING
-        ]
-      }
+      {TECHNIQUE_TO_COMPONENT_MAPPING[
+        technique as keyof typeof TECHNIQUE_TO_COMPONENT_MAPPING
+      ] ?? PlaceholderComponent}
 
       <div>
         <Button
