@@ -11,8 +11,15 @@ type ParameterConfigurationProps = {
   availableTemplates: Option[];
 };
 
+/**
+ * Map from a `@Technique` and a template to the component for configuring the parameters of that
+ * specific template
+ * @type
+ */
 type TemplateComponentMapping = {
-  [key: string]: ReactElement;
+  [technique in Technique]: {
+    [template: string]: ReactElement;
+  };
 };
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
@@ -21,33 +28,20 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   setTemplate,
   availableTemplates,
 }: ParameterConfigurationProps) => {
-  const TOMO_TEMPLATE_COMPONENT_MAPPING: TemplateComponentMapping = {
-    "httomo-cor-sweep": <CorSweepParameterConfiguration />,
-  };
-
-  const TECHNIQUE_TO_COMPONENT_MAPPING = {
-    [Technique.Tomo]: TOMO_TEMPLATE_COMPONENT_MAPPING,
+  const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
+    [Technique.Dpc]: {},
+    [Technique.Nbed]: {},
+    [Technique.Ptycho]: {},
+    [Technique.Tomo]: {
+      "httomo-cor-sweep": <CorSweepParameterConfiguration />,
+    },
+    [Technique.Xanes]: {},
+    [Technique.Xrd]: {},
   };
 
   const PlaceholderComponent = (
-    <p>No available component for {technique} technique</p>
+    <p>No available component for {template} template</p>
   );
-
-  const displayTemplateComponent = () => {
-    if (
-      TECHNIQUE_TO_COMPONENT_MAPPING[
-        technique as keyof typeof TECHNIQUE_TO_COMPONENT_MAPPING
-      ] === undefined
-    ) {
-      return PlaceholderComponent;
-    }
-
-    return (
-      TECHNIQUE_TO_COMPONENT_MAPPING[
-        technique as keyof typeof TECHNIQUE_TO_COMPONENT_MAPPING
-      ][template] ?? PlaceholderComponent
-    );
-  };
 
   return (
     <>
@@ -60,7 +54,8 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
       <Typography variant="h6">Options</Typography>
 
-      {displayTemplateComponent()}
+      {TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
+        PlaceholderComponent}
 
       <div>
         <Button
