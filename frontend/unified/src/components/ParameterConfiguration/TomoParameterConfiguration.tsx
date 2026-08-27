@@ -24,13 +24,15 @@ type TomoParameterConfigurationProps = {
 export const TomoParameterConfiguration = ({
   template,
 }: TomoParameterConfigurationProps) => {
+  const NoComponentFound = (
+    <p>No available component for {template} template</p>
+  );
+
   return (
     <>
-      {
-        TEMPLATE_TO_COMPONENT_MAPPING[
-          template as keyof typeof TEMPLATE_TO_COMPONENT_MAPPING
-        ]
-      }
+      {TEMPLATE_TO_COMPONENT_MAPPING[
+        template as keyof typeof TEMPLATE_TO_COMPONENT_MAPPING
+      ] ?? NoComponentFound}
     </>
   );
 };
