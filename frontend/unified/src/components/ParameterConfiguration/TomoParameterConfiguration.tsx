@@ -1,12 +1,20 @@
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { useState } from "react";
 
 const CorSweepParameterConfiguration = () => {
+  const [applyNormalisation, setApplyNormalisation] = useState<boolean>(true);
+
   return (
     <>
       <FormGroup>
         <FormControlLabel
           label="Apply normalisation to raw data"
-          control={<Checkbox />}
+          control={
+            <Checkbox
+              checked={applyNormalisation}
+              onChange={(e) => setApplyNormalisation(e.target.checked)}
+            />
+          }
         />
       </FormGroup>
     </>
