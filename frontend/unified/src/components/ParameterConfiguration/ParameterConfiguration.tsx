@@ -4,6 +4,8 @@ import OptionSelect from "../OptionSelect";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
 import { ReactElement, useState } from "react";
 import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
+import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
+import { useMutation } from "@apollo/client/react";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -23,6 +25,17 @@ type TemplateComponentMapping = {
   };
 };
 
+// TODO: Should come from the session selector component
+const HARDCODED_VISIT = {
+  proposalCode: "cm",
+  proposalNumber: 40628,
+  number: 3,
+};
+
+// TODO: The filename part of this should come from the scan selector component
+const HARDCODED_INPUT_FILEPATH =
+  "/dls/i12/data/2025/cm40628-3/rawdata/188700.nxs";
+
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   technique,
   template,
@@ -35,10 +48,24 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     memory: "20Gi",
   });
 
+  const [mutation] = useMutation(SUBMIT_WORKFLOW_TEMPLATE);
+
   const handleSubmitJob = () => {
+    // TODO: Validate parameters against JSON schema attached to the workflow template before
+    // sending the mutation
     console.log("Submit job");
-    const parameters = { ...templateParameters, ...resourceParameters };
-    // TODO: Send mutation
+    const parameters = {
+      input: HARDCODED_INPUT_FILEPATH,
+      ...templateParameters,
+      ...resourceParameters,
+    };
+    mutation({
+      variables: {
+        name: template,
+        parameters,
+        visit: HARDCODED_VISIT,
+      },
+    });
   };
 
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
