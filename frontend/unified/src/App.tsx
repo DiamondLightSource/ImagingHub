@@ -7,6 +7,7 @@ import { useState } from "react";
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { Beamline, Technique } from "./types";
+import { FragmentPlayground } from "./components/FragmentPlayground";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -125,11 +126,7 @@ export const App: React.FC = () => {
         <Stack spacing={VERTICAL_SPACING}>
           <Typography variant="h5">Plot</Typography>
 
-          <PlaceholderComponent
-            placeholderText="Plot component placeholder"
-            height={200}
-            width={500}
-          />
+          <FragmentPlayground />
           <Divider sx={{ width: "100%" }} />
           <Typography variant="h5">Log</Typography>
 

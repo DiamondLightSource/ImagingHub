@@ -43,5 +43,11 @@ const splitLink = ApolloLink.split(
 export const apolloClient = new ApolloClient({
   link: splitLink,
   dataMasking: true,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      WorkflowTemplate: {
+        keyFields: ["name"],
+      },
+    },
+  }),
 });
