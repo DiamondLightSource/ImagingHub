@@ -7,6 +7,7 @@ import { useState } from "react";
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { Beamline, Technique } from "./types";
+import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -116,10 +117,13 @@ export const App: React.FC = () => {
           <Divider sx={{ width: "100%" }} />
           <Typography variant="h5">Parameter Configuration</Typography>
 
-          <PlaceholderComponent
-            placeholderText="Parameter configuration component placeholder"
-            height={200}
-            width={500}
+          <ParameterConfiguration
+            technique={technique}
+            template={template}
+            setTemplate={setTemplate}
+            availableTemplates={filterTemplates(
+              Technique[technique as keyof typeof Technique]
+            )}
           />
         </Stack>
         <Stack spacing={VERTICAL_SPACING}>
