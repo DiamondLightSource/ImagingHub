@@ -1,37 +1,46 @@
-import React from "react";
 import type SelectChangeEvent from "@mui/material/Select/SelectInput";
 
 import OptionSelect from "./OptionSelect";
 import { edgeOptions, transitionOptions } from "../../data/elements";
 
-interface Props {
+interface ElementSelectValue {
   edge: string;
   transition: string;
-  onChange: (edge: string, transition: string) => void;
+}
+
+interface ElementSelectProps {
+  value: ElementSelectValue;
+  onChange: (value: ElementSelectValue) => void;
 }
 
 export default function TwoElementSelect({
-  edge,
-  transition,
+  value,
   onChange,
-}: Props) {
+}: ElementSelectProps) {
   return (
     <>
       <OptionSelect
         label="Edge"
-        value={edge}
+        value={value.edge}
         options={edgeOptions}
-        onChange={(e: SelectChangeEvent<string>) => {
-          onChange(e.target.value, transition);
-        }}
+        onChange={(e: SelectChangeEvent<string>) =>
+          onChange({
+            edge: e.target.value,
+            transition: value.transition,
+          })
+        }
       />
+
       <OptionSelect
         label="Transition"
-        value={transition}
+        value={value.transition}
         options={transitionOptions}
-        onChange={(e: SelectChangeEvent<string>) => {
-          onChange(edge, e.target.value);
-        }}
+        onChange={(e: SelectChangeEvent<string>) =>
+          onChange({
+            edge: value.edge,
+            transition: e.target.value,
+          })
+        }
       />
     </>
   );
