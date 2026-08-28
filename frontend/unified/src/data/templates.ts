@@ -47,8 +47,8 @@ export const templateOptions: Option[] = [
     desc: "nbed orientation mapping",
   },
   {
-    label: "Tomography Rotation Sweep",
-    value: "tomography-centre-of-rotation-sweep",
+    label: "CoR Sweep",
+    value: "httomo-cor-sweep",
     desc: "optimise the centre of rotation",
   },
 ];
