@@ -20,15 +20,19 @@ export const SESSION_QUERY: TypedDocumentNode<
 > = gql`
   query sessionQuery {
     account(username: "twi18192") {
-      proposalRoles {
-        proposal {
-          proposalNumber
-          proposalCategory
-          title
-          instrumentSessions {
-            startTime
-            endTime
-            instrumentSessionNumber
+      instrumentSessionRoles(first: 1) {
+        edges {
+          node {
+            instrumentSession {
+              instrument {
+                name
+              }
+              proposal {
+                proposalNumber
+                proposalCategory
+              }
+              instrumentSessionNumber
+            }
           }
         }
       }
@@ -55,11 +59,10 @@ export const SessionSelector: React.FC = () => {
     return <p>Data undefined</p>;
   }
 
-  const proposal = data.account?.proposalRoles[0].proposal;
-  const latestSessionNumber =
-    proposal?.instrumentSessions[proposal?.instrumentSessions.length - 1]
-      .instrumentSessionNumber;
-  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${latestSessionNumber}`;
+  const instrumentSession =
+    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
+  const proposal = instrumentSession?.proposal;
+  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${instrumentSession?.instrumentSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>
