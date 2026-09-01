@@ -8,6 +8,11 @@ import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
+import { ApolloProvider } from "@apollo/client/react";
+import {
+  apolloClientUlims,
+  apolloClientWorkflows,
+} from "../../src/ApolloClient";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -79,78 +84,84 @@ export const App: React.FC = () => {
 
   return (
     <>
-      <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-        <Stack spacing={VERTICAL_SPACING}>
-          <Typography variant="h5">Session</Typography>
-          <SessionSelector />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Scan</Typography>
-          <ScanSelector />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Technique</Typography>
-          <WorkflowForm
-            handleChangeTechnique={handleChangeTechnique}
-            showAllTechniques={showAllTechniques}
-            handleShowAllTechniques={(
-              e: React.ChangeEvent<HTMLInputElement>
-            ) => {
-              setShowAllTechniques(e.target.checked);
-              const isSelectedTechniqueInSubset =
-                BEAMLINE_TECHNIQUES_SUBSET[currentBeamline].includes(technique);
-              if (!e.target.checked && !isSelectedTechniqueInSubset) {
-                const newTechnique =
-                  BEAMLINES_DEFAULT_TECHNIQUE[currentBeamline];
-                setTechnique(newTechnique);
-                const filteredTemplates = filterTemplates(
-                  Technique[newTechnique as keyof typeof Technique]
-                );
-                setTemplate(filteredTemplates[0].value);
-              }
-            }}
-            filteredTechniques={filterTechniques()}
-            templateOptions={filterTemplates(technique)}
-            technique={technique}
-            template={template}
-            setTemplate={setTemplate}
-          />
+      <ApolloProvider client={apolloClientUlims}>
+        <Typography variant="h5">Session</Typography>
+        <SessionSelector />
+      </ApolloProvider>
+      <ApolloProvider client={apolloClientWorkflows}>
+        <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
+          <Stack spacing={VERTICAL_SPACING}>
+            <Divider sx={{ width: "100%" }} />
+            <Typography variant="h5">Scan</Typography>
+            <ScanSelector />
+            <Divider sx={{ width: "100%" }} />
+            <Typography variant="h5">Technique</Typography>
+            <WorkflowForm
+              handleChangeTechnique={handleChangeTechnique}
+              showAllTechniques={showAllTechniques}
+              handleShowAllTechniques={(
+                e: React.ChangeEvent<HTMLInputElement>
+              ) => {
+                setShowAllTechniques(e.target.checked);
+                const isSelectedTechniqueInSubset =
+                  BEAMLINE_TECHNIQUES_SUBSET[currentBeamline].includes(
+                    technique
+                  );
+                if (!e.target.checked && !isSelectedTechniqueInSubset) {
+                  const newTechnique =
+                    BEAMLINES_DEFAULT_TECHNIQUE[currentBeamline];
+                  setTechnique(newTechnique);
+                  const filteredTemplates = filterTemplates(
+                    Technique[newTechnique as keyof typeof Technique]
+                  );
+                  setTemplate(filteredTemplates[0].value);
+                }
+              }}
+              filteredTechniques={filterTechniques()}
+              templateOptions={filterTemplates(technique)}
+              technique={technique}
+              template={template}
+              setTemplate={setTemplate}
+            />
 
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Parameter Configuration</Typography>
+            <Divider sx={{ width: "100%" }} />
+            <Typography variant="h5">Parameter Configuration</Typography>
 
-          <ParameterConfiguration
-            technique={technique}
-            template={template}
-            setTemplate={setTemplate}
-            availableTemplates={filterTemplates(
-              Technique[technique as keyof typeof Technique]
-            )}
-          />
-        </Stack>
-        <Stack spacing={VERTICAL_SPACING}>
-          <Typography variant="h5">Plot</Typography>
+            <ParameterConfiguration
+              technique={technique}
+              template={template}
+              setTemplate={setTemplate}
+              availableTemplates={filterTemplates(
+                Technique[technique as keyof typeof Technique]
+              )}
+            />
+          </Stack>
+          <Stack spacing={VERTICAL_SPACING}>
+            <Typography variant="h5">Plot</Typography>
 
-          <PlaceholderComponent
-            placeholderText="Plot component placeholder"
-            height={200}
-            width={500}
-          />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Log</Typography>
+            <PlaceholderComponent
+              placeholderText="Plot component placeholder"
+              height={200}
+              width={500}
+            />
+            <Divider sx={{ width: "100%" }} />
+            <Typography variant="h5">Log</Typography>
 
-          <PlaceholderComponent
-            placeholderText="Log component placeholder"
-            height={200}
-            width={500}
-          />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Jobs</Typography>
-          <PlaceholderComponent
-            placeholderText="Jobs component placeholder"
-            height={200}
-            width={500}
-          />
-        </Stack>
-      </Grid>
+            <PlaceholderComponent
+              placeholderText="Log component placeholder"
+              height={200}
+              width={500}
+            />
+            <Divider sx={{ width: "100%" }} />
+            <Typography variant="h5">Jobs</Typography>
+            <PlaceholderComponent
+              placeholderText="Jobs component placeholder"
+              height={200}
+              width={500}
+            />
+          </Stack>
+        </Grid>
+      </ApolloProvider>
     </>
   );
 };

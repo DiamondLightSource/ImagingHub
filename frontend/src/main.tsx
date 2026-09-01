@@ -7,8 +7,6 @@ import {
   DiamondDSTheme,
   AuthProvider,
 } from "@diamondlightsource/sci-react-ui";
-import { ApolloProvider } from "@apollo/client/react";
-import { apolloClient } from "./ApolloClient";
 import { updateTokenStore } from "./token";
 
 createRoot(document.getElementById("root")!).render(
@@ -22,12 +20,10 @@ createRoot(document.getElementById("root")!).render(
       keycloakInitOptions={{ scope: import.meta.env.VITE_KEYCLOAK_SCOPE }}
       onTokenChange={updateTokenStore}
     >
-      <ApolloProvider client={apolloClient}>
-        <ThemeProvider theme={DiamondDSTheme} defaultMode="light">
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
-      </ApolloProvider>
+      <ThemeProvider theme={DiamondDSTheme} defaultMode="light">
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
     </AuthProvider>
   </StrictMode>
 );
