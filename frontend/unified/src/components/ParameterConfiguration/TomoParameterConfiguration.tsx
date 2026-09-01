@@ -84,7 +84,6 @@ export const CorSweepParameterConfiguration = ({
       <Card
         variant="outlined"
         sx={{
-          mx: "auto",
           mb: 2,
           p: 2,
           border: "1px solid #89987880",
@@ -105,7 +104,6 @@ export const CorSweepParameterConfiguration = ({
       <Card
         variant="outlined"
         sx={{
-          mx: "auto",
           mb: 2,
           p: 2,
           border: "1px solid #89987880",
