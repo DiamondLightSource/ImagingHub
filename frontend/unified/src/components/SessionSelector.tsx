@@ -24,9 +24,6 @@ export const SESSION_QUERY: TypedDocumentNode<
         edges {
           node {
             instrumentSession {
-              instrument {
-                name
-              }
               proposal {
                 proposalNumber
                 proposalCategory
