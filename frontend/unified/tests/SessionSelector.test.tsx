@@ -21,27 +21,21 @@ const mocks = [
     result: {
       data: {
         account: {
-          proposalRoles: [
-            {
-              proposal: {
-                proposalNumber: 12345,
-                proposalCategory: "MG",
-                title: "test proposal title",
-                instrumentSessions: [
-                  {
-                    startTime: "2024-03-12T09:00:00",
-                    endTime: "2024-03-15T09:00:00",
-                    instrumentSessionNumber: 1,
-                  },
-                  {
-                    startTime: "2024-01-23T09:00:00",
-                    endTime: "2024-01-24T01:00:00",
+          instrumentSessionRoles: {
+            edges: [
+              {
+                node: {
+                  instrumentSession: {
+                    proposal: {
+                      proposalNumber: 12345,
+                      proposalCategory: "MG",
+                    },
                     instrumentSessionNumber: 2,
                   },
-                ],
+                },
               },
-            },
-          ],
+            ],
+          },
         },
       },
     },
