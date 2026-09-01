@@ -90,7 +90,7 @@ export const App: React.FC = () => {
       </ApolloProvider>
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-          <Stack spacing={VERTICAL_SPACING}>
+          <Stack spacing={VERTICAL_SPACING} width="500px">
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Scan</Typography>
             <ScanSelector />
@@ -136,7 +136,7 @@ export const App: React.FC = () => {
               )}
             />
           </Stack>
-          <Stack spacing={VERTICAL_SPACING}>
+          <Stack spacing={VERTICAL_SPACING} width="500px">
             <Typography variant="h5">Plot</Typography>
 
             <PlaceholderComponent
