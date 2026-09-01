@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { SessionSelector } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
 
@@ -14,8 +14,16 @@ import {
   apolloClientWorkflows,
 } from "../../src/ApolloClient";
 
-const VERTICAL_SPACING = 2;
-const HORIZONTAL_SPACING = 2;
+const VERTICAL_SPACING = 5;
+const HORIZONTAL_SPACING = 20;
+
+const VERTICAL_STACK_CONTAINER_STYLING = {
+  display: "flex",
+  flexDirection: "column",
+  gap: VERTICAL_SPACING,
+  width: "500px",
+  alignItems: "start",
+};
 
 const BEAMLINE_TECHNIQUES_SUBSET = {
   [Beamline.I12]: [Technique.Tomo],
@@ -89,8 +97,15 @@ export const App: React.FC = () => {
         <SessionSelector />
       </ApolloProvider>
       <ApolloProvider client={apolloClientWorkflows}>
-        <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-          <Stack spacing={VERTICAL_SPACING}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: HORIZONTAL_SPACING,
+          }}
+        >
+          <div style={VERTICAL_STACK_CONTAINER_STYLING}>
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Scan</Typography>
             <ScanSelector />
@@ -135,8 +150,8 @@ export const App: React.FC = () => {
                 Technique[technique as keyof typeof Technique]
               )}
             />
-          </Stack>
-          <Stack spacing={VERTICAL_SPACING}>
+          </div>
+          <div style={VERTICAL_STACK_CONTAINER_STYLING}>
             <Typography variant="h5">Plot</Typography>
 
             <PlaceholderComponent
@@ -159,8 +174,8 @@ export const App: React.FC = () => {
               height={200}
               width={500}
             />
-          </Stack>
-        </Grid>
+          </div>
+        </div>
       </ApolloProvider>
     </>
   );
