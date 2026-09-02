@@ -147,7 +147,7 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta/>
+            <DisplayLogMeta />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
