@@ -9,7 +9,6 @@ import {
   LogQueryQueryVariables,
 } from "./__generated__/InspectLogMeta.generated";
 
-
 export const InspectLog_Query: TypedDocumentNode<
   LogQueryQuery,
   LogQueryQueryVariables
