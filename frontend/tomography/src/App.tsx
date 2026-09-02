@@ -7,38 +7,42 @@ import FullPipelinesPage from "./routes/FullPipelinesPage";
 import Submission from "./components/workflows/Submission";
 import CropPage from "./routes/CropPage";
 import { Visit } from "@diamondlightsource/sci-react-ui";
+import { ApolloProvider } from "@apollo/client/react";
+import { apolloClientWorkflows } from "../../src/ApolloClient";
 
 const App: React.FC = () => {
   const [userVisit, setUserVisit] = useState<Visit>();
   return (
-    <Suspense fallback={<div>Loading workflow...</div>}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="methods" element={<MethodsPage />} />
-          <Route path="fullpipelines" element={<FullPipelinesPage />} />
-          <Route
-            path="workflow-run"
-            element={
-              <Submission
-                workflowName="httomo-gpu-job"
-                setVisit={setUserVisit}
-              />
-            }
-          />
-          <Route
-            path="workflow-cor"
-            element={
-              <Submission
-                workflowName="httomo-cor-sweep"
-                setVisit={setUserVisit}
-              />
-            }
-          />
-          <Route path="crop" element={<CropPage setVisit={setUserVisit} />} />
-        </Route>
-      </Routes>
-    </Suspense>
+    <ApolloProvider client={apolloClientWorkflows}>
+      <Suspense fallback={<div>Loading workflow...</div>}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="methods" element={<MethodsPage />} />
+            <Route path="fullpipelines" element={<FullPipelinesPage />} />
+            <Route
+              path="workflow-run"
+              element={
+                <Submission
+                  workflowName="httomo-gpu-job"
+                  setVisit={setUserVisit}
+                />
+              }
+            />
+            <Route
+              path="workflow-cor"
+              element={
+                <Submission
+                  workflowName="httomo-cor-sweep"
+                  setVisit={setUserVisit}
+                />
+              }
+            />
+            <Route path="crop" element={<CropPage setVisit={setUserVisit} />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </ApolloProvider>
   );
 };
 

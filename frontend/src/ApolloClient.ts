@@ -10,8 +10,8 @@ import { OperationTypeNode } from "graphql";
 import { createClient } from "graphql-ws";
 import { readTokenStore } from "./token";
 
-const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_HTTP_ENDPOINT,
+const httpLinkWorkflows = new HttpLink({
+  uri: import.meta.env.VITE_WORKFLOWS_GRAPHQL_HTTP_ENDPOINT,
 });
 
 const authLink = new SetContextLink(({ headers }) => {
@@ -25,22 +25,32 @@ const authLink = new SetContextLink(({ headers }) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: import.meta.env.VITE_GRAPHQL_WS_ENDPOINT,
+    url: import.meta.env.VITE_WORKFLOWS_GRAPHQL_WS_ENDPOINT,
     connectionParams: () => ({
       Authorization: `Bearer ${readTokenStore()}`,
     }),
   })
 );
 
-const splitLink = ApolloLink.split(
+const splitLinkWorkflows = ApolloLink.split(
   ({ operationType }) => {
     return operationType === OperationTypeNode.SUBSCRIPTION;
   },
   wsLink,
-  authLink.concat(httpLink)
+  authLink.concat(httpLinkWorkflows)
 );
 
-export const apolloClient = new ApolloClient({
-  link: splitLink,
+export const apolloClientWorkflows = new ApolloClient({
+  link: splitLinkWorkflows,
+  dataMasking: true,
+  cache: new InMemoryCache(),
+});
+
+const httpLinkUlims = new HttpLink({
+  uri: import.meta.env.VITE_ULIMS_GRAPHQL_HTTP_ENDPOINT,
+});
+
+export const apolloClientUlims = new ApolloClient({
+  link: authLink.concat(httpLinkUlims),
   cache: new InMemoryCache(),
 });

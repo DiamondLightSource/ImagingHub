@@ -3,7 +3,7 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 const config: CodegenConfig = {
   overwrite: true,
 
-  schema: "./src/supergraph.graphql",
+  schema: ["./src/instrument_sessions.graphql", "./src/workflows.graphql"],
   documents: ["./*/src/components/**/*.{ts,tsx}"],
   ignoreNoDocuments: true,
 
