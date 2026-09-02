@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
+import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
 import { ApolloProvider } from "@apollo/client/react";
@@ -146,12 +147,14 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
+            <DisplayLogMeta />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
               height={200}
               width={500}
             />
+
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
             <PlaceholderComponent
