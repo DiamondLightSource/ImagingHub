@@ -1,5 +1,5 @@
-import React, { FC, useState, useEffect } from "react";
-import { Button, Stack, Divider } from "@mui/material";
+import React, { FC } from "react";
+import { Button, Stack } from "@mui/material";
 
 import { useQuery } from "@apollo/client/react";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -8,7 +8,7 @@ import {
   LogQueryQuery,
   LogQueryQueryVariables,
 } from "./__generated__/InspectLogMeta.generated";
-import { generate } from "rxjs";
+
 
 export const InspectLog_Query: TypedDocumentNode<
   LogQueryQuery,
