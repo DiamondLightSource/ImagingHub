@@ -43,7 +43,27 @@ const splitLinkWorkflows = ApolloLink.split(
 export const apolloClientWorkflows = new ApolloClient({
   link: splitLinkWorkflows,
   dataMasking: true,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      WorkflowConnection: {
+        keyFields: [
+          "pageInfo",
+          ["hasNextPage", "startCursor", "endCursor"],
+          "nodes",
+          ["name"],
+        ],
+      },
+      Workflow: {
+        keyFields: [
+          "status",
+          ["__typename"],
+          "visit",
+          ["proposalCode", "proposalNumber", "number"],
+          "name",
+        ],
+      },
+    },
+  }),
 });
 
 const httpLinkUlims = new HttpLink({
