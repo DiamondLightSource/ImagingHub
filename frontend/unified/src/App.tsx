@@ -93,9 +93,12 @@ export const App: React.FC = () => {
   if (data === undefined) {
     return <p>Data undefined</p>;
   }
+  if (data.account === null) {
+    return <p>Account null</p>;
+  }
 
   const instrumentSession =
-    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
+    data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
 
   const handleChangeTechnique = (
     /**
@@ -200,9 +203,9 @@ export const App: React.FC = () => {
                 // a capitalised "proposal code", whereas the workflows service only accepts
                 // it in lowercase
                 proposalCode:
-                  instrumentSession?.proposal.proposalCategory.toLowerCase(),
-                proposalNumber: instrumentSession?.proposal.proposalNumber,
-                number: instrumentSession?.instrumentSessionNumber,
+                  instrumentSession.proposal.proposalCategory.toLowerCase(),
+                proposalNumber: instrumentSession.proposal.proposalNumber,
+                number: instrumentSession.instrumentSessionNumber,
               }}
             />
           </Stack>

@@ -14,23 +14,10 @@ enum SessionSelectionMode {
   Custom = "Custom",
 }
 
-type Proposal = {
-  proposalNumber: number;
-  proposalCategory: string;
-};
-
-type Instrument = {
-  name: string;
-};
-
-export type InstrumentSession = {
-  instrumentSessionNumber: number;
-  proposal: Proposal;
-  instrument: Instrument;
-};
+type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
 
 type SessionSelectorProps = {
-  session: InstrumentSession;
+  session: NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
 };
 
 export const SessionSelector: React.FC<SessionSelectorProps> = ({
@@ -42,7 +29,7 @@ export const SessionSelector: React.FC<SessionSelectorProps> = ({
   const [textInputValue, setTextInputValue] = useState<string>("");
 
   const proposal = session?.proposal;
-  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${session?.instrumentSessionNumber}`;
+  const latestSession = `${proposal.proposalCategory?.toLowerCase()}${proposal.proposalNumber}-${session.instrumentSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>
