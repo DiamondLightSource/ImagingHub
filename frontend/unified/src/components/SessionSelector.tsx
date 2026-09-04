@@ -7,59 +7,42 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
-import { gql, type TypedDocumentNode } from "@apollo/client";
-import { useQuery } from "@apollo/client/react";
-import {
-  SessionQueryQuery,
-  SessionQueryQueryVariables,
-} from "./__generated__/SessionSelector.generated";
-
-export const SESSION_QUERY: TypedDocumentNode<
-  SessionQueryQuery,
-  SessionQueryQueryVariables
-> = gql`
-  query sessionQuery {
-    account(username: "twi18192") {
-      instrumentSessionRoles(first: 1) {
-        edges {
-          node {
-            instrumentSession {
-              proposal {
-                proposalNumber
-                proposalCategory
-              }
-              instrumentSessionNumber
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { SessionQueryQuery } from "../__generated__/App.generated";
 
 enum SessionSelectionMode {
   Latest = "Latest",
   Custom = "Custom",
 }
 
-export const SessionSelector: React.FC = () => {
-  // TODO: initial value based on the initial session
-  const [beamline] = useState<string>("Beamline: depends-on-session");
+type Proposal = {
+  proposalNumber: number;
+  proposalCategory: string;
+};
+
+type Instrument = {
+  name: string;
+};
+
+export type InstrumentSession = {
+  instrumentSessionNumber: number;
+  proposal: Proposal;
+  instrument: Instrument;
+};
+
+type SessionSelectorProps = {
+  session: InstrumentSession;
+};
+
+export const SessionSelector: React.FC<SessionSelectorProps> = ({
+  session,
+}: SessionSelectorProps) => {
+  const [beamline] = useState<string>(session.instrument.name);
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [textInputValue, setTextInputValue] = useState<string>("");
-  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  if (data === undefined) {
-    return <p>Data undefined</p>;
-  }
-
-  const instrumentSession =
-    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
-  const proposal = instrumentSession?.proposal;
-  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${instrumentSession?.instrumentSessionNumber}`;
+  const proposal = session?.proposal;
+  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${session?.instrumentSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>

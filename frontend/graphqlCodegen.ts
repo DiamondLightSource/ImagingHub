@@ -4,7 +4,7 @@ const config: CodegenConfig = {
   overwrite: true,
 
   schema: ["./src/instrument_sessions.graphql", "./src/workflows.graphql"],
-  documents: ["./*/src/components/**/*.{ts,tsx}"],
+  documents: ["./*/src/components/**/*.{ts,tsx}", "./unified/src/App.tsx"],
   ignoreNoDocuments: true,
 
   generates: {

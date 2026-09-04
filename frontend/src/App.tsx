@@ -5,6 +5,8 @@ import { App as EpsicApp } from "../ePSIC/src/App";
 import { App as UnifiedApp } from "../unified/src/App";
 import { default as Dashboard } from "../dashboard/src/App";
 import { default as Layout } from "./Layout";
+import { apolloClientUlims } from "./ApolloClient";
+import { ApolloProvider } from "@apollo/client/react";
 
 const App: React.FC = () => {
   return (
@@ -15,7 +17,14 @@ const App: React.FC = () => {
           <Route path="tomography/*" element={<TomographyApp />} />
           <Route path="i14/*" element={<I14App />} />
           <Route path="ePSIC/*" element={<EpsicApp />} />
-          <Route path="unified/*" element={<UnifiedApp />} />
+          <Route
+            path="unified/*"
+            element={
+              <ApolloProvider client={apolloClientUlims}>
+                <UnifiedApp />
+              </ApolloProvider>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

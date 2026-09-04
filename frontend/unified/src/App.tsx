@@ -10,11 +10,13 @@ import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import { ApolloProvider } from "@apollo/client/react";
+import { ApolloProvider, useQuery } from "@apollo/client/react";
+import { apolloClientWorkflows } from "../../src/ApolloClient";
+import { gql, type TypedDocumentNode } from "@apollo/client";
 import {
-  apolloClientUlims,
-  apolloClientWorkflows,
-} from "../../src/ApolloClient";
+  SessionQueryQuery,
+  SessionQueryQueryVariables,
+} from "./__generated__/App.generated";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -45,6 +47,32 @@ const filterTemplates = (technique: Technique) => {
   );
 };
 
+export const SESSION_QUERY: TypedDocumentNode<
+  SessionQueryQuery,
+  SessionQueryQueryVariables
+> = gql`
+  query sessionQuery {
+    account(username: "twi18192") {
+      instrumentSessionRoles(first: 1) {
+        edges {
+          node {
+            instrumentSession {
+              proposal {
+                proposalNumber
+                proposalCategory
+              }
+              instrumentSessionNumber
+              instrument {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
   const [showAllTechniques, setShowAllTechniques] = useState(false);
@@ -58,6 +86,16 @@ export const App: React.FC = () => {
     );
     return filteredTemplates[0].value;
   });
+  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  if (data === undefined) {
+    return <p>Data undefined</p>;
+  }
+
+  const instrumentSession =
+    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
 
   const handleChangeTechnique = (
     /**
@@ -86,10 +124,8 @@ export const App: React.FC = () => {
 
   return (
     <>
-      <ApolloProvider client={apolloClientUlims}>
-        <Typography variant="h5">Session</Typography>
-        <SessionSelector />
-      </ApolloProvider>
+      <Typography variant="h5">Session</Typography>
+      <SessionSelector session={instrumentSession} />
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
           <Stack spacing={VERTICAL_SPACING} width="500px">
@@ -159,7 +195,15 @@ export const App: React.FC = () => {
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
             <JobsViewer
-              visit={{ proposalCode: "mg", proposalNumber: 36964, number: 1 }}
+              visit={{
+                // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
+                // a capitalised "proposal code", whereas the workflows service only accepts
+                // it in lowercase
+                proposalCode:
+                  instrumentSession?.proposal.proposalCategory.toLowerCase(),
+                proposalNumber: instrumentSession?.proposal.proposalNumber,
+                number: instrumentSession?.instrumentSessionNumber,
+              }}
             />
           </Stack>
         </Grid>
