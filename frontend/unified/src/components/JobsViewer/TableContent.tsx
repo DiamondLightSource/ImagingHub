@@ -15,7 +15,7 @@ import { TableContentFragmentFragment } from "./__generated__/TableContent.gener
 import { ChangeEvent, MouseEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { gql, TypedDocumentNode } from "@apollo/client";
-import TableRowRelay, { TABLEROWRELAY_FRAGMENT } from "./TableRowRelay";
+import TableRowWrapper, { TABLEROWWRAPPER_FRAGMENT } from "./TableRowWrapper";
 
 export const TABLECONTENT_FRAGMENT: TypedDocumentNode<TableContentFragmentFragment> = gql`
   fragment TableContentFragment on WorkflowConnection {
@@ -25,10 +25,10 @@ export const TABLECONTENT_FRAGMENT: TypedDocumentNode<TableContentFragmentFragme
       endCursor
     }
     nodes {
-      ...TableRowRelayFragment @unmask
+      ...TableRowWrapperFragment @unmask
     }
   }
-  ${TABLEROWRELAY_FRAGMENT}
+  ${TABLEROWWRAPPER_FRAGMENT}
 `;
 
 interface TableContentProps {
@@ -125,7 +125,7 @@ const TableContent = ({
           </TableHead>
           <TableBody>
             {fetchedWorkflows?.map((workflow) => (
-              <TableRowRelay key={workflow.name} queryData={workflow} />
+              <TableRowWrapper key={workflow.name} queryData={workflow} />
             ))}
           </TableBody>
           <TableFooter>

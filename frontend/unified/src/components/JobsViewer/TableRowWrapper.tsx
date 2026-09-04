@@ -1,14 +1,14 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { TableCell, TableRow } from "@mui/material";
-import { TableRowRelayFragmentFragment } from "./__generated__/TableRowRelay.generated";
+import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
 import { useFragment } from "@apollo/client/react";
 import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
 import { finishedStatuses } from "./utils/utils";
 import { useState } from "react";
 import LiveTableRow from "./LiveTableRow";
 
-export const TABLEROWRELAY_FRAGMENT: TypedDocumentNode<TableRowRelayFragmentFragment> = gql`
-  fragment TableRowRelayFragment on Workflow {
+export const TABLEROWWRAPPER_FRAGMENT: TypedDocumentNode<TableRowWrapperFragmentFragment> = gql`
+  fragment TableRowWrapperFragment on Workflow {
     ...BaseTableRowFragment
     status {
       __typename
@@ -23,15 +23,15 @@ export const TABLEROWRELAY_FRAGMENT: TypedDocumentNode<TableRowRelayFragmentFrag
   ${BASETABLEROW_FRAGMENT}
 `;
 
-interface TableRowRelayProps {
-  queryData: TableRowRelayFragmentFragment;
+interface TableRowWrapperProps {
+  queryData: TableRowWrapperFragmentFragment;
 }
 
-const TableRowRelay = ({ queryData }: TableRowRelayProps) => {
+const TableRowWrapper = ({ queryData }: TableRowWrapperProps) => {
   const [isNull, setIsNull] = useState<boolean>(false);
   const { complete, data } = useFragment({
-    fragment: TABLEROWRELAY_FRAGMENT,
-    fragmentName: "TableRowRelayFragment",
+    fragment: TABLEROWWRAPPER_FRAGMENT,
+    fragmentName: "TableRowWrapperFragment",
     from: queryData,
   });
 
@@ -68,4 +68,4 @@ const TableRowRelay = ({ queryData }: TableRowRelayProps) => {
   );
 };
 
-export default TableRowRelay;
+export default TableRowWrapper;
