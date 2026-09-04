@@ -125,7 +125,7 @@ const TableContent = ({
           </TableHead>
           <TableBody>
             {fetchedWorkflows?.map((workflow) => (
-              <TableRowRelay queryData={workflow} />
+              <TableRowRelay key={workflow.name} queryData={workflow} />
             ))}
           </TableBody>
           <TableFooter>
