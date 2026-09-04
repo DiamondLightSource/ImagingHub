@@ -1,6 +1,7 @@
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 import { SessionSelector } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
+import JobsViewer from "./components/JobsViewer/JobsViewer";
 
 import { useState } from "react";
 
@@ -157,10 +158,8 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <PlaceholderComponent
-              placeholderText="Jobs component placeholder"
-              height={200}
-              width={500}
+            <JobsViewer
+              visit={{ proposalCode: "mg", proposalNumber: 36964, number: 1 }}
             />
           </Stack>
         </Grid>
