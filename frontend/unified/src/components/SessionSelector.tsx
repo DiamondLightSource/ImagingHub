@@ -29,7 +29,7 @@ export const SessionSelector: React.FC<SessionSelectorProps> = ({
   const [textInputValue, setTextInputValue] = useState<string>("");
 
   const proposal = session?.proposal;
-  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${session?.instrumentSessionNumber}`;
+  const latestSession = `${proposal.proposalCategory?.toLowerCase()}${proposal.proposalNumber}-${session.instrumentSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>

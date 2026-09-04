@@ -203,9 +203,9 @@ export const App: React.FC = () => {
                 // a capitalised "proposal code", whereas the workflows service only accepts
                 // it in lowercase
                 proposalCode:
-                  instrumentSession?.proposal.proposalCategory.toLowerCase(),
-                proposalNumber: instrumentSession?.proposal.proposalNumber,
-                number: instrumentSession?.instrumentSessionNumber,
+                  instrumentSession.proposal.proposalCategory.toLowerCase(),
+                proposalNumber: instrumentSession.proposal.proposalNumber,
+                number: instrumentSession.instrumentSessionNumber,
               }}
             />
           </Stack>
