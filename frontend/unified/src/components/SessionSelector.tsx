@@ -14,23 +14,10 @@ enum SessionSelectionMode {
   Custom = "Custom",
 }
 
-type Proposal = {
-  proposalNumber: number;
-  proposalCategory: string;
-};
-
-type Instrument = {
-  name: string;
-};
-
-export type InstrumentSession = {
-  instrumentSessionNumber: number;
-  proposal: Proposal;
-  instrument: Instrument;
-};
-
 type SessionSelectorProps = {
-  session: InstrumentSession;
+  session: NonNullable<
+    SessionQueryQuery["account"]
+  >["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
 };
 
 export const SessionSelector: React.FC<SessionSelectorProps> = ({
