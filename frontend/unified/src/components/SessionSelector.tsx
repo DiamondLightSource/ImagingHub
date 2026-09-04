@@ -14,10 +14,10 @@ enum SessionSelectionMode {
   Custom = "Custom",
 }
 
+type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
+
 type SessionSelectorProps = {
-  session: NonNullable<
-    SessionQueryQuery["account"]
-  >["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
+  session: NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
 };
 
 export const SessionSelector: React.FC<SessionSelectorProps> = ({
