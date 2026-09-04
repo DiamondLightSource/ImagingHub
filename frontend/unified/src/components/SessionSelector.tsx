@@ -7,59 +7,24 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
-import { gql, type TypedDocumentNode } from "@apollo/client";
-import { useQuery } from "@apollo/client/react";
-import {
-  SessionQueryQuery,
-  SessionQueryQueryVariables,
-} from "./__generated__/SessionSelector.generated";
-
-export const SESSION_QUERY: TypedDocumentNode<
-  SessionQueryQuery,
-  SessionQueryQueryVariables
-> = gql`
-  query sessionQuery {
-    account(username: "twi18192") {
-      instrumentSessionRoles(first: 1) {
-        edges {
-          node {
-            instrumentSession {
-              proposal {
-                proposalNumber
-                proposalCategory
-              }
-              instrumentSessionNumber
-            }
-          }
-        }
-      }
-    }
-  }
-`;
 
 enum SessionSelectionMode {
   Latest = "Latest",
   Custom = "Custom",
 }
 
-export const SessionSelector: React.FC = () => {
+type SessionSelectorProps = {
+  session: string;
+};
+
+export const SessionSelector: React.FC<SessionSelectorProps> = ({
+  session,
+}: SessionSelectorProps) => {
   // TODO: initial value based on the initial session
   const [beamline] = useState<string>("Beamline: depends-on-session");
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [textInputValue, setTextInputValue] = useState<string>("");
-  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  if (data === undefined) {
-    return <p>Data undefined</p>;
-  }
-
-  const instrumentSession =
-    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
-  const proposal = instrumentSession?.proposal;
-  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${instrumentSession?.instrumentSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>
@@ -94,7 +59,7 @@ export const SessionSelector: React.FC = () => {
         disabled={sessionSelectionMode === SessionSelectionMode.Latest}
         value={
           sessionSelectionMode === SessionSelectionMode.Latest
-            ? latestSession
+            ? session
             : textInputValue
         }
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

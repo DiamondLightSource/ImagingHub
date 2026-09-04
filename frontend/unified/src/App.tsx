@@ -10,11 +10,13 @@ import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import { ApolloProvider } from "@apollo/client/react";
+import { ApolloProvider, useQuery } from "@apollo/client/react";
+import { apolloClientWorkflows } from "../../src/ApolloClient";
+import { gql, type TypedDocumentNode } from "@apollo/client";
 import {
-  apolloClientUlims,
-  apolloClientWorkflows,
-} from "../../src/ApolloClient";
+  SessionQueryQuery,
+  SessionQueryQueryVariables,
+} from "./__generated__/App.generated";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -45,6 +47,29 @@ const filterTemplates = (technique: Technique) => {
   );
 };
 
+export const SESSION_QUERY: TypedDocumentNode<
+  SessionQueryQuery,
+  SessionQueryQueryVariables
+> = gql`
+  query sessionQuery {
+    account(username: "twi18192") {
+      instrumentSessionRoles(first: 1) {
+        edges {
+          node {
+            instrumentSession {
+              proposal {
+                proposalNumber
+                proposalCategory
+              }
+              instrumentSessionNumber
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
   const [showAllTechniques, setShowAllTechniques] = useState(false);
@@ -58,6 +83,18 @@ export const App: React.FC = () => {
     );
     return filteredTemplates[0].value;
   });
+  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  if (data === undefined) {
+    return <p>Data undefined</p>;
+  }
+
+  const instrumentSession =
+    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
+  const proposal = instrumentSession?.proposal;
+  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${instrumentSession?.instrumentSessionNumber}`;
 
   const handleChangeTechnique = (
     /**
@@ -86,10 +123,8 @@ export const App: React.FC = () => {
 
   return (
     <>
-      <ApolloProvider client={apolloClientUlims}>
-        <Typography variant="h5">Session</Typography>
-        <SessionSelector />
-      </ApolloProvider>
+      <Typography variant="h5">Session</Typography>
+      <SessionSelector session={latestSession} />
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
           <Stack spacing={VERTICAL_SPACING} width="500px">
