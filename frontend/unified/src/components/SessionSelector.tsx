@@ -7,24 +7,42 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
+import { SessionQueryQuery } from "../__generated__/App.generated";
 
 enum SessionSelectionMode {
   Latest = "Latest",
   Custom = "Custom",
 }
 
+type Proposal = {
+  proposalNumber: number;
+  proposalCategory: string;
+};
+
+type Instrument = {
+  name: string;
+};
+
+export type InstrumentSession = {
+  instrumentSessionNumber: number;
+  proposal: Proposal;
+  instrument: Instrument;
+};
+
 type SessionSelectorProps = {
-  session: string;
+  session: InstrumentSession;
 };
 
 export const SessionSelector: React.FC<SessionSelectorProps> = ({
   session,
 }: SessionSelectorProps) => {
-  // TODO: initial value based on the initial session
-  const [beamline] = useState<string>("Beamline: depends-on-session");
+  const [beamline] = useState<string>(session.instrument.name);
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [textInputValue, setTextInputValue] = useState<string>("");
+
+  const proposal = session?.proposal;
+  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${session?.instrumentSessionNumber}`;
 
   return (
     <Stack direction="row" spacing={2} alignItems={"center"}>
@@ -59,7 +77,7 @@ export const SessionSelector: React.FC<SessionSelectorProps> = ({
         disabled={sessionSelectionMode === SessionSelectionMode.Latest}
         value={
           sessionSelectionMode === SessionSelectionMode.Latest
-            ? session
+            ? latestSession
             : textInputValue
         }
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

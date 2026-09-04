@@ -62,6 +62,9 @@ export const SESSION_QUERY: TypedDocumentNode<
                 proposalCategory
               }
               instrumentSessionNumber
+              instrument {
+                name
+              }
             }
           }
         }
@@ -93,8 +96,6 @@ export const App: React.FC = () => {
 
   const instrumentSession =
     data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
-  const proposal = instrumentSession?.proposal;
-  const latestSession = `${proposal?.proposalCategory?.toLowerCase()}${proposal?.proposalNumber}-${instrumentSession?.instrumentSessionNumber}`;
 
   const handleChangeTechnique = (
     /**
@@ -124,7 +125,7 @@ export const App: React.FC = () => {
   return (
     <>
       <Typography variant="h5">Session</Typography>
-      <SessionSelector session={latestSession} />
+      <SessionSelector session={instrumentSession} />
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
           <Stack spacing={VERTICAL_SPACING} width="500px">
