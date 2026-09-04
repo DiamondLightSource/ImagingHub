@@ -195,7 +195,15 @@ export const App: React.FC = () => {
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
             <JobsViewer
-              visit={{ proposalCode: "mg", proposalNumber: 36964, number: 1 }}
+              visit={{
+                // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
+                // a capitalised "proposal code", whereas the workflows service only accepts
+                // it in lowercase
+                proposalCode:
+                  instrumentSession?.proposal.proposalCategory.toLowerCase(),
+                proposalNumber: instrumentSession?.proposal.proposalNumber,
+                number: instrumentSession?.instrumentSessionNumber,
+              }}
             />
           </Stack>
         </Grid>
