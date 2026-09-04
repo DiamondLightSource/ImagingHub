@@ -2,52 +2,28 @@ import React from "react";
 import "@testing-library/jest-dom";
 import { expect, test, vi, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MockedProvider } from "@apollo/client/testing/react";
 import {
+  InstrumentSession,
   SessionSelector,
-  SESSION_QUERY,
 } from "../src/components/SessionSelector";
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
-const mocks = [
-  {
-    request: {
-      query: SESSION_QUERY,
-      variables: {},
-    },
-    result: {
-      data: {
-        account: {
-          instrumentSessionRoles: {
-            edges: [
-              {
-                node: {
-                  instrumentSession: {
-                    proposal: {
-                      proposalNumber: 12345,
-                      proposalCategory: "MG",
-                    },
-                    instrumentSessionNumber: 2,
-                  },
-                },
-              },
-            ],
-          },
-        },
-      },
-    },
+const INSTRUMENT_SESSION: InstrumentSession = {
+  instrument: {
+    name: "test instrument",
   },
-];
+  proposal: {
+    proposalNumber: 12345,
+    proposalCategory: "MG",
+  },
+  instrumentSessionNumber: 2,
+};
 
-test("session selector input field renders latest session from query", async () => {
-  render(
-    <MockedProvider mocks={mocks}>
-      <SessionSelector />
-    </MockedProvider>
-  );
+test("session selector input field renders latest session", async () => {
+  render(<SessionSelector session={INSTRUMENT_SESSION} />);
   const sessionSelectorInput = await screen.findByTestId(
     "session-selector-input"
   );
