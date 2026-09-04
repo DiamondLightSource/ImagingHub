@@ -93,9 +93,12 @@ export const App: React.FC = () => {
   if (data === undefined) {
     return <p>Data undefined</p>;
   }
+  if (data.account === null) {
+    return <p>Account null</p>;
+  }
 
   const instrumentSession =
-    data.account?.instrumentSessionRoles.edges[0].node.instrumentSession;
+    data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
 
   const handleChangeTechnique = (
     /**
