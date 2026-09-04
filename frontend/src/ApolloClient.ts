@@ -46,21 +46,10 @@ export const apolloClientWorkflows = new ApolloClient({
   cache: new InMemoryCache({
     typePolicies: {
       WorkflowConnection: {
-        keyFields: [
-          "pageInfo",
-          ["hasNextPage", "startCursor", "endCursor"],
-          "nodes",
-          ["name"],
-        ],
+        keyFields: ["pageInfo"],
       },
       Workflow: {
-        keyFields: [
-          "status",
-          ["__typename"],
-          "visit",
-          ["proposalCode", "proposalNumber", "number"],
-          "name",
-        ],
+        keyFields: ["name"],
       },
     },
   }),
