@@ -202,6 +202,10 @@ export const App: React.FC = () => {
     customSession
   );
   const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
+
+  // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
+  // a capitalised "proposal code", whereas the workflows service only accepts
+  // it in lowercase
   const selectedVisit = {
     proposalCode: session?.proposal.proposalCategory.toLowerCase(),
     proposalNumber: session?.proposal.proposalNumber,
@@ -310,16 +314,7 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
-              visit={{
-                // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
-                // a capitalised "proposal code", whereas the workflows service only accepts
-                // it in lowercase
-                proposalCode: session.proposal.proposalCategory.toLowerCase(),
-                proposalNumber: session.proposal.proposalNumber,
-                number: session.instrumentSessionNumber,
-              }}
-            />
+            <JobsViewer visit={selectedVisit} />
           </Stack>
         </Grid>
       </ApolloProvider>
