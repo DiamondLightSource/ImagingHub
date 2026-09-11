@@ -6,7 +6,7 @@ import {
 import { useSuspenseQuery } from "@apollo/client/react";
 import { Visit } from "../JobsViewer/JobsViewer";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 
 const GET_WORKFLOW_ARTIFACTS: TypedDocumentNode<
   GetWorkflowArtifactsQuery,
@@ -114,7 +114,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
 
   if (error) return <p>Error: {error.message}</p>;
 
-  const generateArtifactList = (): ReactElement[] => {
+  const generateArtifactList = (): React.ReactNode[] => {
     switch (data.workflow?.status?.__typename) {
       case "WorkflowSucceededStatus": {
         const taskNamesAndImageArtifacts: TaskNameAndArtifactTuple[] =
