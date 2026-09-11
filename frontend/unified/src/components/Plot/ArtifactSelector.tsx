@@ -83,6 +83,7 @@ type ArtifactSelectorProps = {
   workflowName: string;
   visit: Visit;
   setArtifactUrl: (_: string | null) => void;
+  setArtifactMimeType: (_: string | null) => void;
   isPlottingEnabled: boolean;
 };
 
@@ -92,6 +93,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   workflowName,
   visit,
   setArtifactUrl,
+  setArtifactMimeType,
   isPlottingEnabled,
 }: ArtifactSelectorProps) => {
   const [selectedArtifact, setSelectedArtifact] = useState<string>("");
@@ -120,7 +122,12 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
           return artifacts.map((artifact) => {
             const label = `${taskName}: ${artifact.name}`;
             return (
-              <MenuItem key={label} value={label} data-url={artifact.url}>
+              <MenuItem
+                key={label}
+                value={label}
+                data-url={artifact.url}
+                data-mime-type={artifact.mimeType}
+              >
                 {label}
               </MenuItem>
             );
@@ -146,6 +153,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
           }
           setSelectedArtifact(value.props.value);
           setArtifactUrl(value.props["data-url"]);
+          setArtifactMimeType(value.props["data-mime-type"]);
         }}
         value={selectedArtifact}
         children={generateArtifactList()}

@@ -14,6 +14,7 @@ type PlotProps = {
 
 export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   const [artifactUrl, setArtifactUrl] = useState<string | null>(null);
+  const [artifactMimeType, setArtifactMimeType] = useState<string | null>(null);
   const [artifactData, setArtifactData] = useState<NDT | null>(null);
   const [isPlottingEnabled, setIsPlottingEnabled] = useState<boolean>(false);
 
@@ -36,17 +37,28 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
 
   const displayPlotter = () => {
     if (isPlottingEnabled) {
-      if (artifactUrl !== null && artifactData !== null) {
+      if (
+        artifactUrl !== null &&
+        artifactMimeType !== null &&
+        artifactData !== null
+      ) {
         return (
-          <HeatmapPlot
-            domain={[0, 255]}
-            values={artifactData}
-            plotConfig={{
-              title: "Test plot",
-              xLabel: "x",
-              yLabel: "y",
-            }}
-          />
+          <>
+            <HeatmapPlot
+              domain={[0, 255]}
+              values={artifactData}
+              plotConfig={{
+                title: "Test plot",
+                xLabel: "x",
+                yLabel: "y",
+              }}
+            />
+            {artifactMimeType === "image/jpeg" ? (
+              <p>Single image</p>
+            ) : (
+              <p>Multiple images</p>
+            )}
+          </>
         );
       } else if (artifactUrl !== null && artifactData === null) {
         return <p>Loading data...</p>;
@@ -70,6 +82,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           workflowName={workflowName}
           visit={visit}
           setArtifactUrl={setArtifactUrl}
+          setArtifactMimeType={setArtifactMimeType}
           isPlottingEnabled={isPlottingEnabled}
         />
       </Suspense>
