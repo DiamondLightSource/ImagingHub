@@ -87,6 +87,8 @@ type WorkflowSucceededStatus = Extract<
 >;
 export type Artifact = WorkflowSucceededStatus["tasks"][0]["artifacts"][0];
 
+type TaskNameAndArtifactTuple = [string, Artifact[]];
+
 type ArtifactSelectorProps = {
   workflowName: string;
   visit: Visit;
@@ -115,15 +117,23 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   const generateArtifactList = (): ReactElement[] => {
     switch (data.workflow?.status?.__typename) {
       case "WorkflowSucceededStatus": {
-        const taskNamesAndImageArtifacts = data.workflow.status.tasks
-          .map((task) => [
-            task.name,
-            task.artifacts.filter((artifact) =>
-              IMAGE_ARTIFACT_MIME_TYPES.includes(artifact.mimeType)
-            ),
-          ])
-          .filter(([_, artifacts]) => artifacts.length > 0);
+        const taskNamesAndImageArtifacts: TaskNameAndArtifactTuple[] =
+          data.workflow.status.tasks
+            .map(
+              (task) =>
+                [
+                  task.name,
+                  task.artifacts.filter((artifact) =>
+                    IMAGE_ARTIFACT_MIME_TYPES.includes(artifact.mimeType)
+                  ),
+                ] as TaskNameAndArtifactTuple
+            )
+            .filter(([_, artifacts]) => artifacts.length > 0);
 
+        console.log(
+          "taskNamesAndImageArtifacts is: ",
+          taskNamesAndImageArtifacts
+        );
         return taskNamesAndImageArtifacts.map(([taskName, artifacts]) => {
           return artifacts.map((artifact) => {
             const label = `${taskName}: ${artifact.name}`;
