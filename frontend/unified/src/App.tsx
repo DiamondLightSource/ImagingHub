@@ -202,7 +202,7 @@ export const App: React.FC = () => {
     customSession
   );
   const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
-  const selectdVisit = {
+  const selectedVisit = {
     proposalCode: session?.proposal.proposalCategory.toLowerCase(),
     proposalNumber: session?.proposal.proposalNumber,
     number: session?.instrumentSessionNumber,
@@ -300,7 +300,7 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta visit={selectdVisit} />
+            <DisplayLogMeta visit={selectedVisit} />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
