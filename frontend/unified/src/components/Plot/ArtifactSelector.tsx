@@ -86,6 +86,8 @@ type ArtifactSelectorProps = {
   isPlottingEnabled: boolean;
 };
 
+const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff"];
+
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   workflowName,
   visit,
@@ -108,8 +110,8 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
         const taskNamesAndImageArtifacts = data.workflow.status.tasks
           .map((task) => [
             task.name,
-            task.artifacts.filter(
-              (artifact) => artifact.mimeType === "image/jpeg"
+            task.artifacts.filter((artifact) =>
+              IMAGE_ARTIFACT_MIME_TYPES.includes(artifact.mimeType)
             ),
           ])
           .filter(([_, artifacts]) => artifacts.length > 0);
