@@ -17,6 +17,9 @@ export const LIVETABLEROW_SUBSCRIPTION: TypedDocumentNode<
     workflow(visit: $visit, name: $name) {
       status {
         __typename
+        ... on WorkflowSucceededStatus {
+          startTime
+        }
       }
       ...BaseTableRowFragment
     }
