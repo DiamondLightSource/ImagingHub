@@ -4,6 +4,8 @@ import { ArtifactSelector } from "./ArtifactSelector";
 import { Switch } from "@mui/material";
 import { HeatmapPlot, NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
+import { decode } from "fast-png";
+import { proxyService } from "../../../../tomography/src/api/services";
 
 type PlotProps = {
   workflowName: string;
@@ -15,18 +17,20 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   const [artifactData, setArtifactData] = useState<NDT | null>(null);
   const [isPlottingEnabled, setIsPlottingEnabled] = useState<boolean>(false);
 
-  const fetchArtifactData = (url: string): NDT => {
-    // TODO: fetch real artifact data, generating array locally for now
-    console.log("Should fetch artifact data from URL: ", url);
-    console.log("Instead, displaying hardcoded local data");
-    const arr = new Uint8Array(100);
-    const testData = arr.map((elem, idx) => (elem = idx));
-    return ndarray(testData, [10, 10]) as NDT;
-  };
-
   useEffect(() => {
+    const fetchArtifactData = async (url: string) => {
+      console.log("Fetching artifact data from URL: ", url);
+      const data = await proxyService.getTiffPage(url, 0);
+      const decodedPng = decode(data.buffer);
+      const arr = ndarray(decodedPng.data, [
+        decodedPng.height,
+        decodedPng.width,
+      ]) as NDT;
+      setArtifactData(arr);
+    };
+
     if (artifactUrl !== null) {
-      setArtifactData(fetchArtifactData(artifactUrl));
+      fetchArtifactData(artifactUrl);
     }
   }, [artifactUrl]);
 
@@ -34,21 +38,15 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     if (isPlottingEnabled) {
       if (artifactUrl !== null && artifactData !== null) {
         return (
-          <>
-            <p>
-              Warning: this is <strong>not</strong> displaying data for selected
-              step, only displaying dummy data
-            </p>
-            <HeatmapPlot
-              domain={[0, 255]}
-              values={artifactData}
-              plotConfig={{
-                title: "Test plot",
-                xLabel: "x",
-                yLabel: "y",
-              }}
-            />
-          </>
+          <HeatmapPlot
+            domain={[0, 255]}
+            values={artifactData}
+            plotConfig={{
+              title: "Test plot",
+              xLabel: "x",
+              yLabel: "y",
+            }}
+          />
         );
       } else if (artifactUrl !== null && artifactData === null) {
         return <p>Loading data...</p>;
