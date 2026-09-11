@@ -79,11 +79,18 @@ const GET_WORKFLOW_ARTIFACTS: TypedDocumentNode<
   }
 `;
 
+type NonNullWorkflow = NonNullable<GetWorkflowArtifactsQuery["workflow"]>;
+type NonNullWorkflowStatus = NonNullable<NonNullWorkflow["status"]>;
+type WorkflowSucceededStatus = Extract<
+  NonNullWorkflowStatus,
+  { __typename: "WorkflowSucceededStatus" }
+>;
+export type Artifact = WorkflowSucceededStatus["tasks"][0]["artifacts"][0];
+
 type ArtifactSelectorProps = {
   workflowName: string;
   visit: Visit;
-  setArtifactUrl: (_: string | null) => void;
-  setArtifactMimeType: (_: string | null) => void;
+  setArtifact: (_: Artifact | null) => void;
   isPlottingEnabled: boolean;
 };
 
@@ -92,8 +99,7 @@ const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff"];
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   workflowName,
   visit,
-  setArtifactUrl,
-  setArtifactMimeType,
+  setArtifact,
   isPlottingEnabled,
 }: ArtifactSelectorProps) => {
   const [selectedArtifact, setSelectedArtifact] = useState<string>("");
@@ -122,12 +128,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
           return artifacts.map((artifact) => {
             const label = `${taskName}: ${artifact.name}`;
             return (
-              <MenuItem
-                key={label}
-                value={label}
-                data-url={artifact.url}
-                data-mime-type={artifact.mimeType}
-              >
+              <MenuItem key={label} value={label} data-artifact={artifact}>
                 {label}
               </MenuItem>
             );
@@ -152,8 +153,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
             );
           }
           setSelectedArtifact(value.props.value);
-          setArtifactUrl(value.props["data-url"]);
-          setArtifactMimeType(value.props["data-mime-type"]);
+          setArtifact(value.props["data-artifact"]);
         }}
         value={selectedArtifact}
         children={generateArtifactList()}

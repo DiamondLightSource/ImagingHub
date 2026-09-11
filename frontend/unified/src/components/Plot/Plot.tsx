@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from "react";
 import { Visit } from "../JobsViewer/JobsViewer";
-import { ArtifactSelector } from "./ArtifactSelector";
+import { ArtifactSelector, Artifact } from "./ArtifactSelector";
 import { Switch } from "@mui/material";
 import { HeatmapPlot, NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
@@ -13,8 +13,7 @@ type PlotProps = {
 };
 
 export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
-  const [artifactUrl, setArtifactUrl] = useState<string | null>(null);
-  const [artifactMimeType, setArtifactMimeType] = useState<string | null>(null);
+  const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [artifactData, setArtifactData] = useState<NDT | null>(null);
   const [isPlottingEnabled, setIsPlottingEnabled] = useState<boolean>(false);
 
@@ -30,18 +29,14 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
       setArtifactData(arr);
     };
 
-    if (artifactUrl !== null) {
-      fetchArtifactData(artifactUrl);
+    if (artifact !== null) {
+      fetchArtifactData(artifact?.url as string);
     }
-  }, [artifactUrl]);
+  }, [artifact]);
 
   const displayPlotter = () => {
     if (isPlottingEnabled) {
-      if (
-        artifactUrl !== null &&
-        artifactMimeType !== null &&
-        artifactData !== null
-      ) {
+      if (artifact !== null && artifactData !== null) {
         return (
           <>
             <HeatmapPlot
@@ -53,17 +48,17 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
                 yLabel: "y",
               }}
             />
-            {artifactMimeType === "image/jpeg" ? (
+            {artifact.mimeType === "image/jpeg" ? (
               <p>Single image</p>
             ) : (
               <p>Multiple images</p>
             )}
           </>
         );
-      } else if (artifactUrl !== null && artifactData === null) {
+      } else if (artifact !== null && artifactData === null) {
         return <p>Loading data...</p>;
       } else {
-        console.log("artifactUrl: ", artifactUrl);
+        console.log("artifact URL: ", artifact?.url);
         console.log("artifactData: ", artifactData);
       }
     }
@@ -81,8 +76,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
         <ArtifactSelector
           workflowName={workflowName}
           visit={visit}
-          setArtifactUrl={setArtifactUrl}
-          setArtifactMimeType={setArtifactMimeType}
+          setArtifact={setArtifact}
           isPlottingEnabled={isPlottingEnabled}
         />
       </Suspense>
