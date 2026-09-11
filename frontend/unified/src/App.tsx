@@ -104,9 +104,6 @@ export const App: React.FC = () => {
     return <p>Account null</p>;
   }
 
-  const instrumentSession =
-    data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
-
   /**
    * Based on the beamline changing when the session changes, update the technique to be the
    * default technique associated with the beamline, and update the template to be the first
@@ -161,12 +158,6 @@ export const App: React.FC = () => {
     setTemplate(filteredTemplates[0].value);
   };
 
-  const selectdVisit = {
-    proposalCode: instrumentSession?.proposal.proposalCategory.toLowerCase(),
-    proposalNumber: instrumentSession?.proposal.proposalNumber,
-    number: instrumentSession?.instrumentSessionNumber,
-  };
-
   const filterTechniques = (beamline: Beamline) => {
     if (showAllTechniques) {
       return Object.values(Technique);
@@ -211,6 +202,15 @@ export const App: React.FC = () => {
     customSession
   );
   const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
+
+  // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
+  // a capitalised "proposal code", whereas the workflows service only accepts
+  // it in lowercase
+  const selectedVisit = {
+    proposalCode: session?.proposal.proposalCategory.toLowerCase(),
+    proposalNumber: session?.proposal.proposalNumber,
+    number: session?.instrumentSessionNumber,
+  };
 
   const mapStringsToBeamline = (beamline: string): Beamline => {
     switch (beamline) {
@@ -304,7 +304,7 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta visit={selectdVisit} />
+            <DisplayLogMeta visit={selectedVisit} />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
@@ -314,16 +314,7 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
-              visit={{
-                // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
-                // a capitalised "proposal code", whereas the workflows service only accepts
-                // it in lowercase
-                proposalCode: session.proposal.proposalCategory.toLowerCase(),
-                proposalNumber: session.proposal.proposalNumber,
-                number: session.instrumentSessionNumber,
-              }}
-            />
+            <JobsViewer visit={selectedVisit} />
           </Stack>
         </Grid>
       </ApolloProvider>
