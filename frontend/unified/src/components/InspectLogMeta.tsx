@@ -21,6 +21,7 @@ export const InspectLog_Query: TypedDocumentNode<
         __typename
         ... on WorkflowSucceededStatus {
           message
+          startTime
           tasks {
             name
             artifacts {

@@ -11,6 +11,9 @@ export const BASETABLEROW_FRAGMENT = gql`
     name
     status {
       __typename
+      ... on WorkflowSucceededStatus {
+        startTime
+      }
     }
   }
 `;
