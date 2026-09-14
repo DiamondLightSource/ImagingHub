@@ -3,7 +3,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 type DataLoadingProgressProps = {
   mimeType: string;
   loadingImageIndex: number | null;
-  totalImages: number;
+  totalImages: number | null;
 };
 
 export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
@@ -25,7 +25,7 @@ export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
           alignItems: "center",
         }}
       >
-        {loadingImageIndex !== null ? (
+        {loadingImageIndex !== null && totalImages !== null ? (
           <>
             <CircularProgress
               variant="determinate"

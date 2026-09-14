@@ -53,8 +53,8 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   }, [artifact]);
 
   const displayDataPlotterOrLoadingProgress = () => {
-    if (isPlottingEnabled && artifact !== null && totalImages !== null) {
-      if (artifactData !== null) {
+    if (isPlottingEnabled && artifact !== null) {
+      if (artifactData !== null && totalImages !== null) {
         return (
           <DataPlotter
             artifact={artifact}
