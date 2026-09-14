@@ -8,6 +8,7 @@ import { decode } from "fast-png";
 import { proxyService } from "../../../../tomography/src/api/services";
 import loadData from "../../../../tomography/src/components/crop/SampleLoad";
 import { DataPlotter } from "./DataPlotter";
+import { DataLoadingProgress } from "./DataLoadingProgress";
 
 type PlotProps = {
   workflowName: string;
@@ -51,6 +52,27 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     }
   }, [artifact]);
 
+  const displayDataPlotterOrLoadingProgress = () => {
+    if (isPlottingEnabled && artifact !== null && totalImages !== null) {
+      if (artifactData !== null) {
+        return (
+          <DataPlotter
+            artifact={artifact}
+            data={artifactData}
+            totalImages={totalImages}
+          />
+        );
+      }
+      return (
+        <DataLoadingProgress
+          mimeType={artifact.mimeType}
+          totalImages={totalImages}
+          loadingImageIndex={loadingImageIndex}
+        />
+      );
+    }
+  };
+
   return (
     <>
       <Switch
@@ -67,14 +89,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           isPlottingEnabled={isPlottingEnabled}
         />
       </Suspense>
-      {isPlottingEnabled && artifact !== null && totalImages !== null && (
-        <DataPlotter
-          artifact={artifact}
-          data={artifactData}
-          totalImages={totalImages}
-          loadingImageIndex={loadingImageIndex}
-        />
-      )}
+      {displayDataPlotterOrLoadingProgress()}
     </>
   );
 };
