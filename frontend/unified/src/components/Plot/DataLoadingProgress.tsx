@@ -13,7 +13,18 @@ export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
 }) => {
   const displayDataLoadingProgress = () => {
     if (mimeType === "image/jpeg") {
-      return <p>Loading data...</p>;
+      return (
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress enableTrackSlot size={80} />
+        </Box>
+      );
     }
 
     return (
