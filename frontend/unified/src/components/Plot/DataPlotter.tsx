@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, CircularProgress, Slider, Typography } from "@mui/material";
 import { HeatmapPlot, NDT } from "@diamondlightsource/davidia";
 import { Artifact } from "./ArtifactSelector";
@@ -6,8 +7,6 @@ type DataPlotterProps = {
   artifact: Artifact | null;
   data: NDT[] | null;
   totalImages: number | null;
-  displayedImageIndex: number | null;
-  setDisplayedImageIndex: (_: number) => void;
   loadingImageIndex: number | null;
 };
 
@@ -15,10 +14,10 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
   artifact,
   data,
   totalImages,
-  displayedImageIndex,
-  setDisplayedImageIndex,
   loadingImageIndex,
 }: DataPlotterProps) => {
+  const [displayedImageIndex, setDisplayedImageIndex] = useState<number>(0);
+
   const displayDataPlotter = () => {
     if (artifact !== null && data !== null) {
       if (artifact.mimeType === "image/jpeg") {

@@ -21,9 +21,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     null
   );
   const [totalImages, setTotalImages] = useState<number | null>(null);
-  const [displayedImageIndex, setDisplayedImageIndex] = useState<number | null>(
-    null
-  );
   const [isPlottingEnabled, setIsPlottingEnabled] = useState<boolean>(false);
 
   useEffect(() => {
@@ -39,14 +36,12 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           decodedPng.width,
         ]) as NDT;
         setLoadingImageIndex(null);
-        setDisplayedImageIndex(0);
         setArtifactData([arr]);
         return;
       }
 
       loadData(url, 1, setLoadingImageIndex, setTotalImages).then((data) => {
         setLoadingImageIndex(null);
-        setDisplayedImageIndex(0);
         setArtifactData(data);
       });
     };
@@ -77,8 +72,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           artifact={artifact}
           data={artifactData}
           totalImages={totalImages}
-          displayedImageIndex={displayedImageIndex}
-          setDisplayedImageIndex={setDisplayedImageIndex}
           loadingImageIndex={loadingImageIndex}
         />
       )}
