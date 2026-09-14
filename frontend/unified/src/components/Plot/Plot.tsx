@@ -1,18 +1,13 @@
 import { Suspense, useEffect, useState } from "react";
 import { Visit } from "../JobsViewer/JobsViewer";
 import { ArtifactSelector, Artifact } from "./ArtifactSelector";
-import {
-  Box,
-  CircularProgress,
-  Slider,
-  Switch,
-  Typography,
-} from "@mui/material";
-import { HeatmapPlot, NDT } from "@diamondlightsource/davidia";
+import { Switch } from "@mui/material";
+import { NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
 import { decode } from "fast-png";
 import { proxyService } from "../../../../tomography/src/api/services";
 import loadData from "../../../../tomography/src/components/crop/SampleLoad";
+import { DataPlotter } from "./DataPlotter";
 
 type PlotProps = {
   workflowName: string;
@@ -61,96 +56,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     }
   }, [artifact]);
 
-  const displayPlotter = () => {
-    if (isPlottingEnabled) {
-      if (artifact !== null && artifactData !== null) {
-        if (artifact.mimeType === "image/jpeg") {
-          return (
-            <HeatmapPlot
-              domain={[0, 255]}
-              values={artifactData[displayedImageIndex]}
-              plotConfig={{
-                title: "Test plot",
-                xLabel: "x",
-                yLabel: "y",
-              }}
-            />
-          );
-        }
-
-        return (
-          <>
-            <HeatmapPlot
-              domain={[0, 255]}
-              values={artifactData[displayedImageIndex]}
-              plotConfig={{
-                title: "Test plot",
-                xLabel: "x",
-                yLabel: "y",
-              }}
-            />
-            <Slider
-              marks
-              valueLabelDisplay="auto"
-              step={1}
-              min={0}
-              max={totalImages - 1}
-              defaultValue={0}
-              onChange={(_, value: number) => setDisplayedImageIndex(value)}
-            />
-          </>
-        );
-      } else if (artifact !== null && artifactData === null) {
-        if (artifact.mimeType === "image/jpeg") {
-          return <p>Loading data...</p>;
-        }
-
-        return (
-          <Box
-            sx={{
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {loadingImageIndex !== null ? (
-              <>
-                <CircularProgress
-                  variant="determinate"
-                  enableTrackSlot
-                  size={80}
-                  value={Math.round(
-                    (loadingImageIndex / totalImages) * 100 +
-                      (1 / totalImages) * 100
-                  )}
-                />
-                <Box
-                  sx={{
-                    position: "absolute",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography
-                    variant="caption"
-                    component="div"
-                  >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
-                </Box>
-              </>
-            ) : (
-              <CircularProgress enableTrackSlot size={80} />
-            )}
-          </Box>
-        );
-      } else {
-        console.log("artifact URL: ", artifact?.url);
-        console.log("artifactData: ", artifactData);
-      }
-    }
-  };
-
   return (
     <>
       <Switch
@@ -167,7 +72,16 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           isPlottingEnabled={isPlottingEnabled}
         />
       </Suspense>
-      {displayPlotter()}
+      {isPlottingEnabled && (
+        <DataPlotter
+          artifact={artifact}
+          data={artifactData}
+          totalImages={totalImages}
+          displayedImageIndex={displayedImageIndex}
+          setDisplayedImageIndex={setDisplayedImageIndex}
+          loadingImageIndex={loadingImageIndex}
+        />
+      )}
     </>
   );
 };
