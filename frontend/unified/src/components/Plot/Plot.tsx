@@ -67,7 +67,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           isPlottingEnabled={isPlottingEnabled}
         />
       </Suspense>
-      {isPlottingEnabled && totalImages !== null && (
+      {isPlottingEnabled && artifact !== null && totalImages !== null && (
         <DataPlotter
           artifact={artifact}
           data={artifactData}

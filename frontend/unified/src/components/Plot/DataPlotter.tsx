@@ -4,7 +4,7 @@ import { HeatmapPlot, NDT } from "@diamondlightsource/davidia";
 import { Artifact } from "./ArtifactSelector";
 
 type DataPlotterProps = {
-  artifact: Artifact | null;
+  artifact: Artifact;
   data: NDT[] | null;
   totalImages: number;
   loadingImageIndex: number | null;
@@ -19,7 +19,7 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
   const [displayedImageIndex, setDisplayedImageIndex] = useState<number>(0);
 
   const displayDataPlotter = () => {
-    if (artifact !== null && data !== null) {
+    if (data !== null) {
       if (artifact.mimeType === "image/jpeg") {
         return (
           <HeatmapPlot
@@ -56,7 +56,7 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
           />
         </>
       );
-    } else if (artifact !== null && data === null) {
+    } else if (data === null) {
       if (artifact.mimeType === "image/jpeg") {
         return <p>Loading data...</p>;
       }
