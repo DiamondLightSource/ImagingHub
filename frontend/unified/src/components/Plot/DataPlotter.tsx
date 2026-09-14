@@ -56,7 +56,7 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
           />
         </>
       );
-    } else if (data === null) {
+    } else {
       if (artifact.mimeType === "image/jpeg") {
         return <p>Loading data...</p>;
       }
@@ -100,9 +100,6 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
           )}
         </Box>
       );
-    } else {
-      console.log("artifact URL: ", artifact?.url);
-      console.log("data: ", data);
     }
   };
 
