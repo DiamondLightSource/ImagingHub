@@ -22,7 +22,7 @@ type PlotProps = {
 export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [artifactData, setArtifactData] = useState<NDT[] | null>(null);
-  const [fetchingImageIndex, setFetchingImageIndex] = useState<number | null>(
+  const [loadingImageIndex, setLoadingImageIndex] = useState<number | null>(
     null
   );
   const [totalImages, setTotalImages] = useState<number | null>(null);
@@ -36,21 +36,21 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
       console.log("Fetching artifact data from URL: ", url);
       if (mimeType === "image/jpeg") {
         setTotalImages(1);
-        setFetchingImageIndex(0);
+        setLoadingImageIndex(0);
         const data = await proxyService.getTiffPage(url, 0);
         const decodedPng = decode(data.buffer);
         const arr = ndarray(decodedPng.data, [
           decodedPng.height,
           decodedPng.width,
         ]) as NDT;
-        setFetchingImageIndex(null);
+        setLoadingImageIndex(null);
         setDisplayedImageIndex(0);
         setArtifactData([arr]);
         return;
       }
 
-      loadData(url, 1, setFetchingImageIndex, setTotalImages).then((data) => {
-        setFetchingImageIndex(null);
+      loadData(url, 1, setLoadingImageIndex, setTotalImages).then((data) => {
+        setLoadingImageIndex(null);
         setDisplayedImageIndex(0);
         setArtifactData(data);
       });
@@ -123,7 +123,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
               enableTrackSlot
               size={80}
               value={Math.round(
-                (fetchingImageIndex / totalImages) * 100 +
+                (loadingImageIndex / totalImages) * 100 +
                   (1 / totalImages) * 100
               )}
             />
@@ -138,7 +138,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
               <Typography
                 variant="caption"
                 component="div"
-              >{`${fetchingImageIndex + 1} / ${totalImages}`}</Typography>
+              >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
             </Box>
           </Box>
         );
