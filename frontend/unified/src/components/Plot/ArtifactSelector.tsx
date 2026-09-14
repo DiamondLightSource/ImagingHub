@@ -130,10 +130,6 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
             )
             .filter(([_, artifacts]) => artifacts.length > 0);
 
-        console.log(
-          "taskNamesAndImageArtifacts is: ",
-          taskNamesAndImageArtifacts
-        );
         return taskNamesAndImageArtifacts.map(([taskName, artifacts]) => {
           return artifacts.map((artifact) => {
             const label = `${taskName}: ${artifact.name}`;

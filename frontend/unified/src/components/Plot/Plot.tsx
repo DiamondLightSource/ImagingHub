@@ -26,7 +26,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
 
   useEffect(() => {
     const fetchArtifactData = async (url: string, mimeType: string) => {
-      console.log("Fetching artifact data from URL: ", url);
       if (mimeType === "image/jpeg") {
         setTotalImages(1);
         setLoadingImageIndex(0);
