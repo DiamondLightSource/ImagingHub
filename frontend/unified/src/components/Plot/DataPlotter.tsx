@@ -6,7 +6,7 @@ import { Artifact } from "./ArtifactSelector";
 type DataPlotterProps = {
   artifact: Artifact | null;
   data: NDT[] | null;
-  totalImages: number | null;
+  totalImages: number;
   loadingImageIndex: number | null;
 };
 
