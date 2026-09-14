@@ -303,7 +303,14 @@ export const App: React.FC = () => {
           <Stack spacing={VERTICAL_SPACING} width="500px">
             <Typography variant="h5">Plot</Typography>
 
-            <Plot workflowName="example-template-599zg" visit={selectedVisit} />
+            <Plot
+              workflowName={
+                beamline === Beamline.DIAD
+                  ? "example-template-599zg"
+                  : "generate-multi-page-tiff-7mwgh"
+              }
+              visit={selectedVisit}
+            />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
             <DisplayLogMeta visit={selectedVisit} TableInfo={TableInfo} />
