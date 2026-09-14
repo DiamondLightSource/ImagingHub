@@ -310,6 +310,7 @@ export const App: React.FC = () => {
                   : "generate-multi-page-tiff-7mwgh"
               }
               visit={selectedVisit}
+              key={sessionName}
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
