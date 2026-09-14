@@ -142,7 +142,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
         });
       }
       default:
-        console.log("Handle other workflow status cases");
+        console.error("Handle other workflow status cases");
         return [<MenuItem>default</MenuItem>];
     }
   };
