@@ -105,10 +105,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
           return <p>Loading data...</p>;
         }
 
-        // TODO: currently assuming that fetchingImageIndex is not `null`, to be able to then indicate
-        // progress if fetching artifact data, but it seemingly can be `null` for a short
-        // period, so need to check the relationship between the various states relating to
-        // fetching artifact data
         return (
           <Box
             sx={{
@@ -118,28 +114,34 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
               alignItems: "center",
             }}
           >
-            <CircularProgress
-              variant="determinate"
-              enableTrackSlot
-              size={80}
-              value={Math.round(
-                (loadingImageIndex / totalImages) * 100 +
-                  (1 / totalImages) * 100
-              )}
-            />
-            <Box
-              sx={{
-                position: "absolute",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography
-                variant="caption"
-                component="div"
-              >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
-            </Box>
+            {loadingImageIndex !== null ? (
+              <>
+                <CircularProgress
+                  variant="determinate"
+                  enableTrackSlot
+                  size={80}
+                  value={Math.round(
+                    (loadingImageIndex / totalImages) * 100 +
+                      (1 / totalImages) * 100
+                  )}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="div"
+                  >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
+                </Box>
+              </>
+            ) : (
+              <CircularProgress enableTrackSlot size={80} />
+            )}
           </Box>
         );
       } else {
