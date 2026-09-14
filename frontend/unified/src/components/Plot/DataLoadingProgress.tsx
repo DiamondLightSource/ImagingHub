@@ -6,6 +6,25 @@ type DataLoadingProgressProps = {
   totalImages: number | null;
 };
 
+const BoxHorizontallyCenteredContent = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
+
 export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
   mimeType,
   loadingImageIndex,
@@ -14,28 +33,14 @@ export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
   const displayDataLoadingProgress = () => {
     if (mimeType === "image/jpeg") {
       return (
-        <Box
-          sx={{
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress enableTrackSlot size={80} />
-        </Box>
+        <BoxHorizontallyCenteredContent
+          children={<CircularProgress enableTrackSlot size={80} />}
+        />
       );
     }
 
     return (
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <BoxHorizontallyCenteredContent>
         {loadingImageIndex !== null && totalImages !== null ? (
           <>
             <CircularProgress
@@ -64,7 +69,7 @@ export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
         ) : (
           <CircularProgress enableTrackSlot size={80} />
         )}
-      </Box>
+      </BoxHorizontallyCenteredContent>
     );
   };
 
