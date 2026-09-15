@@ -1,5 +1,17 @@
-import React, { FC } from "react";
-import { Button, Stack } from "@mui/material";
+import React, { FC, useState } from "react";
+import {
+  Button,
+  Stack,
+  Menu,
+  MenuItem,
+  List,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Card,
+  Typography,
+  Divider,
+} from "@mui/material";
 
 import { useQuery } from "@apollo/client/react";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -31,31 +43,77 @@ export const InspectLog_Query: TypedDocumentNode<
             }
           }
         }
+        ... on WorkflowErroredStatus {
+          message
+          tasks {
+            name
+            artifacts {
+              name
+              url
+              mimeType
+            }
+          }
+        }
+        ... on WorkflowFailedStatus {
+          message
+          tasks {
+            name
+            artifacts {
+              name
+              url
+              mimeType
+            }
+          }
+        }
       }
     }
   }
 `;
 
-export const DisplayLogMeta: FC = (props: { visit: any }) => {
-  const { loading, error, data } = useQuery(InspectLog_Query, {
-    variables: { visitobj: props.visit, name: "example-template-599zg" },
-  });
+export const DisplayLogMeta: FC = (props: { visit: any; TableInfo: any }) => {
   let x: any = [];
+  let workflownames: any = [];
+  let y: any = [];
+
+  const style = {
+    width: "100%",
+    borderColor: "rgba(2, 2, 1, 0.5)",
+  };
+
+  //ToDO maybe need to Consider what to display if there is no workflow as then workflowsnames is empty
+  if (props.TableInfo !== undefined) {
+    props.TableInfo.workflows?.nodes.forEach((element: any) => {
+      if (element.status.__typename == "WorkflowSucceededStatus") {
+        workflownames.push(element.name);
+      }
+    });
+  }
+
+  const [selectedWorkflow, setSelectedWorkflow] = useState(0);
+
+  const { loading, error, data } = useQuery(InspectLog_Query, {
+    variables: { visitobj: props.visit, name: workflownames[0] }, //"example-template-599zg" },
+  });
 
   if (data !== undefined && data !== null) {
     if (data.workflow !== undefined && data.workflow !== null) {
-      data.workflow.status?.tasks.forEach((element: any) => {
-        element.artifacts.forEach((subElement: any) => {
-          if (subElement !== undefined) {
-            if (subElement.url !== undefined) {
-              if (subElement.mimeType == "text/plain") {
-                x.push([subElement.url, element.name + ".log"]);
+      if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
+        data.workflow.status.tasks.forEach((element: any) => {
+          element.artifacts.forEach((subElement: any) => {
+            if (subElement !== undefined) {
+              if (subElement.url !== undefined) {
+                if (subElement.mimeType == "text/plain") {
+                  x.push([subElement.url, element.name + ".log"]);
+                }
               }
             }
-          }
+          });
         });
-      });
+      } else
+        y[0] = ["http://localhost:5173/unified", "Error-No-logs-found.log"];
     }
+  } else {
+    y = ["http://localhost:5173/unified", "Error-No-logs-found.log"];
   }
 
   const openInNewTab = (url: string) => {
@@ -71,11 +129,7 @@ export const DisplayLogMeta: FC = (props: { visit: any }) => {
         {" "}
         {Arr.map((subArr: any) => {
           return (
-            <Button
-              key={subArr[1]}
-              variant="contained"
-              onClick={() => openInNewTab(subArr[0])}
-            >
+            <Button variant="contained" onClick={() => openInNewTab(subArr[0])}>
               {" "}
               {subArr[1]}{" "}
             </Button>
@@ -85,7 +139,70 @@ export const DisplayLogMeta: FC = (props: { visit: any }) => {
     );
   }
 
-  return <div>{makeButtonArray(x)}</div>;
+  //Menu handling
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuListItem = (
+    event: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
+    setSelectedWorkflow(index);
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <Paper sx={{ width: 400 }}>
+        <Divider
+          flexItem={true}
+          sx={{ width: "100%", Color: "rgba(2, 2, 1, 0.5)" }}
+          variant="fullWidth"
+        />
+        <List>
+          <ListItemButton onClick={handleClickListItem}>
+            <ListItemText
+              primary="Select a previous workflow by clicking here"
+              secondary={`Workflow: ${workflownames[selectedWorkflow]}`}
+            />
+          </ListItemButton>
+        </List>
+        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          {workflownames.map((option: any, index: any) => (
+            <MenuItem
+              key={option}
+              role="menuitemradio"
+              selected={selectedWorkflow === option}
+              onClick={(event) => handleMenuListItem(event, index)}
+            >
+              <ListItemText>{option}</ListItemText>
+              <Divider
+                flexItem={true}
+                variant="fullWidth"
+                sx={{ width: "100%", Color: "rgba(2, 2, 1, 0.5)" }}
+              />
+            </MenuItem>
+          ))}
+        </Menu>
+      </Paper>
+      <p />
+      <Divider
+        flexItem={true}
+        variant="fullWidth"
+        sx={{ mb: 2, width: "100%", Color: "rgba(2, 2, 1, 0.5)" }}
+      />
+      <Typography>
+        Choose a log from {workflownames[selectedWorkflow]}:
+      </Typography>
+      <p />
+      {makeButtonArray(x)}
+    </div>
+  );
 };
 
 export default DisplayLogMeta;

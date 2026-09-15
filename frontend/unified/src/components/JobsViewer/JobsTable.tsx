@@ -3,7 +3,7 @@ import {
   WorkflowsQueryQuery,
   WorkflowsQueryQueryVariables,
 } from "./__generated__/JobsTable.generated";
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useCallback, useState, useEffect } from "react";
 
 import { Visit } from "./JobsViewer";
 import TableContent, { TABLECONTENT_FRAGMENT } from "./TableContent";
@@ -22,7 +22,7 @@ export const JOBSTABLE_QUERY: TypedDocumentNode<
   ${TABLECONTENT_FRAGMENT}
 `;
 
-const JobsTable = ({ visit }: { visit: Visit }) => {
+const JobsTable = ({ visit, setInfo }: { visit: Visit; setInfo: any }) => {
   const [selectedLimit, setSelectedLimit] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -45,21 +45,27 @@ const JobsTable = ({ visit }: { visit: Visit }) => {
     fetchPolicy: "cache-and-network",
   });
 
+  useEffect(() => {
+    setInfo(data);
+  });
+
   return (
-    <Box width="600px" height="600px">
-      <Suspense>
-        {data && (
-          <TableContent
-            queryData={data.workflows}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            selectedLimit={selectedLimit}
-            setSelectedLimit={onChangeLimit}
-            setCursor={setCursor}
-          />
-        )}
-      </Suspense>
-    </Box>
+    <Suspense>
+      <Box width="600px" height="600px">
+        <Suspense>
+          {data && (
+            <TableContent
+              queryData={data.workflows}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              selectedLimit={selectedLimit}
+              setSelectedLimit={onChangeLimit}
+              setCursor={setCursor}
+            />
+          )}
+        </Suspense>
+      </Box>
+    </Suspense>
   );
 };
 

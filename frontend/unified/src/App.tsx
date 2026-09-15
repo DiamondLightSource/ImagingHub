@@ -5,7 +5,7 @@ import {
   SessionSelector,
 } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
-import JobsViewer from "./components/JobsViewer/JobsViewer";
+import JobsTable from "./components/JobsViewer/JobsTable";
 
 import { useState } from "react";
 
@@ -32,6 +32,7 @@ const BEAMLINE_TECHNIQUES_SUBSET = {
   [Beamline["I13-1"]]: [
     Technique.Dpc,
     Technique.Ptycho,
+    Technique.Ptyrex,
     Technique.Tomo,
     Technique.Xanes,
     Technique.Xrd,
@@ -93,6 +94,11 @@ export const App: React.FC = () => {
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
     null
   );
+  const [TableInfo, setTableInfo] = useState(0);
+  function setInfo(input: any) {
+    setTableInfo(input);
+  }
+
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
@@ -292,6 +298,7 @@ export const App: React.FC = () => {
               availableTemplates={filterTemplates(
                 Technique[currentTechnique as keyof typeof Technique]
               )}
+              visit={selectedVisit}
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
@@ -304,7 +311,7 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta visit={selectedVisit} />
+            <DisplayLogMeta visit={selectedVisit} TableInfo={TableInfo} />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
@@ -314,7 +321,7 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer visit={selectedVisit} />
+            <JobsTable visit={selectedVisit} setInfo={setInfo} />
           </Stack>
         </Grid>
       </ApolloProvider>
