@@ -21,6 +21,7 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
+import { WorkflowsQueryQuery } from "./components/JobsViewer/__generated__/JobsTable.generated";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -92,6 +93,9 @@ export const App: React.FC = () => {
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
     null
+  );
+  const [TableInfo, setTableInfo] = useState<WorkflowsQueryQuery | undefined>(
+    undefined
   );
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
@@ -292,6 +296,7 @@ export const App: React.FC = () => {
               availableTemplates={filterTemplates(
                 Technique[currentTechnique as keyof typeof Technique]
               )}
+              visit={selectedVisit}
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
@@ -304,7 +309,7 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta visit={selectedVisit} />
+            <DisplayLogMeta visit={selectedVisit} TableInfo={TableInfo} />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
@@ -314,7 +319,7 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer visit={selectedVisit} />
+            <JobsViewer visit={selectedVisit} setInfo={setTableInfo} />
           </Stack>
         </Grid>
       </ApolloProvider>
