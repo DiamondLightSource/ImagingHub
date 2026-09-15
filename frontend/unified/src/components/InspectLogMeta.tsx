@@ -189,7 +189,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
             <MenuItem
               key={option}
               role="menuitemradio"
-              selected={selectedWorkflow === option}
+              selected={workflownames[selectedWorkflow] === option}
               onClick={(event) => handleMenuListItem(event, index)}
             >
               <ListItemText>{option}</ListItemText>
