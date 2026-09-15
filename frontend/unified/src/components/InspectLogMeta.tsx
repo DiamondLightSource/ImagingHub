@@ -99,7 +99,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     variables: { visitobj: props.visit, name: workflownames[0] }, //"example-template-599zg" },
   });
 
-  if (data !== undefined && data !== null) {
+  if (data !== undefined) {
     if (data.workflow !== undefined && data.workflow !== null) {
       if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
         data.workflow.status.tasks.forEach((task) => {
