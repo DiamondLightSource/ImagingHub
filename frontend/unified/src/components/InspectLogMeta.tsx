@@ -92,9 +92,9 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
 
   //ToDO maybe need to Consider what to display if there is no workflow as then workflowsnames is empty
   if (props.TableInfo !== undefined) {
-    props.TableInfo.workflows?.nodes.forEach((element: any) => {
-      if (element.status.__typename == "WorkflowSucceededStatus") {
-        workflownames.push(element.name);
+    props.TableInfo.workflows?.nodes.forEach((workflow) => {
+      if (workflow.status?.__typename == "WorkflowSucceededStatus") {
+        workflownames.push(workflow.name);
       }
     });
   }
