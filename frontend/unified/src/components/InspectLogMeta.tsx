@@ -20,6 +20,8 @@ import {
   LogQueryQuery,
   LogQueryQueryVariables,
 } from "./__generated__/InspectLogMeta.generated";
+import { Visit } from "@diamondlightsource/sci-react-ui";
+import { WorkflowsQueryQuery } from "./JobsViewer/__generated__/JobsTable.generated";
 
 export const InspectLog_Query: TypedDocumentNode<
   LogQueryQuery,
@@ -70,7 +72,10 @@ export const InspectLog_Query: TypedDocumentNode<
   }
 `;
 
-export const DisplayLogMeta: FC = (props: { visit: any; TableInfo: any }) => {
+export const DisplayLogMeta: FC = (props: {
+  visit: Visit;
+  TableInfo: WorkflowsQueryQuery;
+}) => {
   let x: any = [];
   let workflownames: any = [];
   let y: any = [];
