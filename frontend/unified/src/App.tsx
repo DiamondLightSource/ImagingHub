@@ -14,6 +14,7 @@ import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
+import { Plot } from "./components/Plot/Plot";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -302,10 +303,14 @@ export const App: React.FC = () => {
           <Stack spacing={VERTICAL_SPACING} width="500px">
             <Typography variant="h5">Plot</Typography>
 
-            <PlaceholderComponent
-              placeholderText="Plot component placeholder"
-              height={200}
-              width={500}
+            <Plot
+              workflowName={
+                beamline === Beamline.DIAD
+                  ? "example-template-599zg"
+                  : "generate-multi-page-tiff-7mwgh"
+              }
+              visit={selectedVisit}
+              key={sessionName}
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
