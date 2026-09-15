@@ -81,7 +81,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   visit: Visit;
   TableInfo: WorkflowsQueryQuery;
 }) => {
-  let artifactUrlAndLogFileTuples: any = [];
+  let artifactUrlAndLogFileTuples: [string, string][] = [];
   let workflownames: string[] = [];
   let y: any = [];
 
