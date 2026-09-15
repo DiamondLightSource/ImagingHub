@@ -108,14 +108,10 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   if (data !== undefined && data !== null) {
     if (data.workflow !== undefined && data.workflow !== null) {
       if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
-        data.workflow.status.tasks.forEach((element: any) => {
-          element.artifacts.forEach((subElement: any) => {
-            if (subElement !== undefined) {
-              if (subElement.url !== undefined) {
-                if (subElement.mimeType == "text/plain") {
-                  x.push([subElement.url, element.name + ".log"]);
-                }
-              }
+        data.workflow.status.tasks.forEach((task) => {
+          task.artifacts.forEach((artifact) => {
+            if (artifact.mimeType == "text/plain") {
+              x.push([artifact.url, task.name + ".log"]);
             }
           });
         });
