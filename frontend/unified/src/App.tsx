@@ -95,10 +95,6 @@ export const App: React.FC = () => {
     null
   );
   const [TableInfo, setTableInfo] = useState(0);
-  function setInfo(input: any) {
-    setTableInfo(input);
-  }
-
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
@@ -321,7 +317,7 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsTable visit={selectedVisit} setInfo={setInfo} />
+            <JobsTable visit={selectedVisit} setInfo={setTableInfo} />
           </Stack>
         </Grid>
       </ApolloProvider>
