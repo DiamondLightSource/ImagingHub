@@ -85,11 +85,6 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   let workflownames: string[] = [];
   let y: any = [];
 
-  const style = {
-    width: "100%",
-    borderColor: "rgba(2, 2, 1, 0.5)",
-  };
-
   //ToDO maybe need to Consider what to display if there is no workflow as then workflowsnames is empty
   if (props.TableInfo !== undefined) {
     props.TableInfo.workflows?.nodes.forEach((workflow) => {
