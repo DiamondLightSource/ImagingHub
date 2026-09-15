@@ -100,7 +100,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   });
 
   if (data !== undefined) {
-    if (data.workflow !== undefined && data.workflow !== null) {
+    if (data.workflow !== null) {
       if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
         data.workflow.status.tasks.forEach((task) => {
           task.artifacts.forEach((artifact) => {
