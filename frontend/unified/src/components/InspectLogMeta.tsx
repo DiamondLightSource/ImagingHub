@@ -133,6 +133,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
         {artifactUrlsAndLogFilenames.map(([artifactUrl, logFilename]) => {
           return (
             <Button
+              key={logFilename}
               variant="contained"
               onClick={() => openInNewTab(artifactUrl)}
             >
