@@ -22,7 +22,13 @@ export const JOBSTABLE_QUERY: TypedDocumentNode<
   ${TABLECONTENT_FRAGMENT}
 `;
 
-const JobsTable = ({ visit, setInfo }: { visit: Visit; setInfo: any }) => {
+const JobsTable = ({
+  visit,
+  setInfo,
+}: {
+  visit: Visit;
+  setInfo: (_: number) => void;
+}) => {
   const [selectedLimit, setSelectedLimit] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [cursor, setCursor] = useState<string | null>(null);

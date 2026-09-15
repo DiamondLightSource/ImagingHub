@@ -7,10 +7,16 @@ export type Visit = {
   number: number;
 };
 
-const JobsViewer = ({ visit }: { visit: Visit }) => {
+const JobsViewer = ({
+  visit,
+  setInfo,
+}: {
+  visit: Visit;
+  setInfo: (_: number) => void;
+}) => {
   return (
     <Suspense>
-      <JobsTable visit={visit} />
+      <JobsTable visit={visit} setInfo={setInfo} />
     </Suspense>
   );
 };

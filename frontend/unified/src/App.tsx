@@ -5,7 +5,7 @@ import {
   SessionSelector,
 } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
-import JobsTable from "./components/JobsViewer/JobsTable";
+import JobsViewer from "./components/JobsViewer/JobsViewer";
 
 import { useState } from "react";
 
@@ -317,7 +317,7 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsTable visit={selectedVisit} setInfo={setTableInfo} />
+            <JobsViewer visit={selectedVisit} setInfo={setTableInfo} />
           </Stack>
         </Grid>
       </ApolloProvider>
