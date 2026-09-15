@@ -33,7 +33,6 @@ const BEAMLINE_TECHNIQUES_SUBSET = {
   [Beamline["I13-1"]]: [
     Technique.Dpc,
     Technique.Ptycho,
-    Technique.Ptyrex,
     Technique.Tomo,
     Technique.Xanes,
     Technique.Xrd,
