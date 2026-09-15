@@ -132,15 +132,18 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     }
   };
 
-  function makeButtonArray(Arr: any) {
+  function makeButtonArray(artifactUrlsAndLogFilenames: [string, string][]) {
     return (
       <Stack direction="row" spacing={1}>
         {" "}
-        {Arr.map((subArr: any) => {
+        {artifactUrlsAndLogFilenames.map(([artifactUrl, logFilename]) => {
           return (
-            <Button variant="contained" onClick={() => openInNewTab(subArr[0])}>
+            <Button
+              variant="contained"
+              onClick={() => openInNewTab(artifactUrl)}
+            >
               {" "}
-              {subArr[1]}{" "}
+              {logFilename}{" "}
             </Button>
           );
         })}{" "}
