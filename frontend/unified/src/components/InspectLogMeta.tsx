@@ -81,7 +81,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   visit: Visit;
   TableInfo: WorkflowsQueryQuery;
 }) => {
-  let x: any = [];
+  let artifactUrlAndLogFileTuples: any = [];
   let workflownames: string[] = [];
   let y: any = [];
 
@@ -111,7 +111,10 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
         data.workflow.status.tasks.forEach((task) => {
           task.artifacts.forEach((artifact) => {
             if (artifact.mimeType == "text/plain") {
-              x.push([artifact.url, task.name + ".log"]);
+              artifactUrlAndLogFileTuples.push([
+                artifact.url,
+                task.name + ".log",
+              ]);
             }
           });
         });
@@ -206,7 +209,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
         Choose a log from {workflownames[selectedWorkflow]}:
       </Typography>
       <p />
-      {makeButtonArray(x)}
+      {makeButtonArray(artifactUrlAndLogFileTuples)}
     </div>
   );
 };
