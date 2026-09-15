@@ -27,7 +27,7 @@ const JobsTable = ({
   setInfo,
 }: {
   visit: Visit;
-  setInfo: (_: number) => void;
+  setInfo: (_: WorkflowsQueryQuery | undefined) => void;
 }) => {
   const [selectedLimit, setSelectedLimit] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);

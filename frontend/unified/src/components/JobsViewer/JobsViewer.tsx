@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import JobsTable from "./JobsTable";
+import { WorkflowsQueryQuery } from "./__generated__/JobsTable.generated";
 
 export type Visit = {
   proposalCode: string;
@@ -12,7 +13,7 @@ const JobsViewer = ({
   setInfo,
 }: {
   visit: Visit;
-  setInfo: (_: number) => void;
+  setInfo: (_: WorkflowsQueryQuery | undefined) => void;
 }) => {
   return (
     <Suspense>

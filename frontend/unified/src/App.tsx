@@ -21,6 +21,7 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
+import { WorkflowsQueryQuery } from "./components/JobsViewer/__generated__/JobsTable.generated";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -94,7 +95,9 @@ export const App: React.FC = () => {
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
     null
   );
-  const [TableInfo, setTableInfo] = useState(0);
+  const [TableInfo, setTableInfo] = useState<WorkflowsQueryQuery | undefined>(
+    undefined
+  );
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
