@@ -72,7 +72,12 @@ export const InspectLog_Query: TypedDocumentNode<
   }
 `;
 
-export const DisplayLogMeta: FC = (props: {
+type DisplayLogMetaProps = {
+  visit: Visit;
+  TableInfo: WorkflowsQueryQuery;
+};
+
+export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   visit: Visit;
   TableInfo: WorkflowsQueryQuery;
 }) => {
