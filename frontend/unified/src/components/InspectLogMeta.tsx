@@ -82,7 +82,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   TableInfo: WorkflowsQueryQuery;
 }) => {
   let x: any = [];
-  let workflownames: any = [];
+  let workflownames: string[] = [];
   let y: any = [];
 
   const style = {
@@ -179,7 +179,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
           </ListItemButton>
         </List>
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {workflownames.map((option: any, index: any) => (
+          {workflownames.map((option: string, index: number) => (
             <MenuItem
               key={option}
               role="menuitemradio"
