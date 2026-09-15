@@ -96,7 +96,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
   const { loading, error, data } = useQuery(InspectLog_Query, {
-    variables: { visitobj: props.visit, name: workflownames[0] }, //"example-template-599zg" },
+    variables: { visitobj: props.visit, name: workflownames[0] },
   });
 
   if (data !== undefined) {
