@@ -56,22 +56,20 @@ const JobsTable = ({
   });
 
   return (
-    <Suspense>
-      <Box width="600px" height="600px">
-        <Suspense>
-          {data && (
-            <TableContent
-              queryData={data.workflows}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              selectedLimit={selectedLimit}
-              setSelectedLimit={onChangeLimit}
-              setCursor={setCursor}
-            />
-          )}
-        </Suspense>
-      </Box>
-    </Suspense>
+    <Box width="600px" height="600px">
+      <Suspense>
+        {data && (
+          <TableContent
+            queryData={data.workflows}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            selectedLimit={selectedLimit}
+            setSelectedLimit={onChangeLimit}
+            setCursor={setCursor}
+          />
+        )}
+      </Suspense>
+    </Box>
   );
 };
 
