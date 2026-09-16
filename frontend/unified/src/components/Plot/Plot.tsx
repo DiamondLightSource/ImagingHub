@@ -51,6 +51,24 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     }
   }, [artifact]);
 
+  const displayArtifactSelectorOrNoWorkflowSelected = () => {
+    if (isPlottingEnabled) {
+      if (workflowName === null) {
+        return <p>No workflow selected</p>;
+      }
+      return (
+        <Suspense fallback={<div>Loading...</div>}>
+          <ArtifactSelector
+            workflowName={workflowName}
+            visit={visit}
+            setArtifact={setArtifact}
+            isPlottingEnabled={isPlottingEnabled}
+          />
+        </Suspense>
+      );
+    }
+  };
+
   const displayDataPlotterOrLoadingProgress = () => {
     if (isPlottingEnabled && artifact !== null) {
       if (artifactData !== null && totalImages !== null) {
@@ -80,16 +98,7 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
         onChange={() => setIsPlottingEnabled(!isPlottingEnabled)}
         slotProps={{ input: { "aria-label": "controlled" } }}
       />
-      {workflowName !== null && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <ArtifactSelector
-            workflowName={workflowName}
-            visit={visit}
-            setArtifact={setArtifact}
-            isPlottingEnabled={isPlottingEnabled}
-          />
-        </Suspense>
-      )}
+      {displayArtifactSelectorOrNoWorkflowSelected()}
       {displayDataPlotterOrLoadingProgress()}
     </>
   );
