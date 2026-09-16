@@ -117,6 +117,7 @@ const TableContent = ({
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell align="left"></TableCell>
               <TableCell align="left">ID</TableCell>
               <TableCell align="left">Scan Number</TableCell>
               <TableCell align="left">Status</TableCell>
