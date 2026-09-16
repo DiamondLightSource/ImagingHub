@@ -307,10 +307,14 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta
-              visit={selectedVisit}
-              workflowName={selectedWorkflow}
-            />
+            {selectedWorkflow !== null ? (
+              <DisplayLogMeta
+                visit={selectedVisit}
+                workflowName={selectedWorkflow}
+              />
+            ) : (
+              <p>No workflow selected</p>
+            )}
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"

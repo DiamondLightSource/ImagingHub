@@ -61,12 +61,12 @@ export const InspectLog_Query: TypedDocumentNode<
 
 type DisplayLogMetaProps = {
   visit: Visit;
-  workflowName: string | null;
+  workflowName: string;
 };
 
 export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   visit: Visit;
-  workflowName: string | null;
+  workflowName: string;
 }) => {
   let artifactUrlAndLogFileTuples: [string, string][] = [];
   let workflownames: string[] = [];
