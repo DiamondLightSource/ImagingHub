@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { Box, TableCell, Typography } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Eye } from "lucide-react";
 import { useFragment } from "@apollo/client/react";
 import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
 import { getWorkflowStatusIcon } from "./StatusIcons";
@@ -51,10 +51,8 @@ const BaseTableRow = ({
       className="JobTableRow"
     >
       <TableCell>
-        <VisibilityIcon
-          sx={{
-            visibility: data.name === selectedWorkflow ? "visible" : "hidden",
-          }}
+        <Eye
+          visibility={data.name === selectedWorkflow ? "visible" : "hidden"}
         />
       </TableCell>
       <TableCell>
