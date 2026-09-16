@@ -9,7 +9,6 @@ import {
   LogQueryQueryVariables,
 } from "./__generated__/InspectLogMeta.generated";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import { WorkflowsQueryQuery } from "./JobsViewer/__generated__/JobsTable.generated";
 
 export const InspectLog_Query: TypedDocumentNode<
   LogQueryQuery,
@@ -62,27 +61,16 @@ export const InspectLog_Query: TypedDocumentNode<
 
 type DisplayLogMetaProps = {
   visit: Visit;
-  TableInfo: WorkflowsQueryQuery;
   workflowName: string | null;
 };
 
 export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   visit: Visit;
-  TableInfo: WorkflowsQueryQuery;
   workflowName: string | null;
 }) => {
   let artifactUrlAndLogFileTuples: [string, string][] = [];
   let workflownames: string[] = [];
   let y: any = [];
-
-  //ToDO maybe need to Consider what to display if there is no workflow as then workflowsnames is empty
-  if (props.TableInfo !== undefined) {
-    props.TableInfo.workflows?.nodes.forEach((workflow) => {
-      if (workflow.status?.__typename == "WorkflowSucceededStatus") {
-        workflownames.push(workflow.name);
-      }
-    });
-  }
 
   const { loading, error, data } = useQuery(InspectLog_Query, {
     variables: { visitobj: props.visit, name: workflownames[0] },

@@ -22,7 +22,6 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
-import { WorkflowsQueryQuery } from "./components/JobsViewer/__generated__/JobsTable.generated";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -94,9 +93,6 @@ export const App: React.FC = () => {
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
     null
-  );
-  const [TableInfo, setTableInfo] = useState<WorkflowsQueryQuery | undefined>(
-    undefined
   );
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
@@ -313,7 +309,6 @@ export const App: React.FC = () => {
             <Typography variant="h5">Log</Typography>
             <DisplayLogMeta
               visit={selectedVisit}
-              TableInfo={TableInfo}
               workflowName={selectedWorkflow}
             />
 
