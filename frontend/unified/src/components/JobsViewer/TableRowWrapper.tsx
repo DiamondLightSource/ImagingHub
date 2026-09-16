@@ -25,9 +25,15 @@ export const TABLEROWWRAPPER_FRAGMENT: TypedDocumentNode<TableRowWrapperFragment
 
 interface TableRowWrapperProps {
   queryData: TableRowWrapperFragmentFragment;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }
 
-const TableRowWrapper = ({ queryData }: TableRowWrapperProps) => {
+const TableRowWrapper = ({
+  queryData,
+  selectedWorkflow,
+  setSelectedWorkflow,
+}: TableRowWrapperProps) => {
   const [isNull, setIsNull] = useState<boolean>(false);
   const { complete, data } = useFragment({
     fragment: TABLEROWWRAPPER_FRAGMENT,
@@ -58,12 +64,18 @@ const TableRowWrapper = ({ queryData }: TableRowWrapperProps) => {
   };
 
   return finished || isNull ? (
-    <BaseTableRow queryData={data} />
+    <BaseTableRow
+      queryData={data}
+      selectedWorkflow={selectedWorkflow}
+      setSelectedWorkflow={setSelectedWorkflow}
+    />
   ) : (
     <LiveTableRow
       visit={data.visit}
       workflowName={data.name}
       onNullSubscriptionData={onNullSubscriptionData}
+      selectedWorkflow={selectedWorkflow}
+      setSelectedWorkflow={setSelectedWorkflow}
     />
   );
 };

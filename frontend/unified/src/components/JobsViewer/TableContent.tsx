@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useFragment } from "@apollo/client/react";
 import { TableContentFragmentFragment } from "./__generated__/TableContent.generated";
-import { ChangeEvent, MouseEvent } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import TableRowWrapper, { TABLEROWWRAPPER_FRAGMENT } from "./TableRowWrapper";
@@ -53,6 +53,7 @@ const TableContent = ({
   setSelectedLimit,
   setCursor,
 }: TableContentProps) => {
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { complete, data } = useFragment({
     fragment: TABLECONTENT_FRAGMENT,
     fragmentName: "TableContentFragment",
@@ -125,7 +126,12 @@ const TableContent = ({
           </TableHead>
           <TableBody>
             {fetchedWorkflows?.map((workflow) => (
-              <TableRowWrapper key={workflow.name} queryData={workflow} />
+              <TableRowWrapper
+                key={workflow.name}
+                queryData={workflow}
+                selectedWorkflow={selectedWorkflow}
+                setSelectedWorkflow={setSelectedWorkflow}
+              />
             ))}
           </TableBody>
           <TableFooter>

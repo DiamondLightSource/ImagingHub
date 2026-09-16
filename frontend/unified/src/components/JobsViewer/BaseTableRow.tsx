@@ -20,9 +20,13 @@ export const BASETABLEROW_FRAGMENT = gql`
 
 const BaseTableRow = ({
   queryData,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: {
   queryData:
     TableRowRelayFragmentFragment | DeepPartial<TableRowRelayFragmentFragment>;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }) => {
   const { data } = useFragment<BaseTableRowFragmentFragment>({
     fragment: BASETABLEROW_FRAGMENT,

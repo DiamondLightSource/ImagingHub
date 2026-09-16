@@ -31,12 +31,16 @@ interface LiveTableRowProps {
   workflowName: string;
   visit: Visit;
   onNullSubscriptionData: () => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }
 
 const LiveTableRow = ({
   workflowName,
   visit,
   onNullSubscriptionData,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: LiveTableRowProps) => {
   const [queryData, setQueryData] =
     useState<BaseTableRowFragmentFragment | null>(null);
@@ -65,7 +69,13 @@ const LiveTableRow = ({
         onNullSubscriptionData();
       },
     });
-  return queryData ? <BaseTableRow queryData={queryData} /> : null;
+  return queryData ? (
+    <BaseTableRow
+      queryData={queryData}
+      selectedWorkflow={selectedWorkflow}
+      setSelectedWorkflow={setSelectedWorkflow}
+    />
+  ) : null;
 };
 
 export default LiveTableRow;
