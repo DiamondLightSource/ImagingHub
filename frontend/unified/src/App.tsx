@@ -305,11 +305,7 @@ export const App: React.FC = () => {
             <Typography variant="h5">Plot</Typography>
 
             <Plot
-              workflowName={
-                beamline === Beamline.DIAD
-                  ? "example-template-599zg"
-                  : "generate-multi-page-tiff-7mwgh"
-              }
+              workflowName={selectedWorkflow}
               visit={selectedVisit}
               key={sessionName}
             />

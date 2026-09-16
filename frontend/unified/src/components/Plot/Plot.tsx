@@ -11,7 +11,7 @@ import { DataPlotter } from "./DataPlotter";
 import { DataLoadingProgress } from "./DataLoadingProgress";
 
 type PlotProps = {
-  workflowName: string;
+  workflowName: string | null;
   visit: Visit;
 };
 
@@ -80,14 +80,16 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
         onChange={() => setIsPlottingEnabled(!isPlottingEnabled)}
         slotProps={{ input: { "aria-label": "controlled" } }}
       />
-      <Suspense fallback={<div>Loading...</div>}>
-        <ArtifactSelector
-          workflowName={workflowName}
-          visit={visit}
-          setArtifact={setArtifact}
-          isPlottingEnabled={isPlottingEnabled}
-        />
-      </Suspense>
+      {workflowName !== null && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <ArtifactSelector
+            workflowName={workflowName}
+            visit={visit}
+            setArtifact={setArtifact}
+            isPlottingEnabled={isPlottingEnabled}
+          />
+        </Suspense>
+      )}
       {displayDataPlotterOrLoadingProgress()}
     </>
   );
