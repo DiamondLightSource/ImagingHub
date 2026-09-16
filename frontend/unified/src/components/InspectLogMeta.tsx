@@ -76,24 +76,23 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     variables: { visitobj: props.visit, name: workflownames[0] },
   });
 
-  if (data !== undefined) {
-    if (data.workflow !== null) {
-      if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
-        data.workflow.status.tasks.forEach((task) => {
-          task.artifacts.forEach((artifact) => {
-            if (artifact.mimeType == "text/plain") {
-              artifactUrlAndLogFileTuples.push([
-                artifact.url,
-                task.name + ".log",
-              ]);
-            }
-          });
+  if (data === undefined) {
+    return <p>Data undefined</p>;
+  }
+
+  if (data.workflow !== null) {
+    if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
+      data.workflow.status.tasks.forEach((task) => {
+        task.artifacts.forEach((artifact) => {
+          if (artifact.mimeType == "text/plain") {
+            artifactUrlAndLogFileTuples.push([
+              artifact.url,
+              task.name + ".log",
+            ]);
+          }
         });
-      } else
-        y[0] = ["http://localhost:5173/unified", "Error-No-logs-found.log"];
-    }
-  } else {
-    y = ["http://localhost:5173/unified", "Error-No-logs-found.log"];
+      });
+    } else y[0] = ["http://localhost:5173/unified", "Error-No-logs-found.log"];
   }
 
   const openInNewTab = (url: string) => {
