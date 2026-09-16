@@ -1,16 +1,5 @@
-import React, { FC, useState } from "react";
-import {
-  Button,
-  Stack,
-  Menu,
-  MenuItem,
-  List,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Typography,
-  Divider,
-} from "@mui/material";
+import React, { FC } from "react";
+import { Button, Stack } from "@mui/material";
 
 import { useQuery } from "@apollo/client/react";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -95,8 +84,6 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     });
   }
 
-  const [selectedWorkflow, setSelectedWorkflow] = useState(0);
-
   const { loading, error, data } = useQuery(InspectLog_Query, {
     variables: { visitobj: props.visit, name: workflownames[0] },
   });
@@ -148,70 +135,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     );
   }
 
-  //Menu handling
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleMenuListItem = (
-    event: React.MouseEvent<HTMLElement>,
-    index: number
-  ) => {
-    setSelectedWorkflow(index);
-    setAnchorEl(null);
-  };
-
-  return (
-    <div>
-      <Paper sx={{ width: 400 }}>
-        <Divider
-          flexItem={true}
-          sx={{ width: "100%", Color: "rgba(2, 2, 1, 0.5)" }}
-          variant="fullWidth"
-        />
-        <List>
-          <ListItemButton onClick={handleClickListItem}>
-            <ListItemText
-              primary="Select a previous workflow by clicking here"
-              secondary={`Workflow: ${workflownames[selectedWorkflow]}`}
-            />
-          </ListItemButton>
-        </List>
-        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {workflownames.map((option: string, index: number) => (
-            <MenuItem
-              key={option}
-              role="menuitemradio"
-              selected={workflownames[selectedWorkflow] === option}
-              onClick={(event) => handleMenuListItem(event, index)}
-            >
-              <ListItemText>{option}</ListItemText>
-              <Divider
-                flexItem={true}
-                variant="fullWidth"
-                sx={{ width: "100%", Color: "rgba(2, 2, 1, 0.5)" }}
-              />
-            </MenuItem>
-          ))}
-        </Menu>
-      </Paper>
-      <p />
-      <Divider
-        flexItem={true}
-        variant="fullWidth"
-        sx={{ mb: 2, width: "100%", Color: "rgba(2, 2, 1, 0.5)" }}
-      />
-      <Typography>
-        Choose a log from {workflownames[selectedWorkflow]}:
-      </Typography>
-      <p />
-      {makeButtonArray(artifactUrlAndLogFileTuples)}
-    </div>
-  );
+  return makeButtonArray(artifactUrlAndLogFileTuples);
 };
 
 export default DisplayLogMeta;
