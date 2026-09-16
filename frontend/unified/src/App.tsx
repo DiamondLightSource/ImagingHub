@@ -98,6 +98,7 @@ export const App: React.FC = () => {
   const [TableInfo, setTableInfo] = useState<WorkflowsQueryQuery | undefined>(
     undefined
   );
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
@@ -324,7 +325,11 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer visit={selectedVisit} setInfo={setTableInfo} />
+            <JobsViewer
+              visit={selectedVisit}
+              selectedWorkflow={selectedWorkflow}
+              setSelectedWorkflow={setSelectedWorkflow}
+            />
           </Stack>
         </Grid>
       </ApolloProvider>

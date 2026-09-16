@@ -38,6 +38,8 @@ interface TableContentProps {
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
   setCursor: (newCursor: string | null) => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }
 
 interface TablePaginationActionProps {
@@ -52,8 +54,9 @@ const TableContent = ({
   selectedLimit,
   setSelectedLimit,
   setCursor,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: TableContentProps) => {
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { complete, data } = useFragment({
     fragment: TABLECONTENT_FRAGMENT,
     fragmentName: "TableContentFragment",

@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import JobsTable from "./JobsTable";
-import { WorkflowsQueryQuery } from "./__generated__/JobsTable.generated";
 
 export type Visit = {
   proposalCode: string;
@@ -10,14 +9,20 @@ export type Visit = {
 
 const JobsViewer = ({
   visit,
-  setInfo,
+  setSelectedWorkflow,
+  selectedWorkflow,
 }: {
   visit: Visit;
-  setInfo: (_: WorkflowsQueryQuery | undefined) => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }) => {
   return (
     <Suspense>
-      <JobsTable visit={visit} setInfo={setInfo} />
+      <JobsTable
+        visit={visit}
+        selectedWorkflow={selectedWorkflow}
+        setSelectedWorkflow={setSelectedWorkflow}
+      />
     </Suspense>
   );
 };
