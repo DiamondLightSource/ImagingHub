@@ -311,7 +311,11 @@ export const App: React.FC = () => {
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta visit={selectedVisit} TableInfo={TableInfo} />
+            <DisplayLogMeta
+              visit={selectedVisit}
+              TableInfo={TableInfo}
+              workflowName={selectedWorkflow}
+            />
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
