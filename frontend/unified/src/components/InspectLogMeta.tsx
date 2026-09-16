@@ -68,31 +68,12 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   visit: Visit;
   workflowName: string;
 }) => {
-  let artifactUrlAndLogFileTuples: [string, string][] = [];
-  let workflownames: string[] = [];
-  let y: any = [];
-
   const { loading, error, data } = useQuery(InspectLog_Query, {
-    variables: { visitobj: props.visit, name: workflownames[0] },
+    variables: { visitobj: props.visit, name: props.workflowName },
   });
 
   if (data === undefined) {
     return <p>Data undefined</p>;
-  }
-
-  if (data.workflow !== null) {
-    if (data.workflow.status?.__typename == "WorkflowSucceededStatus") {
-      data.workflow.status.tasks.forEach((task) => {
-        task.artifacts.forEach((artifact) => {
-          if (artifact.mimeType == "text/plain") {
-            artifactUrlAndLogFileTuples.push([
-              artifact.url,
-              task.name + ".log",
-            ]);
-          }
-        });
-      });
-    } else y[0] = ["http://localhost:5173/unified", "Error-No-logs-found.log"];
   }
 
   const openInNewTab = (url: string) => {
@@ -102,11 +83,32 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     }
   };
 
-  function makeButtonArray(artifactUrlsAndLogFilenames: [string, string][]) {
+  function makeButtonArray(data: LogQueryQuery) {
+    const artifactUrlAndLogFileTuples: [string, string][] = [];
+
+    switch (data.workflow?.status?.__typename) {
+      case "WorkflowSucceededStatus":
+        {
+          data.workflow.status.tasks.forEach((task) => {
+            task.artifacts.forEach((artifact) => {
+              if (artifact.mimeType == "text/plain") {
+                artifactUrlAndLogFileTuples.push([
+                  artifact.url,
+                  task.name + ".log",
+                ]);
+              }
+            });
+          });
+        }
+        break;
+      default:
+        console.error("Handle other workflow status cases");
+    }
+
     return (
       <Stack direction="row" spacing={1}>
         {" "}
-        {artifactUrlsAndLogFilenames.map(([artifactUrl, logFilename]) => {
+        {artifactUrlAndLogFileTuples.map(([artifactUrl, logFilename]) => {
           return (
             <Button
               key={logFilename}
@@ -122,7 +124,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     );
   }
 
-  return makeButtonArray(artifactUrlAndLogFileTuples);
+  return makeButtonArray(data);
 };
 
 export default DisplayLogMeta;
