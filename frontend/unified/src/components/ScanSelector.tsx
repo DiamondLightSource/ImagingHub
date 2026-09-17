@@ -89,34 +89,34 @@ const MultiScanSelector: React.FC<ScanSelectorProps> = ({
 };
 
 const MultiScanRangeSelector: React.FC = () => {
-  const [start, setStart] = useState<string>("1");
-  const [stop, setStop] = useState<string>("2");
-  const [step, setStep] = useState<string>("1");
+  const [start, setStart] = useState<number>(1);
+  const [stop, setStop] = useState<number>(2);
+  const [step, setStep] = useState<number>(1);
 
   return (
     <Stack direction="row" spacing={2}>
       <TextField
         label="Start"
         type="number"
-        value={Number(start)}
+        value={start}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStart(e.target.value)
+          setStart(Number(e.target.value))
         }
       />
       <TextField
         label="Stop"
         type="number"
-        value={Number(stop)}
+        value={stop}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStop(e.target.value)
+          setStop(Number(e.target.value))
         }
       />
       <TextField
         label="Step"
         type="number"
-        value={Number(step)}
+        value={step}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStep(e.target.value)
+          setStep(Number(e.target.value))
         }
       />
     </Stack>
