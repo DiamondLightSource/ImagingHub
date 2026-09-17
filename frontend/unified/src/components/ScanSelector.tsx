@@ -45,7 +45,10 @@ const SingleScanSelector: React.FC<SingleScanSelectorProps> = ({
   );
 };
 
-const MultiScanSelector: React.FC = () => {
+const MultiScanSelector: React.FC<ScanSelectorProps> = ({
+  scanIds,
+  setScanIds,
+}) => {
   const [mode, setMode] = useState<MultiScanSelectionMode>(
     MultiScanSelectionMode.Range
   );
@@ -77,7 +80,7 @@ const MultiScanSelector: React.FC = () => {
         </ToggleButton>
       </ToggleButtonGroup>
       {mode === MultiScanSelectionMode.Manual ? (
-        <MultiScanManualSelector />
+        <MultiScanManualSelector scanIds={scanIds} setScanIds={setScanIds} />
       ) : (
         <MultiScanRangeSelector />
       )}
@@ -120,12 +123,14 @@ const MultiScanRangeSelector: React.FC = () => {
   );
 };
 
-const MultiScanManualSelector: React.FC = () => {
+const MultiScanManualSelector: React.FC<ScanSelectorProps> = ({
+  scanIds,
+  setScanIds,
+}) => {
   const [textInputValue, setTextInputValue] = useState<string>("4");
-  const [scanIds, setScanIds] = useState<number[]>([1, 2, 3]);
 
   const handleDeleteScanIdChip = (idToDelete: number) => {
-    setScanIds((ids: number[]) => ids.filter((id) => id !== idToDelete));
+    setScanIds(scanIds.filter((id) => id !== idToDelete));
   };
 
   const handleClickAddScanIdButton = (idToAdd: number) => {
@@ -222,7 +227,7 @@ export const ScanSelector: React.FC<ScanSelectorProps> = ({
           setScanId={(scanId) => setScanIds([scanId])}
         />
       ) : (
-        <MultiScanSelector />
+        <MultiScanSelector scanIds={scanIds} setScanIds={setScanIds} />
       )}
     </Stack>
   );
