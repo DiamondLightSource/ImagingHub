@@ -22,23 +22,33 @@ enum MultiScanSelectionMode {
   Range = "Range",
 }
 
-const SingleScanSelector: React.FC = () => {
-  const [textInputValue, setTextInputValue] = useState<string>("");
+type SingleScanSelectorProps = {
+  scanId: number;
+  setScanId: (_: number) => void;
+};
+
+const SingleScanSelector: React.FC<SingleScanSelectorProps> = ({
+  scanId,
+  setScanId,
+}: SingleScanSelectorProps) => {
   return (
     <Stack>
       <TextField
         label="Scan number"
-        value={textInputValue}
+        value={scanId}
         type="number"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setTextInputValue(e.currentTarget.value);
+          setScanId(Number(e.currentTarget.value));
         }}
       />
     </Stack>
   );
 };
 
-const MultiScanSelector: React.FC = () => {
+const MultiScanSelector: React.FC<ScanSelectorProps> = ({
+  scanIds,
+  setScanIds,
+}) => {
   const [mode, setMode] = useState<MultiScanSelectionMode>(
     MultiScanSelectionMode.Range
   );
@@ -70,55 +80,73 @@ const MultiScanSelector: React.FC = () => {
         </ToggleButton>
       </ToggleButtonGroup>
       {mode === MultiScanSelectionMode.Manual ? (
-        <MultiScanManualSelector />
+        <MultiScanManualSelector scanIds={scanIds} setScanIds={setScanIds} />
       ) : (
-        <MultiScanRangeSelector />
+        <MultiScanRangeSelector setScanIds={setScanIds} />
       )}
     </>
   );
 };
 
-const MultiScanRangeSelector: React.FC = () => {
-  const [start, setStart] = useState<string>("1");
-  const [stop, setStop] = useState<string>("2");
-  const [step, setStep] = useState<string>("1");
+type MultiScanRangeSelectorProps = {
+  setScanIds: (_: number[]) => void;
+};
+
+const MultiScanRangeSelector: React.FC<MultiScanRangeSelectorProps> = ({
+  setScanIds,
+}) => {
+  const [start, setStart] = useState<number>(1);
+  const [stop, setStop] = useState<number>(2);
+  const [step, setStep] = useState<number>(1);
+
+  const generateScanIdRange = (start: number, stop: number, step: number) => {
+    return Array.from(
+      { length: Math.ceil((stop - start) / step) },
+      (_, i) => start + i * step
+    );
+  };
 
   return (
     <Stack direction="row" spacing={2}>
       <TextField
         label="Start"
         type="number"
-        value={Number(start)}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStart(e.target.value)
-        }
+        value={start}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setStart(Number(e.target.value));
+          setScanIds(generateScanIdRange(Number(e.target.value), stop, step));
+        }}
       />
       <TextField
         label="Stop"
         type="number"
-        value={Number(stop)}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStop(e.target.value)
-        }
+        value={stop}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setStop(Number(e.target.value));
+          setScanIds(generateScanIdRange(start, Number(e.target.value), step));
+        }}
       />
       <TextField
         label="Step"
         type="number"
-        value={Number(step)}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStep(e.target.value)
-        }
+        value={step}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setStep(Number(e.target.value));
+          setScanIds(generateScanIdRange(start, stop, Number(e.target.value)));
+        }}
       />
     </Stack>
   );
 };
 
-const MultiScanManualSelector: React.FC = () => {
+const MultiScanManualSelector: React.FC<ScanSelectorProps> = ({
+  scanIds,
+  setScanIds,
+}) => {
   const [textInputValue, setTextInputValue] = useState<string>("4");
-  const [scanIds, setScanIds] = useState<number[]>([1, 2, 3]);
 
   const handleDeleteScanIdChip = (idToDelete: number) => {
-    setScanIds((ids: number[]) => ids.filter((id) => id !== idToDelete));
+    setScanIds(scanIds.filter((id) => id !== idToDelete));
   };
 
   const handleClickAddScanIdButton = (idToAdd: number) => {
@@ -169,7 +197,15 @@ const MultiScanManualSelector: React.FC = () => {
   );
 };
 
-export const ScanSelector: React.FC = () => {
+type ScanSelectorProps = {
+  scanIds: number[];
+  setScanIds: (_: number[]) => void;
+};
+
+export const ScanSelector: React.FC<ScanSelectorProps> = ({
+  scanIds,
+  setScanIds,
+}: ScanSelectorProps) => {
   const [scanSelectionMode, setScanSelectionMode] = useState<ScanSelectionMode>(
     ScanSelectionMode.Single
   );
@@ -202,9 +238,12 @@ export const ScanSelector: React.FC = () => {
         </ToggleButton>
       </ToggleButtonGroup>
       {scanSelectionMode === ScanSelectionMode.Single ? (
-        <SingleScanSelector />
+        <SingleScanSelector
+          scanId={scanIds[0]}
+          setScanId={(scanId) => setScanIds([scanId])}
+        />
       ) : (
-        <MultiScanSelector />
+        <MultiScanSelector scanIds={scanIds} setScanIds={setScanIds} />
       )}
     </Stack>
   );

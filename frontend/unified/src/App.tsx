@@ -94,6 +94,7 @@ export const App: React.FC = () => {
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
     null
   );
+  const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
@@ -259,7 +260,10 @@ export const App: React.FC = () => {
           <Stack spacing={VERTICAL_SPACING} width="500px">
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Scan</Typography>
-            <ScanSelector />
+            <ScanSelector
+              scanIds={selectedScanIds}
+              setScanIds={setSelectedScanIds}
+            />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Technique</Typography>
             <WorkflowForm
