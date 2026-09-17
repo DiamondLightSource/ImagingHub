@@ -22,16 +22,23 @@ enum MultiScanSelectionMode {
   Range = "Range",
 }
 
-const SingleScanSelector: React.FC = () => {
-  const [textInputValue, setTextInputValue] = useState<string>("");
+type SingleScanSelectorProps = {
+  scanId: number;
+  setScanId: (_: number) => void;
+};
+
+const SingleScanSelector: React.FC<SingleScanSelectorProps> = ({
+  scanId,
+  setScanId,
+}: SingleScanSelectorProps) => {
   return (
     <Stack>
       <TextField
         label="Scan number"
-        value={textInputValue}
+        value={scanId}
         type="number"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setTextInputValue(e.currentTarget.value);
+          setScanId(Number(e.currentTarget.value));
         }}
       />
     </Stack>
@@ -169,7 +176,15 @@ const MultiScanManualSelector: React.FC = () => {
   );
 };
 
-export const ScanSelector: React.FC = () => {
+type ScanSelectorProps = {
+  scanIds: number[];
+  setScanIds: (_: number[]) => void;
+};
+
+export const ScanSelector: React.FC<ScanSelectorProps> = ({
+  scanIds,
+  setScanIds,
+}: ScanSelectorProps) => {
   const [scanSelectionMode, setScanSelectionMode] = useState<ScanSelectionMode>(
     ScanSelectionMode.Single
   );
@@ -202,7 +217,10 @@ export const ScanSelector: React.FC = () => {
         </ToggleButton>
       </ToggleButtonGroup>
       {scanSelectionMode === ScanSelectionMode.Single ? (
-        <SingleScanSelector />
+        <SingleScanSelector
+          scanId={scanIds[0]}
+          setScanId={(scanId) => setScanIds([scanId])}
+        />
       ) : (
         <MultiScanSelector />
       )}
