@@ -82,16 +82,29 @@ const MultiScanSelector: React.FC<ScanSelectorProps> = ({
       {mode === MultiScanSelectionMode.Manual ? (
         <MultiScanManualSelector scanIds={scanIds} setScanIds={setScanIds} />
       ) : (
-        <MultiScanRangeSelector />
+        <MultiScanRangeSelector setScanIds={setScanIds} />
       )}
     </>
   );
 };
 
-const MultiScanRangeSelector: React.FC = () => {
+type MultiScanRangeSelectorProps = {
+  setScanIds: (_: number[]) => void;
+};
+
+const MultiScanRangeSelector: React.FC<MultiScanRangeSelectorProps> = ({
+  setScanIds,
+}) => {
   const [start, setStart] = useState<number>(1);
   const [stop, setStop] = useState<number>(2);
   const [step, setStep] = useState<number>(1);
+
+  const generateScanIdRange = (start: number, stop: number, step: number) => {
+    return Array.from(
+      { length: Math.ceil((stop - start) / step) },
+      (_, i) => start + i * step
+    );
+  };
 
   return (
     <Stack direction="row" spacing={2}>
@@ -99,25 +112,28 @@ const MultiScanRangeSelector: React.FC = () => {
         label="Start"
         type="number"
         value={start}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStart(Number(e.target.value))
-        }
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setStart(Number(e.target.value));
+          setScanIds(generateScanIdRange(Number(e.target.value), stop, step));
+        }}
       />
       <TextField
         label="Stop"
         type="number"
         value={stop}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStop(Number(e.target.value))
-        }
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setStop(Number(e.target.value));
+          setScanIds(generateScanIdRange(start, Number(e.target.value), step));
+        }}
       />
       <TextField
         label="Step"
         type="number"
         value={step}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setStep(Number(e.target.value))
-        }
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setStep(Number(e.target.value));
+          setScanIds(generateScanIdRange(start, stop, Number(e.target.value)));
+        }}
       />
     </Stack>
   );
