@@ -22,7 +22,6 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
-import { WorkflowsQueryQuery } from "./components/JobsViewer/__generated__/JobsTable.generated";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -95,9 +94,7 @@ export const App: React.FC = () => {
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
     null
   );
-  const [TableInfo, setTableInfo] = useState<WorkflowsQueryQuery | undefined>(
-    undefined
-  );
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
@@ -304,17 +301,20 @@ export const App: React.FC = () => {
             <Typography variant="h5">Plot</Typography>
 
             <Plot
-              workflowName={
-                beamline === Beamline.DIAD
-                  ? "example-template-599zg"
-                  : "generate-multi-page-tiff-7mwgh"
-              }
+              workflowName={selectedWorkflow}
               visit={selectedVisit}
               key={sessionName}
             />
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Log</Typography>
-            <DisplayLogMeta visit={selectedVisit} TableInfo={TableInfo} />
+            {selectedWorkflow !== null ? (
+              <DisplayLogMeta
+                visit={selectedVisit}
+                workflowName={selectedWorkflow}
+              />
+            ) : (
+              <p>No workflow selected</p>
+            )}
 
             <PlaceholderComponent
               placeholderText="Log component placeholder"
@@ -324,7 +324,11 @@ export const App: React.FC = () => {
 
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer visit={selectedVisit} setInfo={setTableInfo} />
+            <JobsViewer
+              visit={selectedVisit}
+              selectedWorkflow={selectedWorkflow}
+              setSelectedWorkflow={setSelectedWorkflow}
+            />
           </Stack>
         </Grid>
       </ApolloProvider>

@@ -1,10 +1,12 @@
 import { gql } from "@apollo/client";
-import { TableCell, TableRow } from "@mui/material";
+import { Box, TableCell, Typography } from "@mui/material";
+import { Eye } from "lucide-react";
 import { useFragment } from "@apollo/client/react";
 import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
 import { getWorkflowStatusIcon } from "./StatusIcons";
 import { DeepPartial } from "@apollo/client/utilities";
 import { TableRowRelayFragmentFragment } from "./__generated__/TableRowRelay.generated";
+import { JobTableRow } from "./JobTableRow";
 
 export const BASETABLEROW_FRAGMENT = gql`
   fragment BaseTableRowFragment on Workflow {
@@ -20,9 +22,13 @@ export const BASETABLEROW_FRAGMENT = gql`
 
 const BaseTableRow = ({
   queryData,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: {
   queryData:
     TableRowRelayFragmentFragment | DeepPartial<TableRowRelayFragmentFragment>;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }) => {
   const { data } = useFragment<BaseTableRowFragmentFragment>({
     fragment: BASETABLEROW_FRAGMENT,
@@ -31,15 +37,51 @@ const BaseTableRow = ({
   });
 
   return (
-    <TableRow key={data.name}>
-      <TableCell>{data.name}</TableCell>
+    <JobTableRow
+      hover
+      key={data.name}
+      onClick={(_: React.MouseEvent<unknown>) => {
+        if (selectedWorkflow === data.name) {
+          setSelectedWorkflow(null);
+          return;
+        }
+        setSelectedWorkflow(data.name);
+      }}
+      selected={data.name === selectedWorkflow}
+      className="JobTableRow"
+    >
+      <TableCell>
+        <Eye
+          visibility={data.name === selectedWorkflow ? "visible" : "hidden"}
+        />
+      </TableCell>
+      <TableCell>
+        <Box sx={{ display: "grid" }}>
+          <Typography
+            gridRow={1}
+            gridColumn={1}
+            fontWeight="bold"
+            visibility={data.name === selectedWorkflow ? "visible" : "hidden"}
+          >
+            {data.name}
+          </Typography>
+          <Typography
+            gridRow={1}
+            gridColumn={1}
+            fontWeight="normal"
+            visibility={data.name === selectedWorkflow ? "hidden" : "visible"}
+          >
+            {data.name}
+          </Typography>
+        </Box>
+      </TableCell>
       <TableCell>1</TableCell>
       <TableCell>
         {getWorkflowStatusIcon(data.status?.__typename ?? "Unknown")}
       </TableCell>
       <TableCell></TableCell>
       <TableCell></TableCell>
-    </TableRow>
+    </JobTableRow>
   );
 };
 

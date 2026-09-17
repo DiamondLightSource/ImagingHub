@@ -24,10 +24,12 @@ export const JOBSTABLE_QUERY: TypedDocumentNode<
 
 const JobsTable = ({
   visit,
-  setInfo,
+  setSelectedWorkflow,
+  selectedWorkflow,
 }: {
   visit: Visit;
-  setInfo: (_: WorkflowsQueryQuery | undefined) => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }) => {
   const [selectedLimit, setSelectedLimit] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -51,10 +53,6 @@ const JobsTable = ({
     fetchPolicy: "cache-and-network",
   });
 
-  useEffect(() => {
-    setInfo(data);
-  });
-
   return (
     <Box width="600px" height="600px">
       <Suspense>
@@ -66,6 +64,8 @@ const JobsTable = ({
             selectedLimit={selectedLimit}
             setSelectedLimit={onChangeLimit}
             setCursor={setCursor}
+            setSelectedWorkflow={setSelectedWorkflow}
+            selectedWorkflow={selectedWorkflow}
           />
         )}
       </Suspense>

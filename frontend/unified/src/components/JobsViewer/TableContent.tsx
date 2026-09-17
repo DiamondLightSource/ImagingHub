@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useFragment } from "@apollo/client/react";
 import { TableContentFragmentFragment } from "./__generated__/TableContent.generated";
-import { ChangeEvent, MouseEvent } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import TableRowWrapper, { TABLEROWWRAPPER_FRAGMENT } from "./TableRowWrapper";
@@ -38,6 +38,8 @@ interface TableContentProps {
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
   setCursor: (newCursor: string | null) => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 }
 
 interface TablePaginationActionProps {
@@ -52,6 +54,8 @@ const TableContent = ({
   selectedLimit,
   setSelectedLimit,
   setCursor,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: TableContentProps) => {
   const { complete, data } = useFragment({
     fragment: TABLECONTENT_FRAGMENT,
@@ -116,6 +120,7 @@ const TableContent = ({
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell align="left"></TableCell>
               <TableCell align="left">ID</TableCell>
               <TableCell align="left">Scan Number</TableCell>
               <TableCell align="left">Status</TableCell>
@@ -125,7 +130,12 @@ const TableContent = ({
           </TableHead>
           <TableBody>
             {fetchedWorkflows?.map((workflow) => (
-              <TableRowWrapper key={workflow.name} queryData={workflow} />
+              <TableRowWrapper
+                key={workflow.name}
+                queryData={workflow}
+                selectedWorkflow={selectedWorkflow}
+                setSelectedWorkflow={setSelectedWorkflow}
+              />
             ))}
           </TableBody>
           <TableFooter>
