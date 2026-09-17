@@ -6,12 +6,14 @@ import { ReactElement, useState } from "react";
 import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation } from "@apollo/client/react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 type ParameterConfigurationProps = {
   technique: Technique;
   template: string;
   setTemplate: (_: string) => void;
   availableTemplates: Option[];
+  visit: Visit;
 };
 
 /**
@@ -25,13 +27,6 @@ type TemplateComponentMapping = {
   };
 };
 
-// TODO: Should come from the session selector component
-const HARDCODED_VISIT = {
-  proposalCode: "cm",
-  proposalNumber: 40628,
-  number: 3,
-};
-
 // TODO: The filename part of this should come from the scan selector component
 const HARDCODED_INPUT_FILEPATH =
   "/dls/i12/data/2025/cm40628-3/rawdata/188700.nxs";
@@ -41,6 +36,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   template,
   setTemplate,
   availableTemplates,
+  visit,
 }: ParameterConfigurationProps) => {
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters] = useState({
@@ -63,7 +59,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
       variables: {
         name: template,
         parameters,
-        visit: HARDCODED_VISIT,
+        visit: visit,
       },
     });
   };
