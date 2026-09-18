@@ -1,16 +1,6 @@
-import {
-  Card,
-  Stack,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Card, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TemplateComponentProps } from "../../types";
-
-const HTTOMO_OUTDIR_NAME = "sweep-run";
 
 export const PtyrexParameterConfiguration = ({
   setParameters,
