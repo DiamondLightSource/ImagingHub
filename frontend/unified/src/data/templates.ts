@@ -37,6 +37,11 @@ export const templateOptions: Option[] = [
     desc: "simple ptyrex reconstruction",
   },
   {
+    label: "ptyrex",
+    value: "ptyrex-submission",
+    desc: "simple ptyrex reconstruction",
+  },
+  {
     label: "ptycho tomography",
     value: "ptycho-tomography",
     desc: "process multiple ptychography data sets in order to cover a range tomographic angles",

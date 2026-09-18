@@ -2,6 +2,7 @@ export enum Technique {
   Dpc = "Dpc",
   Nbed = "Nbed",
   Ptycho = "Ptycho",
+  Ptyrex = "Ptyrex",
   Tomo = "Tomo",
   Xanes = "Xanes",
   Xrd = "Xrd",
