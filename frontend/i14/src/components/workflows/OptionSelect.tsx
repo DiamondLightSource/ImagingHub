@@ -6,31 +6,33 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
-import type SelectChangeEvent from "@mui/material/Select/SelectInput";
 
 import { Info } from "lucide-react";
 
+import type { SelectChangeEvent } from "@mui/material/Select";
 import type { Option } from "../../types/workflowFields";
 
 type Props = {
   label: string;
-  value: string;
+  value?: string;
   options: Option[];
   onChange: (e: SelectChangeEvent<string>) => void;
 };
 
 const OptionSelect: FC<Props> = ({ label, value, options, onChange }) => {
-  const selected = options.find((o) => o.value === value);
+  const selectedValue = value ?? options[0]?.value ?? "";
+  const selected = options.find((o) => o.value === selectedValue);
 
   return (
     <FormControl>
       <InputLabel shrink>{label}</InputLabel>
+
       <Stack direction="row" alignItems="center">
         <Select
           native
           label={label}
           size="small"
-          value={value}
+          value={selectedValue}
           onChange={onChange}
         >
           {options.map((opt) => (
@@ -39,8 +41,9 @@ const OptionSelect: FC<Props> = ({ label, value, options, onChange }) => {
             </option>
           ))}
         </Select>
+
         {selected?.desc && (
-          <Tooltip title={selected.desc}>
+          <Tooltip title={selected?.desc ?? ""}>
             <IconButton size="small">
               <Info />
             </IconButton>
