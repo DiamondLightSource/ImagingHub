@@ -10,11 +10,10 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 
-import { visitRegex } from "@diamondlightsource/sci-react-ui";
-
 import { initialData } from "../../data/form";
 import { templateOptions } from "../../data/templates";
 import OptionSelect from "./OptionSelect";
+import UserVisits from "./UserVisits";
 
 import type { WorkflowFormData, Option } from "../../types/workflowFields";
 
@@ -33,8 +32,6 @@ export const WorkflowForm: FC = () => {
       technique: defaultTechnique,
     };
   });
-
-  const visitMatch = visitRegex.exec(data.visit);
 
   const filteredTemplateOptions: Option[] = getFilteredTemplates(
     data.technique
@@ -96,20 +93,11 @@ export const WorkflowForm: FC = () => {
               }
             />
 
-            <TextField
-              name="visit"
-              label="Visit"
-              variant="outlined"
-              size="small"
-              placeholder="Visit"
-              type="text"
+            <UserVisits
               value={data.visit}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                setData((prev) => ({ ...prev, visit: value }));
-              }}
-              helperText={visitMatch ? "" : "Expected format: xx12345-1"}
-              error={!visitMatch}
+							onChange={(e) =>
+                setData((prev) => ({ ...prev, visit: e.target.value }))
+              }
             />
             <TextField
               name="outpath"
@@ -124,7 +112,7 @@ export const WorkflowForm: FC = () => {
               }}
             />
 
-            <Button variant="contained" type="submit" disabled={!visitMatch}>
+            <Button variant="contained" type="submit">
               Open workflow form in a new tab
             </Button>
           </Stack>
