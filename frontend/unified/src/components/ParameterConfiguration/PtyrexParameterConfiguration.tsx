@@ -28,9 +28,6 @@ export const PtyrexParameterConfiguration = ({
     });
   }, [configPath, projectionNumber]);
 
-  console.log(`configPath: ${configPath}`);
-  console.log(`projectionNumber: ${projectionNumber}`);
-
   return (
     <>
       <Card
