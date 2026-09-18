@@ -1,8 +1,7 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { CirclePlus, Info, Trash } from "lucide-react";
+
 import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
-import InfoIcon from "@mui/icons-material/Info";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import type { ReactNode } from "react";
@@ -53,7 +52,7 @@ export default function DynamicArray<Item extends IdentifiableItem>({
         {desc && (
           <Tooltip title={desc}>
             <IconButton size="small" aria-label="Information">
-              <InfoIcon />
+              <Info />
             </IconButton>
           </Tooltip>
         )}
@@ -79,7 +78,7 @@ export default function DynamicArray<Item extends IdentifiableItem>({
                     aria-label="Delete"
                     onClick={() => handleRemove(item.id)}
                   >
-                    <DeleteIcon />
+                    <Trash />
                   </IconButton>
                 </Tooltip>
               )}
@@ -87,7 +86,7 @@ export default function DynamicArray<Item extends IdentifiableItem>({
               {isLastItem && (
                 <Tooltip title="Add">
                   <IconButton size="small" aria-label="Add" onClick={handleAdd}>
-                    <AddCircleIcon />
+                    <CirclePlus />
                   </IconButton>
                 </Tooltip>
               )}
@@ -97,7 +96,7 @@ export default function DynamicArray<Item extends IdentifiableItem>({
 
         {items.length === 0 && (
           <IconButton size="small" aria-label="Add" onClick={handleAdd}>
-            <AddCircleIcon />
+            <CirclePlus />
           </IconButton>
         )}
       </Stack>
