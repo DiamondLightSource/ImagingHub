@@ -4,7 +4,7 @@ import {
   GetWorkflowArtifactsQueryVariables,
 } from "./__generated__/ArtifactSelector.generated";
 import { useSuspenseQuery } from "@apollo/client/react";
-import { Visit } from "../JobsViewer/JobsViewer";
+import { Visit } from "../JobsViewer";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 
