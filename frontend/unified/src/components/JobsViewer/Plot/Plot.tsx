@@ -15,7 +15,7 @@ type PlotProps = {
   visit: Visit;
 };
 
-export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
+const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [artifactData, setArtifactData] = useState<NDT[] | null>(null);
   const [loadingImageIndex, setLoadingImageIndex] = useState<number | null>(
@@ -103,3 +103,5 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     </>
   );
 };
+
+export default Plot;

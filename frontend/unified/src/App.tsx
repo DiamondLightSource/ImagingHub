@@ -14,7 +14,7 @@ import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import { Plot } from "./components/JobsViewer/Plot/Plot";
+import Plot from "./components/JobsViewer/Plot/Plot";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
