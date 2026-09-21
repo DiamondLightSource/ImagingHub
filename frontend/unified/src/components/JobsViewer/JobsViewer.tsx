@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import JobsTable from "./JobsTable";
+import JobsTable from "./JobsTable/JobsTable";
 
 export type Visit = {
   proposalCode: string;

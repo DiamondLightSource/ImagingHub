@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import {
   WorkflowsQueryQuery,
   WorkflowsQueryQueryVariables,
-} from "./__generated__/JobsTable.generated";
+} from "../__generated__/JobsTable.generated";
 import { Suspense, useCallback, useState, useEffect } from "react";
 
 import { Visit } from "./JobsViewer";

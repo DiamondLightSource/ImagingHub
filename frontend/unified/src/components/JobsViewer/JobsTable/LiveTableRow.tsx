@@ -1,12 +1,12 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
 import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
 import { useState } from "react";
-import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
-import { apolloClientWorkflows } from "../../../../src/ApolloClient";
+import { BaseTableRowFragmentFragment } from "../__generated__/BaseTableRow.generated";
+import { apolloClientWorkflows } from "../../../../../src/ApolloClient";
 import {
   LiveTableRowSubscriptionSubscription,
   LiveTableRowSubscriptionSubscriptionVariables,
-} from "./__generated__/LiveTableRow.generated";
+} from "../__generated__/LiveTableRow.generated";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 
 export const LIVETABLEROW_SUBSCRIPTION: TypedDocumentNode<
