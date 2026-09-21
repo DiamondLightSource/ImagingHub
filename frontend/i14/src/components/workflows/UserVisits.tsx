@@ -1,6 +1,7 @@
 import { TypedDocumentNode, gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
+import { useEffect } from "react";
 import type { FC } from "react";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
@@ -48,9 +49,10 @@ function getFedid(): string {
 type Props = {
   value: string;
   onChange: (e: SelectChangeEvent<string>) => void;
+  onInitialValue: (value: string) => void;
 };
 
-const UserVisits: FC<Props> = ({ value, onChange }) => {
+const UserVisits: FC<Props> = ({ value, onChange, onInitialValue }) => {
   const username = getFedid();
   const { data, loading, error } = useQuery<
     UserVisitsQuery,
@@ -58,7 +60,13 @@ const UserVisits: FC<Props> = ({ value, onChange }) => {
   >(GET_USER_VISITS, {
     variables: { username },
   });
-  const visitOptions = data ? proposalToOptions(data) : [];
+  const visitOptions: Option[] = data ? proposalToOptions(data) : [];
+
+  useEffect(() => {
+    if (!value && visitOptions.length > 0) {
+      onInitialValue(visitOptions[0].value);
+    }
+  }, [value, visitOptions, onInitialValue]);
 
   if (loading) {
     return <p>Loading...</p>;

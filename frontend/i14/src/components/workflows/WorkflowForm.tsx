@@ -95,10 +95,14 @@ export const WorkflowForm: FC = () => {
 
             <UserVisits
               value={data.visit}
-							onChange={(e) =>
+              onChange={(e) =>
                 setData((prev) => ({ ...prev, visit: e.target.value }))
               }
+              onInitialValue={(value) =>
+                setData((prev) => ({ ...prev, visit: value }))
+              }
             />
+
             <TextField
               name="outpath"
               label="Output path"
