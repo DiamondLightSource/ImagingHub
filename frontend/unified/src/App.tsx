@@ -11,10 +11,8 @@ import { useState } from "react";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
-import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import Plot from "./components/JobsViewer/Plot/Plot";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -22,6 +20,7 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -96,7 +95,6 @@ export const App: React.FC = () => {
     null
   );
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
@@ -210,7 +208,7 @@ export const App: React.FC = () => {
   // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
   // a capitalised "proposal code", whereas the workflows service only accepts
   // it in lowercase
-  const selectedVisit = {
+  const selectedVisit: Visit = {
     proposalCode: session?.proposal.proposalCategory.toLowerCase(),
     proposalNumber: session?.proposal.proposalNumber,
     number: session?.instrumentSessionNumber,
@@ -305,39 +303,10 @@ export const App: React.FC = () => {
               scanIds={selectedScanIds}
             />
           </Stack>
-          <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Typography variant="h5">Plot</Typography>
-
-            <Plot
-              workflowName={selectedWorkflow}
-              visit={selectedVisit}
-              key={sessionName}
-            />
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Log</Typography>
-            {selectedWorkflow !== null ? (
-              <DisplayLogMeta
-                visit={selectedVisit}
-                workflowName={selectedWorkflow}
-              />
-            ) : (
-              <p>No workflow selected</p>
-            )}
-
-            <PlaceholderComponent
-              placeholderText="Log component placeholder"
-              height={200}
-              width={500}
-            />
-
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
-              visit={selectedVisit}
-              selectedWorkflow={selectedWorkflow}
-              setSelectedWorkflow={setSelectedWorkflow}
-            />
-          </Stack>
+          <JobsViewer
+            visit={selectedVisit}
+            verticalSpacing={VERTICAL_SPACING}
+          />
         </Grid>
       </ApolloProvider>
     </>

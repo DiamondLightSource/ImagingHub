@@ -7,7 +7,7 @@ import { gql, type TypedDocumentNode } from "@apollo/client";
 import {
   LogQueryQuery,
   LogQueryQueryVariables,
-} from "./__generated__/InspectLogMeta.generated";
+} from "../__generated__/InspectLogMeta.generated";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 
 export const InspectLog_Query: TypedDocumentNode<
