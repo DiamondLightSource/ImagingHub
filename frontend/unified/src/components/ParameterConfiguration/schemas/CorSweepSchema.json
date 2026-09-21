@@ -1,0 +1,425 @@
+{
+  "$defs": {
+    "EmptyDict": {
+      "description": "Empty dict representation",
+      "properties": {},
+      "additionalProperties": false,
+      "title": "EmptyDict",
+      "type": "object"
+    },
+    "PreviewKeyword": {
+      "enum": ["begin", "mid", "end"],
+      "title": "PreviewKeyword",
+      "type": "string"
+    },
+    "PreviewParam": {
+      "description": "Preview configuration dict.",
+      "properties": {
+        "angles": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StartStopEntry"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "detector_y": {
+          "anyOf": [
+            {
+              "const": "mid",
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/StartStopEntry"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Detector Y"
+        },
+        "detector_x": {
+          "anyOf": [
+            {
+              "const": "mid",
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/StartStopEntry"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Detector X"
+        }
+      },
+      "title": "PreviewParam",
+      "type": "object"
+    },
+    "RawAngles": {
+      "description": "Configure rotation angle values to come from a dataset within the input NeXuS/hdf5 file.",
+      "properties": {
+        "data_path": {
+          "title": "Data Path",
+          "type": "string"
+        }
+      },
+      "required": ["data_path"],
+      "title": "RawAngles",
+      "type": "object"
+    },
+    "StandardTomoLoaderConfig": {
+      "description": "Standard tomo loader HTTomo config",
+      "properties": {
+        "method": {
+          "default": "standard_tomo",
+          "title": "Method",
+          "type": "string"
+        },
+        "module_path": {
+          "default": "httomo.data.hdf.loaders",
+          "title": "Module Path",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/StandardTomoLoaderParams"
+        }
+      },
+      "required": ["parameters"],
+      "title": "StandardTomoLoaderConfig",
+      "type": "object"
+    },
+    "StandardTomoLoaderParams": {
+      "description": "Parameters dict for HTTomo's standard tomo loader",
+      "properties": {
+        "data_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "const": "auto",
+              "type": "string"
+            }
+          ],
+          "title": "Data Path"
+        },
+        "image_key_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "const": "auto",
+              "type": "string"
+            }
+          ],
+          "title": "Image Key Path"
+        },
+        "rotation_angles": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RawAngles"
+            },
+            {
+              "$ref": "#/$defs/UserDefinedAngles"
+            },
+            {
+              "const": "auto",
+              "type": "string"
+            }
+          ],
+          "title": "Rotation Angles"
+        },
+        "preview": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PreviewParam"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": ["data_path", "image_key_path", "rotation_angles"],
+      "title": "StandardTomoLoaderParams",
+      "type": "object"
+    },
+    "StartStopEntry": {
+      "description": "Configuration for a single dimension's previewing in terms of start/stop values.",
+      "properties": {
+        "start": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PreviewKeyword"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start"
+        },
+        "start_offset": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start Offset"
+        },
+        "stop": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PreviewKeyword"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Stop"
+        },
+        "stop_offset": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Stop Offset"
+        }
+      },
+      "title": "StartStopEntry",
+      "type": "object"
+    },
+    "SweepConfig": {
+      "description": "Parameter sweep config",
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "number"
+        },
+        "stop": {
+          "title": "Stop",
+          "type": "number"
+        },
+        "step": {
+          "default": 1,
+          "title": "Step",
+          "type": "number"
+        }
+      },
+      "required": ["start", "stop"],
+      "title": "SweepConfig",
+      "type": "object"
+    },
+    "TomopyMinusLogConfig": {
+      "description": "tomopy.prep.normalize.minus_log method config",
+      "properties": {
+        "method": {
+          "default": "minus_log",
+          "title": "Method",
+          "type": "string"
+        },
+        "module_path": {
+          "default": "tomopy.prep.normalize",
+          "title": "Module Path",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/EmptyDict",
+          "default": {}
+        },
+        "save_result": {
+          "default": false,
+          "title": "Save Result",
+          "type": "boolean"
+        }
+      },
+      "title": "TomopyMinusLogConfig",
+      "type": "object"
+    },
+    "TomopyNormalizeConfig": {
+      "description": "tomopy.prep.normalize.normalize method config",
+      "properties": {
+        "method": {
+          "default": "normalize",
+          "title": "Method",
+          "type": "string"
+        },
+        "module_path": {
+          "default": "tomopy.prep.normalize",
+          "title": "Module Path",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/TomopyNormalizeParams",
+          "default": {}
+        },
+        "save_result": {
+          "default": false,
+          "title": "Save Result",
+          "type": "boolean"
+        }
+      },
+      "title": "TomopyNormalizeConfig",
+      "type": "object"
+    },
+    "TomopyNormalizeParams": {
+      "description": "tomopy.prep.normalize.normalize parameters config",
+      "properties": {
+        "cutoff": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cutoff"
+        },
+        "averaging": {
+          "anyOf": [
+            {
+              "const": "mean",
+              "type": "string"
+            },
+            {
+              "const": "median",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Averaging"
+        }
+      },
+      "required": ["cutoff", "averaging"],
+      "title": "TomopyNormalizeParams",
+      "type": "object"
+    },
+    "TomopyReconConfig": {
+      "description": "tomopy.recon.algorithm.recon method config",
+      "properties": {
+        "method": {
+          "default": "recon",
+          "title": "Method",
+          "type": "string"
+        },
+        "module_path": {
+          "default": "tomopy.recon.algorithm",
+          "title": "Module Path",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/TomopyReconConfigParams"
+        },
+        "save_result": {
+          "default": true,
+          "title": "Save Result",
+          "type": "boolean"
+        }
+      },
+      "required": ["parameters"],
+      "title": "TomopyReconConfig",
+      "type": "object"
+    },
+    "TomopyReconConfigParams": {
+      "description": "tomopy.recon.algorithm.recon parameters config",
+      "properties": {
+        "center": {
+          "$ref": "#/$defs/SweepConfig"
+        },
+        "sinogram_order": {
+          "title": "Sinogram Order",
+          "type": "boolean"
+        },
+        "algorithm": {
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "init_recon": {
+          "title": "Init Recon",
+          "type": "null"
+        }
+      },
+      "required": ["center", "sinogram_order", "algorithm", "init_recon"],
+      "title": "TomopyReconConfigParams",
+      "type": "object"
+    },
+    "UserDefinedAngles": {
+      "description": "Configure rotation angle values to be generated by specifying a start angle, stop angle,\nand the total number of angles.",
+      "properties": {
+        "start_angle": {
+          "title": "Start Angle",
+          "type": "integer"
+        },
+        "stop_angle": {
+          "title": "Stop Angle",
+          "type": "integer"
+        },
+        "angles_total": {
+          "title": "Angles Total",
+          "type": "integer"
+        }
+      },
+      "required": ["start_angle", "stop_angle", "angles_total"],
+      "title": "UserDefinedAngles",
+      "type": "object"
+    }
+  },
+  "description": "An HTTomo center-of-rotation parameter sweep pipeline",
+  "anyOf": [
+    {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/StandardTomoLoaderConfig"
+        },
+        {
+          "$ref": "#/$defs/TomopyReconConfig"
+        }
+      ],
+      "type": "array"
+    },
+    {
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/StandardTomoLoaderConfig"
+        },
+        {
+          "$ref": "#/$defs/TomopyNormalizeConfig"
+        },
+        {
+          "$ref": "#/$defs/TomopyMinusLogConfig"
+        },
+        {
+          "$ref": "#/$defs/TomopyReconConfig"
+        }
+      ],
+      "type": "array"
+    }
+  ],
+  "title": "CorSweepPipeline",
+  "type": "array"
+}
