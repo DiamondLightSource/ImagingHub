@@ -1,3 +1,5 @@
+import { SessionQueryQuery } from "./__generated__/App.generated";
+
 export enum Technique {
   Dpc = "Dpc",
   Nbed = "Nbed",
@@ -22,3 +24,8 @@ export type Option = { label: string; value: string; desc?: string };
 export type TemplateComponentProps = {
   setParameters: (_: object) => void;
 };
+
+type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
+
+export type InstrumentSession =
+  NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];

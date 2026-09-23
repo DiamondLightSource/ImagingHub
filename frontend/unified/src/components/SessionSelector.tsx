@@ -7,7 +7,6 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
-import { SessionQueryQuery } from "../__generated__/App.generated";
 import {
   GetSessionByReferenceQuery,
   GetSessionByReferenceQueryVariables,
@@ -15,6 +14,8 @@ import {
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { useSuspenseQuery } from "@apollo/client/react";
+import { InstrumentSession } from "../types";
+import { SESSION_START_TIME_FRAGMENT } from "./ParameterConfiguration/ParameterConfiguration";
 
 export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
   GetSessionByReferenceQuery,
@@ -30,19 +31,18 @@ export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
         proposalNumber
         proposalCategory
       }
+
+      ...ParamConfigSessionStartTimeFragment
     }
   }
+
+  ${SESSION_START_TIME_FRAGMENT}
 `;
 
 export enum SessionSelectionMode {
   Latest = "Latest",
   Custom = "Custom",
 }
-
-type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
-
-export type InstrumentSession =
-  NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
 
 type SessionSelectorProps = {
   setSession: (_: InstrumentSession | null) => void;

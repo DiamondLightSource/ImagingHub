@@ -13,7 +13,10 @@ import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
-import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
+import {
+  ParameterConfiguration,
+  SESSION_START_TIME_FRAGMENT,
+} from "./components/ParameterConfiguration/ParameterConfiguration";
 import { Plot } from "./components/Plot/Plot";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
@@ -76,12 +79,16 @@ export const SESSION_QUERY: TypedDocumentNode<
               instrument {
                 name
               }
+
+              ...ParamConfigSessionStartTimeFragment
             }
           }
         }
       }
     }
   }
+
+  ${SESSION_START_TIME_FRAGMENT}
 `;
 
 export const App: React.FC = () => {
@@ -239,6 +246,9 @@ export const App: React.FC = () => {
   const currentTemplate =
     template ?? filterTemplates(currentTechnique)[0].label;
 
+  console.log("session is: ", session);
+  console.log("data is: ", data);
+
   return (
     <>
       <Stack direction="row" spacing={2} alignItems="center">
@@ -299,6 +309,7 @@ export const App: React.FC = () => {
                 Technique[currentTechnique as keyof typeof Technique]
               )}
               visit={selectedVisit}
+              session={session}
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">

@@ -64,5 +64,12 @@ const httpLinkUlims = new HttpLink({
 
 export const apolloClientUlims = new ApolloClient({
   link: authLink.concat(httpLinkUlims),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      InstrumentSession: {
+        keyFields: ["proposal", "instrumentSessionNumber"],
+      },
+    },
+  }),
+  dataMasking: true,
 });
