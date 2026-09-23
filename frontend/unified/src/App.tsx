@@ -11,8 +11,12 @@ import { useState } from "react";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
-import { Beamline, Technique } from "./types";
-import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
+import {
+  Beamline,
+  BEAMLINE_TECHNIQUES_SUBSET,
+  BEAMLINES_DEFAULT_TECHNIQUE,
+  Technique,
+} from "./types";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
