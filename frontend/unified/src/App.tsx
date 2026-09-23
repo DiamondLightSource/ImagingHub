@@ -1,30 +1,13 @@
-import { Chip, Divider, Stack, Typography } from "@mui/material";
-import {
-  InstrumentSession,
-  SessionSelector,
-} from "./components/SessionManager/SessionSelector";
-import { ScanSelector } from "./components/JobsSubmitter/ScanSelector";
+import { Divider, Stack } from "@mui/material";
 import JobsViewer from "./components/JobsViewer/JobsViewer";
 
 import { useState } from "react";
-
-import { templateOptions } from "./data/templates";
-import { WorkflowForm } from "./components/WorkflowForm";
+import { Beamline } from "./types";
+import { ApolloProvider } from "@apollo/client/react";
 import {
-  Beamline,
-  BEAMLINE_TECHNIQUES_SUBSET,
-  BEAMLINES_DEFAULT_TECHNIQUE,
-  SessionSelectionMode,
-  Technique,
-} from "./types";
-import { ParameterConfiguration } from "./components/Deprecated/OldParameterConfiguration";
-import { ApolloProvider, useQuery } from "@apollo/client/react";
-import { apolloClientWorkflows } from "../../src/ApolloClient";
-import { gql, type TypedDocumentNode } from "@apollo/client";
-import {
-  SessionQueryQuery,
-  SessionQueryQueryVariables,
-} from "./__generated__/App.generated";
+  apolloClientUlims,
+  apolloClientWorkflows,
+} from "../../src/ApolloClient";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import SessionManager from "./components/SessionManager/SessionManager";
 import JobsSubmitter from "./components/JobsSubmitter/JobsSubmitter";
@@ -32,321 +15,35 @@ import JobsSubmitter from "./components/JobsSubmitter/JobsSubmitter";
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
 
-const BEAMLINE_TECHNIQUES_SUBSET = {
-  [Beamline.DIAD]: [Technique.Tomo],
-  [Beamline.I12]: [Technique.Tomo],
-  [Beamline["I08-1"]]: [Technique.Ptycho],
-  [Beamline["I13-1"]]: [
-    Technique.Dpc,
-    Technique.Ptycho,
-    Technique.Tomo,
-    Technique.Xanes,
-    Technique.Xrd,
-  ],
-  [Beamline["I13-2"]]: [Technique.Ptycho, Technique.Tomo],
-  [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
-  [Beamline.Epsic]: [Technique.Dpc, Technique.Nbed, Technique.Ptycho],
-};
-
-const BEAMLINES_DEFAULT_TECHNIQUE = {
-  [Beamline.DIAD]: Technique.Tomo,
-  [Beamline.Epsic]: Technique.Ptycho,
-  [Beamline.I12]: Technique.Tomo,
-  [Beamline["I08-1"]]: Technique.Ptycho,
-  [Beamline["I13-1"]]: Technique.Ptycho,
-  [Beamline["I13-2"]]: Technique.Ptycho,
-  [Beamline.I14]: Technique.Dpc,
-};
-
-const filterTemplates = (technique: Technique) => {
-  return templateOptions.filter((option) =>
-    option.value.includes(technique.toLowerCase())
-  );
-};
-
-export const SESSION_QUERY: TypedDocumentNode<
-  SessionQueryQuery,
-  SessionQueryQueryVariables
-> = gql`
-  query sessionQuery {
-    account(username: "twi18192") {
-      instrumentSessionRoles(first: 1) {
-        edges {
-          node {
-            instrumentSession {
-              proposal {
-                proposalNumber
-                proposalCategory
-              }
-              instrumentSessionNumber
-              instrument {
-                name
-              }
-              startTime
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const App: React.FC = () => {
-  //adding common states of beamlines, Techique, workflow
-  const [showAllTechniques, setShowAllTechniques] = useState(false);
-  const [technique, setTechnique] = useState<Technique | null>(null);
-  const [template, setTemplate] = useState<string | null>(null);
-  const [sessionSelectionMode, setSessionSelectionMode] =
-    useState<SessionSelectionMode>(SessionSelectionMode.Latest);
-  const [customSession, setCustomSession] = useState<InstrumentSession | null>(
-    null
-  );
-  const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
-  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
+  const [beamline, setBeamline] = useState<Beamline | null>(null);
+  const [visit, setVisit] = useState<Visit | null>(null);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  if (data === undefined) {
-    return <p>Data undefined</p>;
-  }
-  if (data.account === null) {
-    return <p>Account null</p>;
-  }
-
-  /**
-   * Based on the beamline changing when the session changes, update the technique to be the
-   * default technique associated with the beamline, and update the template to be the first
-   * template in the list of templates associated with the technique.
-   */
-  const updateTechniqueAndTemplate = (beamline: Beamline) => {
-    const newTechnique = BEAMLINES_DEFAULT_TECHNIQUE[beamline];
-    setTechnique(newTechnique);
-    const filteredTemplates = filterTemplates(
-      Technique[newTechnique as keyof typeof Technique]
-    );
-    setTemplate(filteredTemplates[0].value);
-  };
-
-  /**
-   * Update the custom session and update the technique and template based on the beamline
-   * associated with the newly chosen session.
-   */
-  const updateCustomSession = (session: InstrumentSession | null) => {
-    setCustomSession(session);
-    updateTechniqueAndTemplate(mapStringsToBeamline(session.instrument.name));
-  };
-
-  /**
-   * Update the session-selection mode, and update the technique and template based on the
-   * beamline associated with the newly chosen session.
-   */
-  const updateSessionSelectionMode = (mode: SessionSelectionMode) => {
-    setSessionSelectionMode(mode);
-    const session = determineCurrentSession(
-      mode,
-      data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
-      customSession
-    );
-    updateTechniqueAndTemplate(mapStringsToBeamline(session.instrument.name));
-  };
-
-  const handleChangeTechnique = (
-    /**
-     * This function handles the clicking of the toggle button which choose the technique and therefore determines which
-     * workflows are filtered and shown the template drop down menu this then alteres the data state with new techniques
-     * and templates
-     */
-    _event: React.MouseEvent<HTMLElement>,
-    technique: string | null
-  ) => {
-    if (!technique) return;
-    const filteredTemplates = filterTemplates(
-      Technique[technique as keyof typeof Technique]
-    );
-    setTechnique(Technique[technique as keyof typeof Technique]);
-    setTemplate(filteredTemplates[0].value);
-  };
-
-  const filterTechniques = (beamline: Beamline) => {
-    if (showAllTechniques) {
-      return Object.values(Technique);
-    }
-
-    return BEAMLINE_TECHNIQUES_SUBSET[beamline];
-  };
-
-  /**
-   * Determine the current session based on which session-selection mode is enabled.
-   *
-   * Note: if the session-selection mode is "latest", then the current session will only be
-   * updated to the `customSession` state if the session input string both matches the visit
-   * regex and the string corresponds to an actual visit (when both conditions are fulfilled,
-   * the `customSession` state is not `null`).
-   */
-  const determineCurrentSession = (
-    mode: SessionSelectionMode,
-    latestSession: InstrumentSession,
-    customSession: InstrumentSession | null
-  ): InstrumentSession => {
-    if (mode === SessionSelectionMode.Latest) {
-      return latestSession;
-    } else if (mode === SessionSelectionMode.Custom && customSession !== null) {
-      return customSession;
-    } else {
-      // The only other possible case is:
-      // ```
-      // mode === SessionSelectionMode.Custom && customSession === null
-      // ```
-      // and in this case the latest visit is selected.
-      //
-      // Used an else rather than else-if so then TypeScript knows that all cases have been
-      // exhausted and won't say that `session` or `sessionName` may be undefined.
-      return latestSession;
-    }
-  };
-
-  const session = determineCurrentSession(
-    sessionSelectionMode,
-    data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
-    customSession
-  );
-  const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
-
-  // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
-  // a capitalised "proposal code", whereas the workflows service only accepts
-  // it in lowercase
-  const selectedVisit: Visit = {
-    proposalCode: session?.proposal.proposalCategory.toLowerCase(),
-    proposalNumber: session?.proposal.proposalNumber,
-    number: session?.instrumentSessionNumber,
-  };
-
-  const mapStringsToBeamline = (beamline: string): Beamline => {
-    switch (beamline) {
-      case "DIAD":
-        return Beamline.DIAD;
-      case "I08-1":
-        return Beamline["I08-1"];
-      case "I12":
-        return Beamline.I12;
-      case "I13-1":
-        return Beamline["I13-1"];
-      case "I13-2":
-        return Beamline["I13-2"];
-      case "I14":
-        return Beamline.I14;
-      default:
-        console.error(`Unrecognised beamline: ${beamline}`);
-    }
-  };
-
-  const beamline = mapStringsToBeamline(session.instrument.name);
-  const currentTechnique = technique ?? BEAMLINES_DEFAULT_TECHNIQUE[beamline];
-  const currentTemplate =
-    template ?? filterTemplates(currentTechnique)[0].label;
+  console.log(Object.values(Beamline).includes("test" as Beamline));
 
   return (
-    <>
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Typography variant="h5">Session</Typography>
-        <Chip color="primary" variant="outlined" label={sessionName} />
-        <Chip
-          color="secondary"
-          variant="outlined"
-          label={session.instrument.name}
-        />
-      </Stack>
-      <SessionSelector
-        setSession={updateCustomSession}
-        mode={sessionSelectionMode}
-        setMode={updateSessionSelectionMode}
-      />
-
-      <SessionManager setBeamline={setTest} />
-
-      <ApolloProvider client={apolloClientWorkflows}>
-        <Stack direction="row" spacing={HORIZONTAL_SPACING}>
-          <Stack direction="column" spacing={VERTICAL_SPACING} width="500px">
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Scan</Typography>
-            <ScanSelector
-              scanIds={selectedScanIds}
-              setScanIds={setSelectedScanIds}
-            />
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Technique</Typography>
-            <WorkflowForm
-              handleChangeTechnique={handleChangeTechnique}
-              showAllTechniques={showAllTechniques}
-              handleShowAllTechniques={(
-                e: React.ChangeEvent<HTMLInputElement>
-              ) => {
-                setShowAllTechniques(e.target.checked);
-                const isSelectedTechniqueInSubset =
-                  BEAMLINE_TECHNIQUES_SUBSET[beamline].includes(
-                    currentTechnique
-                  );
-                if (!e.target.checked && !isSelectedTechniqueInSubset) {
-                  updateTechniqueAndTemplate(beamline);
-                }
-              }}
-              filteredTechniques={filterTechniques(beamline)}
-              templateOptions={filterTemplates(currentTechnique)}
-              technique={currentTechnique}
-              template={currentTemplate}
-              setTemplate={setTemplate}
-            />
-
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Parameter Configuration</Typography>
-
-            <ParameterConfiguration
-              technique={currentTechnique}
-              template={currentTemplate}
-              setTemplate={setTemplate}
-              availableTemplates={filterTemplates(
-                Technique[currentTechnique as keyof typeof Technique]
-              )}
-              visit={selectedVisit}
+    <ApolloProvider client={apolloClientWorkflows}>
+      <Stack direction="row" spacing={HORIZONTAL_SPACING}>
+        <Stack direction="column" spacing={VERTICAL_SPACING} width="500px">
+          <ApolloProvider client={apolloClientUlims}>
+            <SessionManager
               beamline={beamline}
-              startTime={session.startTime}
-              scanIds={selectedScanIds}
+              setBeamline={setBeamline}
+              visit={visit}
+              setVisit={setVisit}
             />
+          </ApolloProvider>
+          {visit && beamline && (
             <JobsSubmitter
               beamline={beamline}
-              visit={selectedVisit}
+              visit={visit}
               verticalSpacing={VERTICAL_SPACING}
             />
-          </Stack>
-          <Divider orientation="vertical" flexItem />
-          <JobsViewer
-            visit={selectedVisit}
-            verticalSpacing={VERTICAL_SPACING}
-          />
+          )}
         </Stack>
-      </ApolloProvider>
-    </>
-  );
-};
-
-type PlaceholderComponentProps = {
-  placeholderText: string;
-  height: number;
-  width: number;
-};
-
-const PlaceholderComponent = ({
-  placeholderText,
-  height,
-  width,
-}: PlaceholderComponentProps) => {
-  return (
-    <Box
-      sx={{ width: width, height: height, border: "1px dashed grey" }}
-      alignContent="center"
-      justifyItems="center"
-    >
-      <p>{placeholderText}</p>
-    </Box>
+        <Divider orientation="vertical" flexItem />
+        <JobsViewer visit={visit} verticalSpacing={VERTICAL_SPACING} />
+      </Stack>
+    </ApolloProvider>
   );
 };
