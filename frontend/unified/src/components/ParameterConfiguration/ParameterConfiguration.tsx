@@ -1,5 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import { Option, Technique } from "../../types";
+import { Beamline, Option, Technique } from "../../types";
 import OptionSelect from "../OptionSelect";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
 import { PtyrexParameterConfiguration } from "./PtyrexParameterConfiguration";
@@ -16,6 +16,7 @@ type ParameterConfigurationProps = {
   setTemplate: (_: string) => void;
   availableTemplates: Option[];
   visit: Visit;
+  beamline: Beamline;
   startTime: InstrumentSession["startTime"];
   scanIds: number[];
 };
@@ -41,6 +42,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   setTemplate,
   availableTemplates,
   visit,
+  beamline,
   startTime,
   scanIds,
 }: ParameterConfigurationProps) => {
