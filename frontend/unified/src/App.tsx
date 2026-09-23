@@ -1,10 +1,9 @@
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Chip, Divider, Stack, Typography } from "@mui/material";
 import {
   InstrumentSession,
-  SessionSelectionMode,
   SessionSelector,
-} from "./components/SessionSelector";
-import { ScanSelector } from "./components/ScanSelector";
+} from "./components/SessionManager/SessionSelector";
+import { ScanSelector } from "./components/JobsSubmitter/ScanSelector";
 import JobsViewer from "./components/JobsViewer/JobsViewer";
 
 import { useState } from "react";
@@ -15,8 +14,10 @@ import {
   Beamline,
   BEAMLINE_TECHNIQUES_SUBSET,
   BEAMLINES_DEFAULT_TECHNIQUE,
+  SessionSelectionMode,
   Technique,
 } from "./types";
+import { ParameterConfiguration } from "./components/Deprecated/OldParameterConfiguration";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -25,6 +26,8 @@ import {
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
 import { Visit } from "@diamondlightsource/sci-react-ui";
+import SessionManager from "./components/SessionManager/SessionManager";
+import JobsSubmitter from "./components/JobsSubmitter/JobsSubmitter";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -258,9 +261,12 @@ export const App: React.FC = () => {
         mode={sessionSelectionMode}
         setMode={updateSessionSelectionMode}
       />
+
+      <SessionManager setBeamline={setTest} />
+
       <ApolloProvider client={apolloClientWorkflows}>
-        <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-          <Stack spacing={VERTICAL_SPACING} width="500px">
+        <Stack direction="row" spacing={HORIZONTAL_SPACING}>
+          <Stack direction="column" spacing={VERTICAL_SPACING} width="500px">
             <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Scan</Typography>
             <ScanSelector
@@ -306,12 +312,18 @@ export const App: React.FC = () => {
               startTime={session.startTime}
               scanIds={selectedScanIds}
             />
+            <JobsSubmitter
+              beamline={beamline}
+              visit={selectedVisit}
+              verticalSpacing={VERTICAL_SPACING}
+            />
           </Stack>
+          <Divider orientation="vertical" flexItem />
           <JobsViewer
             visit={selectedVisit}
             verticalSpacing={VERTICAL_SPACING}
           />
-        </Grid>
+        </Stack>
       </ApolloProvider>
     </>
   );
