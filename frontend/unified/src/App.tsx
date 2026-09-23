@@ -301,6 +301,7 @@ export const App: React.FC = () => {
               )}
               visit={selectedVisit}
               startTime={session.startTime}
+              scanIds={selectedScanIds}
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">

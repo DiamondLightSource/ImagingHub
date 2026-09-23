@@ -17,6 +17,7 @@ type ParameterConfigurationProps = {
   availableTemplates: Option[];
   visit: Visit;
   startTime: InstrumentSession["startTime"];
+  scanIds: number[];
 };
 
 /**
@@ -41,6 +42,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   availableTemplates,
   visit,
   startTime,
+  scanIds,
 }: ParameterConfigurationProps) => {
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters] = useState({
