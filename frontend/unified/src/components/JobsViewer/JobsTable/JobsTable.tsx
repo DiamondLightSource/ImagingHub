@@ -2,13 +2,13 @@ import { Box } from "@mui/material";
 import {
   WorkflowsQueryQuery,
   WorkflowsQueryQueryVariables,
-} from "../__generated__/JobsTable.generated";
-import { Suspense, useCallback, useState, useEffect } from "react";
+} from "./__generated__/JobsTable.generated";
+import { Suspense, useCallback, useState } from "react";
 
-import { Visit } from "./JobsViewer";
 import TableContent, { TABLECONTENT_FRAGMENT } from "./TableContent";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 export const JOBSTABLE_QUERY: TypedDocumentNode<
   WorkflowsQueryQuery,

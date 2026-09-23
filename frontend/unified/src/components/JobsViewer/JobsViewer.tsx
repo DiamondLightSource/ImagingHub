@@ -25,6 +25,7 @@ const JobsViewer = ({
           setSelectedWorkflow={setSelectedWorkflow}
         />
       </Suspense>
+
       <Divider sx={{ width: "100%" }} />
       <Typography variant="h5">Log</Typography>
       {selectedWorkflow ? (
@@ -32,6 +33,7 @@ const JobsViewer = ({
       ) : (
         <p>No workflow selected</p>
       )}
+
       <Divider sx={{ width: "100%" }} />
       <Typography variant="h5">Plot</Typography>
       <Plot workflowName={selectedWorkflow} visit={visit} key={sessionName} />
