@@ -30,6 +30,7 @@ export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
         proposalNumber
         proposalCategory
       }
+      startTime
     }
   }
 `;

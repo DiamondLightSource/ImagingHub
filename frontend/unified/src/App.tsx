@@ -76,6 +76,7 @@ export const SESSION_QUERY: TypedDocumentNode<
               instrument {
                 name
               }
+              startTime
             }
           }
         }
@@ -299,6 +300,9 @@ export const App: React.FC = () => {
                 Technique[currentTechnique as keyof typeof Technique]
               )}
               visit={selectedVisit}
+              beamline={beamline}
+              startTime={session.startTime}
+              scanIds={selectedScanIds}
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
