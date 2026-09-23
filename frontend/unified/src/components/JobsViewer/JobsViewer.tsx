@@ -9,10 +9,15 @@ const JobsViewer = ({
   visit,
   verticalSpacing = 2,
 }: {
-  visit: Visit;
+  visit: Visit | null;
   verticalSpacing?: number;
 }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
+
+  if (!visit) {
+    return <>Invalid Visit</>;
+  }
+
   const sessionName = visitToText(visit);
 
   return (
