@@ -2,6 +2,7 @@ import { Button, Typography } from "@mui/material";
 import { Option, Technique } from "../../types";
 import OptionSelect from "../OptionSelect";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
+import { PtyrexParameterConfiguration } from "./PtyrexParameterConfiguration";
 import { ReactElement, useState } from "react";
 import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
@@ -68,6 +69,11 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     [Technique.Dpc]: {},
     [Technique.Nbed]: {},
     [Technique.Ptycho]: {},
+    [Technique.Ptyrex]: {
+      "ptyrex-submission": (
+        <PtyrexParameterConfiguration setParameters={setTemplateParameters} />
+      ),
+    },
     [Technique.Tomo]: {
       "httomo-cor-sweep": (
         <LoaderProvider>
