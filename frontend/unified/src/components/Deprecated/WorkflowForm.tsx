@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import { Option, Technique } from "../types";
+import { Option, Technique } from "../../types";
 
 export const WorkflowForm: FC = (props: {
   handleChangeTechnique: (
