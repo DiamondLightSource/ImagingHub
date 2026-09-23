@@ -76,6 +76,7 @@ export const SESSION_QUERY: TypedDocumentNode<
               instrument {
                 name
               }
+              startTime
             }
           }
         }
