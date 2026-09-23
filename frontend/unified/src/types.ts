@@ -28,3 +28,11 @@ export type TemplateComponentProps = {
   setParameters: (_: object) => void;
   visitDirpath: string;
 };
+
+export type WorkflowStatus =
+  | "Unknown"
+  | "WorkflowPendingStatus"
+  | "WorkflowRunningStatus"
+  | "WorkflowSucceededStatus"
+  | "WorkflowFailedStatus"
+  | "WorkflowErroredStatus";
