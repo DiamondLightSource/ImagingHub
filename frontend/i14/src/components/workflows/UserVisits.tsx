@@ -42,8 +42,8 @@ const GET_USER_VISITS: TypedDocumentNode<
 
 function getFedid(): string {
   const token = useAuth().getToken();
-  const parse_token = JSON.parse(atob(token.split(".")[1]));
-  return parse_token.fedid;
+  const parseToken = JSON.parse(atob(token.split(".")[1]));
+  return parseToken.fedid;
 }
 
 type Props = {
