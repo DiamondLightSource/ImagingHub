@@ -7,7 +7,7 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
-import { SessionQueryQuery } from "../__generated__/App.generated";
+import { SessionQueryQuery } from "../../__generated__/App.generated";
 import {
   GetSessionByReferenceQuery,
   GetSessionByReferenceQueryVariables,
