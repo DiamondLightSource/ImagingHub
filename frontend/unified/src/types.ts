@@ -1,3 +1,11 @@
+const SessionSelectionMode = {
+  Latest: "Latest",
+  Custom: "Custom",
+} as const;
+type SessionSelectionMode =
+  (typeof SessionSelectionMode)[keyof typeof SessionSelectionMode];
+export { SessionSelectionMode };
+
 const Technique = {
   Dpc: "Dpc",
   Nbed: "Nbed",
