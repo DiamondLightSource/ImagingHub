@@ -8,6 +8,7 @@ import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContex
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation } from "@apollo/client/react";
 import { Visit } from "@diamondlightsource/sci-react-ui";
+import { InstrumentSession } from "../SessionSelector";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -15,6 +16,7 @@ type ParameterConfigurationProps = {
   setTemplate: (_: string) => void;
   availableTemplates: Option[];
   visit: Visit;
+  startTime: InstrumentSession["startTime"];
 };
 
 /**
@@ -38,6 +40,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   setTemplate,
   availableTemplates,
   visit,
+  startTime,
 }: ParameterConfigurationProps) => {
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters] = useState({

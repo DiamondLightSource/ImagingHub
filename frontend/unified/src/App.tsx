@@ -300,6 +300,7 @@ export const App: React.FC = () => {
                 Technique[currentTechnique as keyof typeof Technique]
               )}
               visit={selectedVisit}
+              startTime={session.startTime}
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
