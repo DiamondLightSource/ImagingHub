@@ -7,7 +7,7 @@ import { ReactElement, useState } from "react";
 import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation } from "@apollo/client/react";
-import { Visit } from "@diamondlightsource/sci-react-ui";
+import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
 
 type ParameterConfigurationProps = {
@@ -32,9 +32,27 @@ type TemplateComponentMapping = {
   };
 };
 
-// TODO: The filename part of this should come from the scan selector component
-const HARDCODED_INPUT_FILEPATH =
-  "/dls/i12/data/2025/cm40628-3/rawdata/188700.nxs";
+const DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS = {
+  [Beamline.DIAD]: "nexus",
+  [Beamline["I08-1"]]: "nexus",
+  [Beamline.I12]: "rawdata",
+  [Beamline["I13-1"]]: "raw",
+  [Beamline["I13-2"]]: "raw",
+  [Beamline.I14]: "scan",
+};
+
+const determineBeamlineRawDataFilepath = (
+  beamline: Beamline,
+  year: string,
+  visit: Visit,
+  scanId: number
+): string => {
+  const rawDataDirname =
+    DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
+      beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
+    ];
+  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/${rawDataDirname}/${scanId}.nxs`;
+};
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   technique,
@@ -54,12 +72,20 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
   const [mutation] = useMutation(SUBMIT_WORKFLOW_TEMPLATE);
 
+  const sessionYear = new Date(startTime).getFullYear();
+  const rawDataFilepath = determineBeamlineRawDataFilepath(
+    beamline,
+    sessionYear,
+    visit,
+    scanIds[0]
+  );
+
   const handleSubmitJob = () => {
     // TODO: Validate parameters against JSON schema attached to the workflow template before
     // sending the mutation
     console.log("Submit job");
     const parameters = {
-      input: HARDCODED_INPUT_FILEPATH,
+      input: rawDataFilepath,
       ...templateParameters,
       ...resourceParameters,
     };
