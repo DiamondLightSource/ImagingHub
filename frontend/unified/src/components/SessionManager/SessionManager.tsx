@@ -38,9 +38,15 @@ export const SESSION_QUERY: TypedDocumentNode<
 `;
 
 const SessionManager = ({
+  beamline,
   setBeamline,
+  visit,
+  setVisit,
 }: {
+  beamline: Beamline | null;
   setBeamline: (beamline: Beamline | null) => void;
+  visit: Visit | null;
+  setVisit: (visit: Visit | null) => void;
 }) => {
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
