@@ -172,7 +172,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
       <Typography variant="h6">Options</Typography>
 
-      {TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
+      {getTemplateComponent(technique, template, setTemplateParameters) ??
         PlaceholderComponent}
 
       <div>

@@ -7,38 +7,33 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
-import { SessionQueryQuery } from "../__generated__/App.generated";
+import { SessionQueryQuery } from "../SessionManager/__generated__/SessionManager.generated";
 import {
   GetSessionByReferenceQuery,
   GetSessionByReferenceQueryVariables,
-} from "./__generated__/SessionSelector.generated";
+} from "../SessionManager/__generated__/SessionSelector.generated";
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { useSuspenseQuery } from "@apollo/client/react";
+import { SessionSelectionMode } from "../../types";
 
-export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
-  GetSessionByReferenceQuery,
-  GetSessionByReferenceQueryVariables
-> = gql`
-  query GetSessionByReference($reference: String!) {
-    instrumentSessionByReference(reference: $reference) {
-      instrument {
-        name
-      }
-      instrumentSessionNumber
-      proposal {
-        proposalNumber
-        proposalCategory
-      }
-      startTime
-    }
-  }
-`;
-
-export enum SessionSelectionMode {
-  Latest = "Latest",
-  Custom = "Custom",
-}
+// export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
+//   GetSessionByReferenceQuery,
+//   GetSessionByReferenceQueryVariables
+// > = gql`
+//   query GetSessionByReference($reference: String!) {
+//     instrumentSessionByReference(reference: $reference) {
+//       instrument {
+//         name
+//       }
+//       instrumentSessionNumber
+//       proposal {
+//         proposalNumber
+//         proposalCategory
+//       }
+//     }
+//   }
+// `;
 
 type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
 

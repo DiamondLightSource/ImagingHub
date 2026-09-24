@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material";
-import { WorkflowStatus } from "./utils/types";
 import {
   CircleAlert,
   CircleCheckBig,
@@ -9,6 +8,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import BaseStack from "./utils/BaseStack";
+import { WorkflowStatus } from "../../../types";
 
 export const getWorkflowStatusIcon = (
   status: WorkflowStatus,

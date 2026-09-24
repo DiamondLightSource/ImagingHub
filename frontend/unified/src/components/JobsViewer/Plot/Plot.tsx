@@ -1,12 +1,12 @@
 import { Suspense, useEffect, useState } from "react";
-import { Visit } from "../JobsViewer/JobsViewer";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 import { ArtifactSelector, Artifact } from "./ArtifactSelector";
 import { Switch } from "@mui/material";
 import { NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
 import { decode } from "fast-png";
-import { proxyService } from "../../../../tomography/src/api/services";
-import loadData from "../../../../tomography/src/components/crop/SampleLoad";
+import { proxyService } from "../../../../../tomography/src/api/services";
+import loadData from "../../../../../tomography/src/components/crop/SampleLoad";
 import { DataPlotter } from "./DataPlotter";
 import { DataLoadingProgress } from "./DataLoadingProgress";
 
@@ -15,7 +15,7 @@ type PlotProps = {
   visit: Visit;
 };
 
-export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
+const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [artifactData, setArtifactData] = useState<NDT[] | null>(null);
   const [loadingImageIndex, setLoadingImageIndex] = useState<number | null>(
@@ -103,3 +103,5 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
     </>
   );
 };
+
+export default Plot;
