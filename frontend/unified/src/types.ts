@@ -26,4 +26,5 @@ export type Option = { label: string; value: string; desc?: string };
 
 export type TemplateComponentProps = {
   setParameters: (_: object) => void;
+  visitDirpath: string;
 };

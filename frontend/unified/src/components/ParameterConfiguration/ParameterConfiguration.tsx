@@ -43,15 +43,22 @@ const DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS = {
 
 const determineBeamlineRawDataFilepath = (
   beamline: Beamline,
-  year: string,
-  visit: Visit,
+  visitDirpath: string,
   scanId: number
 ): string => {
   const rawDataDirname =
     DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
       beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
     ];
-  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/${rawDataDirname}/${scanId}.nxs`;
+  return `${visitDirpath}${rawDataDirname}/${scanId}.nxs`;
+};
+
+const determineBeamlineVisitDirpath = (
+  beamline: Beamline,
+  year: string,
+  visit: Visit
+) => {
+  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/`;
 };
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
@@ -76,10 +83,14 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   const [mutation] = useMutation(SUBMIT_WORKFLOW_TEMPLATE);
 
   const sessionYear = new Date(startTime).getFullYear();
-  const rawDataFilepath = determineBeamlineRawDataFilepath(
+  const visitDirpath = determineBeamlineVisitDirpath(
     beamline,
     sessionYear,
-    visit,
+    visit
+  );
+  const rawDataFilepath = determineBeamlineRawDataFilepath(
+    beamline,
+    visitDirpath,
     scanIds[0]
   );
 
@@ -126,7 +137,10 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     [Technique.Ptycho]: {},
     [Technique.Ptyrex]: {
       "ptyrex-submission": (
-        <PtyrexParameterConfiguration setParameters={setTemplateParameters} />
+        <PtyrexParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirpath}
+        />
       ),
     },
     [Technique.Tomo]: {
@@ -134,6 +148,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         <LoaderProvider>
           <CorSweepParameterConfiguration
             setParameters={setTemplateParameters}
+            visitDirpath={visitDirpath}
           />
         </LoaderProvider>
       ),
