@@ -25,12 +25,18 @@ export const MibParameterConfiguration = ({
 
   const [mibIndex, setmibIndex] = useState(0);
   const mibMethods = ["Auto", "None", "Fly-back", "By known shape"];
+  const mibPyMethods = [
+    "--auto-reshape",
+    "--no-reshaping",
+    "--use-fly-back",
+    "--known-shape",
+  ];
   let DEBUG: number = 0;
 
   useEffect(() => {
     setParameters({
       sample_name: sample,
-      reshape_option: mibMethods[mibIndex],
+      reshape_option: mibPyMethods[mibIndex],
       bin_sig_factor: sigBinning,
       bin_nav_factor: navBinning,
       Scan_X: dimX,
