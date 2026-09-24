@@ -39,12 +39,19 @@ const BEAMLINE_TECHNIQUES_SUBSET = {
   ],
   [Beamline["I13-2"]]: [Technique.Ptycho, Technique.Tomo],
   [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
-  [Beamline.Epsic]: [Technique.Dpc, Technique.Nbed, Technique.Ptycho],
+  [Beamline.E02]: [
+    Technique.Dpc,
+    Technique.Nbed,
+    Technique.Ptyrex,
+    Technique.Mib,
+  ],
+  [Beamline.E01]: [Technique.Dpc, Technique.Nbed, Technique.Ptyrex],
 };
 
 const BEAMLINES_DEFAULT_TECHNIQUE = {
   [Beamline.DIAD]: Technique.Tomo,
-  [Beamline.Epsic]: Technique.Ptycho,
+  [Beamline.E02]: Technique.Mib,
+  [Beamline.E01]: Technique.Ptyrex,
   [Beamline.I12]: Technique.Tomo,
   [Beamline["I08-1"]]: Technique.Ptycho,
   [Beamline["I13-1"]]: Technique.Ptycho,
@@ -230,6 +237,10 @@ export const App: React.FC = () => {
         return Beamline["I13-2"];
       case "I14":
         return Beamline.I14;
+      case "E02":
+        return Beamline.E02;
+      case "E01":
+        return Beamline.E01;
       default:
         console.error(`Unrecognised beamline: ${beamline}`);
     }

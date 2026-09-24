@@ -3,6 +3,7 @@ import { Beamline, Option, Technique } from "../../types";
 import OptionSelect from "../OptionSelect";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
 import { PtyrexParameterConfiguration } from "./PtyrexParameterConfiguration";
+import { MibParameterConfiguration } from "./MibParameterConfiguration";
 import { ReactElement, useState } from "react";
 import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
@@ -134,6 +135,11 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
     [Technique.Dpc]: {},
     [Technique.Nbed]: {},
+    [Technique.Mib]: {
+      "e02mib2x-auto": (
+        <MibParameterConfiguration setParameters={setTemplateParameters} />
+      ),
+    },
     [Technique.Ptycho]: {},
     [Technique.Ptyrex]: {
       "ptyrex-submission": (
