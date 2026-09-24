@@ -1,3 +1,15 @@
+export type InstrumentSession = {
+  __typename: "InstrumentSession";
+  instrumentSessionNumber: number;
+  startTime: unknown;
+  proposal: {
+    __typename: "Proposal";
+    proposalNumber: number;
+    proposalCategory: string | null;
+  };
+  instrument: { __typename: "Instrument"; name: string };
+};
+
 const SessionSelectionMode = {
   Latest: "Latest",
   Custom: "Custom",
@@ -10,6 +22,7 @@ const Technique = {
   Dpc: "Dpc",
   Nbed: "Nbed",
   Ptycho: "Ptycho",
+  Ptyrex: "Ptyrex",
   Tomo: "Tomo",
   Xanes: "Xanes",
   Xrd: "Xrd",
