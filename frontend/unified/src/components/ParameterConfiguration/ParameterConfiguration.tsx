@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Alert, Button, Snackbar, Typography } from "@mui/material";
 import { Beamline, Option, Technique } from "../../types";
 import OptionSelect from "../OptionSelect";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
@@ -69,6 +69,9 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     nprocs: 1,
     memory: "20Gi",
   });
+  const [notification, setNotification] = useState<
+    React.ReactElement | undefined
+  >(undefined);
 
   const [mutation] = useMutation(SUBMIT_WORKFLOW_TEMPLATE);
 
@@ -95,7 +98,26 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         parameters,
         visit: visit,
       },
+      onCompleted: (resp) => {
+        setNotification(
+          <Alert severity="success" variant="outlined">
+            Submitted workflow: {resp.submitWorkflowTemplate.name}
+          </Alert>
+        );
+      },
+      onError: (err) => {
+        setNotification(
+          <Alert severity="error" variant="outlined">
+            Failed to submit workflow: {err.message}
+          </Alert>
+        );
+      },
     });
+    setNotification(
+      <Alert severity="info" variant="outlined">
+        Submitting workflow...
+      </Alert>
+    );
   };
 
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
@@ -143,6 +165,12 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
           Submit job
         </Button>
       </div>
+      <Snackbar
+        open={notification !== undefined}
+        autoHideDuration={6000}
+        onClose={() => setNotification(undefined)}
+        children={notification}
+      />
     </>
   );
 };
