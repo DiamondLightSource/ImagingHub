@@ -19,8 +19,6 @@ export const App: React.FC = () => {
   const [beamline, setBeamline] = useState<Beamline | null>(null);
   const [visit, setVisit] = useState<Visit | null>(null);
 
-  console.log(Object.values(Beamline).includes("test" as Beamline));
-
   return (
     <ApolloProvider client={apolloClientWorkflows}>
       <Stack direction="row" spacing={HORIZONTAL_SPACING}>
