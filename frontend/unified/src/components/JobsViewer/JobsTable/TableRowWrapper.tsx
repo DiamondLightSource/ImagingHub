@@ -1,6 +1,6 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { TableCell, TableRow } from "@mui/material";
-import { TableRowWrapperFragmentFragment } from "../__generated__/TableRowWrapper.generated";
+import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
 import { useFragment } from "@apollo/client/react";
 import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
 import { finishedStatuses } from "./utils/utils";
