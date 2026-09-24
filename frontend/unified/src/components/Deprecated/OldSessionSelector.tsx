@@ -17,23 +17,23 @@ import { gql, TypedDocumentNode } from "@apollo/client";
 import { useSuspenseQuery } from "@apollo/client/react";
 import { SessionSelectionMode } from "../../types";
 
-export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
-  GetSessionByReferenceQuery,
-  GetSessionByReferenceQueryVariables
-> = gql`
-  query GetSessionByReference($reference: String!) {
-    instrumentSessionByReference(reference: $reference) {
-      instrument {
-        name
-      }
-      instrumentSessionNumber
-      proposal {
-        proposalNumber
-        proposalCategory
-      }
-    }
-  }
-`;
+// export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
+//   GetSessionByReferenceQuery,
+//   GetSessionByReferenceQueryVariables
+// > = gql`
+//   query GetSessionByReference($reference: String!) {
+//     instrumentSessionByReference(reference: $reference) {
+//       instrument {
+//         name
+//       }
+//       instrumentSessionNumber
+//       proposal {
+//         proposalNumber
+//         proposalCategory
+//       }
+//     }
+//   }
+// `;
 
 type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
 
