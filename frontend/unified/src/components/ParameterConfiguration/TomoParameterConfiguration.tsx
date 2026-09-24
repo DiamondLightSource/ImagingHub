@@ -76,7 +76,7 @@ export const CorSweepParameterConfiguration = ({
     setParameters({
       config: generatePipeline(),
       "httomo-outdir-name": HTTOMO_OUTDIR_NAME,
-      output: outputFolder,
+      output: visitDirpath + outputFolder,
     });
   }, [applyNormalisation, sweepValues, outputFolder]);
 
