@@ -3,6 +3,7 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
+  InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
@@ -16,6 +17,7 @@ const HTTOMO_OUTDIR_NAME = "sweep-run";
 
 export const CorSweepParameterConfiguration = ({
   setParameters,
+  visitDirpath,
 }: TemplateComponentProps) => {
   const [applyNormalisation, setApplyNormalisation] = useState<boolean>(true);
   const [sweepValues, setSweepValues] = useState({
@@ -136,6 +138,15 @@ export const CorSweepParameterConfiguration = ({
           label="Output folder"
           value={outputFolder}
           onChange={(e) => setOutputFolder(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start" sx={{ marginRight: 0 }}>
+                  <Typography>{visitDirpath}</Typography>
+                </InputAdornment>
+              ),
+            },
+          }}
         />
       </Card>
     </>
