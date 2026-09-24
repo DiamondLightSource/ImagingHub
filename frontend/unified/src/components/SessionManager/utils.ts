@@ -1,5 +1,5 @@
 import { Beamline, SessionSelectionMode } from "../../types";
-import { InstrumentSession } from "./SessionSelector";
+import { InstrumentSession } from "../Deprecated/OldSessionSelector";
 
 /**
  * Determine the current session based on which session-selection mode is enabled.
