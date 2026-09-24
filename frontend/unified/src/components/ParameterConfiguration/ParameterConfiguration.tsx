@@ -43,15 +43,14 @@ const DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS = {
 
 const determineBeamlineRawDataFilepath = (
   beamline: Beamline,
-  year: string,
-  visit: Visit,
+  visitDirpath: string,
   scanId: number
 ): string => {
   const rawDataDirname =
     DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
       beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
     ];
-  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/${rawDataDirname}/${scanId}.nxs`;
+  return `${visitDirpath}${rawDataDirname}/${scanId}.nxs`;
 };
 
 const determineBeamlineVisitDirpath = (
@@ -91,8 +90,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   );
   const rawDataFilepath = determineBeamlineRawDataFilepath(
     beamline,
-    sessionYear,
-    visit,
+    visitDirpath,
     scanIds[0]
   );
 
