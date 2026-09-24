@@ -116,7 +116,10 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
 
   const generateArtifactList = (): React.ReactNode[] => {
     switch (data.workflow?.status?.__typename) {
-      case "WorkflowSucceededStatus": {
+      case "WorkflowSucceededStatus":
+      case "WorkflowRunningStatus":
+      case "WorkflowFailedStatus":
+      case "WorkflowErroredStatus": {
         const taskNamesAndImageArtifacts: TaskNameAndArtifactTuple[] =
           data.workflow.status.tasks
             .map(
