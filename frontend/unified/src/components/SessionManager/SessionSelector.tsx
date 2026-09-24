@@ -3,10 +3,9 @@ import {
   GetSessionByReferenceQuery,
   GetSessionByReferenceQueryVariables,
 } from "./__generated__/SessionSelector.generated";
-import { SessionQueryQuery } from "./__generated__/SessionManager.generated";
 import React, { useEffect, useState } from "react";
-import { Beamline, SessionSelectionMode } from "../../types";
-import { Visit, visitRegex } from "@diamondlightsource/sci-react-ui";
+import { Beamline, InstrumentSession, SessionSelectionMode } from "../../types";
+import { visitRegex } from "@diamondlightsource/sci-react-ui";
 import {
   Button,
   OutlinedInput,
@@ -37,23 +36,14 @@ export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
   }
 `;
 
-type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
-
-export type InstrumentSession =
-  NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
-
 const SessionSelector = ({
   latestSession,
-  beamline,
-  setBeamline,
-  visit,
-  setVisit,
+  session,
+  setSession,
 }: {
   latestSession: InstrumentSession;
-  beamline: Beamline | null;
-  setBeamline: (_: Beamline | null) => void;
-  visit: Visit | null;
-  setVisit: (_: Visit | null) => void;
+  session: InstrumentSession | null;
+  setSession: (_: InstrumentSession | null) => void;
 }) => {
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
@@ -61,27 +51,10 @@ const SessionSelector = ({
     useState<InstrumentSession>(latestSession);
 
   useEffect(() => {
-    if (!beamline) {
-      setBeamline(latestSession.instrument.name as Beamline);
+    if (!session) {
+      setSession(latestSession);
     }
-
-    if (!visit) {
-      setVisit({
-        proposalCode: latestSession.proposal.proposalCategory?.toLowerCase(),
-        proposalNumber: latestSession.proposal.proposalNumber,
-        number: latestSession.instrumentSessionNumber,
-      } as Visit);
-    }
-  }, [
-    beamline,
-    setBeamline,
-    visit,
-    setVisit,
-    latestSession.instrument.name,
-    latestSession.proposal.proposalNumber,
-    latestSession.proposal.proposalCategory,
-    latestSession.instrumentSessionNumber,
-  ]);
+  }, [session, setSession, latestSession]);
 
   const handleChange = (
     _: React.MouseEvent<HTMLElement>,
@@ -89,20 +62,10 @@ const SessionSelector = ({
   ) => {
     if (toggleButtonLabel === SessionSelectionMode.Latest) {
       setSessionSelectionMode(toggleButtonLabel);
-      setVisit({
-        proposalCode: latestSession.proposal.proposalCategory?.toLowerCase(),
-        proposalNumber: latestSession.proposal.proposalNumber,
-        number: latestSession.instrumentSessionNumber,
-      } as Visit);
-      setBeamline(latestSession.instrument.name as Beamline);
+      setSession(latestSession);
     } else if (toggleButtonLabel === SessionSelectionMode.Custom) {
       setSessionSelectionMode(toggleButtonLabel);
-      setVisit({
-        proposalCode: customSession.proposal.proposalCategory?.toLowerCase(),
-        proposalNumber: customSession.proposal.proposalNumber,
-        number: customSession.instrumentSessionNumber,
-      } as Visit);
-      setBeamline(customSession.instrument.name as Beamline);
+      setSession(customSession);
     }
   };
 
@@ -123,8 +86,7 @@ const SessionSelector = ({
       <CustomSessionInput
         sessionSelectionMode={sessionSelectionMode}
         setCustomSession={setCustomSession}
-        setVisit={setVisit}
-        setBeamline={setBeamline}
+        setSession={setSession}
       />
     </Stack>
   );
@@ -133,13 +95,11 @@ const SessionSelector = ({
 const CustomSessionInput = ({
   sessionSelectionMode,
   setCustomSession,
-  setVisit,
-  setBeamline,
+  setSession,
 }: {
   sessionSelectionMode: SessionSelectionMode;
   setCustomSession: (_: InstrumentSession) => void;
-  setVisit: (_: Visit) => void;
-  setBeamline: (_: Beamline) => void;
+  setSession: (_: InstrumentSession) => void;
 }) => {
   const [input, setInput] = useState<string>("");
   const [pressed, setPressed] = useState<boolean>(false);
@@ -190,8 +150,7 @@ const CustomSessionInput = ({
         <RunQuery
           input={input}
           setLoading={setLoading}
-          setVisit={setVisit}
-          setBeamline={setBeamline}
+          setSession={setSession}
           setCustomSession={setCustomSession}
           setIsErrored={setIsErrored}
           setHelperText={setHelperText}
@@ -205,8 +164,7 @@ const CustomSessionInput = ({
 const RunQuery = ({
   input,
   setLoading,
-  setVisit,
-  setBeamline,
+  setSession,
   setCustomSession,
   setIsErrored,
   setHelperText,
@@ -214,8 +172,7 @@ const RunQuery = ({
 }: {
   input: string;
   setLoading: (_: boolean) => void;
-  setVisit: (_: Visit) => void;
-  setBeamline: (_: Beamline) => void;
+  setSession: (_: InstrumentSession) => void;
   setCustomSession: (_: InstrumentSession) => void;
   setIsErrored: (_: boolean) => void;
   setHelperText: (_: string) => void;
@@ -251,14 +208,7 @@ const RunQuery = ({
         setPressed(false);
       } else {
         setCustomSession(data.instrumentSessionByReference);
-        setVisit({
-          proposalCode:
-            data.instrumentSessionByReference.proposal.proposalCategory?.toLowerCase(),
-          proposalNumber:
-            data.instrumentSessionByReference.proposal.proposalNumber,
-          number: data.instrumentSessionByReference.instrumentSessionNumber,
-        } as Visit);
-        setBeamline(fetchedBeamline as Beamline);
+        setSession(data.instrumentSessionByReference);
         setLoading(false);
         setPressed(false);
       }

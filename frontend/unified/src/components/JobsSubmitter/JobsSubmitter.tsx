@@ -7,12 +7,10 @@ import { Visit } from "@diamondlightsource/sci-react-ui";
 import ParameterConfiguration from "./ParameterConfiguration/ParameterConfiguration";
 
 const JobsSubmitter = ({
-  beamline,
-  visit,
+  session,
   verticalSpacing = 2,
 }: {
-  beamline: Beamline;
-  visit: Visit;
+  session: InstrumentSession;
   verticalSpacing?: number;
 }) => {
   const filteredTechniques = BEAMLINE_TECHNIQUES_SUBSET[beamline];

@@ -6,8 +6,8 @@ import {
 import { useQuery } from "@apollo/client/react";
 import { Chip, Stack, Typography } from "@mui/material";
 import SessionSelector from "./SessionSelector";
-import { Beamline } from "../../types";
 import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
+import { InstrumentSession } from "../../types";
 
 export const SESSION_QUERY: TypedDocumentNode<
   SessionQueryQuery,
@@ -27,6 +27,7 @@ export const SESSION_QUERY: TypedDocumentNode<
               instrument {
                 name
               }
+              startTime
             }
           }
         }
@@ -36,15 +37,11 @@ export const SESSION_QUERY: TypedDocumentNode<
 `;
 
 const SessionManager = ({
-  beamline,
-  setBeamline,
-  visit,
-  setVisit,
+  session,
+  setSession,
 }: {
-  beamline: Beamline | null;
-  setBeamline: (beamline: Beamline | null) => void;
-  visit: Visit | null;
-  setVisit: (visit: Visit | null) => void;
+  session: InstrumentSession | null;
+  setSession: (_: InstrumentSession | null) => void;
 }) => {
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
@@ -63,20 +60,27 @@ const SessionManager = ({
         <Chip
           color="primary"
           variant="outlined"
-          label={visit ? visitToText(visit) : "No Visit"}
+          label={
+            session
+              ? visitToText({
+                  proposalCode:
+                    session.proposal.proposalCategory?.toLowerCase(),
+                  proposalNumber: session.proposal.proposalNumber,
+                  number: session.instrumentSessionNumber,
+                } as Visit)
+              : "No Visit"
+          }
         />
         <Chip
           color="secondary"
           variant="outlined"
-          label={beamline ? beamline : "No Beamline"}
+          label={session ? session.instrument.name : "No Beamline"}
         />
       </Stack>
       <SessionSelector
         latestSession={latestSession}
-        beamline={beamline}
-        setBeamline={setBeamline}
-        visit={visit}
-        setVisit={setVisit}
+        session={session}
+        setSession={setSession}
       />
     </>
   );
