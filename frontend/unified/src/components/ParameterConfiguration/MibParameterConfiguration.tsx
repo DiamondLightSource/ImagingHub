@@ -4,7 +4,6 @@ import {
   Stack,
   TextField,
   List,
-  ListItem,
   ListItemButton,
   ListItemText,
   Menu,
@@ -12,7 +11,6 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TemplateComponentProps } from "../../types";
-import { ResourceForm } from "../ResourceForm";
 
 export const MibParameterConfiguration = ({
   setParameters,
@@ -31,7 +29,6 @@ export const MibParameterConfiguration = ({
     "--use-fly-back",
     "--known-shape",
   ];
-  let DEBUG: number = 0;
 
   useEffect(() => {
     setParameters({
@@ -41,11 +38,10 @@ export const MibParameterConfiguration = ({
       bin_nav_factor: navBinning,
       Scan_X: dimX,
       Scan_Y: dimY,
-      DEBUG: 0,
       nprocs: 4,
       memory: "32Gi",
     });
-  }, [sample, mibMethods[mibIndex], sigBinning, navBinning, dimX, dimY, DEBUG]);
+  }, [sample, mibMethods[mibIndex], sigBinning, navBinning, dimX, dimY]);
 
   const [listState, setliststate] = React.useState<null | HTMLElement>(null);
   const open = Boolean(listState);
@@ -66,7 +62,7 @@ export const MibParameterConfiguration = ({
   };
 
   //check whether the By known shape option has been chosen
-  const roxColCOmponent = mibMethods[mibIndex] == "By known shape";
+  const roxColComponent = mibMethods[mibIndex] == "By known shape";
 
   return (
     <>
@@ -119,7 +115,7 @@ export const MibParameterConfiguration = ({
             size="small"
             onChange={(e) => setNavBinning(e.target.value)}
           />
-          {roxColCOmponent ? (
+          {roxColComponent ? (
             <>
               <TextField
                 label="Dimension in x (row)"
