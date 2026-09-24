@@ -153,20 +153,24 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   return (
     <FormControl>
       <InputLabel>Artifact</InputLabel>
-      <Select
-        disabled={!isPlottingEnabled}
-        onChange={(_, value) => {
-          if (value === null || value === undefined) {
-            throw Error(
-              "Value of selected artifact should be a component but is null or undefined"
-            );
-          }
-          setSelectedArtifact(value.props.value);
-          setArtifact(value.props["data-artifact"]);
-        }}
-        value={selectedArtifact}
-        children={generateArtifactList()}
-      />
+      {data.workflow?.status?.__typename !== "WorkflowPendingStatus" ? (
+        <Select
+          disabled={!isPlottingEnabled}
+          onChange={(_, value) => {
+            if (value === null || value === undefined) {
+              throw Error(
+                "Value of selected artifact should be a component but is null or undefined"
+              );
+            }
+            setSelectedArtifact(value.props.value);
+            setArtifact(value.props["data-artifact"]);
+          }}
+          value={selectedArtifact}
+          children={generateArtifactList()}
+        />
+      ) : (
+        <p>No artifacts for pending workflow</p>
+      )}
     </FormControl>
   );
 };
