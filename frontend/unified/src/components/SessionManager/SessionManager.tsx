@@ -5,10 +5,8 @@ import {
 } from "./__generated__/SessionManager.generated";
 import { useQuery } from "@apollo/client/react";
 import { Chip, Stack, Typography } from "@mui/material";
-import { InstrumentSession, SessionSelector } from "./SessionSelector";
-import { useState } from "react";
-import { determineCurrentSession, mapStringsToBeamline } from "./utils";
-import { Beamline, SessionSelectionMode } from "../../types";
+import SessionSelector from "./SessionSelector";
+import { Beamline } from "../../types";
 import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 
 export const SESSION_QUERY: TypedDocumentNode<
@@ -48,46 +46,37 @@ const SessionManager = ({
   visit: Visit | null;
   setVisit: (visit: Visit | null) => void;
 }) => {
-  const [sessionSelectionMode, setSessionSelectionMode] =
-    useState<SessionSelectionMode>(SessionSelectionMode.Latest);
-  const [customSession, setCustomSession] = useState<InstrumentSession | null>(
-    null
-  );
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+  if (loading) return <p>Loading...</p>;
   if (!data) return <p>Data undefined</p>;
   if (!data.account) return <p>Account null</p>;
 
-  const session = determineCurrentSession(
-    sessionSelectionMode,
-    data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
-    customSession
-  );
-  const sessionName = visitToText({
-    proposalCode: session.proposal.proposalCategory?.toLowerCase(),
-    proposalNumber: session.proposal.proposalNumber,
-    number: session.instrumentSessionNumber,
-  } as Visit);
-
-  setBeamline(mapStringsToBeamline(session.instrument.name));
+  const latestSession =
+    data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
 
   return (
     <>
       <Stack direction="row" spacing={2} alignItems="center">
         <Typography variant="h5">Session</Typography>
-        <Chip color="primary" variant="outlined" label={sessionName} />
+        <Chip
+          color="primary"
+          variant="outlined"
+          label={visit ? visitToText(visit) : "No Visit"}
+        />
         <Chip
           color="secondary"
           variant="outlined"
-          label={session.instrument.name}
+          label={beamline ? beamline : "No Beamline"}
         />
       </Stack>
       <SessionSelector
-        setSession={setCustomSession}
-        mode={sessionSelectionMode}
-        setMode={setSessionSelectionMode}
+        latestSession={latestSession}
+        beamline={beamline}
+        setBeamline={setBeamline}
+        visit={visit}
+        setVisit={setVisit}
       />
     </>
   );
