@@ -54,6 +54,14 @@ const determineBeamlineRawDataFilepath = (
   return `/dls/${beamline}/data/${year}/${visitToText(visit)}/${rawDataDirname}/${scanId}.nxs`;
 };
 
+const determineBeamlineVisitDirpath = (
+  beamline: Beamline,
+  year: string,
+  visit: Visit
+) => {
+  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/`;
+};
+
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   technique,
   template,
@@ -76,6 +84,11 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   const [mutation] = useMutation(SUBMIT_WORKFLOW_TEMPLATE);
 
   const sessionYear = new Date(startTime).getFullYear();
+  const visitDirpath = determineBeamlineVisitDirpath(
+    beamline,
+    sessionYear,
+    visit
+  );
   const rawDataFilepath = determineBeamlineRawDataFilepath(
     beamline,
     sessionYear,
@@ -126,7 +139,10 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     [Technique.Ptycho]: {},
     [Technique.Ptyrex]: {
       "ptyrex-submission": (
-        <PtyrexParameterConfiguration setParameters={setTemplateParameters} />
+        <PtyrexParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirpath}
+        />
       ),
     },
     [Technique.Tomo]: {
@@ -134,6 +150,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         <LoaderProvider>
           <CorSweepParameterConfiguration
             setParameters={setTemplateParameters}
+            visitDirpath={visitDirpath}
           />
         </LoaderProvider>
       ),
