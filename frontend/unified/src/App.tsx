@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import {
   InstrumentSession,
   SessionSelectionMode,
@@ -11,10 +11,8 @@ import { useState } from "react";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
-import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import { Plot } from "./components/Plot/Plot";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
@@ -96,7 +94,6 @@ export const App: React.FC = () => {
     null
   );
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
 
   if (loading) return <p>Loading...</p>;
@@ -306,62 +303,11 @@ export const App: React.FC = () => {
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Typography variant="h5">Plot</Typography>
-
-            <Plot
-              workflowName={selectedWorkflow}
-              visit={selectedVisit}
-              key={sessionName}
-            />
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Log</Typography>
-            {selectedWorkflow !== null ? (
-              <DisplayLogMeta
-                visit={selectedVisit}
-                workflowName={selectedWorkflow}
-              />
-            ) : (
-              <p>No workflow selected</p>
-            )}
-
-            <PlaceholderComponent
-              placeholderText="Log component placeholder"
-              height={200}
-              width={500}
-            />
-
-            <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
-              visit={selectedVisit}
-              selectedWorkflow={selectedWorkflow}
-              setSelectedWorkflow={setSelectedWorkflow}
-            />
+            <JobsViewer visit={selectedVisit} />
           </Stack>
         </Grid>
       </ApolloProvider>
     </>
-  );
-};
-
-type PlaceholderComponentProps = {
-  placeholderText: string;
-  height: number;
-  width: number;
-};
-
-const PlaceholderComponent = ({
-  placeholderText,
-  height,
-  width,
-}: PlaceholderComponentProps) => {
-  return (
-    <Box
-      sx={{ width: width, height: height, border: "1px dashed grey" }}
-      alignContent="center"
-      justifyItems="center"
-    >
-      <p>{placeholderText}</p>
-    </Box>
   );
 };
