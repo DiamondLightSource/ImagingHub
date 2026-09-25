@@ -2,7 +2,7 @@ import { gql, TypedDocumentNode } from "@apollo/client";
 import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
 import { useState } from "react";
 import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
-import { apolloClientWorkflows } from "../../../../src/ApolloClient";
+import { apolloClientWorkflows } from "../../../../../src/ApolloClient";
 import {
   LiveTableRowSubscriptionSubscription,
   LiveTableRowSubscriptionSubscriptionVariables,
