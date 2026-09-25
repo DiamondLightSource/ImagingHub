@@ -1,18 +1,10 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import JobsTable from "./JobsTable/JobsTable";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import { Divider, Typography } from "@mui/material";
-import LogStreamer from "./LogStreamer/LogStreamer";
+import JobDataViewer from "./JobDataViewer";
 
-const JobsViewer = ({
-  visit,
-  setSelectedWorkflow,
-  selectedWorkflow,
-}: {
-  visit: Visit;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
-}) => {
+const JobsViewer = ({ visit }: { visit: Visit }) => {
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   return (
     <>
       <Suspense>
@@ -22,13 +14,7 @@ const JobsViewer = ({
           setSelectedWorkflow={setSelectedWorkflow}
         />
       </Suspense>
-      <Divider sx={{ width: "100%" }} />
-      <Typography variant="h5">Technique</Typography>
-      {selectedWorkflow ? (
-        <LogStreamer visit={visit} selectedWorkflow={selectedWorkflow} />
-      ) : (
-        <>No Workflow Selected</>
-      )}
+      <JobDataViewer visit={visit} selectedWorkflow={selectedWorkflow} />
     </>
   );
 };
