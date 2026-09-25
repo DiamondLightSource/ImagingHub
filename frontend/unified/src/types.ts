@@ -28,3 +28,18 @@ export type TemplateComponentProps = {
   setParameters: (_: object) => void;
   visitDirpath: string;
 };
+
+export type TaskStatus =
+  | "PENDING"
+  | "RUNNING"
+  | "SUCCEEDED"
+  | "SKIPPED"
+  | "FAILED"
+  | "ERROR"
+  | "OMITTED";
+
+export type Task = {
+  id: string;
+  name: string;
+  status: TaskStatus;
+};
