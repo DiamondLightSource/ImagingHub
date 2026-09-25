@@ -1,11 +1,5 @@
 import { Suspense } from "react";
-import JobsTable from "./JobsTable";
-
-export type Visit = {
-  proposalCode: string;
-  proposalNumber: number;
-  number: number;
-};
+import JobsTable from "./JobsTable/JobsTable";
 
 const JobsViewer = ({
   visit,

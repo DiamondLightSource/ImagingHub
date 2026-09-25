@@ -5,7 +5,7 @@ import { useFragment } from "@apollo/client/react";
 import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
 import { getWorkflowStatusIcon } from "./StatusIcons";
 import { DeepPartial } from "@apollo/client/utilities";
-import { TableRowRelayFragmentFragment } from "./__generated__/TableRowRelay.generated";
+import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
 import { JobTableRow } from "./JobTableRow";
 
 export const BASETABLEROW_FRAGMENT = gql`
@@ -26,7 +26,8 @@ const BaseTableRow = ({
   setSelectedWorkflow,
 }: {
   queryData:
-    TableRowRelayFragmentFragment | DeepPartial<TableRowRelayFragmentFragment>;
+    | TableRowWrapperFragmentFragment
+    | DeepPartial<TableRowWrapperFragmentFragment>;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
 }) => {
