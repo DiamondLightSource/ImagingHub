@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import JobsTable from "./JobsTable/JobsTable";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 const JobsViewer = ({
   visit,
