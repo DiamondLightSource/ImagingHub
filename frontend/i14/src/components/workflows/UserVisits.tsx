@@ -54,10 +54,7 @@ type Props = {
 
 const UserVisits: FC<Props> = ({ value, onChange, onInitialValue }) => {
   const username = getFedid();
-  const { data, loading, error } = useQuery<
-    UserVisitsQuery,
-    UserVisitsQueryVariables
-  >(GET_USER_VISITS, {
+  const { data, loading, error } = useQuery(GET_USER_VISITS, {
     variables: { username },
   });
   const visitOptions: Option[] = data ? proposalToOptions(data) : [];
