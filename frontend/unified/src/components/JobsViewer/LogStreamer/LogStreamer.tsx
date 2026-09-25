@@ -7,6 +7,8 @@ import {
 import { useQuery } from "@apollo/client/react";
 import { MenuItem, Select } from "@mui/material";
 import { useState } from "react";
+import { setFetchedTasks } from "./utils";
+import LogStreamContent from "./LogStreamContent";
 
 const GET_WORKFLOW_TASKS: TypedDocumentNode<
   GetWorkflowTasksQuery,
@@ -57,7 +59,7 @@ const LogStreamer = ({
   visit: Visit;
   selectedWorkflow: string;
 }) => {
-  const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const { data, loading, error } = useQuery(GET_WORKFLOW_TASKS, {
     variables: {
       visit: visit,
@@ -68,15 +70,23 @@ const LogStreamer = ({
   if (loading) return <>Loading...</>;
   if (error) return <>Error: {error.message}</>;
   if (!data) return <>No Data</>;
+  if (!data.workflow) return <>No Workflow Found</>;
 
-  const test: string[] = [];
+  const fetchedTasks = setFetchedTasks(data);
   return (
     <>
       <Select>
-        {test.map((i) => (
-          <MenuItem>{i}</MenuItem>
+        {fetchedTasks.map((i) => (
+          <MenuItem key={i.id} value={i.id}>
+            {i.name}
+          </MenuItem>
         ))}
       </Select>
+      <LogStreamContent
+        visit={visit}
+        workflowName={selectedWorkflow}
+        taskId={selectedTaskId}
+      />
     </>
   );
 };
