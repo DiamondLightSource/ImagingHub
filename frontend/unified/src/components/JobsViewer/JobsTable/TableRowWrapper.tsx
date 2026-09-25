@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@mui/material";
 import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
 import { useFragment } from "@apollo/client/react";
 import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
-import { finishedStatuses } from "./utils/utils";
+import { finishedStatuses } from "../utils/utils";
 import { useState } from "react";
 import LiveTableRow from "./LiveTableRow";
 
