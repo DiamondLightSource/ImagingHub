@@ -52,6 +52,11 @@ export const templateOptions: Option[] = [
     desc: "nbed orientation mapping",
   },
   {
+    label: "Mib Batch",
+    value: "e02mib2x-auto",
+    desc: "Batch conversion of mib files",
+  },
+  {
     label: "CoR Sweep",
     value: "httomo-cor-sweep",
     desc: "optimise the centre of rotation",

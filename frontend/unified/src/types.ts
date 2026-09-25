@@ -1,6 +1,7 @@
 export enum Technique {
   Dpc = "Dpc",
   Nbed = "Nbed",
+  Mib = "Mib",
   Ptycho = "Ptycho",
   Ptyrex = "Ptyrex",
   Tomo = "Tomo",
@@ -20,6 +21,8 @@ export enum Beamline {
   "I13-2" = "i13-2",
   I14 = "i14",
   Epsic = "e01",
+  E01 = "e01",
+  E02 = "e02",
 }
 
 export type Option = { label: string; value: string; desc?: string };
