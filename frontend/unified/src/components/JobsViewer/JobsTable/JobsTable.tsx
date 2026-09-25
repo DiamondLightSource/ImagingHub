@@ -3,9 +3,8 @@ import {
   WorkflowsQueryQuery,
   WorkflowsQueryQueryVariables,
 } from "./__generated__/JobsTable.generated";
-import { Suspense, useCallback, useState, useEffect } from "react";
-
-import { Visit } from "./JobsViewer";
+import { Suspense, useCallback, useState } from "react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 import TableContent, { TABLECONTENT_FRAGMENT } from "./TableContent";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
