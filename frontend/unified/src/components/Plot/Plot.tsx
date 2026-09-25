@@ -1,5 +1,4 @@
 import { Suspense, useEffect, useState } from "react";
-import { Visit } from "../JobsViewer/JobsViewer";
 import { ArtifactSelector, Artifact } from "./ArtifactSelector";
 import { Switch } from "@mui/material";
 import { NDT } from "@diamondlightsource/davidia";
@@ -9,6 +8,7 @@ import { proxyService } from "../../../../tomography/src/api/services";
 import loadData from "../../../../tomography/src/components/crop/SampleLoad";
 import { DataPlotter } from "./DataPlotter";
 import { DataLoadingProgress } from "./DataLoadingProgress";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 type PlotProps = {
   workflowName: string | null;
