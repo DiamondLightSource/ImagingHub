@@ -317,14 +317,14 @@ export const App: React.FC = () => {
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Typography variant="h5">Plot</Typography>
-
-            <Plot
-              workflowName={selectedWorkflow}
+            <Typography variant="h5">Jobs</Typography>
+            <JobsViewer
               visit={selectedVisit}
-              key={sessionName}
+              selectedWorkflow={selectedWorkflow}
+              setSelectedWorkflow={setSelectedWorkflow}
             />
             <Divider sx={{ width: "100%" }} />
+
             <Typography variant="h5">Log</Typography>
             {selectedWorkflow !== null ? (
               <DisplayLogMeta
@@ -340,13 +340,13 @@ export const App: React.FC = () => {
               height={200}
               width={500}
             />
-
             <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
+
+            <Typography variant="h5">Plot</Typography>
+            <Plot
+              workflowName={selectedWorkflow}
               visit={selectedVisit}
-              selectedWorkflow={selectedWorkflow}
-              setSelectedWorkflow={setSelectedWorkflow}
+              key={sessionName}
             />
           </Stack>
         </Grid>
