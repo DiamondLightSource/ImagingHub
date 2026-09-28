@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import {
   InstrumentSession,
   SessionSelectionMode,
@@ -334,12 +334,6 @@ export const App: React.FC = () => {
             ) : (
               <p>No workflow selected</p>
             )}
-
-            <PlaceholderComponent
-              placeholderText="Log component placeholder"
-              height={200}
-              width={500}
-            />
             <Divider sx={{ width: "100%" }} />
 
             <Typography variant="h5">Plot</Typography>
@@ -352,27 +346,5 @@ export const App: React.FC = () => {
         </Grid>
       </ApolloProvider>
     </>
-  );
-};
-
-type PlaceholderComponentProps = {
-  placeholderText: string;
-  height: number;
-  width: number;
-};
-
-const PlaceholderComponent = ({
-  placeholderText,
-  height,
-  width,
-}: PlaceholderComponentProps) => {
-  return (
-    <Box
-      sx={{ width: width, height: height, border: "1px dashed grey" }}
-      alignContent="center"
-      justifyItems="center"
-    >
-      <p>{placeholderText}</p>
-    </Box>
   );
 };
