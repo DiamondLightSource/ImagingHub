@@ -281,7 +281,6 @@ export const App: React.FC = () => {
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Scan</Typography>
             <ScanSelector
               scanIds={selectedScanIds}
