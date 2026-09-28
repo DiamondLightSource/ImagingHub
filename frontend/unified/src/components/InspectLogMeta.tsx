@@ -113,7 +113,11 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
             <Button
               key={logFilename}
               variant="contained"
-              onClick={() => openInNewTab(artifactUrl)}
+              onClick={async () => {
+                openInNewTab(artifactUrl);
+                const resp = await fetch(artifactUrl);
+                console.log("response to fetch is: ", resp);
+              }}
             >
               {" "}
               {logFilename}{" "}
