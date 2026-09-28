@@ -55,6 +55,9 @@ const Layout = () => {
               <NavLink to="/" linkComponent={RouterNavLink}>
                 Home
               </NavLink>
+              <NavLink to="/post-processing" linkComponent={RouterNavLink}>
+                Post Processing
+              </NavLink>
               <NavLink to="/tomography" linkComponent={RouterNavLink}>
                 Tomography
               </NavLink>
