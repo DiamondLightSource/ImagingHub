@@ -1,4 +1,4 @@
-import { Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import {
   InstrumentSession,
   SessionSelectionMode,
@@ -262,24 +262,25 @@ export const App: React.FC = () => {
 
   return (
     <>
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Typography variant="h5">Session</Typography>
-        <Chip color="primary" variant="outlined" label={sessionName} />
-        <Chip
-          color="secondary"
-          variant="outlined"
-          label={session.instrument.name}
+      <Box justifyItems="center">
+        <Stack direction="row" spacing={2} alignItems="center" marginBottom={2}>
+          <Typography variant="h5">Session</Typography>
+          <Chip color="primary" variant="outlined" label={sessionName} />
+          <Chip
+            color="secondary"
+            variant="outlined"
+            label={session.instrument.name}
+          />
+        </Stack>
+        <SessionSelector
+          setSession={updateCustomSession}
+          mode={sessionSelectionMode}
+          setMode={updateSessionSelectionMode}
         />
-      </Stack>
-      <SessionSelector
-        setSession={updateCustomSession}
-        mode={sessionSelectionMode}
-        setMode={updateSessionSelectionMode}
-      />
+      </Box>
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Divider sx={{ width: "100%" }} />
             <Typography variant="h5">Scan</Typography>
             <ScanSelector
               scanIds={selectedScanIds}
