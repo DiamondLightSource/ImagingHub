@@ -18,7 +18,7 @@ const App: React.FC = () => {
           <Route path="i14/*" element={<I14App />} />
           <Route path="ePSIC/*" element={<EpsicApp />} />
           <Route
-            path="unified/*"
+            path="post-processing/*"
             element={
               <ApolloProvider client={apolloClientUlims}>
                 <UnifiedApp />

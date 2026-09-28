@@ -40,6 +40,11 @@ const Dashboard: React.FC = () => {
         </Typography>
         <Grid display="flex">
           <AppCard
+            name="Post Processing"
+            desc="Imaging data post-processing"
+            linkTarget="post-processing"
+          />
+          <AppCard
             name="Tomography"
             desc="Web app for HTTomo"
             linkTarget="tomography"
