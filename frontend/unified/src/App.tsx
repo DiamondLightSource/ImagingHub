@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Chip, Divider, Grid, Stack, Typography } from "@mui/material";
 import {
   InstrumentSession,
   SessionSelectionMode,
@@ -317,14 +317,14 @@ export const App: React.FC = () => {
             />
           </Stack>
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Typography variant="h5">Plot</Typography>
-
-            <Plot
-              workflowName={selectedWorkflow}
+            <Typography variant="h5">Jobs</Typography>
+            <JobsViewer
               visit={selectedVisit}
-              key={sessionName}
+              selectedWorkflow={selectedWorkflow}
+              setSelectedWorkflow={setSelectedWorkflow}
             />
             <Divider sx={{ width: "100%" }} />
+
             <Typography variant="h5">Log</Typography>
             {selectedWorkflow !== null ? (
               <DisplayLogMeta
@@ -334,45 +334,17 @@ export const App: React.FC = () => {
             ) : (
               <p>No workflow selected</p>
             )}
-
-            <PlaceholderComponent
-              placeholderText="Log component placeholder"
-              height={200}
-              width={500}
-            />
-
             <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
+
+            <Typography variant="h5">Plot</Typography>
+            <Plot
+              workflowName={selectedWorkflow}
               visit={selectedVisit}
-              selectedWorkflow={selectedWorkflow}
-              setSelectedWorkflow={setSelectedWorkflow}
+              key={sessionName}
             />
           </Stack>
         </Grid>
       </ApolloProvider>
     </>
-  );
-};
-
-type PlaceholderComponentProps = {
-  placeholderText: string;
-  height: number;
-  width: number;
-};
-
-const PlaceholderComponent = ({
-  placeholderText,
-  height,
-  width,
-}: PlaceholderComponentProps) => {
-  return (
-    <Box
-      sx={{ width: width, height: height, border: "1px dashed grey" }}
-      alignContent="center"
-      justifyItems="center"
-    >
-      <p>{placeholderText}</p>
-    </Box>
   );
 };
