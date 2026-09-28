@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import {
   WorkflowsQueryQuery,
   WorkflowsQueryQueryVariables,
@@ -54,22 +53,20 @@ const JobsTable = ({
   });
 
   return (
-    <Box width="600px" height="600px">
-      <Suspense>
-        {data && (
-          <TableContent
-            queryData={data.workflows}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            selectedLimit={selectedLimit}
-            setSelectedLimit={onChangeLimit}
-            setCursor={setCursor}
-            setSelectedWorkflow={setSelectedWorkflow}
-            selectedWorkflow={selectedWorkflow}
-          />
-        )}
-      </Suspense>
-    </Box>
+    <Suspense>
+      {data && (
+        <TableContent
+          queryData={data.workflows}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          selectedLimit={selectedLimit}
+          setSelectedLimit={onChangeLimit}
+          setCursor={setCursor}
+          setSelectedWorkflow={setSelectedWorkflow}
+          selectedWorkflow={selectedWorkflow}
+        />
+      )}
+    </Suspense>
   );
 };
 
