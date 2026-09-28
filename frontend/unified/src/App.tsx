@@ -18,6 +18,7 @@ import { Plot } from "./components/Plot/Plot";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { gql, type TypedDocumentNode } from "@apollo/client";
+import { useAuth } from "@diamondlightsource/sci-react-ui";
 import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
@@ -69,8 +70,8 @@ export const SESSION_QUERY: TypedDocumentNode<
   SessionQueryQuery,
   SessionQueryQueryVariables
 > = gql`
-  query sessionQuery {
-    account(username: "twi18192") {
+  query sessionQuery($username: String!) {
+    account(username: $username) {
       instrumentSessionRoles(first: 1) {
         edges {
           node {
@@ -92,6 +93,12 @@ export const SESSION_QUERY: TypedDocumentNode<
   }
 `;
 
+const useFedid = (): string => {
+  const token = useAuth().getToken();
+  const parseToken = JSON.parse(atob(token.split(".")[1]));
+  return parseToken.fedid;
+};
+
 export const App: React.FC = () => {
   //adding common states of beamlines, Techique, workflow
   const [showAllTechniques, setShowAllTechniques] = useState(false);
@@ -104,7 +111,9 @@ export const App: React.FC = () => {
   );
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
-  const { loading, error, data } = useQuery(SESSION_QUERY, { variables: {} });
+  const { loading, error, data } = useQuery(SESSION_QUERY, {
+    variables: { username: useFedid() },
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
