@@ -10,6 +10,7 @@ import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/
 import { useMutation } from "@apollo/client/react";
 import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
+import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -153,6 +154,14 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
       "httomo-cor-sweep": (
         <LoaderProvider>
           <CorSweepParameterConfiguration
+            setParameters={setTemplateParameters}
+            visitDirpath={visitDirpath}
+          />
+        </LoaderProvider>
+      ),
+      "httomo-fbp-180": (
+        <LoaderProvider>
+          <Fbp180ParameterConfiguration
             setParameters={setTemplateParameters}
             visitDirpath={visitDirpath}
           />
