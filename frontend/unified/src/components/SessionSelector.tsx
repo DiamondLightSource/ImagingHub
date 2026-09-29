@@ -135,7 +135,7 @@ const SelectSessionButton: React.FC<SelectSessionButtonProps> = ({
     if (sessionSelectionMode === SessionSelectionMode.Latest) {
       return "";
     } else if (visitRegex.exec(sessionInputValue) === null) {
-      return "Session must be of the following format: abcdef12345-1";
+      return "Session must be of the following format: ab12345-1";
     } else if (
       visitRegex.exec(sessionInputValue) !== null &&
       data.instrumentSessionByReference === null
