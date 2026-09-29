@@ -38,7 +38,13 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
       {
         method: loaderMethod,
         module_path: loaderModulePath,
-        parameters: loaderParams,
+        parameters: {
+          data_path: "/entry1/tomo_entry/data/data",
+          image_key_path: "/entry1/tomo_entry/instrument/detector/image_key",
+          rotation_angles: {
+            data_path: "/entry1/tomo_entry/data/rotation_angle",
+          },
+        },
       },
       {
         method: "remove_outlier",
