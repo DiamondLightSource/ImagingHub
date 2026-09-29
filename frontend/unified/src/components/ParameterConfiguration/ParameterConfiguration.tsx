@@ -74,7 +74,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   scanIds,
 }: ParameterConfigurationProps) => {
   const [templateParameters, setTemplateParameters] = useState<object>({});
-  const [resourceParameters] = useState({
+  const [resourceParameters, setResourceParameters] = useState({
     nprocs: 1,
     memory: "20Gi",
   });
@@ -163,6 +163,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         <LoaderProvider>
           <Fbp180ParameterConfiguration
             setParameters={setTemplateParameters}
+            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirpath}
           />
         </LoaderProvider>

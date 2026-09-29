@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 
 export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
   setParameters,
+  setResourceParameters,
   visitDirpath,
 }: TemplateComponentProps) => {
   const [applyStripeRemoval, setApplyStripeRemoval] = useState<boolean>(true);
@@ -153,6 +154,10 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
       config: generatePipeline(),
       output: visitDirpath + outputFolder,
       "httomo-outdir-name": httomoOutdirName,
+    });
+    setResourceParameters({
+      nprocs: 4,
+      memory: "200Gi",
     });
   }, [applyStripeRemoval, stripeRemovalParameters, outputFolder]);
 
