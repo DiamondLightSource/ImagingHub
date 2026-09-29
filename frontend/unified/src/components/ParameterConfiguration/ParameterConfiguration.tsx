@@ -52,7 +52,9 @@ const determineBeamlineRawDataFilepath = (
     DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
       beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
     ];
-  return `${visitDirpath}${rawDataDirname}/${scanId}.nxs`;
+  const scanFilename =
+    beamline === Beamline.DIAD ? `k11-${scanId}` : `${scanId}`;
+  return `${visitDirpath}${rawDataDirname}/${scanFilename}.nxs`;
 };
 
 const determineBeamlineVisitDirpath = (
