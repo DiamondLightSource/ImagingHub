@@ -24,6 +24,17 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
   const [totalImages, setTotalImages] = useState<number | null>(null);
   const [isPlottingEnabled, setIsPlottingEnabled] = useState<boolean>(false);
 
+  // TODO: straightforward way to have the plot component toggle keep its value when the
+  // selected workflow changes, but the artifact data is reset to avoid potentially
+  // displaying an artifact from a previously selected workflow if the plot component was
+  // enabled when selecting a new workflow.
+  //
+  // Likely that `useEffect` isn't the best solution for this.
+  useEffect(() => {
+    setArtifact(null);
+    setArtifactData(null);
+  }, [workflowName]);
+
   useEffect(() => {
     const fetchArtifactData = async (url: string, mimeType: string) => {
       if (mimeType === "image/jpeg") {
