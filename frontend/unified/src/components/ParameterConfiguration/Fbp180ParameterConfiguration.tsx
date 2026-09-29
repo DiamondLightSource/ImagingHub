@@ -133,7 +133,7 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
 
     const stripeRemovalMethod = [
       {
-        method: "removal_all_stripe",
+        method: "remove_all_stripe",
         module_path: "httomolibgpu.prep.stripe",
         parameters: {
           snr: stripeRemovalParameters.snr,
