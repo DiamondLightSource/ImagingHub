@@ -1,4 +1,9 @@
-import { Divider, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import LogStreamer, { LOGSTREAMER_FRAGMENT } from "./LogStreamer/LogStreamer";
 import { Plot } from "./Plot/Plot";
@@ -9,6 +14,7 @@ import {
   JobDataViewerQueryQueryVariables,
 } from "./__generated__/JobDataViewer.generated";
 import InspectLogMeta, { INSPECTLOGMETA_FRAGMENT } from "./InspectLogMeta";
+import { ChevronDown } from "lucide-react";
 
 const JOBDATAVIEWER_QUERY: TypedDocumentNode<
   JobDataViewerQueryQuery,
@@ -46,27 +52,36 @@ const JobDataViewer = ({
 
   return (
     <>
-      <Divider sx={{ width: "100%" }} />
-      <Typography variant="h5">Log</Typography>
-      {selectedWorkflow ? (
-        <InspectLogMeta queryData={data.workflow} />
-      ) : (
-        <p>No workflow selected</p>
-      )}
-      <Divider sx={{ width: "100%" }} />
-      <Typography variant="h5">Log Stream</Typography>
-      {selectedWorkflow ? (
-        <LogStreamer
-          visit={visit}
-          selectedWorkflow={selectedWorkflow}
-          queryData={data.workflow}
-        />
-      ) : (
-        <>No workflow selected</>
-      )}
-      <Divider sx={{ width: "100%" }} />
-      <Typography variant="h5">Plot</Typography>
-      <Plot workflowName={selectedWorkflow} visit={visit} />
+      <Accordion defaultExpanded>
+        <AccordionSummary id="log" expandIcon={<ChevronDown />}>
+          <Typography variant="h5">Log</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <InspectLogMeta queryData={data.workflow} />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion defaultExpanded>
+        <AccordionSummary id="log-streamer" expandIcon={<ChevronDown />}>
+          <Typography variant="h5">Log Stream</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <LogStreamer
+            visit={visit}
+            selectedWorkflow={selectedWorkflow}
+            queryData={data.workflow}
+          />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion defaultExpanded>
+        <AccordionSummary id="plot" expandIcon={<ChevronDown />}>
+          <Typography variant="h5">Plot</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Plot workflowName={selectedWorkflow} visit={visit} />
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 };

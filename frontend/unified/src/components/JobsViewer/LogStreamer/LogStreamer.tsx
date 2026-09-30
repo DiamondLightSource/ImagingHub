@@ -73,7 +73,7 @@ const LogStreamer = ({
   const fetchedTasks = setFetchedTasks(data);
 
   return (
-    <>
+    <Stack direction="column" spacing={1}>
       <FormControl>
         <InputLabel id="logstream-select-label">Select Task</InputLabel>
         <Select
@@ -110,7 +110,7 @@ const LogStreamer = ({
         taskId={selectedTaskId}
         key={`${selectedWorkflow}-${selectedTaskId}`}
       />
-    </>
+    </Stack>
   );
 };
 
