@@ -10,57 +10,48 @@ import {
   InputLabel,
 } from "@mui/material";
 
-import { useQuery } from "@apollo/client/react";
+import { useSuspenseFragment } from "@apollo/client/react";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 
-import {
-  LogQueryQuery,
-  LogQueryQueryVariables,
-} from "./__generated__/InspectLogMeta.generated";
-import { Visit } from "@diamondlightsource/sci-react-ui";
+import { InspectLogMetaFragmentFragment } from "./__generated__/InspectLogMeta.generated";
 
-export const InspectLog_Query: TypedDocumentNode<
-  LogQueryQuery,
-  LogQueryQueryVariables
-> = gql`
-  query logQuery($visitobj: VisitInput!, $name: String!) {
-    workflow(visit: $visitobj, name: $name) {
-      name
-      id
-      status {
-        __typename
-        ... on WorkflowSucceededStatus {
-          message
-          startTime
-          tasks {
+export const INSPECTLOGMETA_FRAGMENT: TypedDocumentNode<InspectLogMetaFragmentFragment> = gql`
+  fragment InspectLogMetaFragment on Workflow {
+    status {
+      __typename
+      ... on WorkflowSucceededStatus {
+        startTime
+        message
+        tasks {
+          name
+          artifacts {
             name
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
-        ... on WorkflowErroredStatus {
-          message
-          tasks {
+      }
+      ... on WorkflowErroredStatus {
+        startTime
+        message
+        tasks {
+          name
+          artifacts {
             name
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
-        ... on WorkflowFailedStatus {
-          message
-          tasks {
+      }
+      ... on WorkflowFailedStatus {
+        startTime
+        message
+        tasks {
+          name
+          artifacts {
             name
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
       }
@@ -68,17 +59,15 @@ export const InspectLog_Query: TypedDocumentNode<
   }
 `;
 
-type DisplayLogMetaProps = {
-  visit: Visit;
-  workflowName: string;
-};
-
-export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
-  visit: Visit;
-  workflowName: string;
+const InspectLogMeta = ({
+  queryData,
+}: {
+  queryData: InspectLogMetaFragmentFragment;
 }) => {
-  const { loading, error, data } = useQuery(InspectLog_Query, {
-    variables: { visitobj: props.visit, name: props.workflowName },
+  const { data } = useSuspenseFragment({
+    fragment: INSPECTLOGMETA_FRAGMENT,
+    fragmentName: "InspectLogMetaFragment",
+    from: queryData,
   });
 
   const artifactUrl: string[] = ["about:blank"];
