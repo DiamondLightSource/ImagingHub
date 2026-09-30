@@ -1,4 +1,19 @@
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { useState } from "react";
+import { gql, type TypedDocumentNode } from "@apollo/client";
+import { ApolloProvider, useQuery } from "@apollo/client/react";
+
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Chip,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { ChevronDown } from "lucide-react";
+
 import {
   InstrumentSession,
   SessionSelectionMode,
@@ -7,17 +22,13 @@ import {
 import { ScanSelector } from "./components/ScanSelector";
 import JobsViewer from "./components/JobsViewer/JobsViewer";
 
-import { useState } from "react";
-
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
 import { Plot } from "./components/Plot/Plot";
-import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
-import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
 import {
   SessionQueryQuery,
@@ -281,78 +292,114 @@ export const App: React.FC = () => {
       <ApolloProvider client={apolloClientWorkflows}>
         <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Typography variant="h5">Scan</Typography>
-            <ScanSelector
-              scanIds={selectedScanIds}
-              setScanIds={setSelectedScanIds}
-            />
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Technique</Typography>
-            <WorkflowForm
-              handleChangeTechnique={handleChangeTechnique}
-              showAllTechniques={showAllTechniques}
-              handleShowAllTechniques={(
-                e: React.ChangeEvent<HTMLInputElement>
-              ) => {
-                setShowAllTechniques(e.target.checked);
-                const isSelectedTechniqueInSubset =
-                  BEAMLINE_TECHNIQUES_SUBSET[beamline].includes(
-                    currentTechnique
-                  );
-                if (!e.target.checked && !isSelectedTechniqueInSubset) {
-                  updateTechniqueAndTemplate(beamline);
-                }
-              }}
-              filteredTechniques={filterTechniques(beamline)}
-              templateOptions={filterTemplates(currentTechnique)}
-              technique={currentTechnique}
-              template={currentTemplate}
-              setTemplate={setTemplate}
-            />
+            <Accordion defaultExpanded>
+              <AccordionSummary id="scan" expandIcon={<ChevronDown />}>
+                <Typography variant="h5">Scan</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <ScanSelector
+                  scanIds={selectedScanIds}
+                  setScanIds={setSelectedScanIds}
+                />
+              </AccordionDetails>
+            </Accordion>
 
-            <Divider sx={{ width: "100%" }} />
-            <Typography variant="h5">Parameter Configuration</Typography>
+            <Accordion defaultExpanded>
+              <AccordionSummary id="technique" expandIcon={<ChevronDown />}>
+                <Typography variant="h5">Technique</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <WorkflowForm
+                  handleChangeTechnique={handleChangeTechnique}
+                  showAllTechniques={showAllTechniques}
+                  handleShowAllTechniques={(
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => {
+                    setShowAllTechniques(e.target.checked);
+                    const isSelectedTechniqueInSubset =
+                      BEAMLINE_TECHNIQUES_SUBSET[beamline].includes(
+                        currentTechnique
+                      );
+                    if (!e.target.checked && !isSelectedTechniqueInSubset) {
+                      updateTechniqueAndTemplate(beamline);
+                    }
+                  }}
+                  filteredTechniques={filterTechniques(beamline)}
+                  templateOptions={filterTemplates(currentTechnique)}
+                  technique={currentTechnique}
+                  template={currentTemplate}
+                  setTemplate={setTemplate}
+                />
+              </AccordionDetails>
+            </Accordion>
 
-            <ParameterConfiguration
-              technique={currentTechnique}
-              template={currentTemplate}
-              setTemplate={setTemplate}
-              availableTemplates={filterTemplates(
-                Technique[currentTechnique as keyof typeof Technique]
-              )}
-              visit={selectedVisit}
-              beamline={beamline}
-              startTime={session.startTime}
-              scanIds={selectedScanIds}
-            />
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                id="parameter-configuration"
+                expandIcon={<ChevronDown />}
+              >
+                <Typography variant="h5">Parameter Configuration</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <ParameterConfiguration
+                  technique={currentTechnique}
+                  template={currentTemplate}
+                  setTemplate={setTemplate}
+                  availableTemplates={filterTemplates(
+                    Technique[currentTechnique as keyof typeof Technique]
+                  )}
+                  visit={selectedVisit}
+                  beamline={beamline}
+                  startTime={session.startTime}
+                  scanIds={selectedScanIds}
+                />
+              </AccordionDetails>
+            </Accordion>
           </Stack>
+
           <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Typography variant="h5">Jobs</Typography>
-            <JobsViewer
-              visit={selectedVisit}
-              selectedWorkflow={selectedWorkflow}
-              setSelectedWorkflow={setSelectedWorkflow}
-            />
-            <Divider sx={{ width: "100%" }} />
+            <Accordion defaultExpanded>
+              <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
+                <Typography variant="h5">Jobs</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <JobsViewer
+                  visit={selectedVisit}
+                  selectedWorkflow={selectedWorkflow}
+                  setSelectedWorkflow={setSelectedWorkflow}
+                />
+              </AccordionDetails>
+            </Accordion>
 
-            <Typography variant="h5">Log</Typography>
-            {selectedWorkflow !== null ? (
-              <DisplayLogMeta
-                visit={selectedVisit}
-                workflowName={selectedWorkflow}
-                key={selectedWorkflow}
-              />
-            ) : (
-              <p>No workflow selected</p>
-            )}
-            <Divider sx={{ width: "100%" }} />
+            <Accordion defaultExpanded>
+              <AccordionSummary id="log" expandIcon={<ChevronDown />}>
+                <Typography variant="h5">Log</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {selectedWorkflow !== null ? (
+                  <DisplayLogMeta
+                    visit={selectedVisit}
+                    workflowName={selectedWorkflow}
+                    key={selectedWorkflow}
+                  />
+                ) : (
+                  <p>No workflow selected</p>
+                )}
+              </AccordionDetails>
+            </Accordion>
 
-            <Typography variant="h5">Plot</Typography>
-            <Plot
-              workflowName={selectedWorkflow}
-              visit={selectedVisit}
-              key={sessionName}
-            />
+            <Accordion defaultExpanded>
+              <AccordionSummary id="plot" expandIcon={<ChevronDown />}>
+                <Typography variant="h5">Plot</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Plot
+                  workflowName={selectedWorkflow}
+                  visit={selectedVisit}
+                  key={sessionName}
+                />
+              </AccordionDetails>
+            </Accordion>
           </Stack>
         </Grid>
       </ApolloProvider>
