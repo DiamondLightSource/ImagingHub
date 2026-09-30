@@ -14,7 +14,11 @@ const JobsViewer = ({ visit }: { visit: Visit }) => {
           setSelectedWorkflow={setSelectedWorkflow}
         />
       </Suspense>
-      <JobDataViewer visit={visit} selectedWorkflow={selectedWorkflow} />
+      {selectedWorkflow && (
+        <Suspense>
+          <JobDataViewer visit={visit} selectedWorkflow={selectedWorkflow} />
+        </Suspense>
+      )}
     </>
   );
 };
