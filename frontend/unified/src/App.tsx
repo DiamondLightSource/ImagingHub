@@ -380,6 +380,7 @@ export const App: React.FC = () => {
                   <DisplayLogMeta
                     visit={selectedVisit}
                     workflowName={selectedWorkflow}
+                    key={selectedWorkflow}
                   />
                 ) : (
                   <p>No workflow selected</p>
