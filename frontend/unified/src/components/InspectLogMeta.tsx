@@ -86,7 +86,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
   const [selectLogState, setSelectLogState] = React.useState("No log Selected");
   const [currentUrl, setCurrenturl] = React.useState("");
   const [indexValue, setindexValue] = React.useState(-1);
-  const handleSetectState = (event: SelectChangeEvent) => {
+  const handleSelectState = (event: SelectChangeEvent) => {
     setindexValue(LogFileTuples.indexOf(event.target.value));
     setSelectLogState(event.target.value as string);
     if (selectLogState === undefined) {
@@ -150,24 +150,18 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     <Stack direction="column" spacing={1}>
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
-          <InputLabel id="a">Select a Log</InputLabel>
+          <InputLabel id="InputLabelID">Select a Log</InputLabel>
           {LogFileTuples[0] !== undefined ? (
             <Select
-              labelId="a"
-              id="b"
+              labelId="InputLabelID"
+              id="SelectID"
               label="Select a Log"
-              onChange={handleSetectState}
+              onChange={handleSelectState}
               value={selectLogState}
               defaultValue="No log selected"
             >
               {LogFileTuples.map((logFilename) => {
-                if (data) {
-                  return <MenuItem value={logFilename}>{logFilename}</MenuItem>;
-                } else {
-                  return (
-                    <MenuItem>Undefined please select a workflow</MenuItem>
-                  );
-                }
+                  return <MenuItem value={logFilename}>{logFilename}</MenuItem>; 
               })}
             </Select>
           ) : (
@@ -176,7 +170,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
         </FormControl>
       </Box>
       <Button
-        key={"something"}
+        key={"ButtonKey"}
         variant="contained"
         onClick={() => openInNewTab(currentUrl)}
       >
