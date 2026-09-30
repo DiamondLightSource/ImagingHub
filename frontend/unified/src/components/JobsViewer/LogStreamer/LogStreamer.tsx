@@ -108,6 +108,7 @@ const LogStreamer = ({
         visit={visit}
         workflowName={selectedWorkflow}
         taskId={selectedTaskId}
+        key={`${selectedWorkflow}-${selectedTaskId}`}
       />
     </>
   );
