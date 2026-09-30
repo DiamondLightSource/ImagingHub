@@ -161,7 +161,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
               defaultValue="No log selected"
             >
               {LogFileTuples.map((logFilename) => {
-                  return <MenuItem value={logFilename}>{logFilename}</MenuItem>; 
+                return <MenuItem value={logFilename}>{logFilename}</MenuItem>;
               })}
             </Select>
           ) : (
