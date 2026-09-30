@@ -26,7 +26,6 @@ import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { Beamline, Technique } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import { Plot } from "./components/Plot/Plot";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
 import {
@@ -122,7 +121,6 @@ export const App: React.FC = () => {
     null
   );
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, {
     variables: { username: useFedid() },
   });
