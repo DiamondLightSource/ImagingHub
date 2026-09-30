@@ -1,21 +1,15 @@
 import { Task } from "../../../types";
-import { GetWorkflowTasksQuery } from "./__generated__/LogStreamer.generated";
+import { LogStreamerFragmentFragment } from "./__generated__/LogStreamer.generated";
 
-export const isWorkflowWithTasks = (status: string) => {
-  return (
-    status === "WorkflowRunningStatus" ||
-    status === "WorkflowSucceededStatus" ||
-    status === "WorkflowFailedStatus" ||
-    status === "WorkflowErroredStatus"
-  );
-};
-
-export const setFetchedTasks = (data: GetWorkflowTasksQuery): Task[] => {
+export const setFetchedTasks = (data: LogStreamerFragmentFragment): Task[] => {
   if (
-    data.workflow?.status &&
-    isWorkflowWithTasks(data.workflow.status.__typename)
+    data.status &&
+    (data.status?.__typename === "WorkflowRunningStatus" ||
+      data.status?.__typename === "WorkflowSucceededStatus" ||
+      data.status?.__typename === "WorkflowFailedStatus" ||
+      data.status?.__typename === "WorkflowErroredStatus")
   ) {
-    return data.workflow.status.tasks;
+    return data.status.tasks;
   }
   return [];
 };
