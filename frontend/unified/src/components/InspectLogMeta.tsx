@@ -135,34 +135,17 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     return procData;
   }
 
-  switch (data.workflow?.status?.__typename) {
-    case "WorkflowSucceededStatus":
-      {
-        let procData = processLogData(data);
-        procData.forEach((tmp) => {
-          LogFileTuples.push(tmp);
-        });
-      }
-      break;
-    case "WorkflowErroredStatus":
-      {
-        let procData = processLogData(data);
-        procData.forEach((tmp) => {
-          LogFileTuples.push(tmp);
-        });
-      }
-      break;
-    case "WorkflowFailedStatus":
-      {
-        let procData = processLogData(data);
-        procData.forEach((tmp) => {
-          LogFileTuples.push(tmp);
-        });
-      }
-      break;
-    default:
-      console.error("Handle other workflow status cases");
+  if (
+    data.workflow?.status?.__typename == "WorkflowSucceededStatus" ||
+    data.workflow?.status?.__typename == "WorkflowErroredStatus" ||
+    data.workflow?.status?.__typename == "WorkflowFailedStatus"
+  ) {
+    let procData = processLogData(data);
+    procData.forEach((tmp) => {
+      LogFileTuples.push(tmp);
+    });
   }
+
   return (
     <Stack direction="column" spacing={1}>
       <Box sx={{ minWidth: 120 }}>
@@ -178,7 +161,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
               defaultValue="No log selected"
             >
               {LogFileTuples.map((logFilename) => {
-                if (data !== undefined) {
+                if (data) {
                   return <MenuItem value={logFilename}>{logFilename}</MenuItem>;
                 } else {
                   return (
