@@ -61,4 +61,9 @@ export const templateOptions: Option[] = [
     value: "httomo-cor-sweep",
     desc: "optimise the centre of rotation",
   },
+  {
+    label: "FBP 180",
+    value: "httomo-fbp-180",
+    desc: "Reconstruct 180 degree scan with FBP3d_tomobar method",
+  },
 ];

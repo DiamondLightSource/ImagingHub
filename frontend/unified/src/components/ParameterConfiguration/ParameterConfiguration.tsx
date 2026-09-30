@@ -10,6 +10,7 @@ import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/
 import { useMutation } from "@apollo/client/react";
 import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
+import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -51,7 +52,9 @@ const determineBeamlineRawDataFilepath = (
     DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
       beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
     ];
-  return `${visitDirpath}${rawDataDirname}/${scanId}.nxs`;
+  const scanFilename =
+    beamline === Beamline.DIAD ? `k11-${scanId}` : `${scanId}`;
+  return `${visitDirpath}${rawDataDirname}/${scanFilename}.nxs`;
 };
 
 const determineBeamlineVisitDirpath = (
@@ -73,7 +76,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   scanIds,
 }: ParameterConfigurationProps) => {
   const [templateParameters, setTemplateParameters] = useState<object>({});
-  const [resourceParameters] = useState({
+  const [resourceParameters, setResourceParameters] = useState({
     nprocs: 1,
     memory: "20Gi",
   });
@@ -154,6 +157,15 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         <LoaderProvider>
           <CorSweepParameterConfiguration
             setParameters={setTemplateParameters}
+            visitDirpath={visitDirpath}
+          />
+        </LoaderProvider>
+      ),
+      "httomo-fbp-180": (
+        <LoaderProvider>
+          <Fbp180ParameterConfiguration
+            setParameters={setTemplateParameters}
+            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirpath}
           />
         </LoaderProvider>

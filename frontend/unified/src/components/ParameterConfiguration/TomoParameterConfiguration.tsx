@@ -38,7 +38,13 @@ export const CorSweepParameterConfiguration = ({
       {
         method: loaderMethod,
         module_path: loaderModulePath,
-        parameters: loaderParams,
+        parameters: {
+          data_path: "/entry/imaging/data",
+          image_key_path: "/entry/instrument/imaging/image_key",
+          rotation_angles: {
+            data_path: "/entry/diamond_scan/keys/rotpanda",
+          },
+        },
       },
       {
         method: "recon",
