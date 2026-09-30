@@ -38,13 +38,7 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
       {
         method: loaderMethod,
         module_path: loaderModulePath,
-        parameters: {
-          data_path: "/entry1/tomo_entry/data/data",
-          image_key_path: "/entry1/tomo_entry/instrument/detector/image_key",
-          rotation_angles: {
-            data_path: "/entry1/tomo_entry/data/rotation_angle",
-          },
-        },
+        parameters: loaderParams,
       },
       {
         method: "remove_outlier",
@@ -165,7 +159,7 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
       nprocs: 4,
       memory: "200Gi",
     });
-  }, [applyStripeRemoval, stripeRemovalParameters, outputFolder]);
+  }, [applyStripeRemoval, stripeRemovalParameters, outputFolder, loaderParams]);
 
   return (
     <>
