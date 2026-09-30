@@ -12,14 +12,17 @@ export interface PreviewType {
 interface ParametersType {
   data_path: string | null; // Allow null
   image_key_path?: string | null; // Allow null
-  rotation_angles: {
-    data_path?: string | "auto" | null; // Allow null and 'auto'
-    user_defined?: {
-      start_angle: number;
-      stop_angle: number;
-      angles_total: number;
-    };
-  };
+  rotation_angles:
+    | {
+        data_path?: string;
+        user_defined?: {
+          start_angle: number;
+          stop_angle: number;
+          angles_total: number;
+        };
+      }
+    | "auto"
+    | null;
   darks?: {
     file: string;
     data_path: string;
@@ -76,7 +79,7 @@ export const LoaderProvider: React.FC<{ children: ReactNode }> = ({
   const setRotationAnglesDataPath = (path: string) => {
     setParameters((prev) => ({
       ...prev,
-      rotation_angles: { data_path: path },
+      rotation_angles: path === "auto" ? "auto" : { data_path: path },
     }));
   };
 

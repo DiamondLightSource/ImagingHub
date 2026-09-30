@@ -38,7 +38,7 @@ const Loader: React.FC = () => {
   const [autoToggles, setAutoToggles] = useState({
     dataPath: parameters.data_path === "auto",
     imagePath: parameters.image_key_path === "auto",
-    rotationAnglePath: parameters.rotation_angles?.data_path === "auto",
+    rotationAnglePath: parameters.rotation_angles === "auto",
   });
 
   // Effect to sync autoToggles if parameters change from elsewhere (e.g. context reset)
@@ -46,12 +46,12 @@ const Loader: React.FC = () => {
     setAutoToggles({
       dataPath: parameters.data_path === "auto",
       imagePath: parameters.image_key_path === "auto",
-      rotationAnglePath: parameters.rotation_angles?.data_path === "auto",
+      rotationAnglePath: parameters.rotation_angles === "auto",
     });
   }, [
     parameters.data_path,
     parameters.image_key_path,
-    parameters.rotation_angles?.data_path,
+    parameters.rotation_angles,
   ]);
 
   const handleModeChange = (
