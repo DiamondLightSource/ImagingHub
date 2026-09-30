@@ -151,10 +151,11 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   };
 
   return (
-    <FormControl>
+    <FormControl fullWidth>
       <InputLabel>Artifact</InputLabel>
       {data.workflow?.status?.__typename !== "WorkflowPendingStatus" ? (
         <Select
+          label="Artifact"
           disabled={!isPlottingEnabled}
           onChange={(_, value) => {
             if (value === null || value === undefined) {
