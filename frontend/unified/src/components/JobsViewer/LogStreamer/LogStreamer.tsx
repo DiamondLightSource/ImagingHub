@@ -71,7 +71,7 @@ const LogStreamer = ({
   if (!data) return <>No Data</>;
 
   const fetchedTasks = setFetchedTasks(data);
-  console.log(selectedTaskId);
+
   return (
     <>
       <FormControl>
