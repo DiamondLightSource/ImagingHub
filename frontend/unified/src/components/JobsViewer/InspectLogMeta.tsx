@@ -1,9 +1,8 @@
-import React, { FC } from "react";
+import { useState } from "react";
 import {
   Button,
   Stack,
   Select,
-  SelectChangeEvent,
   MenuItem,
   Box,
   FormControl,
@@ -59,41 +58,54 @@ export const INSPECTLOGMETA_FRAGMENT: TypedDocumentNode<InspectLogMetaFragmentFr
   }
 `;
 
+type Artifact = {
+  name: string;
+  url: unknown;
+  mimeType: string;
+};
+
+type Task = {
+  name: string;
+  artifacts: Artifact[];
+};
+
+const getTasks = (data: InspectLogMetaFragmentFragment): Task[] => {
+  if (
+    data.status &&
+    (data.status.__typename === "WorkflowSucceededStatus" ||
+      data.status.__typename === "WorkflowErroredStatus" ||
+      data.status.__typename === "WorkflowFailedStatus")
+  ) {
+    return data.status.tasks;
+  }
+  return [];
+};
+
 const InspectLogMeta = ({
   queryData,
 }: {
   queryData: InspectLogMetaFragmentFragment;
 }) => {
+  const [logUrl, setLogUrl] = useState<string | null>(null);
   const { data } = useSuspenseFragment({
     fragment: INSPECTLOGMETA_FRAGMENT,
     fragmentName: "InspectLogMetaFragment",
     from: queryData,
   });
 
-  const artifactUrl: string[] = ["about:blank"];
-  const LogFileTuples: string[] = ["No log Selected"];
-  const [selectLogState, setSelectLogState] = React.useState("No log Selected");
-  const [currentUrl, setCurrenturl] = React.useState("");
-  const [indexValue, setindexValue] = React.useState(-1);
-  const handleSelectState = (event: SelectChangeEvent) => {
-    setindexValue(LogFileTuples.indexOf(event.target.value));
-    setSelectLogState(event.target.value as string);
-    if (selectLogState === undefined) {
-      setSelectLogState("No log Selected");
-      setindexValue(0);
-    }
-    setCurrenturl(artifactUrl[LogFileTuples.indexOf(event.target.value)]);
-  };
+  if (!data) return <>No Data</>;
 
-  function reset() {
-    if (indexValue === -1) {
-      setSelectLogState(LogFileTuples[0]);
-    } else {
-      setSelectLogState(LogFileTuples[indexValue]);
-    }
-  }
-
-  React.useEffect(reset, [props.workflowName]);
+  const artifacts = getTasks(data).flatMap((task, taskIndex) => {
+    const filteredArtifacts = task.artifacts.filter(
+      (artifact) => artifact.mimeType === "text/plain"
+    );
+    return filteredArtifacts.map((a, idx) => {
+      return {
+        url: a.url,
+        label: `${taskIndex}-${idx} ${task.name}.log`,
+      };
+    });
+  });
 
   if (data === undefined) {
     return <p>Data undefined</p>;
@@ -106,69 +118,43 @@ const InspectLogMeta = ({
     }
   };
 
-  function processLogData(data: LogQueryQuery) {
-    const procData: string[] = [];
-    const tmpUrls: string[] = [];
-    let tasknum: number = 0;
-    data.workflow.status.tasks.forEach((task: any) => {
-      let artnum: number = 0;
-      task.artifacts.forEach((artifact: any) => {
-        if (artifact.mimeType == "text/plain") {
-          tmpUrls.push(artifact.url);
-          let tmp: string = tasknum + "-" + artnum + " " + task.name + ".log";
-          procData.push(tmp);
-          tasknum = tasknum + 1;
-          artnum = artnum + 1;
-        }
-      });
-    });
-    return [procData, tmpUrls];
-  }
-
-  if (
-    data.workflow?.status?.__typename == "WorkflowSucceededStatus" ||
-    data.workflow?.status?.__typename == "WorkflowErroredStatus" ||
-    data.workflow?.status?.__typename == "WorkflowFailedStatus"
-  ) {
-    let [procData, tmpUrls] = processLogData(data);
-    procData.forEach((tmp) => {
-      LogFileTuples.push(tmp);
-    });
-    tmpUrls.forEach((tmp) => {
-      artifactUrl.push(tmp);
-    });
-  }
   return (
     <Stack direction="column" spacing={1}>
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
           <InputLabel id="InputLabelID">Select a Log</InputLabel>
-          {LogFileTuples[0] !== undefined ? (
-            <Select
-              labelId="InputLabelID"
-              id="SelectID"
-              label="Select a Log"
-              onChange={handleSelectState}
-              value={selectLogState}
-              defaultValue="No log selected"
-            >
-              {LogFileTuples.map((logFilename) => {
-                return <MenuItem value={logFilename}>{logFilename}</MenuItem>;
-              })}
-            </Select>
-          ) : (
-            <p>No logs</p>
-          )}
+          <Select
+            labelId="InputLabelID"
+            value={logUrl ? logUrl : "NONE"}
+            label="Select a Log"
+            onChange={(event) => {
+              if (event.target.value === "NONE") {
+                setLogUrl(null);
+              } else {
+                setLogUrl(event.target.value);
+              }
+            }}
+          >
+            <MenuItem key="No Log" value="NONE">
+              No Task
+            </MenuItem>
+            {artifacts.map((a, idx) => (
+              <MenuItem key={idx} value={a.url as string}>
+                {a.label}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       </Box>
       <Button
+        disabled={!logUrl}
         key={"ButtonKey"}
         variant="contained"
-        onClick={() => openInNewTab(currentUrl)}
+        onClick={() => logUrl && openInNewTab(logUrl)}
       >
         Open Log
       </Button>
     </Stack>
   );
 };
-export default DisplayLogMeta;
+export default InspectLogMeta;
