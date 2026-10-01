@@ -9,8 +9,10 @@ import { useEffect, useState } from "react";
 
 const PtypyI08ParameterConfiguration = ({
   setParameters,
+  setResourceParameters,
 }: {
   setParameters: (_: object) => void;
+  setResourceParameters: (_: object) => void;
 }) => {
   const [id, setId] = useState<string>("");
   const [binning, setBinning] = useState<string>("2");
@@ -28,14 +30,17 @@ const PtypyI08ParameterConfiguration = ({
       outpath: outPath,
       defocus: defocus,
       binning: binning,
-      memory: memory,
-      nprocs: nprocs,
       numiter: numIter,
       probeModes: probeModes,
       usegpu: useGpu,
     });
+    setResourceParameters({
+      memory: memory,
+      nprocs: nprocs,
+    });
   }, [
     setParameters,
+    setResourceParameters,
     id,
     binning,
     defocus,
