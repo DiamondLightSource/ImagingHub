@@ -32,6 +32,11 @@ export const templateOptions: Option[] = [
     desc: "XRD 2D is a utility which performs Azimuthal integration (ExcaliburXRDIntegration) and saves result to a nxs file",
   },
   {
+    label: "Ptypy Reconstruction for I08-1",
+    value: "ptypy-i08-1-from-config",
+    desc: "Runs a PtyPy reconstruction job inside a container based on data collected at I08-1.",
+  },
+  {
     label: "ptycho",
     value: "ptycho-recon",
     desc: "simple ptyrex reconstruction",
