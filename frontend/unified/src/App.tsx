@@ -58,6 +58,7 @@ const BEAMLINE_TECHNIQUES_SUBSET = {
     Technique.Mib,
   ],
   [Beamline.E01]: [Technique.Dpc, Technique.Nbed, Technique.Ptyrex],
+  [Beamline.P99]: [Technique.Ptypy],
 };
 
 const BEAMLINES_DEFAULT_TECHNIQUE = {
@@ -69,6 +70,7 @@ const BEAMLINES_DEFAULT_TECHNIQUE = {
   [Beamline["I13-1"]]: Technique.Ptycho,
   [Beamline["I13-2"]]: Technique.Ptycho,
   [Beamline.I14]: Technique.Dpc,
+  [Beamline.P99]: Technique.Ptypy,
 };
 
 const filterTemplates = (technique: Technique) => {
