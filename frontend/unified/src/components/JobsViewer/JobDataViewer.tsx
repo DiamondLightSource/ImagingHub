@@ -15,6 +15,7 @@ import {
 } from "./__generated__/JobDataViewer.generated";
 import InspectLogMeta, { INSPECTLOGMETA_FRAGMENT } from "./InspectLogMeta";
 import { ChevronDown } from "lucide-react";
+import { ARTIFACTSELECTOR_FRAGMENT } from "./Plot/ArtifactSelector";
 
 const JOBDATAVIEWER_QUERY: TypedDocumentNode<
   JobDataViewerQueryQuery,
@@ -26,10 +27,12 @@ const JOBDATAVIEWER_QUERY: TypedDocumentNode<
       id
       ...LogStreamerFragment
       ...InspectLogMetaFragment
+      ...ArtifactSelectorFragment
     }
   }
   ${LOGSTREAMER_FRAGMENT}
   ${INSPECTLOGMETA_FRAGMENT}
+  ${ARTIFACTSELECTOR_FRAGMENT}
 `;
 
 const JobDataViewer = ({
@@ -79,7 +82,11 @@ const JobDataViewer = ({
           <Typography variant="h5">Plot</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Plot workflowName={selectedWorkflow} visit={visit} />
+          <Plot
+            workflowName={selectedWorkflow}
+            visit={visit}
+            queryData={data.workflow}
+          />
         </AccordionDetails>
       </Accordion>
     </>
