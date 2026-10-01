@@ -4,6 +4,7 @@ export enum Technique {
   Mib = "Mib",
   Ptycho = "Ptycho",
   Ptyrex = "Ptyrex",
+  Ptypy = "Ptypy",
   Tomo = "Tomo",
   Xanes = "Xanes",
   Xrd = "Xrd",
