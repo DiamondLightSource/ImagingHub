@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { LogLine } from "./LogLine";
-import { apolloClientWorkflows } from "../../../../../src/ApolloClient";
+import { useSubscription } from "@apollo/client/react";
 import {
   LogStreamContentSubscriptionSubscription,
   LogStreamContentSubscriptionSubscriptionVariables,
@@ -119,47 +119,43 @@ const LogStreamSubscription = ({
   setLogUnavailable: Dispatch<SetStateAction<boolean>>;
   setTaskFinished: Dispatch<SetStateAction<boolean>>;
 }) => {
-  apolloClientWorkflows
-    .subscribe({
-      query: LOGSTREAMCONTENT_SUBSCRIPTION,
-      variables: {
-        visit: visit,
-        workflowName: workflowName,
-        taskId: taskId,
-      },
-    })
-    .subscribe({
-      next: (result) => {
-        if (result.error) {
-          const message = result.error.message;
-          console.log("Log subscription error:", message);
-          const logUnavailable =
-            message.includes("Log not available") ||
-            message.includes("NoSuchKey") ||
-            message.includes("No logs") ||
-            message.includes("Failed to retrieve archived log artifact");
-          if (logUnavailable) {
-            setSubscriptionError("Log not available");
-            setLogUnavailable(true);
-            return;
-          }
-          // For non-terminal errors
-          setSubscriptionError("Unable to retrieve task logs");
+  useSubscription(LOGSTREAMCONTENT_SUBSCRIPTION, {
+    variables: {
+      visit: visit,
+      workflowName: workflowName,
+      taskId: taskId,
+    },
+    onData: (payload) => {
+      if (payload.data.error) {
+        const message = payload.data.error.message;
+        console.log("Log subscription error:", message);
+        const logUnavailable =
+          message.includes("Log not available") ||
+          message.includes("NoSuchKey") ||
+          message.includes("No logs") ||
+          message.includes("Failed to retrieve archived log artifact");
+        if (logUnavailable) {
+          setSubscriptionError("Log not available");
+          setLogUnavailable(true);
+          return;
         }
-        const line = result.data?.logs.content;
-        if (line) {
-          setLogLines((previousLines) => [...previousLines, line]);
-        }
-      },
-      error: (error) => {
-        console.log("Log subscription error:", error);
+        // For non-terminal errors
         setSubscriptionError("Unable to retrieve task logs");
-      },
-      complete: () => {
-        setTaskFinished(true);
-        console.log("Log subscription completed");
-      },
-    });
+      }
+      const line = payload.data.data?.logs.content;
+      if (line) {
+        setLogLines((previousLines) => [...previousLines, line]);
+      }
+    },
+    onError: (error) => {
+      console.log("Log subscription error:", error.message);
+      setSubscriptionError("Unable to retrieve task logs");
+    },
+    onComplete: () => {
+      setTaskFinished(true);
+      console.log("Log subscription completed");
+    },
+  });
   return null;
 };
 
