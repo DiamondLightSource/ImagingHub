@@ -1,7 +1,14 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { Box } from "@mui/material";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { LogLine } from "./LogLine";
 import { apolloClientWorkflows } from "../../../../../src/ApolloClient";
 import {
@@ -80,10 +87,10 @@ const LogStreamContent = ({
           <LogLine>{subscriptionError}</LogLine>
         ) : logLines.length > 0 ? (
           logLines.map((line, index) => (
-            <>
+            <Fragment key={index}>
               {line}
               {index < logLines.length - 1 && "\n"}
-            </>
+            </Fragment>
           ))
         ) : (
           <LogLine>
