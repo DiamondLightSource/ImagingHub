@@ -41,7 +41,7 @@ const HORIZONTAL_SPACING = 2;
 const BEAMLINE_TECHNIQUES_SUBSET = {
   [Beamline.DIAD]: [Technique.Tomo],
   [Beamline.I12]: [Technique.Tomo],
-  [Beamline["I08-1"]]: [Technique.Ptycho],
+  [Beamline["I08-1"]]: [Technique.Ptycho, Technique.Ptypy],
   [Beamline["I13-1"]]: [
     Technique.Dpc,
     Technique.Ptycho,

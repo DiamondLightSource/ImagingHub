@@ -11,6 +11,7 @@ import { useMutation } from "@apollo/client/react";
 import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
 import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
+import PtypyI08ParameterConfiguration from "./PtypyI08ParameterConfiguration";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -144,6 +145,11 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
       ),
     },
     [Technique.Ptycho]: {},
+    [Technique.Ptypy]: {
+      "ptypy-i08-1-from-config": (
+        <PtypyI08ParameterConfiguration setParameters={setTemplateParameters} />
+      ),
+    },
     [Technique.Ptyrex]: {
       "ptyrex-submission": (
         <PtyrexParameterConfiguration
