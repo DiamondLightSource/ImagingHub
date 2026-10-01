@@ -1,7 +1,6 @@
-import type SelectChangeEvent from "@mui/material/Select/SelectInput";
-
 import OptionSelect from "./OptionSelect";
-import { edgeOptions, transitionOptions } from "../../data/elements";
+import OptionPanel from "./OptionPanel";
+import { elementOptions, transitionOptions } from "../../data/elements";
 
 interface ElementSelectValue {
   edge: string;
@@ -19,28 +18,17 @@ export default function TwoElementSelect({
 }: ElementSelectProps) {
   return (
     <>
-      <OptionSelect
-        label="Edge"
+      <OptionPanel
+        useGrid={true}
         value={value.edge}
-        options={edgeOptions}
-        onChange={(e: SelectChangeEvent<string>) =>
-          onChange({
-            edge: e.target.value,
-            transition: value.transition,
-          })
-        }
+        options={elementOptions}
+        onChange={(symbol) => onChange({ ...value, edge: symbol })}
       />
-
-      <OptionSelect
-        label="Transition"
+      <p>-</p>
+      <OptionPanel
         value={value.transition}
         options={transitionOptions}
-        onChange={(e: SelectChangeEvent<string>) =>
-          onChange({
-            edge: value.edge,
-            transition: e.target.value,
-          })
-        }
+        onChange={(symbol) => onChange({ ...value, transition: symbol })}
       />
     </>
   );
