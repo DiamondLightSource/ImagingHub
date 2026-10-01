@@ -6,6 +6,8 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import type { ReactNode } from "react";
 
+import { iconSize } from "../../data/form";
+
 type IdentifiableItem = {
   id: number;
 };
@@ -51,8 +53,8 @@ export default function DynamicArray<Item extends IdentifiableItem>({
 
         {desc && (
           <Tooltip title={desc}>
-            <IconButton size="small" aria-label="Information">
-              <Info />
+            <IconButton aria-label="Information">
+              <Info size={iconSize} />
             </IconButton>
           </Tooltip>
         )}
@@ -74,19 +76,18 @@ export default function DynamicArray<Item extends IdentifiableItem>({
               {items.length > 1 && (
                 <Tooltip title="Delete">
                   <IconButton
-                    size="small"
                     aria-label="Delete"
                     onClick={() => handleRemove(item.id)}
                   >
-                    <Trash />
+                    <Trash size={iconSize - 1} />
                   </IconButton>
                 </Tooltip>
               )}
 
               {isLastItem && (
                 <Tooltip title="Add">
-                  <IconButton size="small" aria-label="Add" onClick={handleAdd}>
-                    <CirclePlus />
+                  <IconButton aria-label="Add" onClick={handleAdd}>
+                    <CirclePlus size={iconSize} />
                   </IconButton>
                 </Tooltip>
               )}
@@ -95,8 +96,8 @@ export default function DynamicArray<Item extends IdentifiableItem>({
         })}
 
         {items.length === 0 && (
-          <IconButton size="small" aria-label="Add" onClick={handleAdd}>
-            <CirclePlus />
+          <IconButton aria-label="Add" onClick={handleAdd}>
+            <CirclePlus size={iconSize} />
           </IconButton>
         )}
       </Stack>
