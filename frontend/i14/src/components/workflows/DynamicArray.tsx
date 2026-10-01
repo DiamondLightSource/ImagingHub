@@ -6,6 +6,8 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import type { ReactNode } from "react";
 
+import { iconSize } from "../../data/form";
+
 type IdentifiableItem = {
   id: number;
 };
@@ -45,20 +47,20 @@ export default function DynamicArray<Item extends IdentifiableItem>({
   };
 
   return (
-    <Stack direction="column" spacing={0}>
+    <Stack direction="column" sx={{ mt: "0px !important" }}>
       <Stack direction="row" alignItems="center">
         <FormLabel>{title}</FormLabel>
 
         {desc && (
           <Tooltip title={desc}>
-            <IconButton size="small" aria-label="Information">
-              <Info />
+            <IconButton aria-label="Information">
+              <Info size={iconSize} />
             </IconButton>
           </Tooltip>
         )}
       </Stack>
 
-      <Stack direction="column" spacing={2}>
+      <Stack direction="column" spacing={1.2}>
         {items.map((item, index) => {
           const isLastItem = index === items.length - 1;
 
@@ -66,7 +68,7 @@ export default function DynamicArray<Item extends IdentifiableItem>({
             <Stack
               key={item.id}
               direction="row"
-              spacing={1}
+              spacing={2}
               alignItems="center"
             >
               {renderItem(item, handleUpdate)}
@@ -74,19 +76,18 @@ export default function DynamicArray<Item extends IdentifiableItem>({
               {items.length > 1 && (
                 <Tooltip title="Delete">
                   <IconButton
-                    size="small"
                     aria-label="Delete"
                     onClick={() => handleRemove(item.id)}
                   >
-                    <Trash />
+                    <Trash size={iconSize - 1} />
                   </IconButton>
                 </Tooltip>
               )}
 
               {isLastItem && (
                 <Tooltip title="Add">
-                  <IconButton size="small" aria-label="Add" onClick={handleAdd}>
-                    <CirclePlus />
+                  <IconButton aria-label="Add" onClick={handleAdd}>
+                    <CirclePlus size={iconSize} />
                   </IconButton>
                 </Tooltip>
               )}
@@ -95,9 +96,11 @@ export default function DynamicArray<Item extends IdentifiableItem>({
         })}
 
         {items.length === 0 && (
-          <IconButton size="small" aria-label="Add" onClick={handleAdd}>
-            <CirclePlus />
-          </IconButton>
+          <Tooltip title="Add">
+            <IconButton aria-label="Add" onClick={handleAdd}>
+              <CirclePlus size={iconSize} />
+            </IconButton>
+          </Tooltip>
         )}
       </Stack>
     </Stack>
