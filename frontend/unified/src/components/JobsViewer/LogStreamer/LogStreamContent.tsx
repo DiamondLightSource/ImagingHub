@@ -88,7 +88,7 @@ const LogStreamContent = ({
         ) : logLines.length > 0 ? (
           logLines.map((line, index) => (
             <Fragment key={index}>
-              {line}
+              {(index + 1).toString().padStart(3, " ")} {line}
               {index < logLines.length - 1 && "\n"}
             </Fragment>
           ))
@@ -130,6 +130,22 @@ const LogStreamSubscription = ({
     })
     .subscribe({
       next: (result) => {
+        if (result.error) {
+          const message = result.error.message;
+          console.log("Log subscription error:", message);
+          const logUnavailable =
+            message.includes("Log not available") ||
+            message.includes("NoSuchKey") ||
+            message.includes("No logs") ||
+            message.includes("Failed to retrieve archived log artifact");
+          if (logUnavailable) {
+            setSubscriptionError("Log not available");
+            setLogUnavailable(true);
+            return;
+          }
+          // For non-terminal errors
+          setSubscriptionError("Unable to retrieve task logs");
+        }
         const line = result.data?.logs.content;
         if (line) {
           setLogLines((previousLines) => [...previousLines, line]);
@@ -137,18 +153,6 @@ const LogStreamSubscription = ({
       },
       error: (error) => {
         console.log("Log subscription error:", error);
-        const message = error instanceof Error ? error.message : String(error);
-        const logUnavailable =
-          message.includes("Log not available") ||
-          message.includes("NoSuchKey") ||
-          message.includes("No logs") ||
-          message.includes("Failed to retrieve archived log artifact");
-        if (logUnavailable) {
-          setSubscriptionError("Log not available");
-          setLogUnavailable(true);
-          return;
-        }
-        // For non-terminal errors
         setSubscriptionError("Unable to retrieve task logs");
       },
       complete: () => {
