@@ -39,6 +39,7 @@ const LogStreamContent = ({
     null
   );
   const [logUnavailable, setLogUnavailable] = useState<boolean>(false);
+  const [taskFinished, setTaskFinished] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -49,7 +50,7 @@ const LogStreamContent = ({
 
   return (
     <>
-      {taskId && !logUnavailable && (
+      {taskId && !logUnavailable && !taskFinished && (
         <LogStreamSubscription
           visit={visit}
           workflowName={workflowName}
@@ -57,6 +58,7 @@ const LogStreamContent = ({
           setLogLines={setLogLines}
           setSubscriptionError={setSubscriptionError}
           setLogUnavailable={setLogUnavailable}
+          setTaskFinished={setTaskFinished}
         />
       )}
       <Box
@@ -100,6 +102,7 @@ const LogStreamSubscription = ({
   setLogLines,
   setSubscriptionError,
   setLogUnavailable,
+  setTaskFinished,
 }: {
   visit: Visit;
   workflowName: string;
@@ -107,6 +110,7 @@ const LogStreamSubscription = ({
   setLogLines: Dispatch<SetStateAction<string[]>>;
   setSubscriptionError: Dispatch<SetStateAction<string | null>>;
   setLogUnavailable: Dispatch<SetStateAction<boolean>>;
+  setTaskFinished: Dispatch<SetStateAction<boolean>>;
 }) => {
   apolloClientWorkflows
     .subscribe({
@@ -141,6 +145,7 @@ const LogStreamSubscription = ({
         setSubscriptionError("Unable to retrieve task logs");
       },
       complete: () => {
+        setTaskFinished(true);
         console.log("Log subscription completed");
       },
     });
