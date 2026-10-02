@@ -304,6 +304,7 @@ const ScanList: React.FC<ScanListProps> = ({
       {scans.map((data, idx) => {
         return (
           <ScanEntry
+            key={idx + 1}
             index={idx + 1}
             data={data}
             updateStart={updateScanEntryDataStart}
