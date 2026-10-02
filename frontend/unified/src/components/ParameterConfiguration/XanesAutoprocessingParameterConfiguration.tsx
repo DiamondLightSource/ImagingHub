@@ -300,7 +300,7 @@ const ScanEntry: React.FC<ScanEntryProps> = ({
   deleteHandler,
 }: ScanEntryProps) => {
   return (
-    <Accordion>
+    <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ChevronDown />}>
         <Avatar>{index}</Avatar>
         <TextField sx={{ visibility: "hidden" }} size="small" fullWidth />
