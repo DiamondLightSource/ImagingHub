@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Trash2 } from "lucide-react";
+import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import {
   Accordion,
   AccordionDetails,
@@ -186,9 +186,20 @@ export const XanesAutoprocessingParameterConfiguration =
 const ScanList = () => {
   return (
     <Box sx={{ paddingBottom: 2 }}>
-      <Typography>
-        <strong>Scans</strong>
-      </Typography>
+      <Stack
+        direction="row"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Typography>
+          <strong>Scans</strong>
+        </Typography>
+        <IconButton>
+          <Plus onClick={() => console.log("Add scan entry")} />
+        </IconButton>
+      </Stack>
       <ScanEntry index={1} />
     </Box>
   );
