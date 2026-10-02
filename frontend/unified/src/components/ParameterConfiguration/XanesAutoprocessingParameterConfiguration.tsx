@@ -184,7 +184,62 @@ export const XanesAutoprocessingParameterConfiguration =
     );
   };
 
+type ScanEntryData = {
+  start: number;
+  end: number;
+  excluded: string;
+};
+
 const ScanList = () => {
+  const [scans, setScans] = useState<ScanEntryData[]>([
+    { start: 0, end: 0, excluded: "" },
+  ]);
+
+  const updateScanEntryDataStart = (
+    idx: number,
+    data: ScanEntryData,
+    start: number
+  ) => {
+    const zeroBasedIdx = idx - 1;
+    const newData = { ...data, start: start };
+    const newScanList = [
+      ...scans.slice(0, zeroBasedIdx),
+      newData,
+      ...scans.slice(zeroBasedIdx, scans.length - 1),
+    ];
+    setScans(newScanList);
+  };
+
+  const updateScanEntryDataEnd = (
+    idx: number,
+    data: ScanEntryData,
+    end: number
+  ) => {
+    const zeroBasedIdx = idx - 1;
+    const newData = { ...data, end: end };
+    const newScanList = [
+      ...scans.slice(0, zeroBasedIdx),
+      newData,
+      ...scans.slice(zeroBasedIdx, scans.length - 1),
+    ];
+    setScans(newScanList);
+  };
+
+  const updateScanEntryDataExcluded = (
+    idx: number,
+    data: ScanEntryData,
+    excluded: string
+  ) => {
+    const zeroBasedIdx = idx - 1;
+    const newData = { ...data, excluded: excluded };
+    const newScanList = [
+      ...scans.slice(0, zeroBasedIdx),
+      newData,
+      ...scans.slice(zeroBasedIdx, scans.length - 1),
+    ];
+    setScans(newScanList);
+  };
+
   return (
     <Box sx={{ paddingBottom: 2 }}>
       <Stack
@@ -201,20 +256,32 @@ const ScanList = () => {
           <Plus />
         </IconButton>
       </Stack>
-      <ScanEntry index={1} />
+      <ScanEntry
+        index={1}
+        data={scans[0]}
+        updateStart={updateScanEntryDataStart}
+        updateEnd={updateScanEntryDataEnd}
+        updateExcluded={updateScanEntryDataExcluded}
+      />
     </Box>
   );
 };
 
 type ScanEntryProps = {
   index: number;
+  data: ScanEntryData;
+  updateStart: (idx: number, data: ScanEntryData, start: number) => void;
+  updateEnd: (idx: number, data: ScanEntryData, end: number) => void;
+  updateExcluded: (idx: number, data: ScanEntryData, excluded: string) => void;
 };
 
-const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
-  const [start, setStart] = useState<number>(0);
-  const [end, setEnd] = useState<number>(0);
-  const [excluded, setExcluded] = useState<string>("");
-
+const ScanEntry: React.FC<ScanEntryProps> = ({
+  index,
+  data,
+  updateStart,
+  updateEnd,
+  updateExcluded,
+}: ScanEntryProps) => {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ChevronDown />}>
@@ -246,8 +313,10 @@ const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
             variant="outlined"
             type="number"
             label="Start"
-            value={start}
-            onChange={(e) => setStart(Number(e.currentTarget.value))}
+            value={data.start}
+            onChange={(e) =>
+              updateStart(index, data, Number(e.currentTarget.value))
+            }
           >
             Start
           </TextField>
@@ -256,8 +325,10 @@ const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
             variant="outlined"
             type="number"
             label="End"
-            value={end}
-            onChange={(e) => setEnd(Number(e.currentTarget.value))}
+            value={data.end}
+            onChange={(e) =>
+              updateEnd(index, data, Number(e.currentTarget.value))
+            }
           >
             End
           </TextField>
@@ -266,8 +337,8 @@ const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
             variant="outlined"
             type="text"
             label="Excluded"
-            value={excluded}
-            onChange={(e) => setExcluded(e.currentTarget.value)}
+            value={data.excluded}
+            onChange={(e) => updateExcluded(index, data, e.currentTarget.value)}
             slotProps={{
               input: {
                 endAdornment: (
