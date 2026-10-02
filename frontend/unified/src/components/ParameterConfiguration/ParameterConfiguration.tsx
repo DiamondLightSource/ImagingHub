@@ -4,7 +4,7 @@ import OptionSelect from "../OptionSelect";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
 import { PtyrexParameterConfiguration } from "./PtyrexParameterConfiguration";
 import { MibParameterConfiguration } from "./MibParameterConfiguration";
-import { ReactElement, useState } from "react";
+import { ReactElement, Suspense, useState } from "react";
 import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation } from "@apollo/client/react";
@@ -13,6 +13,7 @@ import { InstrumentSession } from "../SessionSelector";
 import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
 import PtypyI08ParameterConfiguration from "./PtypyI08ParameterConfiguration";
 import PtypyP99ParameterConfiguration from "./PtypyP99ParameterConfiguration";
+import { XanesAutoprocessingParameterConfiguration } from "./XanesAutoprocessingParameterConfiguration";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -190,7 +191,15 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         </LoaderProvider>
       ),
     },
-    [Technique.Xanes]: {},
+    [Technique.Xanes]: {
+      xanes: (
+        <Suspense fallback={<p>Fetching workflow template...</p>}>
+          <XanesAutoprocessingParameterConfiguration
+            setParameters={setTemplateParameters}
+          />
+        </Suspense>
+      ),
+    },
     [Technique.Xrd]: {},
   };
 
