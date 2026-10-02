@@ -351,7 +351,6 @@ const ScanEntry: React.FC<ScanEntryProps> = ({
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("clicked trash icon");
                 deleteHandler(index);
               }}
             >
