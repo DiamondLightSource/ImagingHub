@@ -37,6 +37,11 @@ export const templateOptions: Option[] = [
     desc: "Runs a PtyPy reconstruction job inside a container based on data collected at I08-1.",
   },
   {
+    label: "Ptypy Reconstruction for P99",
+    value: "ptypy-p99-from-config",
+    desc: "Runs a PtyPy reconstruction job inside a container based on data collected at P99.",
+  },
+  {
     label: "ptycho",
     value: "ptycho-recon",
     desc: "simple ptyrex reconstruction",

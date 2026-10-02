@@ -24,6 +24,7 @@ export enum Beamline {
   Epsic = "e01",
   E01 = "e01",
   E02 = "e02",
+  P99 = "p99",
 }
 
 export type Option = { label: string; value: string; desc?: string };
