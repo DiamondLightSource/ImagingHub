@@ -165,6 +165,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         <PtyrexParameterConfiguration
           setParameters={setTemplateParameters}
           visitDirpath={visitDirpath}
+          scanIds={scanIds}
         />
       ),
     },
