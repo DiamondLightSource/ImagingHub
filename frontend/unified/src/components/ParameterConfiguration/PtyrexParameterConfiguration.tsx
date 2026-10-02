@@ -10,7 +10,6 @@ export const PtyrexParameterConfiguration = ({
   const [configPath, setConfigPath] = useState<string>("");
   const [projectionNumber, setProjectionNumber] = useState<string>("");
 
-
   useEffect(() => {
     setParameters({
       config_json: configPath,
