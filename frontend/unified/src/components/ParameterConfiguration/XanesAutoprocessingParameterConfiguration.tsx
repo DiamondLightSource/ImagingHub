@@ -256,13 +256,17 @@ const ScanList = () => {
           <Plus />
         </IconButton>
       </Stack>
-      <ScanEntry
-        index={1}
-        data={scans[0]}
-        updateStart={updateScanEntryDataStart}
-        updateEnd={updateScanEntryDataEnd}
-        updateExcluded={updateScanEntryDataExcluded}
-      />
+      {scans.map((data, idx) => {
+        return (
+          <ScanEntry
+            index={idx + 1}
+            data={data}
+            updateStart={updateScanEntryDataStart}
+            updateEnd={updateScanEntryDataEnd}
+            updateExcluded={updateScanEntryDataExcluded}
+          />
+        );
+      })}
     </Box>
   );
 };
