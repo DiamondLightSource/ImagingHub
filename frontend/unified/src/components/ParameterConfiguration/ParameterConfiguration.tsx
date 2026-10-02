@@ -105,10 +105,12 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     // sending the mutation
     console.log("Submit job");
     const parameters = {
-      input: rawDataFilepath,
       ...templateParameters,
       ...resourceParameters,
     };
+    if (template.includes("httomo")) {
+      parameters["input"] = rawDataFilepath;
+    }
     mutation({
       variables: {
         name: template,
