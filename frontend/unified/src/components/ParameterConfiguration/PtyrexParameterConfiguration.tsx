@@ -9,7 +9,7 @@ export const PtyrexParameterConfiguration = ({
 }: TemplateComponentProps) => {
   const [configPath, setConfigPath] = useState<string>("");
   const [projectionNumber, setProjectionNumber] = useState<string>("");
-  console.log(`scanIds: ${JSON.stringify(scanIds[0])}`);
+
 
   useEffect(() => {
     setParameters({
