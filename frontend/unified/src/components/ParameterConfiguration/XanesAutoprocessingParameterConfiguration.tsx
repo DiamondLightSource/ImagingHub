@@ -265,6 +265,13 @@ const ScanList = () => {
         >
           <Plus />
         </IconButton>
+        {scans.length === 0 && (
+          <Tooltip title="is a required property">
+            <IconButton sx={{ color: "error.main" }}>
+              <Info />
+            </IconButton>
+          </Tooltip>
+        )}
       </Stack>
       {scans.map((data, idx) => {
         return (
