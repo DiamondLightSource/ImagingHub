@@ -79,7 +79,7 @@ export const XanesAutoprocessingParameterConfiguration = ({
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <>
+    <Box sx={{ paddingBottom: 2 }}>
       <ScanList scans={scans} updateScans={setScans} />
       <Stack direction="column" spacing={2}>
         <Stack direction="row" spacing={2}>
@@ -204,7 +204,7 @@ export const XanesAutoprocessingParameterConfiguration = ({
           helperText={outputFolder !== "" ? "" : "is a required property"}
         ></TextField>
       </Stack>
-    </>
+    </Box>
   );
 };
 
