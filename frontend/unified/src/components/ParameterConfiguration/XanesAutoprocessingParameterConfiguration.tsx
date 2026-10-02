@@ -252,7 +252,11 @@ const ScanList = () => {
         <Typography>
           <strong>Scans</strong>
         </Typography>
-        <IconButton onClick={() => console.log("Add scan entry")}>
+        <IconButton
+          onClick={() => {
+            setScans([...scans, { start: 0, end: 0, excluded: "" }]);
+          }}
+        >
           <Plus />
         </IconButton>
       </Stack>
