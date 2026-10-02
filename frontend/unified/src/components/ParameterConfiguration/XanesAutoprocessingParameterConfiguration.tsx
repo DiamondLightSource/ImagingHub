@@ -189,31 +189,41 @@ const ScanList = () => {
       <Typography>
         <strong>Scans</strong>
       </Typography>
-      <Accordion>
-        <AccordionSummary expandIcon={<ChevronDown />}>
-          <Avatar>1</Avatar>
-          <TextField sx={{ visibility: "hidden" }} size="small" fullWidth />
-          <Tooltip title="Delete">
-            <Box
-              sx={{
-                paddingRight: 1,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <IconButton>
-                <Trash2
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log("clicked trash icon");
-                  }}
-                />
-              </IconButton>
-            </Box>
-          </Tooltip>
-        </AccordionSummary>
-        <AccordionDetails>Content</AccordionDetails>
-      </Accordion>
+      <ScanEntry index={1} />
     </Box>
+  );
+};
+
+type ScanEntryProps = {
+  index: number;
+};
+
+const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
+  return (
+    <Accordion>
+      <AccordionSummary expandIcon={<ChevronDown />}>
+        <Avatar>{index}</Avatar>
+        <TextField sx={{ visibility: "hidden" }} size="small" fullWidth />
+        <Tooltip title="Delete">
+          <Box
+            sx={{
+              paddingRight: 1,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <IconButton>
+              <Trash2
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log("clicked trash icon");
+                }}
+              />
+            </IconButton>
+          </Box>
+        </Tooltip>
+      </AccordionSummary>
+      <AccordionDetails>Content</AccordionDetails>
+    </Accordion>
   );
 };
