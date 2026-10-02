@@ -205,7 +205,7 @@ const ScanList = () => {
     const newScanList = [
       ...scans.slice(0, zeroBasedIdx),
       newData,
-      ...scans.slice(zeroBasedIdx, scans.length - 1),
+      ...scans.slice(zeroBasedIdx + 1, scans.length),
     ];
     setScans(newScanList);
   };
@@ -220,7 +220,7 @@ const ScanList = () => {
     const newScanList = [
       ...scans.slice(0, zeroBasedIdx),
       newData,
-      ...scans.slice(zeroBasedIdx, scans.length - 1),
+      ...scans.slice(zeroBasedIdx + 1, scans.length),
     ];
     setScans(newScanList);
   };
@@ -235,7 +235,7 @@ const ScanList = () => {
     const newScanList = [
       ...scans.slice(0, zeroBasedIdx),
       newData,
-      ...scans.slice(zeroBasedIdx, scans.length - 1),
+      ...scans.slice(zeroBasedIdx + 1, scans.length),
     ];
     setScans(newScanList);
   };
