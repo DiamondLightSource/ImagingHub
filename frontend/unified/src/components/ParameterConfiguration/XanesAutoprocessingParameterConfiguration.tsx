@@ -196,8 +196,8 @@ const ScanList = () => {
         <Typography>
           <strong>Scans</strong>
         </Typography>
-        <IconButton>
-          <Plus onClick={() => console.log("Add scan entry")} />
+        <IconButton onClick={() => console.log("Add scan entry")}>
+          <Plus />
         </IconButton>
       </Stack>
       <ScanEntry index={1} />
@@ -223,13 +223,13 @@ const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
               alignItems: "center",
             }}
           >
-            <IconButton>
-              <Trash2
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log("clicked trash icon");
-                }}
-              />
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("clicked trash icon");
+              }}
+            >
+              <Trash2 />
             </IconButton>
           </Box>
         </Tooltip>
