@@ -395,7 +395,7 @@ const ScanEntry: React.FC<ScanEntryProps> = ({
             slotProps={{
               input: {
                 endAdornment: (
-                  <Tooltip title="Excluded input info">
+                  <Tooltip title="Accepts integers and ranges separated by spaces or commas, e.g. 1 2, 5-9, 11.">
                     <InputAdornment position="end">
                       <Info />
                     </InputAdornment>
