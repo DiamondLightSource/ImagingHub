@@ -240,6 +240,12 @@ const ScanList = () => {
     setScans(newScanList);
   };
 
+  const removeScanEntry = (index: number) => {
+    const zeroBasedIdx = index - 1;
+    const newScanList = scans.filter((_, idx) => idx !== zeroBasedIdx);
+    setScans(newScanList);
+  };
+
   return (
     <Box sx={{ paddingBottom: 2 }}>
       <Stack
@@ -268,6 +274,7 @@ const ScanList = () => {
             updateStart={updateScanEntryDataStart}
             updateEnd={updateScanEntryDataEnd}
             updateExcluded={updateScanEntryDataExcluded}
+            deleteHandler={removeScanEntry}
           />
         );
       })}
@@ -281,6 +288,7 @@ type ScanEntryProps = {
   updateStart: (idx: number, data: ScanEntryData, start: number) => void;
   updateEnd: (idx: number, data: ScanEntryData, end: number) => void;
   updateExcluded: (idx: number, data: ScanEntryData, excluded: string) => void;
+  deleteHandler: (_: number) => void;
 };
 
 const ScanEntry: React.FC<ScanEntryProps> = ({
@@ -289,6 +297,7 @@ const ScanEntry: React.FC<ScanEntryProps> = ({
   updateStart,
   updateEnd,
   updateExcluded,
+  deleteHandler,
 }: ScanEntryProps) => {
   return (
     <Accordion>
@@ -307,6 +316,7 @@ const ScanEntry: React.FC<ScanEntryProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 console.log("clicked trash icon");
+                deleteHandler(index);
               }}
             >
               <Trash2 />
