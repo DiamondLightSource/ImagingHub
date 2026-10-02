@@ -57,6 +57,7 @@ export const XanesAutoprocessingParameterConfiguration = ({
   useEffect(() => {
     setParameters({
       outputFolder,
+      multiScan: scans,
       edgeElement,
       edgeTransition,
       elementToAlign,
@@ -66,6 +67,7 @@ export const XanesAutoprocessingParameterConfiguration = ({
     });
   }, [
     outputFolder,
+    scans,
     edgeElement,
     edgeTransition,
     elementToAlign,
