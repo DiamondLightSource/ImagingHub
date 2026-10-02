@@ -39,6 +39,9 @@ export const XanesAutoprocessingParameterConfiguration = ({
   const [elementToAlign, setElementToAlign] = useState<string>("");
   const [transitionToAlign, setTransitionToAlign] = useState<string>("");
   const [outputFolder, setOutputFolder] = useState<string>("");
+  const [scans, setScans] = useState<ScanEntryData[]>([
+    { start: 0, end: 0, excluded: "" },
+  ]);
 
   const elements = data.workflowTemplate.arguments["$defs"].elements.enum;
   const edgeTransitions =
@@ -75,7 +78,7 @@ export const XanesAutoprocessingParameterConfiguration = ({
 
   return (
     <>
-      <ScanList />
+      <ScanList scans={scans} updateScans={setScans} />
       <Stack direction="column" spacing={2}>
         <Stack direction="row" spacing={2}>
           <FormControl fullWidth>
@@ -209,11 +212,15 @@ type ScanEntryData = {
   excluded: string;
 };
 
-const ScanList = () => {
-  const [scans, setScans] = useState<ScanEntryData[]>([
-    { start: 0, end: 0, excluded: "" },
-  ]);
+type ScanListProps = {
+  scans: ScanEntryData[];
+  updateScans: (_: ScanEntryData[]) => void;
+};
 
+const ScanList: React.FC<ScanListProps> = ({
+  scans,
+  updateScans,
+}: ScanListProps) => {
   const updateScanEntryDataStart = (
     idx: number,
     data: ScanEntryData,
@@ -226,7 +233,7 @@ const ScanList = () => {
       newData,
       ...scans.slice(zeroBasedIdx + 1, scans.length),
     ];
-    setScans(newScanList);
+    updateScans(newScanList);
   };
 
   const updateScanEntryDataEnd = (
@@ -241,7 +248,7 @@ const ScanList = () => {
       newData,
       ...scans.slice(zeroBasedIdx + 1, scans.length),
     ];
-    setScans(newScanList);
+    updateScans(newScanList);
   };
 
   const updateScanEntryDataExcluded = (
@@ -256,13 +263,13 @@ const ScanList = () => {
       newData,
       ...scans.slice(zeroBasedIdx + 1, scans.length),
     ];
-    setScans(newScanList);
+    updateScans(newScanList);
   };
 
   const removeScanEntry = (index: number) => {
     const zeroBasedIdx = index - 1;
     const newScanList = scans.filter((_, idx) => idx !== zeroBasedIdx);
-    setScans(newScanList);
+    updateScans(newScanList);
   };
 
   return (
@@ -279,7 +286,7 @@ const ScanList = () => {
         </Typography>
         <IconButton
           onClick={() => {
-            setScans([...scans, { start: 0, end: 0, excluded: "" }]);
+            updateScans([...scans, { start: 0, end: 0, excluded: "" }]);
           }}
         >
           <Plus />
