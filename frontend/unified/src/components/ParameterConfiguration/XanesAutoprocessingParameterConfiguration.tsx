@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, Info, Plus, Trash2 } from "lucide-react";
 import {
   Accordion,
   AccordionDetails,
@@ -12,6 +12,7 @@ import {
   FormGroup,
   FormHelperText,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -210,6 +211,10 @@ type ScanEntryProps = {
 };
 
 const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
+  const [start, setStart] = useState<number>(0);
+  const [end, setEnd] = useState<number>(0);
+  const [excluded, setExcluded] = useState<string>("");
+
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ChevronDown />}>
@@ -234,7 +239,51 @@ const ScanEntry: React.FC<ScanEntryProps> = ({ index }: ScanEntryProps) => {
           </Box>
         </Tooltip>
       </AccordionSummary>
-      <AccordionDetails>Content</AccordionDetails>
+      <AccordionDetails>
+        <Stack direction="row" spacing={2}>
+          <TextField
+            size="small"
+            variant="outlined"
+            type="number"
+            label="Start"
+            value={start}
+            onChange={(e) => setStart(Number(e.currentTarget.value))}
+          >
+            Start
+          </TextField>
+          <TextField
+            size="small"
+            variant="outlined"
+            type="number"
+            label="End"
+            value={end}
+            onChange={(e) => setEnd(Number(e.currentTarget.value))}
+          >
+            End
+          </TextField>
+          <TextField
+            size="small"
+            variant="outlined"
+            type="text"
+            label="Excluded"
+            value={excluded}
+            onChange={(e) => setExcluded(e.currentTarget.value)}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <Tooltip title="Excluded input info">
+                    <InputAdornment position="end">
+                      <Info />
+                    </InputAdornment>
+                  </Tooltip>
+                ),
+              },
+            }}
+          >
+            Excluded
+          </TextField>
+        </Stack>
+      </AccordionDetails>
     </Accordion>
   );
 };
