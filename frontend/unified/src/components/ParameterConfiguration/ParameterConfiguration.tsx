@@ -14,6 +14,7 @@ import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
 import PtypyI08ParameterConfiguration from "./PtypyI08ParameterConfiguration";
 import PtypyP99ParameterConfiguration from "./PtypyP99ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "./XanesAutoprocessingParameterConfiguration";
+import { ajv } from "./validation";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -109,35 +110,48 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
       ...templateParameters,
       ...resourceParameters,
     };
-    if (template.includes("httomo")) {
-      parameters["input"] = rawDataFilepath;
+    console.log(parameters);
+    const validate = ajv.getSchema(template);
+    if (!validate) {
+      console.log("No Schema Found!");
+      return;
     }
-    mutation({
-      variables: {
-        name: template,
-        parameters,
-        visit: visit,
-      },
-      onCompleted: (resp) => {
-        setNotification(
-          <Alert severity="success" variant="outlined">
-            Submitted workflow: {resp.submitWorkflowTemplate.name}
-          </Alert>
-        );
-      },
-      onError: (err) => {
-        setNotification(
-          <Alert severity="error" variant="outlined">
-            Failed to submit workflow: {err.message}
-          </Alert>
-        );
-      },
-    });
-    setNotification(
-      <Alert severity="info" variant="outlined">
-        Submitting workflow...
-      </Alert>
-    );
+    if (validate(parameters)) {
+      console.log("All Good!");
+    } else {
+      console.log("Not Good!");
+      console.log(ajv.errorsText(ajv.errors));
+    }
+
+    // if (template.includes("httomo")) {
+    //   parameters["input"] = rawDataFilepath;
+    // }
+    // mutation({
+    //   variables: {
+    //     name: template,
+    //     parameters,
+    //     visit: visit,
+    //   },
+    //   onCompleted: (resp) => {
+    //     setNotification(
+    //       <Alert severity="success" variant="outlined">
+    //         Submitted workflow: {resp.submitWorkflowTemplate.name}
+    //       </Alert>
+    //     );
+    //   },
+    //   onError: (err) => {
+    //     setNotification(
+    //       <Alert severity="error" variant="outlined">
+    //         Failed to submit workflow: {err.message}
+    //       </Alert>
+    //     );
+    //   },
+    // });
+    // setNotification(
+    //   <Alert severity="info" variant="outlined">
+    //     Submitting workflow...
+    //   </Alert>
+    // );
   };
 
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
