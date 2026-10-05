@@ -57,11 +57,13 @@ export const XanesAutoprocessingParameterConfiguration = ({
   useEffect(() => {
     setParameters({
       outputFolder,
-      multiScan: scans,
+      multiScan: scans.map((data) => ({
+        multiScan: data,
+      })),
       edgeElement,
       edgeTransition,
-      elementToAlign,
-      transitionToAlign,
+      elementToAlign: elementToAlign === "" ? "None" : elementToAlign,
+      transitionToAlign: transitionToAlign === "" ? "None" : transitionToAlign,
       method: alignmentMethod,
       normalise,
     });
