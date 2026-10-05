@@ -81,7 +81,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     variables: { visitobj: props.visit, name: props.workflowName },
   });
 
-  const artifactUrl: string[] = [];
+  const artifactUrl: string[] = ["about:blank"];
   const LogFileTuples: string[] = ["No log Selected"];
   const [selectLogState, setSelectLogState] = React.useState("No log Selected");
   const [currentUrl, setCurrenturl] = React.useState("");
@@ -93,7 +93,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
       setSelectLogState("No log Selected");
       setindexValue(0);
     }
-    setCurrenturl(artifactUrl[indexValue]);
+    setCurrenturl(artifactUrl[LogFileTuples.indexOf(event.target.value)]);
   };
 
   function reset() {
@@ -119,12 +119,13 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
 
   function processLogData(data: LogQueryQuery) {
     const procData: string[] = [];
+    const tmpUrls: string[] = [];
     let tasknum: number = 0;
     data.workflow.status.tasks.forEach((task: any) => {
       let artnum: number = 0;
       task.artifacts.forEach((artifact: any) => {
         if (artifact.mimeType == "text/plain") {
-          artifactUrl.push(artifact.url);
+          tmpUrls.push(artifact.url);
           let tmp: string = tasknum + "-" + artnum + " " + task.name + ".log";
           procData.push(tmp);
           tasknum = tasknum + 1;
@@ -132,7 +133,7 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
         }
       });
     });
-    return procData;
+    return [procData, tmpUrls];
   }
 
   if (
@@ -140,12 +141,14 @@ export const DisplayLogMeta: FC<DisplayLogMetaProps> = (props: {
     data.workflow?.status?.__typename == "WorkflowErroredStatus" ||
     data.workflow?.status?.__typename == "WorkflowFailedStatus"
   ) {
-    let procData = processLogData(data);
+    let [procData, tmpUrls] = processLogData(data);
     procData.forEach((tmp) => {
       LogFileTuples.push(tmp);
     });
+    tmpUrls.forEach((tmp) => {
+      artifactUrl.push(tmp);
+    });
   }
-
   return (
     <Stack direction="column" spacing={1}>
       <Box sx={{ minWidth: 120 }}>
