@@ -62,8 +62,8 @@ export const XanesAutoprocessingParameterConfiguration = ({
       })),
       edgeElement,
       edgeTransition,
-      elementToAlign,
-      transitionToAlign,
+      elementToAlign: elementToAlign === "" ? "None" : elementToAlign,
+      transitionToAlign: transitionToAlign === "" ? "None" : transitionToAlign,
       method: alignmentMethod,
       normalise,
     });
