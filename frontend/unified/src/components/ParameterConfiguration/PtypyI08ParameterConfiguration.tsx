@@ -14,13 +14,13 @@ const PtypyI08ParameterConfiguration = ({
   setParameters: (_: object) => void;
   setResourceParameters: (_: object) => void;
 }) => {
-  const [id, setId] = useState<string>("");
-  const [binning, setBinning] = useState<string>("2");
-  const [defocus, setDefocus] = useState<string>("50");
+  const [id, setId] = useState<number>(1);
+  const [binning, setBinning] = useState<number>(2);
+  const [defocus, setDefocus] = useState<number>(50);
   const [memory, setMemory] = useState<string>("100Gi");
-  const [nprocs, setNprocs] = useState<string>("1");
-  const [numIter, setNumIter] = useState<string>("100");
-  const [probeModes, setProbeModes] = useState<string>("1");
+  const [nprocs, setNprocs] = useState<number>(1);
+  const [numIter, setNumIter] = useState<number>(100);
+  const [probeModes, setProbeModes] = useState<number>(1);
   const [outPath, setOutPath] = useState<string>("processing/workflows/ptypy");
   const [useGpu, setUseGpu] = useState<boolean>(true);
 
@@ -64,11 +64,12 @@ const PtypyI08ParameterConfiguration = ({
     >
       <Stack direction="column" spacing={2}>
         <TextField
-          error={id.length === 0}
+          error={!id}
           label="Scan Number"
           value={id}
-          onChange={(e) => setId(e.target.value)}
+          onChange={(e) => setId(Number(e.target.value))}
           size="small"
+          type="number"
         />
         <TextField
           label="Path to output folder"
@@ -79,13 +80,14 @@ const PtypyI08ParameterConfiguration = ({
         <TextField
           label="Detector bin factor"
           value={binning}
-          onChange={(e) => setBinning(e.target.value)}
+          onChange={(e) => setBinning(Number(e.target.value))}
           size="small"
+          type="number"
         />
         <TextField
           label="Expected defocus in microns"
           value={defocus}
-          onChange={(e) => setDefocus(e.target.value)}
+          onChange={(e) => setDefocus(Number(e.target.value))}
           size="small"
         />
         <TextField
@@ -97,19 +99,19 @@ const PtypyI08ParameterConfiguration = ({
         <TextField
           label="Nr. of processes"
           value={nprocs}
-          onChange={(e) => setNprocs(e.target.value)}
+          onChange={(e) => setNprocs(Number(e.target.value))}
           size="small"
         />
         <TextField
           label="Nr. of iterations"
           value={binning}
-          onChange={(e) => setNumIter(e.target.value)}
+          onChange={(e) => setNumIter(Number(e.target.value))}
           size="small"
         />
         <TextField
           label="Nr. of probe modes"
           value={probeModes}
-          onChange={(e) => setProbeModes(e.target.value)}
+          onChange={(e) => setProbeModes(Number(e.target.value))}
           size="small"
         />
         <FormControlLabel
