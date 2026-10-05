@@ -57,7 +57,9 @@ export const XanesAutoprocessingParameterConfiguration = ({
   useEffect(() => {
     setParameters({
       outputFolder,
-      multiScan: scans,
+      multiScan: scans.map((data) => ({
+        multiScan: data,
+      })),
       edgeElement,
       edgeTransition,
       elementToAlign,
