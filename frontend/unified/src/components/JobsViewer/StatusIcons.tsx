@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Chip } from "@mui/material";
 import { WorkflowStatus } from "./utils/types";
 import {
   CircleAlert,
@@ -8,49 +8,63 @@ import {
   ClockFading,
 } from "lucide-react";
 import React from "react";
-import BaseStack from "./utils/BaseStack";
 
-export const getWorkflowStatusIcon = (
-  status: WorkflowStatus,
-  size: number = 25
-) => {
+export const getWorkflowStatusIcon = (status: WorkflowStatus) => {
   const workflowStatusIconMap: { [key in WorkflowStatus]: React.JSX.Element } =
     {
       Unknown: (
-        <BaseStack colour="yellow">
-          <CircleQuestionMark size={size} color="yellow" />
-          <Typography color="yellow">Unknown</Typography>
-        </BaseStack>
+        <Chip
+          color="default"
+          label="Unknown"
+          variant="outlined"
+          icon={<CircleQuestionMark />}
+          sx={{ cursor: "default" }}
+        />
       ),
       WorkflowPendingStatus: (
-        <BaseStack colour="yellow">
-          <ClockFading size={size} color="yellow" />
-          <Typography color="yellow">Pending</Typography>
-        </BaseStack>
+        <Chip
+          color="warning"
+          label="Pending"
+          variant="outlined"
+          icon={<ClockFading />}
+          sx={{ cursor: "default" }}
+        />
       ),
       WorkflowRunningStatus: (
-        <BaseStack colour="black">
-          <LoaderCircle size={size} color="black" />
-          <Typography color="black">Running</Typography>
-        </BaseStack>
+        <Chip
+          color="primary"
+          label="Running"
+          variant="outlined"
+          icon={<LoaderCircle />}
+          sx={{ cursor: "default" }}
+        />
       ),
       WorkflowSucceededStatus: (
-        <BaseStack colour="green">
-          <CircleCheckBig size={size} color="green" />
-          <Typography color="green">Completed</Typography>
-        </BaseStack>
+        <Chip
+          color="success"
+          label="Completed"
+          variant="outlined"
+          icon={<CircleCheckBig />}
+          sx={{ cursor: "default" }}
+        />
       ),
       WorkflowFailedStatus: (
-        <BaseStack colour="red">
-          <CircleAlert size={size} color="red" />
-          <Typography color="red">Failed</Typography>
-        </BaseStack>
+        <Chip
+          color="error"
+          label="Failed"
+          variant="outlined"
+          icon={<CircleAlert />}
+          sx={{ cursor: "default" }}
+        />
       ),
       WorkflowErroredStatus: (
-        <BaseStack colour="red">
-          <CircleAlert size={size} color="red" />
-          <Typography color="red">Errored</Typography>
-        </BaseStack>
+        <Chip
+          color="error"
+          label="Errored"
+          variant="outlined"
+          icon={<CircleAlert />}
+          sx={{ cursor: "default" }}
+        />
       ),
     };
 
