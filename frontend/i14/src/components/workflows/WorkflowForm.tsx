@@ -12,10 +12,16 @@ import Typography from "@mui/material/Typography";
 
 import { initialData } from "../../data/form";
 import { templateOptions } from "../../data/templates";
+
 import OptionSelect from "./OptionSelect";
+import ElementSelect from "./ElementSelect";
 import UserVisits from "./UserVisits";
 
-import type { WorkflowFormData, Option } from "../../types/workflowFields";
+import type {
+  ElementPair,
+  WorkflowFormData,
+  Option,
+} from "../../types/workflowFields";
 
 export const WorkflowForm: FC = () => {
   const techniques = ["dpc", "xanes", "xrd"] as const;
@@ -55,10 +61,25 @@ export const WorkflowForm: FC = () => {
     w?.focus();
   };
 
+  const getElementString = () => {
+    const params = new URLSearchParams();
+    const { edgeElement, elementToAlign, template } = data;
+    if (["xanes-sparse", "xanes"].includes(template)){
+      params.set("edgeElement", edgeElement.element);
+      params.set("edgeTransition", edgeElement.transition);
+    }
+    if (template === "xanes") {
+      params.set("elementToAlign", elementToAlign.element);
+      params.set("transitionToAlign", elementToAlign.transition);
+    }
+    return params;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const urlArguments = `outputFolder=${data.outpath}`;
-    const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}?${urlArguments}`;
+    const params = getElementString();
+    params.set("outputFolder", data.outpath);
+    const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}?${params}`;
     openInNewTab(url);
   };
 
@@ -102,6 +123,35 @@ export const WorkflowForm: FC = () => {
                 setData((prev) => ({ ...prev, visit: value }))
               }
             />
+
+            {["xanes-sparse", "xanes"].includes(data.template) && (
+              <>
+                <ElementSelect
+                  title="Edge Element"
+                  info="Line group to be aligned"
+                  value={data.edgeElement}
+                  onChange={(value) =>
+                    setData((prev) => ({
+                      ...prev,
+                      edgeElement: value,
+                    }))
+                  }
+                />
+                {data.template === "xanes" && (
+                  <ElementSelect
+                    title="Transition to Align"
+                    info="Line group to be used for tracking"
+                    value={data.elementToAlign}
+                    onChange={(value) =>
+                      setData((prev) => ({
+                        ...prev,
+                        elementToAlign: value,
+                      }))
+                    }
+                  />
+                )}
+              </>
+            )}
 
             <TextField
               name="outpath"
