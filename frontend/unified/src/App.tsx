@@ -229,22 +229,6 @@ export const App: React.FC = () => {
     }
   };
 
-  const session = determineCurrentSession(
-    sessionSelectionMode,
-    data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
-    customSession
-  );
-  const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
-
-  // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
-  // a capitalised "proposal code", whereas the workflows service only accepts
-  // it in lowercase
-  const selectedVisit = {
-    proposalCode: session?.proposal.proposalCategory.toLowerCase(),
-    proposalNumber: session?.proposal.proposalNumber,
-    number: session?.instrumentSessionNumber,
-  };
-
   const mapStringsToBeamline = (beamline: string): Beamline => {
     switch (beamline) {
       case "DIAD":
@@ -268,143 +252,221 @@ export const App: React.FC = () => {
     }
   };
 
-  const beamline = mapStringsToBeamline(session.instrument.name);
-  const currentTechnique = technique ?? BEAMLINES_DEFAULT_TECHNIQUE[beamline];
-  const currentTemplate =
-    template ?? filterTemplates(currentTechnique)[0].label;
-
-  return (
-    <>
+  const getSessionSelector = (
+    latestEnabled: boolean = true,
+    session: InstrumentSession | null,
+    sessionName: string | null
+  ) => {
+    return (
       <Box justifyItems="center">
         <Stack direction="row" spacing={2} alignItems="center" marginBottom={2}>
           <Typography variant="h5">Session</Typography>
-          <Chip color="primary" variant="outlined" label={sessionName} />
-          <Chip
-            color="secondary"
-            variant="outlined"
-            label={session.instrument.name}
-          />
+
+          {/* Show chips only when session & sessionName are defined */}
+          {session && sessionName ? (
+            <>
+              <Chip color="primary" variant="outlined" label={sessionName} />
+              <Chip
+                color="secondary"
+                variant="outlined"
+                label={session.instrument.name}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </Stack>
         <SessionSelector
           setSession={updateCustomSession}
-          mode={sessionSelectionMode}
+          mode={
+            latestEnabled ? sessionSelectionMode : SessionSelectionMode.Custom
+          }
           setMode={updateSessionSelectionMode}
+          latestEnabled={latestEnabled}
         />
       </Box>
-      <ApolloProvider client={apolloClientWorkflows}>
-        <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-          <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Accordion defaultExpanded>
-              <AccordionSummary id="scan" expandIcon={<ChevronDown />}>
-                <Typography variant="h5">Scan</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ScanSelector
-                  scanIds={selectedScanIds}
-                  setScanIds={setSelectedScanIds}
-                />
-              </AccordionDetails>
-            </Accordion>
+    );
+  };
 
-            <Accordion defaultExpanded>
-              <AccordionSummary id="technique" expandIcon={<ChevronDown />}>
-                <Typography variant="h5">Technique</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <WorkflowForm
-                  handleChangeTechnique={handleChangeTechnique}
-                  showAllTechniques={showAllTechniques}
-                  handleShowAllTechniques={(
-                    e: React.ChangeEvent<HTMLInputElement>
-                  ) => {
-                    setShowAllTechniques(e.target.checked);
-                    const isSelectedTechniqueInSubset =
-                      BEAMLINE_TECHNIQUES_SUBSET[beamline].includes(
-                        currentTechnique
-                      );
-                    if (!e.target.checked && !isSelectedTechniqueInSubset) {
-                      updateTechniqueAndTemplate(beamline);
-                    }
-                  }}
-                  filteredTechniques={filterTechniques(beamline)}
-                  templateOptions={filterTemplates(currentTechnique)}
-                  technique={currentTechnique}
-                  template={currentTemplate}
-                  setTemplate={setTemplate}
-                />
-              </AccordionDetails>
-            </Accordion>
+  const latestSessionAvailable =
+    data.account.instrumentSessionRoles.edges.length > 0;
 
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                id="parameter-configuration"
-                expandIcon={<ChevronDown />}
-              >
-                <Typography variant="h5">Parameter Configuration</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ParameterConfiguration
-                  technique={currentTechnique}
-                  template={currentTemplate}
-                  setTemplate={setTemplate}
-                  availableTemplates={filterTemplates(
-                    Technique[currentTechnique as keyof typeof Technique]
-                  )}
-                  visit={selectedVisit}
-                  beamline={beamline}
-                  startTime={session.startTime}
-                  scanIds={selectedScanIds}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Stack>
+  // Case 1: No latest, no custom
+  // Case 2: No latest, custom
+  // Case 3: Latest
 
-          <Stack spacing={VERTICAL_SPACING} width="500px">
-            <Accordion defaultExpanded>
-              <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
-                <Typography variant="h5">Jobs</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <JobsViewer
-                  visit={selectedVisit}
-                  selectedWorkflow={selectedWorkflow}
-                  setSelectedWorkflow={setSelectedWorkflow}
-                />
-              </AccordionDetails>
-            </Accordion>
+  if (customSession != null || latestSessionAvailable) {
+    let session = customSession;
+    // Get latest session, if available and latest session mode is selected
+    if (latestSessionAvailable) {
+      session = determineCurrentSession(
+        sessionSelectionMode,
+        data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
+        customSession
+      );
+    } else {
+      session = customSession;
+    }
 
-            <Accordion defaultExpanded>
-              <AccordionSummary id="log" expandIcon={<ChevronDown />}>
-                <Typography variant="h5">Log</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {selectedWorkflow !== null ? (
-                  <DisplayLogMeta
-                    visit={selectedVisit}
-                    workflowName={selectedWorkflow}
-                    key={selectedWorkflow}
+    if (session == null) {
+      return;
+    }
+
+    const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
+
+    // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
+    // a capitalised "proposal code", whereas the workflows service only accepts
+    // it in lowercase
+    const selectedVisit = {
+      proposalCode: session?.proposal.proposalCategory.toLowerCase(),
+      proposalNumber: session?.proposal.proposalNumber,
+      number: session?.instrumentSessionNumber,
+    };
+
+    const beamline = mapStringsToBeamline(session.instrument.name);
+    const currentTechnique = technique ?? BEAMLINES_DEFAULT_TECHNIQUE[beamline];
+    const currentTemplate =
+      template ?? filterTemplates(currentTechnique)[0].label;
+
+    return (
+      <>
+        {/* Wrap the SessionSelector in a <Stack> as it the TextField won't remember
+        the session text otherwise */}
+        <Stack>
+          {getSessionSelector(latestSessionAvailable, session, sessionName)}
+        </Stack>
+
+        <ApolloProvider client={apolloClientWorkflows}>
+          <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
+            <Stack spacing={VERTICAL_SPACING} width="500px">
+              <Accordion defaultExpanded>
+                <AccordionSummary id="scan" expandIcon={<ChevronDown />}>
+                  <Typography variant="h5">Scan</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ScanSelector
+                    scanIds={selectedScanIds}
+                    setScanIds={setSelectedScanIds}
                   />
-                ) : (
-                  <p>No workflow selected</p>
-                )}
-              </AccordionDetails>
-            </Accordion>
+                </AccordionDetails>
+              </Accordion>
 
-            <Accordion defaultExpanded>
-              <AccordionSummary id="plot" expandIcon={<ChevronDown />}>
-                <Typography variant="h5">Plot</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Plot
-                  workflowName={selectedWorkflow}
-                  visit={selectedVisit}
-                  key={sessionName}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Stack>
+              <Accordion defaultExpanded>
+                <AccordionSummary id="technique" expandIcon={<ChevronDown />}>
+                  <Typography variant="h5">Technique</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <WorkflowForm
+                    handleChangeTechnique={handleChangeTechnique}
+                    showAllTechniques={showAllTechniques}
+                    handleShowAllTechniques={(
+                      e: React.ChangeEvent<HTMLInputElement>
+                    ) => {
+                      setShowAllTechniques(e.target.checked);
+                      const isSelectedTechniqueInSubset =
+                        BEAMLINE_TECHNIQUES_SUBSET[beamline].includes(
+                          currentTechnique
+                        );
+                      if (!e.target.checked && !isSelectedTechniqueInSubset) {
+                        updateTechniqueAndTemplate(beamline);
+                      }
+                    }}
+                    filteredTechniques={filterTechniques(beamline)}
+                    templateOptions={filterTemplates(currentTechnique)}
+                    technique={currentTechnique}
+                    template={currentTemplate}
+                    setTemplate={setTemplate}
+                  />
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion defaultExpanded>
+                <AccordionSummary
+                  id="parameter-configuration"
+                  expandIcon={<ChevronDown />}
+                >
+                  <Typography variant="h5">Parameter Configuration</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ParameterConfiguration
+                    technique={currentTechnique}
+                    template={currentTemplate}
+                    setTemplate={setTemplate}
+                    availableTemplates={filterTemplates(
+                      Technique[currentTechnique as keyof typeof Technique]
+                    )}
+                    visit={selectedVisit}
+                    beamline={beamline}
+                    startTime={session.startTime}
+                    scanIds={selectedScanIds}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Stack>
+
+            <Stack spacing={VERTICAL_SPACING} width="500px">
+              <Accordion defaultExpanded>
+                <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
+                  <Typography variant="h5">Jobs</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <JobsViewer
+                    visit={selectedVisit}
+                    selectedWorkflow={selectedWorkflow}
+                    setSelectedWorkflow={setSelectedWorkflow}
+                  />
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion defaultExpanded>
+                <AccordionSummary id="log" expandIcon={<ChevronDown />}>
+                  <Typography variant="h5">Log</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {selectedWorkflow !== null ? (
+                    <DisplayLogMeta
+                      visit={selectedVisit}
+                      workflowName={selectedWorkflow}
+                      key={selectedWorkflow}
+                    />
+                  ) : (
+                    <p>No workflow selected</p>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion defaultExpanded>
+                <AccordionSummary id="plot" expandIcon={<ChevronDown />}>
+                  <Typography variant="h5">Plot</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Plot
+                    workflowName={selectedWorkflow}
+                    visit={selectedVisit}
+                    key={sessionName}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Stack>
+          </Grid>
+        </ApolloProvider>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Stack spacing={VERTICAL_SPACING}>
+          {getSessionSelector(latestSessionAvailable, null, null)}
+          <Typography variant="body1">
+            Latest session not found. Please enter a session reference (e.g. ab12345-1).
+          </Typography>
+        </Stack>
+        {/* Replicate the main grid here so our SessionSelector remains aligned */}
+        <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
+          <Stack width="500px" />
+          <Stack width="500px" />
         </Grid>
-      </ApolloProvider>
-    </>
-  );
+      </>
+    );
+  }
 };
