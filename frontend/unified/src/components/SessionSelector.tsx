@@ -49,12 +49,14 @@ type SessionSelectorProps = {
   setSession: (_: InstrumentSession | null) => void;
   mode: SessionSelectionMode;
   setMode: (_: SessionSelectionMode) => void;
+  latestEnabled: boolean;
 };
 
 export const SessionSelector: React.FC<SessionSelectorProps> = ({
   setSession,
   mode,
   setMode,
+  latestEnabled = true,
 }: SessionSelectorProps) => {
   const [customeSessionInputValue, setCustomSessionInputValue] =
     useState<string>("");
@@ -75,6 +77,7 @@ export const SessionSelector: React.FC<SessionSelectorProps> = ({
         <ToggleButton
           sx={{ textTransform: "none" }}
           value={SessionSelectionMode.Latest}
+          disabled={!latestEnabled}
         >
           {SessionSelectionMode.Latest}
         </ToggleButton>
