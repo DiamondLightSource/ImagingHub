@@ -458,7 +458,8 @@ export const App: React.FC = () => {
         <Stack spacing={VERTICAL_SPACING}>
           {getSessionSelector(latestSessionAvailable, null, null)}
           <Typography variant="body1">
-            Latest session not found. Please enter a session reference (e.g. ab12345-1).
+            Latest session not found. Please enter a session reference (e.g.
+            ab12345-1).
           </Typography>
         </Stack>
         {/* Replicate the main grid here so our SessionSelector remains aligned */}
