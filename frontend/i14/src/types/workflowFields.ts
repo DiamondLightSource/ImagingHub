@@ -3,6 +3,10 @@ type ElementPair = {
   transition: string;
 };
 
+type ElementPairArray = {
+  id: number;
+} & ElementPair;
+
 type GridPanel = (string | null)[][];
 
 type Option = { label: string; value: string; desc?: string };
@@ -16,6 +20,7 @@ type WorkflowFormData = {
   visit: string;
   template: string;
   outpath: string;
+  edgeElementArray?: ElementPairArray[];
   edgeElement?: ElementPair;
   elementToAlign?: ElementPair;
 };

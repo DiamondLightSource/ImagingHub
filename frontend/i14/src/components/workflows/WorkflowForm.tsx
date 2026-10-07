@@ -13,12 +13,14 @@ import Typography from "@mui/material/Typography";
 import { initialData } from "../../data/form";
 import { templateOptions } from "../../data/templates";
 
+import DynamicArray from "./DynamicArray";
 import OptionSelect from "./OptionSelect";
 import ElementSelect from "./ElementSelect";
 import UserVisits from "./UserVisits";
 
 import type {
   ElementPair,
+  ElementPairArray,
   WorkflowFormData,
   Option,
 } from "../../types/workflowFields";
@@ -64,13 +66,22 @@ export const WorkflowForm: FC = () => {
   const getElementString = () => {
     const params = new URLSearchParams();
     const { edgeElement, elementToAlign, template } = data;
-    if (["xanes-sparse", "xanes"].includes(template)){
+    const multiEdgeArray = data.edgeElementArray.map(
+      (item: ElementPairArray) => ({
+        edgeElement: item.element,
+        edgeTransition: item.transition,
+      })
+    );
+    if (["xanes-sparse", "xanes"].includes(template)) {
       params.set("edgeElement", edgeElement.element);
       params.set("edgeTransition", edgeElement.transition);
     }
-    if (template === "xanes") {
+    if (["xrf", "xanes"].includes(template)) {
       params.set("elementToAlign", elementToAlign.element);
       params.set("transitionToAlign", elementToAlign.transition);
+    }
+    if (template === "xrf") {
+      params.set("multiEdge", JSON.stringify(multiEdgeArray));
     }
     return params;
   };
@@ -123,6 +134,38 @@ export const WorkflowForm: FC = () => {
                 setData((prev) => ({ ...prev, visit: value }))
               }
             />
+
+            {["xrf"].includes(data.template) && (
+              <>
+                <DynamicArray<ElementPairArray>
+                  title="Edge Element"
+                  desc="Line group to be aligned"
+                  items={data.edgeElementArray}
+                  onChange={(updatedItems) =>
+                    setData((prev) => ({
+                      ...prev,
+                      edgeElementArray: updatedItems,
+                    }))
+                  }
+                  createItem={(id) => ({
+                    id,
+                    element: "H",
+                    transition: "Ka",
+                  })}
+                  renderItem={(item, onUpdate) => (
+                    <ElementSelect
+                      value={{
+                        element: item.element,
+                        transition: item.transition,
+                      }}
+                      onChange={({ element, transition }) => {
+                        onUpdate({ ...item, element, transition });
+                      }}
+                    />
+                  )}
+                />
+              </>
+            )}
 
             {["xanes-sparse", "xanes"].includes(data.template) && (
               <>
