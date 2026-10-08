@@ -25,7 +25,12 @@ import JobsViewer from "./components/JobsViewer/JobsViewer";
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
 import { DisplayLogMeta } from "./components/InspectLogMeta";
-import { Beamline, Technique } from "./types";
+import {
+  Beamline,
+  BEAMLINE_TECHNIQUES_SUBSET,
+  BEAMLINES_DEFAULT_TECHNIQUE,
+  Technique,
+} from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
 import { Plot } from "./components/Plot/Plot";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
@@ -37,41 +42,6 @@ import {
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
-
-const BEAMLINE_TECHNIQUES_SUBSET = {
-  [Beamline.DIAD]: [Technique.Tomo],
-  [Beamline.I12]: [Technique.Tomo],
-  [Beamline["I08-1"]]: [Technique.Ptycho, Technique.Ptypy],
-  [Beamline["I13-1"]]: [
-    Technique.Dpc,
-    Technique.Ptyrex,
-    Technique.Tomo,
-    Technique.Xanes,
-    Technique.Xrd,
-  ],
-  [Beamline["I13-2"]]: [Technique.Ptycho, Technique.Tomo],
-  [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
-  [Beamline.E02]: [
-    Technique.Dpc,
-    Technique.Nbed,
-    Technique.Ptyrex,
-    Technique.Mib,
-  ],
-  [Beamline.E01]: [Technique.Dpc, Technique.Nbed, Technique.Ptyrex],
-  [Beamline.P99]: [Technique.Ptypy],
-};
-
-const BEAMLINES_DEFAULT_TECHNIQUE = {
-  [Beamline.DIAD]: Technique.Tomo,
-  [Beamline.E02]: Technique.Mib,
-  [Beamline.E01]: Technique.Ptyrex,
-  [Beamline.I12]: Technique.Tomo,
-  [Beamline["I08-1"]]: Technique.Ptycho,
-  [Beamline["I13-1"]]: Technique.Ptycho,
-  [Beamline["I13-2"]]: Technique.Ptycho,
-  [Beamline.I14]: Technique.Dpc,
-  [Beamline.P99]: Technique.Ptypy,
-};
 
 const filterTemplates = (technique: Technique) => {
   return templateOptions.filter((option) =>
@@ -143,7 +113,7 @@ export const App: React.FC = () => {
    * template in the list of templates associated with the technique.
    */
   const updateTechniqueAndTemplate = (beamline: Beamline) => {
-    const newTechnique = BEAMLINES_DEFAULT_TECHNIQUE[beamline];
+    const newTechnique: Technique = BEAMLINES_DEFAULT_TECHNIQUE[beamline];
     setTechnique(newTechnique);
     const filteredTemplates = filterTemplates(
       Technique[newTechnique as keyof typeof Technique]

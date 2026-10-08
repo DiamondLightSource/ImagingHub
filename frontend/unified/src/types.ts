@@ -30,6 +30,41 @@ const Beamline = {
 type Beamline = (typeof Beamline)[keyof typeof Beamline];
 export { Beamline };
 
+export const BEAMLINE_TECHNIQUES_SUBSET = {
+  [Beamline.DIAD]: [Technique.Tomo],
+  [Beamline.I12]: [Technique.Tomo],
+  [Beamline["I08-1"]]: [Technique.Ptycho, Technique.Ptypy],
+  [Beamline["I13-1"]]: [
+    Technique.Dpc,
+    Technique.Ptyrex,
+    Technique.Tomo,
+    Technique.Xanes,
+    Technique.Xrd,
+  ],
+  [Beamline["I13-2"]]: [Technique.Ptycho, Technique.Tomo],
+  [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
+  [Beamline.E02]: [
+    Technique.Dpc,
+    Technique.Nbed,
+    Technique.Ptyrex,
+    Technique.Mib,
+  ],
+  [Beamline.E01]: [Technique.Dpc, Technique.Nbed, Technique.Ptyrex],
+  [Beamline.P99]: [Technique.Ptypy],
+};
+
+export const BEAMLINES_DEFAULT_TECHNIQUE = {
+  [Beamline.DIAD]: Technique.Tomo,
+  [Beamline.E02]: Technique.Mib,
+  [Beamline.E01]: Technique.Ptyrex,
+  [Beamline.I12]: Technique.Tomo,
+  [Beamline["I08-1"]]: Technique.Ptycho,
+  [Beamline["I13-1"]]: Technique.Ptycho,
+  [Beamline["I13-2"]]: Technique.Ptycho,
+  [Beamline.I14]: Technique.Dpc,
+  [Beamline.P99]: Technique.Ptypy,
+};
+
 export type Option = { label: string; value: string; desc?: string };
 
 export type TemplateComponentProps = {
