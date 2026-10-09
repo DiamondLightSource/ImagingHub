@@ -26,7 +26,7 @@ import type {
 } from "../../types/workflowFields";
 
 export const WorkflowForm: FC = () => {
-  const techniques = ["dpc", "xanes", "xrd"] as const;
+  const techniques = ["dpc", "xanes", "xrd", "xrf"] as const;
   type ToggleGroup = (typeof techniques)[number];
   const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
     return (templateOptions ?? []).filter((o) => o.value.includes(toggle));
@@ -76,11 +76,11 @@ export const WorkflowForm: FC = () => {
       params.set("edgeElement", edgeElement.element);
       params.set("edgeTransition", edgeElement.transition);
     }
-    if (["xrf", "xanes"].includes(template)) {
+    if (["xrf-tomography", "xanes"].includes(template)) {
       params.set("elementToAlign", elementToAlign.element);
       params.set("transitionToAlign", elementToAlign.transition);
     }
-    if (template === "xrf") {
+    if (template === "xrf-tomography") {
       params.set("multiEdge", JSON.stringify(multiEdgeArray));
     }
     return params;
@@ -135,7 +135,7 @@ export const WorkflowForm: FC = () => {
               }
             />
 
-            {["xrf"].includes(data.template) && (
+            {["xrf-tomography"].includes(data.template) && (
               <>
                 <DynamicArray<ElementPairArray>
                   title="Edge Element"
@@ -168,32 +168,31 @@ export const WorkflowForm: FC = () => {
             )}
 
             {["xanes-sparse", "xanes"].includes(data.template) && (
-              <>
-                <ElementSelect
-                  title="Edge Element"
-                  info="Line group to be aligned"
-                  value={data.edgeElement}
-                  onChange={(value) =>
-                    setData((prev) => ({
-                      ...prev,
-                      edgeElement: value,
-                    }))
-                  }
-                />
-                {data.template === "xanes" && (
-                  <ElementSelect
-                    title="Transition to Align"
-                    info="Line group to be used for tracking"
-                    value={data.elementToAlign}
-                    onChange={(value) =>
-                      setData((prev) => ({
-                        ...prev,
-                        elementToAlign: value,
-                      }))
-                    }
-                  />
-                )}
-              </>
+              <ElementSelect
+                title="Edge Element"
+                info="Line group to be aligned"
+                value={data.edgeElement}
+                onChange={(value) =>
+                  setData((prev) => ({
+                    ...prev,
+                    edgeElement: value,
+                  }))
+                }
+              />
+            )}
+
+            {["xrf-tomography", "xanes"].includes(data.template) && (
+              <ElementSelect
+                title="Transition to Align"
+                info="Line group to be used for tracking"
+                value={data.elementToAlign}
+                onChange={(value) =>
+                  setData((prev) => ({
+                    ...prev,
+                    elementToAlign: value,
+                  }))
+                }
+              />
             )}
 
             <TextField
