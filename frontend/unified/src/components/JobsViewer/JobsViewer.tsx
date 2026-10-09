@@ -1,29 +1,40 @@
-import { Suspense } from "react";
-import JobsTable from "./JobsTable";
+import { Suspense, useState } from "react";
+import JobsTable from "./JobsTable/JobsTable";
+import { Visit } from "@diamondlightsource/sci-react-ui";
+import JobDataViewer from "./JobDataViewer";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { ChevronDown } from "lucide-react";
 
-export type Visit = {
-  proposalCode: string;
-  proposalNumber: number;
-  number: number;
-};
-
-const JobsViewer = ({
-  visit,
-  setSelectedWorkflow,
-  selectedWorkflow,
-}: {
-  visit: Visit;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
-}) => {
+const JobsViewer = ({ visit }: { visit: Visit }) => {
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   return (
-    <Suspense>
-      <JobsTable
-        visit={visit}
-        selectedWorkflow={selectedWorkflow}
-        setSelectedWorkflow={setSelectedWorkflow}
-      />
-    </Suspense>
+    <Stack direction="column">
+      <Suspense>
+        <Accordion defaultExpanded>
+          <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
+            <Typography variant="h5">Jobs</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <JobsTable
+              visit={visit}
+              selectedWorkflow={selectedWorkflow}
+              setSelectedWorkflow={setSelectedWorkflow}
+            />
+          </AccordionDetails>
+        </Accordion>
+      </Suspense>
+      {selectedWorkflow && (
+        <Suspense>
+          <JobDataViewer visit={visit} selectedWorkflow={selectedWorkflow} />
+        </Suspense>
+      )}
+    </Stack>
   );
 };
 
