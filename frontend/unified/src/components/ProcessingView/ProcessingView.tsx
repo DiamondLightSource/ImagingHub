@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import { ParameterConfiguration } from "../ParameterConfiguration/ParameterConfiguration";
-import { templateOptions } from "../../data/templates";
+import { InstrumentSession } from "../SessionSelector";
 
 const ProcessingView = ({
   visit,
@@ -20,7 +20,7 @@ const ProcessingView = ({
 }: {
   visit: Visit;
   beamline: Beamline;
-  startTime: unknown;
+  startTime: InstrumentSession["startTime"];
   scanIds: number[];
 }) => {
   const [technique, setTechnique] = useState<Technique>(
