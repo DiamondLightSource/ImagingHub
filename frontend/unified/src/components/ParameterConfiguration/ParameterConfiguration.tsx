@@ -18,7 +18,6 @@ import { templateOptions } from "../../data/templates";
 
 type ParameterConfigurationProps = {
   technique: Technique;
-  // availableTemplates: Option[];
   visit: Visit;
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
