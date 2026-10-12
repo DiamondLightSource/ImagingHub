@@ -20,7 +20,7 @@ import {
   SessionSelector,
 } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
-import JobsViewer from "./components/JobsViewer/JobsViewer";
+import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
@@ -370,7 +370,7 @@ export const App: React.FC = () => {
                 </AccordionDetails>
               </Accordion>
             </Stack>
-            <JobsViewer visit={selectedVisit} />
+            <WorkflowsDataFetcher visit={selectedVisit} />
           </Grid>
         </ApolloProvider>
       </>

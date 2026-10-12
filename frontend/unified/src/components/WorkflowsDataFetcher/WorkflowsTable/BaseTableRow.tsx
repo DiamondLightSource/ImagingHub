@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, TypedDocumentNode } from "@apollo/client";
 import { Box, TableCell, Typography } from "@mui/material";
 import { Eye } from "lucide-react";
 import { useFragment } from "@apollo/client/react";
@@ -6,9 +6,9 @@ import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.gener
 import { getWorkflowStatusIcon } from "./StatusIcons";
 import { DeepPartial } from "@apollo/client/utilities";
 import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
-import { JobTableRow } from "./JobTableRow";
+import { WorkflowsTableRow } from "./WorkflowsTableRow";
 
-export const BASETABLEROW_FRAGMENT = gql`
+export const BASETABLEROW_FRAGMENT: TypedDocumentNode<BaseTableRowFragmentFragment> = gql`
   fragment BaseTableRowFragment on Workflow {
     name
     status {
@@ -38,7 +38,7 @@ const BaseTableRow = ({
   });
 
   return (
-    <JobTableRow
+    <WorkflowsTableRow
       hover
       key={data.name}
       onClick={(_: React.MouseEvent<unknown>) => {
@@ -46,10 +46,10 @@ const BaseTableRow = ({
           setSelectedWorkflow(null);
           return;
         }
-        setSelectedWorkflow(data.name);
+        setSelectedWorkflow(data.name ?? null);
       }}
       selected={data.name === selectedWorkflow}
-      className="JobTableRow"
+      className="WorkflowsTableRow"
     >
       <TableCell>
         <Eye
@@ -82,7 +82,7 @@ const BaseTableRow = ({
       </TableCell>
       <TableCell></TableCell>
       <TableCell></TableCell>
-    </JobTableRow>
+    </WorkflowsTableRow>
   );
 };
 

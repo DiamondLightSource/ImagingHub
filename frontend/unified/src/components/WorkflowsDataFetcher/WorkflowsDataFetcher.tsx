@@ -1,7 +1,6 @@
 import { Suspense, useState } from "react";
-import JobsTable from "./JobsTable/JobsTable";
+import JobsTable from "./WorkflowsTable/WorkflowsTable";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import JobDataViewer from "./JobDataViewer";
 import {
   Accordion,
   AccordionDetails,
@@ -10,8 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
+import WorkflowDataViewer from "./WorkflowDataViewer";
 
-const JobsViewer = ({ visit }: { visit: Visit }) => {
+const WorkflowsDataFetcher = ({ visit }: { visit: Visit }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   return (
     <Stack direction="column">
@@ -31,11 +31,14 @@ const JobsViewer = ({ visit }: { visit: Visit }) => {
       </Suspense>
       {selectedWorkflow && (
         <Suspense>
-          <JobDataViewer visit={visit} selectedWorkflow={selectedWorkflow} />
+          <WorkflowDataViewer
+            visit={visit}
+            selectedWorkflow={selectedWorkflow}
+          />
         </Suspense>
       )}
     </Stack>
   );
 };
 
-export default JobsViewer;
+export default WorkflowsDataFetcher;

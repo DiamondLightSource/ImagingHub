@@ -9,19 +9,19 @@ import LogStreamer, { LOGSTREAMER_FRAGMENT } from "./LogStreamer/LogStreamer";
 import { Plot } from "./Plot/Plot";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { useSuspenseQuery } from "@apollo/client/react";
-import {
-  JobDataViewerQueryQuery,
-  JobDataViewerQueryQueryVariables,
-} from "./__generated__/JobDataViewer.generated";
 import InspectLogMeta, { INSPECTLOGMETA_FRAGMENT } from "./InspectLogMeta";
 import { ChevronDown } from "lucide-react";
 import { ARTIFACTSELECTOR_FRAGMENT } from "./Plot/ArtifactSelector";
+import {
+  WorkflowDataViewerQueryQuery,
+  WorkflowDataViewerQueryQueryVariables,
+} from "./__generated__/WorkflowDataViewer.generated";
 
-const JOBDATAVIEWER_QUERY: TypedDocumentNode<
-  JobDataViewerQueryQuery,
-  JobDataViewerQueryQueryVariables
+const WORKFLOWDATAVIEWER_QUERY: TypedDocumentNode<
+  WorkflowDataViewerQueryQuery,
+  WorkflowDataViewerQueryQueryVariables
 > = gql`
-  query JobDataViewerQuery($visit: VisitInput!, $name: String!) {
+  query WorkflowDataViewerQuery($visit: VisitInput!, $name: String!) {
     workflow(visit: $visit, name: $name) {
       name
       id
@@ -35,14 +35,14 @@ const JOBDATAVIEWER_QUERY: TypedDocumentNode<
   ${ARTIFACTSELECTOR_FRAGMENT}
 `;
 
-const JobDataViewer = ({
+const WorkflowDataViewer = ({
   visit,
   selectedWorkflow,
 }: {
   visit: Visit;
   selectedWorkflow: string;
 }) => {
-  const { data, error } = useSuspenseQuery(JOBDATAVIEWER_QUERY, {
+  const { data, error } = useSuspenseQuery(WORKFLOWDATAVIEWER_QUERY, {
     variables: {
       visit: visit,
       name: selectedWorkflow,
@@ -93,4 +93,4 @@ const JobDataViewer = ({
   );
 };
 
-export default JobDataViewer;
+export default WorkflowDataViewer;
