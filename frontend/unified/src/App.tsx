@@ -20,11 +20,10 @@ import {
   SessionSelector,
 } from "./components/SessionSelector";
 import { ScanSelector } from "./components/ScanSelector";
-import JobsViewer from "./components/JobsViewer/JobsViewer";
+import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
-import { DisplayLogMeta } from "./components/InspectLogMeta";
 import {
   Beamline,
   BEAMLINE_TECHNIQUES_SUBSET,
@@ -32,7 +31,6 @@ import {
   Technique,
 } from "./types";
 import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
-import { Plot } from "./components/Plot/Plot";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
 import {
@@ -93,7 +91,6 @@ export const App: React.FC = () => {
     null
   );
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   const { loading, error, data } = useQuery(SESSION_QUERY, {
     variables: { username: useFedid() },
   });
@@ -373,51 +370,7 @@ export const App: React.FC = () => {
                 </AccordionDetails>
               </Accordion>
             </Stack>
-
-            <Stack spacing={VERTICAL_SPACING} width="500px">
-              <Accordion defaultExpanded>
-                <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
-                  <Typography variant="h5">Jobs</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <JobsViewer
-                    visit={selectedVisit}
-                    selectedWorkflow={selectedWorkflow}
-                    setSelectedWorkflow={setSelectedWorkflow}
-                  />
-                </AccordionDetails>
-              </Accordion>
-
-              <Accordion defaultExpanded>
-                <AccordionSummary id="log" expandIcon={<ChevronDown />}>
-                  <Typography variant="h5">Log</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {selectedWorkflow !== null ? (
-                    <DisplayLogMeta
-                      visit={selectedVisit}
-                      workflowName={selectedWorkflow}
-                      key={selectedWorkflow}
-                    />
-                  ) : (
-                    <p>No workflow selected</p>
-                  )}
-                </AccordionDetails>
-              </Accordion>
-
-              <Accordion defaultExpanded>
-                <AccordionSummary id="plot" expandIcon={<ChevronDown />}>
-                  <Typography variant="h5">Plot</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Plot
-                    workflowName={selectedWorkflow}
-                    visit={selectedVisit}
-                    key={sessionName}
-                  />
-                </AccordionDetails>
-              </Accordion>
-            </Stack>
+            <WorkflowsDataFetcher visit={selectedVisit} />
           </Grid>
         </ApolloProvider>
       </>

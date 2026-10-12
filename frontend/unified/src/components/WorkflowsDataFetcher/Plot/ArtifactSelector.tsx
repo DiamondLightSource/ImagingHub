@@ -1,77 +1,59 @@
 import { gql, TypedDocumentNode } from "@apollo/client";
-import {
-  GetWorkflowArtifactsQuery,
-  GetWorkflowArtifactsQueryVariables,
-} from "./__generated__/ArtifactSelector.generated";
-import { useSuspenseQuery } from "@apollo/client/react";
-import { Visit } from "../JobsViewer/JobsViewer";
+import { ArtifactSelectorFragmentFragment } from "./__generated__/ArtifactSelector.generated";
+import { useSuspenseFragment } from "@apollo/client/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 
-const GET_WORKFLOW_ARTIFACTS: TypedDocumentNode<
-  GetWorkflowArtifactsQuery,
-  GetWorkflowArtifactsQueryVariables
-> = gql`
-  query GetWorkflowArtifacts($visit: VisitInput!, $name: String!) {
-    workflow(visit: $visit, name: $name) {
-      name
-      status {
-        __typename
-        ... on WorkflowPendingStatus {
-          message
-        }
-        ... on WorkflowRunningStatus {
-          tasks {
-            id
+export const ARTIFACTSELECTOR_FRAGMENT: TypedDocumentNode<ArtifactSelectorFragmentFragment> = gql`
+  fragment ArtifactSelectorFragment on Workflow {
+    name
+    status {
+      __typename
+      ... on WorkflowRunningStatus {
+        startTime
+        tasks {
+          id
+          name
+          artifacts {
             name
-            status
-            stepType
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
-        ... on WorkflowSucceededStatus {
-          __typename
-          startTime
-          tasks {
-            id
+      }
+      ... on WorkflowSucceededStatus {
+        startTime
+        tasks {
+          id
+          name
+          artifacts {
             name
-            status
-            stepType
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
-        ... on WorkflowFailedStatus {
-          tasks {
-            id
+      }
+      ... on WorkflowFailedStatus {
+        startTime
+        tasks {
+          id
+          name
+          artifacts {
             name
-            status
-            stepType
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
-        ... on WorkflowErroredStatus {
-          tasks {
-            id
+      }
+      ... on WorkflowErroredStatus {
+        startTime
+        tasks {
+          id
+          name
+          artifacts {
             name
-            status
-            stepType
-            artifacts {
-              name
-              url
-              mimeType
-            }
+            url
+            mimeType
           }
         }
       }
@@ -79,49 +61,42 @@ const GET_WORKFLOW_ARTIFACTS: TypedDocumentNode<
   }
 `;
 
-type NonNullWorkflow = NonNullable<GetWorkflowArtifactsQuery["workflow"]>;
-type NonNullWorkflowStatus = NonNullable<NonNullWorkflow["status"]>;
-type WorkflowSucceededStatus = Extract<
-  NonNullWorkflowStatus,
-  { __typename: "WorkflowSucceededStatus" }
->;
-export type Artifact = WorkflowSucceededStatus["tasks"][0]["artifacts"][0];
+export type Artifact = {
+  name: string;
+  url: unknown;
+  mimeType: string;
+};
 
-type TaskNameAndArtifactTuple = [string, Artifact[]];
+type TaskNameAndArtifactTuple = [taskName: string, artifacts: Artifact[]];
 
 type ArtifactSelectorProps = {
-  workflowName: string;
-  visit: Visit;
   setArtifact: (_: Artifact | null) => void;
   isPlottingEnabled: boolean;
+  queryData: ArtifactSelectorFragmentFragment;
 };
 
 const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff"];
 
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
-  workflowName,
-  visit,
   setArtifact,
   isPlottingEnabled,
+  queryData,
 }: ArtifactSelectorProps) => {
   const [selectedArtifact, setSelectedArtifact] = useState<string>("");
-  const { error, data } = useSuspenseQuery(GET_WORKFLOW_ARTIFACTS, {
-    variables: {
-      name: workflowName,
-      visit: visit,
-    },
+  const { data } = useSuspenseFragment({
+    fragment: ARTIFACTSELECTOR_FRAGMENT,
+    fragmentName: "ArtifactSelectorFragment",
+    from: queryData,
   });
 
-  if (error) return <p>Error: {error.message}</p>;
-
   const generateArtifactList = (): React.ReactNode[] => {
-    switch (data.workflow?.status?.__typename) {
+    switch (data.status?.__typename) {
       case "WorkflowSucceededStatus":
       case "WorkflowRunningStatus":
       case "WorkflowFailedStatus":
       case "WorkflowErroredStatus": {
         const taskNamesAndImageArtifacts: TaskNameAndArtifactTuple[] =
-          data.workflow.status.tasks
+          data.status.tasks
             .map(
               (task) =>
                 [
@@ -153,7 +128,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   return (
     <FormControl fullWidth>
       <InputLabel>Artifact</InputLabel>
-      {data.workflow?.status?.__typename !== "WorkflowPendingStatus" ? (
+      {data.status?.__typename !== "WorkflowPendingStatus" ? (
         <Select
           label="Artifact"
           disabled={!isPlottingEnabled}

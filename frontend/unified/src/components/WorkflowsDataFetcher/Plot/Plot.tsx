@@ -1,21 +1,27 @@
 import { Suspense, useEffect, useState } from "react";
-import { Visit } from "../JobsViewer/JobsViewer";
 import { ArtifactSelector, Artifact } from "./ArtifactSelector";
 import { Switch } from "@mui/material";
 import { NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
 import { decode } from "fast-png";
-import { proxyService } from "../../../../tomography/src/api/services";
-import loadData from "../../../../tomography/src/components/crop/SampleLoad";
+import { proxyService } from "../../../../../tomography/src/api/services";
+import loadData from "../../../../../tomography/src/components/crop/SampleLoad";
 import { DataPlotter } from "./DataPlotter";
 import { DataLoadingProgress } from "./DataLoadingProgress";
+import { Visit } from "@diamondlightsource/sci-react-ui";
+import { ArtifactSelectorFragmentFragment } from "./__generated__/ArtifactSelector.generated";
 
 type PlotProps = {
   workflowName: string | null;
   visit: Visit;
+  queryData: ArtifactSelectorFragmentFragment;
 };
 
-export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
+export const Plot: React.FC<PlotProps> = ({
+  workflowName,
+  visit,
+  queryData,
+}) => {
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [artifactData, setArtifactData] = useState<NDT[] | null>(null);
   const [loadingImageIndex, setLoadingImageIndex] = useState<number | null>(
@@ -70,10 +76,9 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, visit }) => {
       return (
         <Suspense fallback={<div>Loading...</div>}>
           <ArtifactSelector
-            workflowName={workflowName}
-            visit={visit}
             setArtifact={setArtifact}
             isPlottingEnabled={isPlottingEnabled}
+            queryData={queryData}
           />
         </Suspense>
       );

@@ -1,19 +1,18 @@
-import {
-  WorkflowsQueryQuery,
-  WorkflowsQueryQueryVariables,
-} from "./__generated__/JobsTable.generated";
-import { Suspense, useCallback, useState, useEffect } from "react";
-
-import { Visit } from "./JobsViewer";
+import { Suspense, useCallback, useState } from "react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 import TableContent, { TABLECONTENT_FRAGMENT } from "./TableContent";
 import { gql, TypedDocumentNode } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
+import {
+  WorkflowsTableQueryQuery,
+  WorkflowsTableQueryQueryVariables,
+} from "./__generated__/WorkflowsTable.generated";
 
-export const JOBSTABLE_QUERY: TypedDocumentNode<
-  WorkflowsQueryQuery,
-  WorkflowsQueryQueryVariables
+export const WORKFLOWSTABLE_QUERY: TypedDocumentNode<
+  WorkflowsTableQueryQuery,
+  WorkflowsTableQueryQueryVariables
 > = gql`
-  query WorkflowsQuery($visit: VisitInput!, $limit: Int, $cursor: String) {
+  query WorkflowsTableQuery($visit: VisitInput!, $limit: Int, $cursor: String) {
     workflows(visit: $visit, limit: $limit, cursor: $cursor) {
       ...TableContentFragment @unmask
     }
@@ -21,7 +20,7 @@ export const JOBSTABLE_QUERY: TypedDocumentNode<
   ${TABLECONTENT_FRAGMENT}
 `;
 
-const JobsTable = ({
+const WorkflowsTable = ({
   visit,
   setSelectedWorkflow,
   selectedWorkflow,
@@ -40,13 +39,13 @@ const JobsTable = ({
     setCursor(null);
   }, []);
 
-  const queryVariables: WorkflowsQueryQueryVariables = {
+  const queryVariables: WorkflowsTableQueryQueryVariables = {
     visit,
     limit: selectedLimit,
     cursor,
   };
 
-  const { data } = useQuery(JOBSTABLE_QUERY, {
+  const { data } = useQuery(WORKFLOWSTABLE_QUERY, {
     variables: queryVariables,
     pollInterval: 5000,
     fetchPolicy: "cache-and-network",
@@ -70,4 +69,4 @@ const JobsTable = ({
   );
 };
 
-export default JobsTable;
+export default WorkflowsTable;
