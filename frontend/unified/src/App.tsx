@@ -24,7 +24,6 @@ import JobsViewer from "./components/JobsViewer/JobsViewer";
 
 import { templateOptions } from "./data/templates";
 import { WorkflowForm } from "./components/WorkflowForm";
-import { DisplayLogMeta } from "./components/InspectLogMeta";
 import {
   Beamline,
   BEAMLINE_TECHNIQUES_SUBSET,
