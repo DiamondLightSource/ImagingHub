@@ -222,7 +222,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         (TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
         PlaceholderComponent)
       ) : (
-        <p>Not template selected</p>
+        <p>No template selected</p>
       )}
 
       <div>
