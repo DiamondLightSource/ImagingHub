@@ -71,6 +71,7 @@ const Layout = () => {
           }
           rightSlot={<User color="white" auth={auth} />}
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          position="fixed"
         ></Navbar>
         <MainContainer>
           <Outlet />
