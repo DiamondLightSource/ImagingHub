@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   Box,
   Chip,
+  Drawer,
   Grid,
   Stack,
   Typography,
@@ -37,6 +38,7 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
+import { Sidebar } from "./components/Sidebar";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -297,6 +299,12 @@ export const App: React.FC = () => {
 
     return (
       <>
+        <Drawer variant="permanent">
+          <Sidebar
+            scanIds={selectedScanIds}
+            updateSelectedScanIds={setSelectedScanIds}
+          />
+        </Drawer>
         {/* Wrap the SessionSelector in a <Stack> as it the TextField won't remember
         the session text otherwise */}
         <Stack>
@@ -306,18 +314,6 @@ export const App: React.FC = () => {
         <ApolloProvider client={apolloClientWorkflows}>
           <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
             <Stack spacing={VERTICAL_SPACING} width="500px">
-              <Accordion defaultExpanded>
-                <AccordionSummary id="scan" expandIcon={<ChevronDown />}>
-                  <Typography variant="h5">Scan</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <ScanSelector
-                    scanIds={selectedScanIds}
-                    setScanIds={setSelectedScanIds}
-                  />
-                </AccordionDetails>
-              </Accordion>
-
               <Accordion defaultExpanded>
                 <AccordionSummary id="technique" expandIcon={<ChevronDown />}>
                   <Typography variant="h5">Technique</Typography>

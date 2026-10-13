@@ -70,6 +70,8 @@ const Layout = () => {
             </NavLinks>
           }
           rightSlot={<User color="white" auth={auth} />}
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          position="fixed"
         ></Navbar>
         <MainContainer>
           <Outlet />
@@ -82,6 +84,9 @@ const Layout = () => {
             backgroundColor: "#4C5266",
             display: "flex",
             justifyContent: "center",
+          }}
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
         ></Footer>
       </AppContainer>
