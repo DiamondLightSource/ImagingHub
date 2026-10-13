@@ -22,6 +22,7 @@ const config: CodegenConfig = {
         importSchemaTypesFrom: "./src/__generated__/types.ts",
         nonOptionalTypename: true,
         skipTypeNameForRoot: true,
+        omitOperationSuffix: true,
       },
       presetConfig: {
         folder: "__generated__",
