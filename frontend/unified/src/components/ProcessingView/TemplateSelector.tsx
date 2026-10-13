@@ -17,15 +17,11 @@ const TemplateSelector = ({
   setTemplate,
 }: {
   templateList: Option[];
-  template: string | null;
-  setTemplate: (_: string | null) => void;
+  template: string;
+  setTemplate: (_: string) => void;
 }) => {
   const handleSelect = (event: SelectChangeEvent) => {
-    if (event.target.value === "NONE") {
-      setTemplate(null);
-    } else {
-      setTemplate(event.target.value);
-    }
+    setTemplate(event.target.value);
   };
 
   const desc = (function () {
@@ -45,12 +41,9 @@ const TemplateSelector = ({
           labelId="template-selector-label"
           label="Template"
           size="small"
-          value={template ?? "NONE"}
+          value={template}
           onChange={handleSelect}
         >
-          <MenuItem key="No Template" value="NONE">
-            No template
-          </MenuItem>
           {templateList.map((opt) => (
             <MenuItem key={opt.value} value={opt.value}>
               {opt.label}

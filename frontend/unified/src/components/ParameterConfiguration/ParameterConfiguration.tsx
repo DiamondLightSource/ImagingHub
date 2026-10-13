@@ -77,7 +77,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     option.value.includes(technique.toLowerCase())
   );
   const [template, setTemplate] = useState<string | null>(
-    templateList[0].value ?? null
+    templateList[0]?.value ?? null
   );
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters, setResourceParameters] = useState({
@@ -210,33 +210,29 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
   return (
     <>
-      <TemplateSelector
-        templateList={templateList}
-        template={template}
-        setTemplate={setTemplate}
-      />
-
-      <Typography variant="h6">Options</Typography>
-
       {template ? (
-        (TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
-        PlaceholderComponent)
+        <>
+          <TemplateSelector
+            templateList={templateList}
+            template={template}
+            setTemplate={setTemplate}
+          />
+          <Typography variant="h6">Options</Typography>
+          {TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
+            PlaceholderComponent}
+          <Button
+            disabled={!TEMPLATE_TO_COMPONENT_MAPPING[technique][template]}
+            variant="contained"
+            color="primary"
+            onClick={handleSubmitJob}
+          >
+            Submit job
+          </Button>
+        </>
       ) : (
-        <p>No template selected</p>
+        <p>No templates found</p>
       )}
 
-      <div>
-        <Button
-          disabled={
-            !template || !TEMPLATE_TO_COMPONENT_MAPPING[technique][template]
-          }
-          variant="contained"
-          color="primary"
-          onClick={handleSubmitJob}
-        >
-          Submit job
-        </Button>
-      </div>
       <Snackbar
         open={notification !== undefined}
         autoHideDuration={6000}
