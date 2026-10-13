@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   Box,
   Chip,
+  Drawer,
   Grid,
   Stack,
   Typography,
@@ -37,6 +38,7 @@ import {
   SessionQueryQuery,
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
+import { Sidebar } from "./components/Sidebar";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -297,6 +299,9 @@ export const App: React.FC = () => {
 
     return (
       <>
+        <Drawer variant="permanent">
+          <Sidebar />
+        </Drawer>
         {/* Wrap the SessionSelector in a <Stack> as it the TextField won't remember
         the session text otherwise */}
         <Stack>
