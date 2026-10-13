@@ -6,7 +6,9 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 
 import OptionPanel from "./OptionPanel";
-import { elementOptions, transitionOptions } from "../../data/elements";
+import { elementOptions, transitionOptions } from "../../data/xanes";
+
+import { iconSize } from "../../data/form";
 
 interface ElementSelectValue {
   element: string;
@@ -34,7 +36,7 @@ export default function ElementSelect({
           {info && (
             <Tooltip title={info}>
               <IconButton aria-label="Information" size="small">
-                <Info />
+                <Info size={iconSize} />
               </IconButton>
             </Tooltip>
           )}
