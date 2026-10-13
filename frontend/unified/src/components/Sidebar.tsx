@@ -1,12 +1,21 @@
 import { Navbar } from "@diamondlightsource/sci-react-ui";
+import { Typography } from "@mui/material";
+import { ScanSelector } from "./ScanSelector";
 
-export const Sidebar = () => {
+type SidebarProps = {
+  scanIds: number[];
+  updateSelectedScanIds: (_: number[]) => void;
+};
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  scanIds,
+  updateSelectedScanIds,
+}: SidebarProps) => {
   return (
     <>
       <Navbar />
-      {["12345.nxs", "12346.nxs", "12347.nxs"].map((filename) => (
-        <p key={filename}>{filename}</p>
-      ))}
+      <Typography variant="h5">Scan</Typography>
+      <ScanSelector scanIds={scanIds} setScanIds={updateSelectedScanIds} />
     </>
   );
 };
