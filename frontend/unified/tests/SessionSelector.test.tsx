@@ -3,11 +3,11 @@ import "@testing-library/jest-dom";
 import { expect, test, vi, afterEach } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import {
-  GET_SESSION_BY_REFERENCE,
   SessionSelectionMode,
   SessionSelector,
 } from "../src/components/SessionSelector";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { SESSIONSELECTOR_QUERY } from "../src/graphql/SessionSelectorQuery";
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -16,7 +16,7 @@ afterEach(() => {
 const mocks = [
   {
     request: {
-      query: GET_SESSION_BY_REFERENCE,
+      query: SESSIONSELECTOR_QUERY,
       variables: {
         reference: "",
       },
