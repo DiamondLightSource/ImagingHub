@@ -5,7 +5,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Stack,
   Typography,
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
@@ -27,7 +26,7 @@ const WorkflowsDataFetcher = ({
 }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   return (
-    <Stack direction="column">
+    <>
       <Suspense>
         <Accordion defaultExpanded>
           <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
@@ -53,7 +52,7 @@ const WorkflowsDataFetcher = ({
           />
         </Suspense>
       )}
-    </Stack>
+    </>
   );
 };
 
