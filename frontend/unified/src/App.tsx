@@ -31,6 +31,7 @@ import {
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
 import { Sidebar } from "./components/Sidebar";
+import ProcessingView from "./components/ProcessingView/ProcessingView";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -231,17 +232,6 @@ export const App: React.FC = () => {
         <ApolloProvider client={apolloClientWorkflows}>
           <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
             <Stack spacing={VERTICAL_SPACING} width="500px">
-              <Accordion defaultExpanded>
-                <AccordionSummary id="scan" expandIcon={<ChevronDown />}>
-                  <Typography variant="h5">Scan</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <ScanSelector
-                    scanIds={selectedScanIds}
-                    setScanIds={setSelectedScanIds}
-                  />
-                </AccordionDetails>
-              </Accordion>
               <ProcessingView
                 key={`process-${sessionName}`}
                 visit={selectedVisit}
