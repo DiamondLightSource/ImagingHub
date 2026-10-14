@@ -1,6 +1,5 @@
 import { Alert, Button, Snackbar, Typography } from "@mui/material";
-import { Beamline, Option, Technique } from "../../types";
-import OptionSelect from "../OptionSelect";
+import { Beamline, Technique } from "../../types";
 import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
 import { PtyrexParameterConfiguration } from "./PtyrexParameterConfiguration";
 import { MibParameterConfiguration } from "./MibParameterConfiguration";
@@ -14,12 +13,11 @@ import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
 import PtypyI08ParameterConfiguration from "./PtypyI08ParameterConfiguration";
 import PtypyP99ParameterConfiguration from "./PtypyP99ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "./XanesAutoprocessingParameterConfiguration";
+import TemplateSelector from "../ProcessingView/TemplateSelector";
+import { templateOptions } from "../../data/templates";
 
 type ParameterConfigurationProps = {
   technique: Technique;
-  template: string;
-  setTemplate: (_: string) => void;
-  availableTemplates: Option[];
   visit: Visit;
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
@@ -70,14 +68,17 @@ const determineBeamlineVisitDirpath = (
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   technique,
-  template,
-  setTemplate,
-  availableTemplates,
   visit,
   beamline,
   startTime,
   scanIds,
 }: ParameterConfigurationProps) => {
+  const templateList = templateOptions.filter((option) =>
+    option.value.includes(technique.toLowerCase())
+  );
+  const [template, setTemplate] = useState<string | null>(
+    templateList[0]?.value ?? null
+  );
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters, setResourceParameters] = useState({
     nprocs: 1,
@@ -209,23 +210,29 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
   return (
     <>
-      <OptionSelect
-        label="Template"
-        value={template}
-        options={availableTemplates}
-        onChange={(e) => setTemplate(e.target.value)}
-      />
+      {template ? (
+        <>
+          <TemplateSelector
+            templateList={templateList}
+            template={template}
+            setTemplate={setTemplate}
+          />
+          <Typography variant="h6">Options</Typography>
+          {TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
+            PlaceholderComponent}
+          <Button
+            disabled={!TEMPLATE_TO_COMPONENT_MAPPING[technique][template]}
+            variant="contained"
+            color="primary"
+            onClick={handleSubmitJob}
+          >
+            Submit job
+          </Button>
+        </>
+      ) : (
+        <p>No templates found</p>
+      )}
 
-      <Typography variant="h6">Options</Typography>
-
-      {TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
-        PlaceholderComponent}
-
-      <div>
-        <Button variant="contained" color="primary" onClick={handleSubmitJob}>
-          Submit job
-        </Button>
-      </div>
       <Snackbar
         open={notification !== undefined}
         autoHideDuration={6000}

@@ -23,15 +23,7 @@ import {
 import { ScanSelector } from "./components/ScanSelector";
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
-import { templateOptions } from "./data/templates";
-import { WorkflowForm } from "./components/WorkflowForm";
-import {
-  Beamline,
-  BEAMLINE_TECHNIQUES_SUBSET,
-  BEAMLINES_DEFAULT_TECHNIQUE,
-  Technique,
-} from "./types";
-import { ParameterConfiguration } from "./components/ParameterConfiguration/ParameterConfiguration";
+import { Beamline } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
 import {
@@ -39,15 +31,10 @@ import {
   SessionQueryQueryVariables,
 } from "./__generated__/App.generated";
 import { Sidebar } from "./components/Sidebar";
+import ProcessingView from "./components/ProcessingView/ProcessingView";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
-
-const filterTemplates = (technique: Technique) => {
-  return templateOptions.filter((option) =>
-    option.value.includes(technique.toLowerCase())
-  );
-};
 
 export const SESSION_QUERY: TypedDocumentNode<
   SessionQueryQuery,
@@ -83,10 +70,6 @@ const useFedid = (): string => {
 };
 
 export const App: React.FC = () => {
-  //adding common states of beamlines, Techique, workflow
-  const [showAllTechniques, setShowAllTechniques] = useState(false);
-  const [technique, setTechnique] = useState<Technique | null>(null);
-  const [template, setTemplate] = useState<string | null>(null);
   const [sessionSelectionMode, setSessionSelectionMode] =
     useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [customSession, setCustomSession] = useState<InstrumentSession | null>(
@@ -105,68 +88,6 @@ export const App: React.FC = () => {
   if (data.account === null) {
     return <p>Account null</p>;
   }
-
-  /**
-   * Based on the beamline changing when the session changes, update the technique to be the
-   * default technique associated with the beamline, and update the template to be the first
-   * template in the list of templates associated with the technique.
-   */
-  const updateTechniqueAndTemplate = (beamline: Beamline) => {
-    const newTechnique: Technique = BEAMLINES_DEFAULT_TECHNIQUE[beamline];
-    setTechnique(newTechnique);
-    const filteredTemplates = filterTemplates(
-      Technique[newTechnique as keyof typeof Technique]
-    );
-    setTemplate(filteredTemplates[0].value);
-  };
-
-  /**
-   * Update the custom session and update the technique and template based on the beamline
-   * associated with the newly chosen session.
-   */
-  const updateCustomSession = (session: InstrumentSession | null) => {
-    setCustomSession(session);
-    updateTechniqueAndTemplate(mapStringsToBeamline(session.instrument.name));
-  };
-
-  /**
-   * Update the session-selection mode, and update the technique and template based on the
-   * beamline associated with the newly chosen session.
-   */
-  const updateSessionSelectionMode = (mode: SessionSelectionMode) => {
-    setSessionSelectionMode(mode);
-    const session = determineCurrentSession(
-      mode,
-      data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
-      customSession
-    );
-    updateTechniqueAndTemplate(mapStringsToBeamline(session.instrument.name));
-  };
-
-  const handleChangeTechnique = (
-    /**
-     * This function handles the clicking of the toggle button which choose the technique and therefore determines which
-     * workflows are filtered and shown the template drop down menu this then alteres the data state with new techniques
-     * and templates
-     */
-    _event: React.MouseEvent<HTMLElement>,
-    technique: string | null
-  ) => {
-    if (!technique) return;
-    const filteredTemplates = filterTemplates(
-      Technique[technique as keyof typeof Technique]
-    );
-    setTechnique(Technique[technique as keyof typeof Technique]);
-    setTemplate(filteredTemplates[0].value);
-  };
-
-  const filterTechniques = (beamline: Beamline) => {
-    if (showAllTechniques) {
-      return Object.values(Technique);
-    }
-
-    return BEAMLINE_TECHNIQUES_SUBSET[beamline];
-  };
 
   /**
    * Determine the current session based on which session-selection mode is enabled.
@@ -246,11 +167,11 @@ export const App: React.FC = () => {
           )}
         </Stack>
         <SessionSelector
-          setSession={updateCustomSession}
+          setSession={setCustomSession}
           mode={
             latestEnabled ? sessionSelectionMode : SessionSelectionMode.Custom
           }
-          setMode={updateSessionSelectionMode}
+          setMode={setSessionSelectionMode}
           latestEnabled={latestEnabled}
         />
       </Box>
@@ -293,9 +214,6 @@ export const App: React.FC = () => {
     };
 
     const beamline = mapStringsToBeamline(session.instrument.name);
-    const currentTechnique = technique ?? BEAMLINES_DEFAULT_TECHNIQUE[beamline];
-    const currentTemplate =
-      template ?? filterTemplates(currentTechnique)[0].label;
 
     return (
       <>
@@ -314,57 +232,13 @@ export const App: React.FC = () => {
         <ApolloProvider client={apolloClientWorkflows}>
           <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
             <Stack spacing={VERTICAL_SPACING} width="500px">
-              <Accordion defaultExpanded>
-                <AccordionSummary id="technique" expandIcon={<ChevronDown />}>
-                  <Typography variant="h5">Technique</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <WorkflowForm
-                    handleChangeTechnique={handleChangeTechnique}
-                    showAllTechniques={showAllTechniques}
-                    handleShowAllTechniques={(
-                      e: React.ChangeEvent<HTMLInputElement>
-                    ) => {
-                      setShowAllTechniques(e.target.checked);
-                      const isSelectedTechniqueInSubset =
-                        BEAMLINE_TECHNIQUES_SUBSET[beamline].includes(
-                          currentTechnique
-                        );
-                      if (!e.target.checked && !isSelectedTechniqueInSubset) {
-                        updateTechniqueAndTemplate(beamline);
-                      }
-                    }}
-                    filteredTechniques={filterTechniques(beamline)}
-                    templateOptions={filterTemplates(currentTechnique)}
-                    technique={currentTechnique}
-                    template={currentTemplate}
-                    setTemplate={setTemplate}
-                  />
-                </AccordionDetails>
-              </Accordion>
-
-              <Accordion defaultExpanded>
-                <AccordionSummary
-                  id="parameter-configuration"
-                  expandIcon={<ChevronDown />}
-                >
-                  <Typography variant="h5">Parameter Configuration</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <ParameterConfiguration
-                    technique={currentTechnique}
-                    template={currentTemplate}
-                    setTemplate={setTemplate}
-                    availableTemplates={filterTemplates(
-                      Technique[currentTechnique as keyof typeof Technique]
-                    )}
-                    visit={selectedVisit}
-                    beamline={beamline}
-                    startTime={session.startTime}
-                    scanIds={selectedScanIds}
-                  />
-                </AccordionDetails>
-              </Accordion>
+              <ProcessingView
+                key={`process-${sessionName}`}
+                visit={selectedVisit}
+                beamline={beamline}
+                startTime={session.startTime}
+                scanIds={selectedScanIds}
+              />
             </Stack>
             <WorkflowsDataFetcher visit={selectedVisit} />
           </Grid>
