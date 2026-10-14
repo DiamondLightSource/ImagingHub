@@ -1,30 +1,14 @@
-import { gql, TypedDocumentNode } from "@apollo/client";
 import { TableCell, TableRow } from "@mui/material";
-import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
 import { useFragment } from "@apollo/client/react";
-import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
+import BaseTableRow from "./BaseTableRow";
 import { finishedStatuses } from "./utils/utils";
 import { useState } from "react";
 import LiveTableRow from "./LiveTableRow";
-
-export const TABLEROWWRAPPER_FRAGMENT: TypedDocumentNode<TableRowWrapperFragmentFragment> = gql`
-  fragment TableRowWrapperFragment on Workflow {
-    ...BaseTableRowFragment
-    status {
-      __typename
-    }
-    visit {
-      proposalCode
-      proposalNumber
-      number
-    }
-    name
-  }
-  ${BASETABLEROW_FRAGMENT}
-`;
+import { TABLEROWWRAPPER_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableRowWrapperFragment";
+import { TableRowWrapperFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableRowWrapperFragment.generated";
 
 interface TableRowWrapperProps {
-  queryData: TableRowWrapperFragmentFragment;
+  queryData: TableRowWrapperFragment;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
 }

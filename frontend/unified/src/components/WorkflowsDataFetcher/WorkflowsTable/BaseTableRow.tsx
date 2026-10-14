@@ -1,37 +1,23 @@
-import { gql, TypedDocumentNode } from "@apollo/client";
 import { Box, TableCell, Typography } from "@mui/material";
 import { Eye } from "lucide-react";
 import { useFragment } from "@apollo/client/react";
-import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
 import { getWorkflowStatusIcon } from "./StatusIcons";
 import { DeepPartial } from "@apollo/client/utilities";
-import { TableRowWrapperFragmentFragment } from "./__generated__/TableRowWrapper.generated";
 import { WorkflowsTableRow } from "./WorkflowsTableRow";
-
-export const BASETABLEROW_FRAGMENT: TypedDocumentNode<BaseTableRowFragmentFragment> = gql`
-  fragment BaseTableRowFragment on Workflow {
-    name
-    status {
-      __typename
-      ... on WorkflowSucceededStatus {
-        startTime
-      }
-    }
-  }
-`;
+import { BASETABLEROW_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/BaseTableRowFragment";
+import { TableRowWrapperFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableRowWrapperFragment.generated";
+import { BaseTableRowFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/BaseTableRowFragment.generated";
 
 const BaseTableRow = ({
   queryData,
   selectedWorkflow,
   setSelectedWorkflow,
 }: {
-  queryData:
-    | TableRowWrapperFragmentFragment
-    | DeepPartial<TableRowWrapperFragmentFragment>;
+  queryData: TableRowWrapperFragment | DeepPartial<TableRowWrapperFragment>;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
 }) => {
-  const { data } = useFragment<BaseTableRowFragmentFragment>({
+  const { data } = useFragment<BaseTableRowFragment>({
     fragment: BASETABLEROW_FRAGMENT,
     fragmentName: "BaseTableRowFragment",
     from: queryData,

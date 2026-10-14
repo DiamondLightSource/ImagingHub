@@ -11,28 +11,14 @@ import {
   TableRow,
 } from "@mui/material";
 import { useFragment } from "@apollo/client/react";
-import { TableContentFragmentFragment } from "./__generated__/TableContent.generated";
 import { ChangeEvent, MouseEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { gql, TypedDocumentNode } from "@apollo/client";
-import TableRowWrapper, { TABLEROWWRAPPER_FRAGMENT } from "./TableRowWrapper";
-
-export const TABLECONTENT_FRAGMENT: TypedDocumentNode<TableContentFragmentFragment> = gql`
-  fragment TableContentFragment on WorkflowConnection {
-    pageInfo {
-      hasNextPage
-      startCursor
-      endCursor
-    }
-    nodes {
-      ...TableRowWrapperFragment @unmask
-    }
-  }
-  ${TABLEROWWRAPPER_FRAGMENT}
-`;
+import TableRowWrapper from "./TableRowWrapper";
+import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
+import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
 
 interface TableContentProps {
-  queryData: TableContentFragmentFragment;
+  queryData: TableContentFragment;
   currentPage: number;
   setCurrentPage: (newPage: number) => void;
   selectedLimit: number;

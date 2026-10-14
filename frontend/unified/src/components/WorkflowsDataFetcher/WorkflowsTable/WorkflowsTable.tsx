@@ -1,24 +1,9 @@
 import { Suspense, useCallback, useState } from "react";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import TableContent, { TABLECONTENT_FRAGMENT } from "./TableContent";
-import { gql, TypedDocumentNode } from "@apollo/client";
+import TableContent from "./TableContent";
 import { useQuery } from "@apollo/client/react";
-import {
-  WorkflowsTableQueryQuery,
-  WorkflowsTableQueryQueryVariables,
-} from "./__generated__/WorkflowsTable.generated";
-
-export const WORKFLOWSTABLE_QUERY: TypedDocumentNode<
-  WorkflowsTableQueryQuery,
-  WorkflowsTableQueryQueryVariables
-> = gql`
-  query WorkflowsTableQuery($visit: VisitInput!, $limit: Int, $cursor: String) {
-    workflows(visit: $visit, limit: $limit, cursor: $cursor) {
-      ...TableContentFragment @unmask
-    }
-  }
-  ${TABLECONTENT_FRAGMENT}
-`;
+import { WORKFLOWSTABLE_QUERY } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/WorkflowsTableQuery";
+import { WorkflowsTableQueryVariables } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/WorkflowsTableQuery.generated";
 
 const WorkflowsTable = ({
   visit,
@@ -39,7 +24,7 @@ const WorkflowsTable = ({
     setCursor(null);
   }, []);
 
-  const queryVariables: WorkflowsTableQueryQueryVariables = {
+  const queryVariables: WorkflowsTableQueryVariables = {
     visit,
     limit: selectedLimit,
     cursor,
