@@ -8,10 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TemplateComponentProps } from "../../types";
-import Loader from "../../../../tomography/src/components/loader/Loader";
-import { useLoader } from "../../../../tomography/src/contexts/LoaderContext";
-import ParameterSweepForm from "../../../../tomography/src/components/workflows/sweepPipeline/ParameterSweepForm";
+import { TemplateComponentProps } from "../../../types";
+import Loader from "../../../../../tomography/src/components/loader/Loader";
+import { useLoader } from "../../../../../tomography/src/contexts/LoaderContext";
+import ParameterSweepForm from "../../../../../tomography/src/components/workflows/sweepPipeline/ParameterSweepForm";
 
 const HTTOMO_OUTDIR_NAME = "sweep-run";
 

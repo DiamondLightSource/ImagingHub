@@ -1,20 +1,17 @@
 import { Alert, Button, Snackbar, Typography } from "@mui/material";
 import { Beamline, Technique } from "../../types";
-import { CorSweepParameterConfiguration } from "./TomoParameterConfiguration";
-import { PtyrexParameterConfiguration } from "./PtyrexParameterConfiguration";
-import { MibParameterConfiguration } from "./MibParameterConfiguration";
-import { ReactElement, Suspense, useState } from "react";
-import { LoaderProvider } from "../../../../tomography/src/contexts/LoaderContext";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation } from "@apollo/client/react";
-import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
-import { Fbp180ParameterConfiguration } from "./Fbp180ParameterConfiguration";
-import PtypyI08ParameterConfiguration from "./PtypyI08ParameterConfiguration";
-import PtypyP99ParameterConfiguration from "./PtypyP99ParameterConfiguration";
-import { XanesAutoprocessingParameterConfiguration } from "./XanesAutoprocessingParameterConfiguration";
 import TemplateSelector from "../ProcessingView/TemplateSelector";
 import { templateOptions } from "../../data/templates";
+import { getParamConfigComponent } from "./utils/getParamConfigComponent";
+import { useState } from "react";
+import {
+  determineBeamlineRawDataFilepath,
+  determineBeamlineVisitDirpath,
+} from "./utils/utils";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -22,48 +19,6 @@ type ParameterConfigurationProps = {
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
   scanIds: number[];
-};
-
-/**
- * Map from a `@Technique` and a template to the component for configuring the parameters of that
- * specific template
- * @type
- */
-type TemplateComponentMapping = {
-  [technique in Technique]: {
-    [template: string]: ReactElement;
-  };
-};
-
-const DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS = {
-  [Beamline.DIAD]: "nexus",
-  [Beamline["I08-1"]]: "nexus",
-  [Beamline.I12]: "rawdata",
-  [Beamline["I13-1"]]: "raw",
-  [Beamline["I13-2"]]: "raw",
-  [Beamline.I14]: "scan",
-};
-
-const determineBeamlineRawDataFilepath = (
-  beamline: Beamline,
-  visitDirpath: string,
-  scanId: number
-): string => {
-  const rawDataDirname =
-    DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
-      beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
-    ];
-  const scanFilename =
-    beamline === Beamline.DIAD ? `k11-${scanId}` : `${scanId}`;
-  return `${visitDirpath}${rawDataDirname}/${scanFilename}.nxs`;
-};
-
-const determineBeamlineVisitDirpath = (
-  beamline: Beamline,
-  year: string,
-  visit: Visit
-) => {
-  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/`;
 };
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
@@ -141,72 +96,20 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     );
   };
 
-  const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
-    [Technique.Dpc]: {},
-    [Technique.Nbed]: {},
-    [Technique.Mib]: {
-      "e02mib2x-auto": (
-        <MibParameterConfiguration setParameters={setTemplateParameters} />
-      ),
-    },
-    [Technique.Ptycho]: {},
-    [Technique.Ptypy]: {
-      "ptypy-i08-1-from-config": (
-        <PtypyI08ParameterConfiguration
-          setParameters={setTemplateParameters}
-          setResourceParameters={setResourceParameters}
-        />
-      ),
-      "ptypy-p99-from-config": (
-        <PtypyP99ParameterConfiguration
-          setParameters={setTemplateParameters}
-          setResourceParameters={setResourceParameters}
-        />
-      ),
-    },
-    [Technique.Ptyrex]: {
-      "ptyrex-submission": (
-        <PtyrexParameterConfiguration
-          setParameters={setTemplateParameters}
-          visitDirpath={visitDirpath}
-          scanIds={scanIds}
-        />
-      ),
-    },
-    [Technique.Tomo]: {
-      "httomo-cor-sweep": (
-        <LoaderProvider>
-          <CorSweepParameterConfiguration
-            setParameters={setTemplateParameters}
-            visitDirpath={visitDirpath}
-          />
-        </LoaderProvider>
-      ),
-      "httomo-fbp-180": (
-        <LoaderProvider>
-          <Fbp180ParameterConfiguration
-            setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
-            visitDirpath={visitDirpath}
-          />
-        </LoaderProvider>
-      ),
-    },
-    [Technique.Xanes]: {
-      xanes: (
-        <Suspense fallback={<p>Fetching workflow template...</p>}>
-          <XanesAutoprocessingParameterConfiguration
-            setParameters={setTemplateParameters}
-          />
-        </Suspense>
-      ),
-    },
-    [Technique.Xrd]: {},
-  };
-
   const PlaceholderComponent = (
     <p>No available component for {template} template</p>
   );
+
+  const parameterConfigurationComponent = template
+    ? getParamConfigComponent(
+        technique,
+        template,
+        setTemplateParameters,
+        setResourceParameters,
+        scanIds,
+        visitDirpath
+      )
+    : null;
 
   return (
     <>
@@ -218,10 +121,9 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
             setTemplate={setTemplate}
           />
           <Typography variant="h6">Options</Typography>
-          {TEMPLATE_TO_COMPONENT_MAPPING[technique][template] ??
-            PlaceholderComponent}
+          {parameterConfigurationComponent ?? PlaceholderComponent}
           <Button
-            disabled={!TEMPLATE_TO_COMPONENT_MAPPING[technique][template]}
+            disabled={!parameterConfigurationComponent}
             variant="contained"
             color="primary"
             onClick={handleSubmitJob}
