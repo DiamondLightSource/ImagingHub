@@ -1,15 +1,7 @@
 import { useState } from "react";
-import { gql, type TypedDocumentNode } from "@apollo/client";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 
-import {
-  Box,
-  Chip,
-  Drawer,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Chip, Drawer, Grid, Stack, Typography } from "@mui/material";
 
 import {
   InstrumentSession,
@@ -21,42 +13,12 @@ import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDat
 import { Beamline } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
-import {
-  SessionQueryQuery,
-  SessionQueryQueryVariables,
-} from "./__generated__/App.generated";
 import { Sidebar } from "./components/Sidebar";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
+import { SESSION_QUERY } from "./graphql/SessionQuery";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
-
-export const SESSION_QUERY: TypedDocumentNode<
-  SessionQueryQuery,
-  SessionQueryQueryVariables
-> = gql`
-  query sessionQuery($username: String!) {
-    account(username: $username) {
-      instrumentSessionRoles(first: 1) {
-        edges {
-          node {
-            instrumentSession {
-              proposal {
-                proposalNumber
-                proposalCategory
-              }
-              instrumentSessionNumber
-              instrument {
-                name
-              }
-              startTime
-            }
-          }
-        }
-      }
-    }
-  }
-`;
 
 const useFedid = (): string => {
   const token = useAuth().getToken();
