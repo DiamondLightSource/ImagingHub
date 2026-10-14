@@ -7,40 +7,17 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
-import { SessionQueryQuery } from "../__generated__/App.generated";
-import {
-  GetSessionByReferenceQuery,
-  GetSessionByReferenceQueryVariables,
-} from "./__generated__/SessionSelector.generated";
 import { visitRegex } from "@diamondlightsource/sci-react-ui";
-import { gql, TypedDocumentNode } from "@apollo/client";
 import { useSuspenseQuery } from "@apollo/client/react";
-
-export const GET_SESSION_BY_REFERENCE: TypedDocumentNode<
-  GetSessionByReferenceQuery,
-  GetSessionByReferenceQueryVariables
-> = gql`
-  query GetSessionByReference($reference: String!) {
-    instrumentSessionByReference(reference: $reference) {
-      instrument {
-        name
-      }
-      instrumentSessionNumber
-      proposal {
-        proposalNumber
-        proposalCategory
-      }
-      startTime
-    }
-  }
-`;
+import { SessionQuery } from "../graphql/__generated__/SessionQuery.generated";
+import { SESSIONSELECTOR_QUERY } from "../graphql/SessionSelectorQuery";
 
 export enum SessionSelectionMode {
   Latest = "Latest",
   Custom = "Custom",
 }
 
-type NonNullAccount = NonNullable<SessionQueryQuery["account"]>;
+type NonNullAccount = NonNullable<SessionQuery["account"]>;
 
 export type InstrumentSession =
   NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
@@ -119,7 +96,7 @@ const SelectSessionButton: React.FC<SelectSessionButtonProps> = ({
   sessionSelectionMode,
   setSession,
 }) => {
-  const { data } = useSuspenseQuery(GET_SESSION_BY_REFERENCE, {
+  const { data } = useSuspenseQuery(SESSIONSELECTOR_QUERY, {
     variables: { reference: sessionInputValue },
   });
 

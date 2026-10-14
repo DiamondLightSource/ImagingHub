@@ -1,31 +1,9 @@
-import { gql, TypedDocumentNode } from "@apollo/client";
-import BaseTableRow, { BASETABLEROW_FRAGMENT } from "./BaseTableRow";
+import BaseTableRow from "./BaseTableRow";
 import { useState } from "react";
-import { BaseTableRowFragmentFragment } from "./__generated__/BaseTableRow.generated";
 import { apolloClientWorkflows } from "../../../../../src/ApolloClient";
-import {
-  LiveTableRowSubscriptionSubscription,
-  LiveTableRowSubscriptionSubscriptionVariables,
-} from "./__generated__/LiveTableRow.generated";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-
-export const LIVETABLEROW_SUBSCRIPTION: TypedDocumentNode<
-  LiveTableRowSubscriptionSubscription,
-  LiveTableRowSubscriptionSubscriptionVariables
-> = gql`
-  subscription LiveTableRowSubscription($visit: VisitInput!, $name: String!) {
-    workflow(visit: $visit, name: $name) {
-      status {
-        __typename
-        ... on WorkflowSucceededStatus {
-          startTime
-        }
-      }
-      ...BaseTableRowFragment
-    }
-  }
-  ${BASETABLEROW_FRAGMENT}
-`;
+import { BaseTableRowFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/BaseTableRowFragment.generated";
+import { LIVETABLEROW_SUBSCRIPTION } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/LiveTableRowSubscription";
 
 interface LiveTableRowProps {
   workflowName: string;
@@ -42,8 +20,7 @@ const LiveTableRow = ({
   selectedWorkflow,
   setSelectedWorkflow,
 }: LiveTableRowProps) => {
-  const [queryData, setQueryData] =
-    useState<BaseTableRowFragmentFragment | null>(null);
+  const [queryData, setQueryData] = useState<BaseTableRowFragment | null>(null);
   apolloClientWorkflows
     .subscribe({
       query: LIVETABLEROW_SUBSCRIPTION,

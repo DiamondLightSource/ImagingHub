@@ -10,53 +10,8 @@ import {
 } from "@mui/material";
 
 import { useSuspenseFragment } from "@apollo/client/react";
-import { gql, type TypedDocumentNode } from "@apollo/client";
-
-import { InspectLogMetaFragmentFragment } from "./__generated__/InspectLogMeta.generated";
-
-export const INSPECTLOGMETA_FRAGMENT: TypedDocumentNode<InspectLogMetaFragmentFragment> = gql`
-  fragment InspectLogMetaFragment on Workflow {
-    status {
-      __typename
-      ... on WorkflowSucceededStatus {
-        startTime
-        message
-        tasks {
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-      ... on WorkflowErroredStatus {
-        startTime
-        message
-        tasks {
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-      ... on WorkflowFailedStatus {
-        startTime
-        message
-        tasks {
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-    }
-  }
-`;
+import { InspectLogMetaFragment } from "../../graphql/WorkflowDataFetcher/__generated__/InspectLogMetaFragment.generated";
+import { INSPECTLOGMETA_FRAGMENT } from "../../graphql/WorkflowDataFetcher/InspectLogMetaFragment";
 
 type Artifact = {
   name: string;
@@ -69,7 +24,7 @@ type Task = {
   artifacts: Artifact[];
 };
 
-const getTasks = (data: InspectLogMetaFragmentFragment): Task[] => {
+const getTasks = (data: InspectLogMetaFragment): Task[] => {
   if (
     data.status &&
     (data.status.__typename === "WorkflowSucceededStatus" ||
@@ -84,7 +39,7 @@ const getTasks = (data: InspectLogMetaFragmentFragment): Task[] => {
 const InspectLogMeta = ({
   queryData,
 }: {
-  queryData: InspectLogMetaFragmentFragment;
+  queryData: InspectLogMetaFragment;
 }) => {
   const [logUrl, setLogUrl] = useState<string | null>(null);
   const { data } = useSuspenseFragment({

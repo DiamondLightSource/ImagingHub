@@ -1,4 +1,3 @@
-import { gql, TypedDocumentNode } from "@apollo/client";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { Box } from "@mui/material";
 import {
@@ -11,26 +10,7 @@ import {
 } from "react";
 import { LogLine } from "./LogLine";
 import { useSubscription } from "@apollo/client/react";
-import {
-  LogStreamContentSubscriptionSubscription,
-  LogStreamContentSubscriptionSubscriptionVariables,
-} from "./__generated__/LogStreamContent.generated";
-
-const LOGSTREAMCONTENT_SUBSCRIPTION: TypedDocumentNode<
-  LogStreamContentSubscriptionSubscription,
-  LogStreamContentSubscriptionSubscriptionVariables
-> = gql`
-  subscription LogStreamContentSubscription(
-    $visit: VisitInput!
-    $workflowName: String!
-    $taskId: String!
-  ) {
-    logs(visit: $visit, workflowName: $workflowName, taskId: $taskId) {
-      content
-      podName
-    }
-  }
-`;
+import { LOGSTREAMCONTENT_SUBSCRIPTION } from "../../../graphql/WorkflowDataFetcher/LogStreamContentSubscription";
 
 const LogStreamContent = ({
   visit,

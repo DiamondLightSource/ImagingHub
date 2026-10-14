@@ -1,65 +1,8 @@
-import { gql, TypedDocumentNode } from "@apollo/client";
-import { ArtifactSelectorFragmentFragment } from "./__generated__/ArtifactSelector.generated";
 import { useSuspenseFragment } from "@apollo/client/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
-
-export const ARTIFACTSELECTOR_FRAGMENT: TypedDocumentNode<ArtifactSelectorFragmentFragment> = gql`
-  fragment ArtifactSelectorFragment on Workflow {
-    name
-    status {
-      __typename
-      ... on WorkflowRunningStatus {
-        startTime
-        tasks {
-          id
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-      ... on WorkflowSucceededStatus {
-        startTime
-        tasks {
-          id
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-      ... on WorkflowFailedStatus {
-        startTime
-        tasks {
-          id
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-      ... on WorkflowErroredStatus {
-        startTime
-        tasks {
-          id
-          name
-          artifacts {
-            name
-            url
-            mimeType
-          }
-        }
-      }
-    }
-  }
-`;
+import { ArtifactSelectorFragment } from "../../../graphql/WorkflowDataFetcher/__generated__/ArtifactSelectorFragment.generated";
+import { ARTIFACTSELECTOR_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/ArtifactSelectorFragment";
 
 export type Artifact = {
   name: string;
@@ -72,7 +15,7 @@ type TaskNameAndArtifactTuple = [taskName: string, artifacts: Artifact[]];
 type ArtifactSelectorProps = {
   setArtifact: (_: Artifact | null) => void;
   isPlottingEnabled: boolean;
-  queryData: ArtifactSelectorFragmentFragment;
+  queryData: ArtifactSelectorFragment;
 };
 
 const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff"];

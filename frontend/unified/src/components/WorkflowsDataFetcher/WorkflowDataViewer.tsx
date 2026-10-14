@@ -5,35 +5,12 @@ import {
   Typography,
 } from "@mui/material";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import LogStreamer, { LOGSTREAMER_FRAGMENT } from "./LogStreamer/LogStreamer";
+import LogStreamer from "./LogStreamer/LogStreamer";
 import { Plot } from "./Plot/Plot";
-import { gql, TypedDocumentNode } from "@apollo/client";
 import { useSuspenseQuery } from "@apollo/client/react";
-import InspectLogMeta, { INSPECTLOGMETA_FRAGMENT } from "./InspectLogMeta";
+import InspectLogMeta from "./InspectLogMeta";
 import { ChevronDown } from "lucide-react";
-import { ARTIFACTSELECTOR_FRAGMENT } from "./Plot/ArtifactSelector";
-import {
-  WorkflowDataViewerQueryQuery,
-  WorkflowDataViewerQueryQueryVariables,
-} from "./__generated__/WorkflowDataViewer.generated";
-
-const WORKFLOWDATAVIEWER_QUERY: TypedDocumentNode<
-  WorkflowDataViewerQueryQuery,
-  WorkflowDataViewerQueryQueryVariables
-> = gql`
-  query WorkflowDataViewerQuery($visit: VisitInput!, $name: String!) {
-    workflow(visit: $visit, name: $name) {
-      name
-      id
-      ...LogStreamerFragment
-      ...InspectLogMetaFragment
-      ...ArtifactSelectorFragment
-    }
-  }
-  ${LOGSTREAMER_FRAGMENT}
-  ${INSPECTLOGMETA_FRAGMENT}
-  ${ARTIFACTSELECTOR_FRAGMENT}
-`;
+import { WORKFLOWDATAVIEWER_QUERY } from "../../graphql/WorkflowDataFetcher/WorkflowDataViewerQuery";
 
 const WorkflowDataViewer = ({
   visit,

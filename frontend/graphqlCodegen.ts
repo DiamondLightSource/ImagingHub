@@ -4,7 +4,11 @@ const config: CodegenConfig = {
   overwrite: true,
 
   schema: ["./src/instrument_sessions.graphql", "./src/workflows.graphql"],
-  documents: ["./*/src/components/**/*.{ts,tsx}", "./unified/src/App.tsx"],
+  documents: [
+    "./*/src/components/**/*.{ts,tsx}",
+    "./unified/src/App.tsx",
+    "./unified/src/graphql/**/*.ts",
+  ],
   ignoreNoDocuments: true,
 
   generates: {
@@ -22,6 +26,7 @@ const config: CodegenConfig = {
         importSchemaTypesFrom: "./src/__generated__/types.ts",
         nonOptionalTypename: true,
         skipTypeNameForRoot: true,
+        omitOperationSuffix: true,
       },
       presetConfig: {
         folder: "__generated__",
