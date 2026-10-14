@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, NavLink as RouterNavLink } from "react-router-dom";
 import { Box, CssBaseline, styled, Alert } from "@mui/material";
 import {
+  ColourSchemeButton,
   Footer,
   Navbar,
   NavLink,
@@ -16,7 +17,7 @@ const AppContainer = styled(Box)({
   flexDirection: "column",
   minHeight: "100vh",
   alignItems: "center",
-  backgroundColor: "#fff",
+  bgcolor: "background.default",
   overflowX: "hidden",
 });
 
@@ -69,7 +70,12 @@ const Layout = () => {
               </NavLink>
             </NavLinks>
           }
-          rightSlot={<User color="white" auth={auth} />}
+          rightSlot={
+            <>
+              <User color="white" auth={auth} />
+              <ColourSchemeButton />
+            </>
+          }
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
           position="fixed"
         ></Navbar>

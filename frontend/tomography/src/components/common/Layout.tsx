@@ -26,7 +26,7 @@ const AppContainer = styled(Box)({
   flexDirection: "column",
   minHeight: "100vh",
   alignItems: "center",
-  backgroundColor: "#fff",
+  backgroundColor: "background.default",
   overflowX: "hidden",
 });
 
