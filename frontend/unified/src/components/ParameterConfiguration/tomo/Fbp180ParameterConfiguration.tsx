@@ -8,9 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Loader from "../../../../tomography/src/components/loader/Loader";
-import { useLoader } from "../../../../tomography/src/contexts/LoaderContext";
-import { TemplateComponentProps } from "../../types";
+import Loader from "../../../../../tomography/src/components/loader/Loader";
+import { useLoader } from "../../../../../tomography/src/contexts/LoaderContext";
+import { TemplateComponentProps } from "../../../types";
 import { useEffect, useState } from "react";
 
 export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({

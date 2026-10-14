@@ -22,8 +22,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useSuspenseQuery } from "@apollo/client/react";
-import { TemplateComponentProps } from "../../types";
-import { GET_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
+import { TemplateComponentProps } from "../../../types";
+import { GET_WORKFLOW_TEMPLATE } from "../../../../../tomography/src/components/workflows/Submission";
 
 export const XanesAutoprocessingParameterConfiguration = ({
   setParameters,
