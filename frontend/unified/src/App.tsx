@@ -3,9 +3,6 @@ import { gql, type TypedDocumentNode } from "@apollo/client";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Chip,
   Drawer,
@@ -13,14 +10,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { ChevronDown } from "lucide-react";
 
 import {
   InstrumentSession,
   SessionSelectionMode,
   SessionSelector,
 } from "./components/SessionSelector";
-import { ScanSelector } from "./components/ScanSelector";
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
 import { Beamline } from "./types";
