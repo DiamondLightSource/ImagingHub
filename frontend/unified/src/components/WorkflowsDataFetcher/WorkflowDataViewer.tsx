@@ -6,13 +6,22 @@ import { Plot } from "./Plot/Plot";
 import { useSuspenseQuery } from "@apollo/client/react";
 import InspectLogMeta from "./InspectLogMeta";
 import { WORKFLOWDATAVIEWER_QUERY } from "../../graphql/WorkflowDataFetcher/WorkflowDataViewerQuery";
+import { Beamline } from "../../types";
+import { InstrumentSession } from "../SessionSelector";
+import ProcessingView from "../ProcessingView/ProcessingView";
 
 const WorkflowDataViewer = ({
   visit,
   selectedWorkflow,
+  beamline,
+  startTime,
+  scanIds,
 }: {
   visit: Visit;
   selectedWorkflow: string;
+  beamline: Beamline;
+  startTime: InstrumentSession["startTime"];
+  scanIds: number[];
 }) => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { data, error } = useSuspenseQuery(WORKFLOWDATAVIEWER_QUERY, {
@@ -33,10 +42,11 @@ const WorkflowDataViewer = ({
         value={tabIndex}
         onChange={(_, newValue: number) => setTabIndex(newValue)}
       >
+        <Tab label="Process" />
         <Tab label="View" />
         <Tab label="Log" />
       </Tabs>
-      <TabContent index={1} selectedIndex={tabIndex}>
+      <TabContent index={2} selectedIndex={tabIndex}>
         <InspectLogMeta queryData={data.workflow} />
         <LogStreamer
           visit={visit}
@@ -45,11 +55,20 @@ const WorkflowDataViewer = ({
         />
       </TabContent>
 
-      <TabContent index={0} selectedIndex={tabIndex}>
+      <TabContent index={1} selectedIndex={tabIndex}>
         <Plot
           workflowName={selectedWorkflow}
           visit={visit}
           queryData={data.workflow}
+        />
+      </TabContent>
+
+      <TabContent index={0} selectedIndex={tabIndex}>
+        <ProcessingView
+          visit={visit}
+          beamline={beamline}
+          startTime={startTime}
+          scanIds={scanIds}
         />
       </TabContent>
     </>

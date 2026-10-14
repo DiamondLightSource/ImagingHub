@@ -10,8 +10,21 @@ import {
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import WorkflowDataViewer from "./WorkflowDataViewer";
+import { Beamline } from "../../types";
+import { InstrumentSession } from "../SessionSelector";
 
-const WorkflowsDataFetcher = ({ visit }: { visit: Visit }) => {
+const WorkflowsDataFetcher = ({
+  visit,
+  beamline,
+  startTime,
+  scanIds,
+}: {
+  visit: Visit;
+
+  beamline: Beamline;
+  startTime: InstrumentSession["startTime"];
+  scanIds: number[];
+}) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   return (
     <Stack direction="column">
@@ -34,6 +47,9 @@ const WorkflowsDataFetcher = ({ visit }: { visit: Visit }) => {
           <WorkflowDataViewer
             visit={visit}
             selectedWorkflow={selectedWorkflow}
+            beamline={beamline}
+            startTime={startTime}
+            scanIds={scanIds}
           />
         </Suspense>
       )}
