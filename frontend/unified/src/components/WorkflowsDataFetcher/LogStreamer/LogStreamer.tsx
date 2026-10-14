@@ -1,4 +1,3 @@
-import { gql, TypedDocumentNode } from "@apollo/client";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { useSuspenseFragment } from "@apollo/client/react";
 import {
@@ -12,45 +11,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { setFetchedTasks } from "./utils";
-import LogStreamContent from "./LogStreamContent";
-import { LogStreamerFragmentFragment } from "./__generated__/LogStreamer.generated";
 import { getTaskStatusIcon } from "./getTaskStatusIcon";
-
-export const LOGSTREAMER_FRAGMENT: TypedDocumentNode<LogStreamerFragmentFragment> = gql`
-  fragment LogStreamerFragment on Workflow {
-    status {
-      __typename
-      ... on WorkflowRunningStatus {
-        tasks {
-          id
-          name
-          status
-        }
-      }
-      ... on WorkflowSucceededStatus {
-        tasks {
-          id
-          name
-          status
-        }
-      }
-      ... on WorkflowFailedStatus {
-        tasks {
-          id
-          name
-          status
-        }
-      }
-      ... on WorkflowErroredStatus {
-        tasks {
-          id
-          name
-          status
-        }
-      }
-    }
-  }
-`;
+import { LogStreamerFragment } from "../../../graphql/WorkflowDataFetcher/__generated__/LogStreamerFragment.generated";
+import { LOGSTREAMER_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/LogStreamerFragment";
+import LogStreamContent from "./LogStreamContent";
 
 const LogStreamer = ({
   visit,
@@ -59,7 +23,7 @@ const LogStreamer = ({
 }: {
   visit: Visit;
   selectedWorkflow: string;
-  queryData: LogStreamerFragmentFragment;
+  queryData: LogStreamerFragment;
 }) => {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const { data } = useSuspenseFragment({
