@@ -15,6 +15,10 @@ import PtypyP99ParameterConfiguration from "./PtypyP99ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "./XanesAutoprocessingParameterConfiguration";
 import TemplateSelector from "../ProcessingView/TemplateSelector";
 import { templateOptions } from "../../data/templates";
+import {
+  determineBeamlineRawDataFilepath,
+  determineBeamlineVisitDirpath,
+} from "./utils/utils";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -22,48 +26,6 @@ type ParameterConfigurationProps = {
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
   scanIds: number[];
-};
-
-/**
- * Map from a `@Technique` and a template to the component for configuring the parameters of that
- * specific template
- * @type
- */
-type TemplateComponentMapping = {
-  [technique in Technique]: {
-    [template: string]: ReactElement;
-  };
-};
-
-const DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS = {
-  [Beamline.DIAD]: "nexus",
-  [Beamline["I08-1"]]: "nexus",
-  [Beamline.I12]: "rawdata",
-  [Beamline["I13-1"]]: "raw",
-  [Beamline["I13-2"]]: "raw",
-  [Beamline.I14]: "scan",
-};
-
-const determineBeamlineRawDataFilepath = (
-  beamline: Beamline,
-  visitDirpath: string,
-  scanId: number
-): string => {
-  const rawDataDirname =
-    DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS[
-      beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
-    ];
-  const scanFilename =
-    beamline === Beamline.DIAD ? `k11-${scanId}` : `${scanId}`;
-  return `${visitDirpath}${rawDataDirname}/${scanFilename}.nxs`;
-};
-
-const determineBeamlineVisitDirpath = (
-  beamline: Beamline,
-  year: string,
-  visit: Visit
-) => {
-  return `/dls/${beamline}/data/${year}/${visitToText(visit)}/`;
 };
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
