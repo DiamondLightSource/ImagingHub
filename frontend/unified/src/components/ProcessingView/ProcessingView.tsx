@@ -11,8 +11,6 @@ import {
 import { ChevronDown } from "lucide-react";
 import { ParameterConfiguration } from "../ParameterConfiguration/ParameterConfiguration";
 import { InstrumentSession } from "../SessionSelector";
-import { PROCESSINGVIEW_QUERY } from "../../graphql/ProcessingViewQuery";
-import { useSuspenseQuery } from "@apollo/client/react";
 
 const ProcessingView = ({
   visit,
@@ -28,9 +26,6 @@ const ProcessingView = ({
   const [technique, setTechnique] = useState<Technique>(
     BEAMLINES_DEFAULT_TECHNIQUE[beamline]
   );
-
-  const { data, error } = useSuspenseQuery(PROCESSINGVIEW_QUERY);
-  if (error) console.error(`Error: ${error.message}`);
 
   return (
     <>
@@ -61,9 +56,6 @@ const ProcessingView = ({
             beamline={beamline}
             scanIds={scanIds}
             startTime={startTime}
-            templateList={data.workflowTemplates.nodes.filter((t) =>
-              t.name.startsWith(technique.toLowerCase())
-            )}
           />
         </AccordionDetails>
       </Accordion>
