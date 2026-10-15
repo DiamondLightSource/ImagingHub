@@ -1,7 +1,7 @@
 import { Alert, Button, Snackbar, Typography } from "@mui/material";
-import { Beamline, Technique, Templates } from "../../types";
+import { Beamline, Technique } from "../../types";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
-import { useMutation } from "@apollo/client/react";
+import { useMutation, useSuspenseQuery } from "@apollo/client/react";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
 import TemplateSelector from "../ProcessingView/TemplateSelector";
@@ -11,6 +11,7 @@ import {
   determineBeamlineRawDataFilepath,
   determineBeamlineVisitDirpath,
 } from "./utils/utils";
+import { PARAMETERCONFIGURATION_QUERY } from "../../graphql/ParameterConfigurationQuery";
 
 type ParameterConfigurationProps = {
   technique: Technique;
@@ -18,7 +19,6 @@ type ParameterConfigurationProps = {
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
   scanIds: number[];
-  templateList: Templates;
 };
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
@@ -27,10 +27,13 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   beamline,
   startTime,
   scanIds,
-  templateList,
 }: ParameterConfigurationProps) => {
+  const { data, error } = useSuspenseQuery(PARAMETERCONFIGURATION_QUERY);
+  const templateList = data.workflowTemplates.nodes.filter((t) =>
+    t.name.startsWith(technique.toLowerCase())
+  );
   const [template, setTemplate] = useState<string | null>(
-    templateList[0].name ?? null
+    templateList.length > 0 ? templateList[0].name : null
   );
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters, setResourceParameters] = useState({
@@ -42,6 +45,8 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   >(undefined);
 
   const [mutation] = useMutation(SUBMIT_WORKFLOW_TEMPLATE);
+
+  if (error) console.error(`Error: ${error.message}`);
 
   const sessionYear = new Date(startTime).getFullYear();
   const visitDirpath = determineBeamlineVisitDirpath(
