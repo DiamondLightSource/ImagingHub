@@ -30,7 +30,7 @@ const TemplateSelector = ({
         return option.description;
       }
     }
-    return "";
+    return "No description available";
   })();
 
   return (
