@@ -11,6 +11,7 @@ import {
   Modal,
   Tooltip,
   InputAdornment,
+  Stack,
 } from "@mui/material";
 import ContrastIcon from "@mui/icons-material/Contrast";
 import PreviewIcon from "@mui/icons-material/Visibility";
@@ -185,251 +186,253 @@ const Loader: React.FC = () => {
         </Box>
       </Box>
 
-      <TextField
-        label="data path"
-        variant="outlined"
-        fullWidth
-        size="small"
-        value={autoToggles.dataPath ? "auto" : parameters.data_path || ""}
-        disabled={autoToggles.dataPath}
-        onChange={(e) => {
-          if (!autoToggles.dataPath) setDataPath(e.target.value);
-        }}
-        placeholder="path to the dataset in the input hdf5/NeXuS file containing image data"
-        sx={{ mb: 1 }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Button
-                onClick={() => handleAutoToggle("dataPath")}
-                variant={autoToggles.dataPath ? "contained" : "outlined"}
+      <Stack direction="column">
+        <TextField
+          label="data path"
+          variant="outlined"
+          fullWidth
+          size="small"
+          value={autoToggles.dataPath ? "auto" : parameters.data_path || ""}
+          disabled={autoToggles.dataPath}
+          onChange={(e) => {
+            if (!autoToggles.dataPath) setDataPath(e.target.value);
+          }}
+          placeholder="path to the dataset in the input hdf5/NeXuS file containing image data"
+          sx={{ mb: 1 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button
+                  onClick={() => handleAutoToggle("dataPath")}
+                  variant={autoToggles.dataPath ? "contained" : "outlined"}
+                  size="small"
+                  sx={{ mr: -1 }}
+                >
+                  auto
+                </Button>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        {!showExtraFields && (
+          <TextField
+            label="image path"
+            variant="outlined"
+            fullWidth
+            size="small"
+            value={
+              autoToggles.imagePath ? "auto" : parameters.image_key_path || ""
+            }
+            disabled={autoToggles.imagePath}
+            onChange={(e) => {
+              if (!autoToggles.imagePath) setImageKeyPath(e.target.value);
+            }}
+            placeholder="path to the image key in your data"
+            sx={{ mb: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    onClick={() => handleAutoToggle("imagePath")}
+                    variant={autoToggles.imagePath ? "contained" : "outlined"}
+                    size="small"
+                    sx={{ mr: -1 }}
+                  >
+                    auto
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+
+        <ToggleButtonGroup
+          value={mode}
+          exclusive
+          size="small"
+          color="primary"
+          onChange={handleModeChange}
+          aria-label="Rotation Angle Mode"
+          fullWidth
+          sx={{ mb: 1 }}
+        >
+          <ToggleButton value="setAddress" aria-label="Set Address">
+            use rotation angle within data
+          </ToggleButton>
+          <ToggleButton value="defineCustom" aria-label="Define Custom">
+            set custom rotation angle
+          </ToggleButton>
+        </ToggleButtonGroup>
+
+        {/* Input Fields */}
+        {mode === "setAddress" ? (
+          <TextField
+            label="Path to rotation angle"
+            variant="outlined"
+            fullWidth
+            size="small"
+            value={
+              autoToggles.rotationAnglePath
+                ? "auto"
+                : parameters.rotation_angles.data_path || ""
+            }
+            disabled={autoToggles.rotationAnglePath}
+            onChange={(e) => {
+              if (!autoToggles.rotationAnglePath)
+                setRotationAnglesDataPath(e.target.value);
+            }}
+            placeholder="Path to rotation angle dataset in your data"
+            sx={{ mb: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    onClick={() => handleAutoToggle("rotationAnglePath")}
+                    variant={
+                      autoToggles.rotationAnglePath ? "contained" : "outlined"
+                    }
+                    size="small"
+                    sx={{ mr: -1 }}
+                  >
+                    auto
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
+          />
+        ) : (
+          <Grid container spacing={2} sx={{ mb: 1 }}>
+            <Grid size={{ xs: 4 }}>
+              <TextField
+                label="Start angle"
+                variant="outlined"
+                fullWidth
+                type="number"
                 size="small"
-                sx={{ mr: -1 }}
-              >
-                auto
-              </Button>
-            </InputAdornment>
-          ),
-        }}
-      />
+                value={
+                  parameters.rotation_angles.user_defined?.start_angle || null
+                }
+                onChange={(e) =>
+                  setUserDefinedRotationAngles(
+                    Number(e.target.value),
+                    parameters.rotation_angles.user_defined?.stop_angle || 0,
+                    parameters.rotation_angles.user_defined?.angles_total || 0
+                  )
+                }
+                placeholder="First angle"
+              />
+            </Grid>
+            <Grid size={{ xs: 4 }}>
+              <TextField
+                label="Stop angle"
+                variant="outlined"
+                fullWidth
+                type="number"
+                size="small"
+                value={
+                  parameters.rotation_angles.user_defined?.stop_angle || null
+                }
+                onChange={(e) =>
+                  setUserDefinedRotationAngles(
+                    parameters.rotation_angles.user_defined?.start_angle || 0,
+                    Number(e.target.value),
+                    parameters.rotation_angles.user_defined?.angles_total || 0
+                  )
+                }
+                placeholder="Last angle"
+              />
+            </Grid>
+            <Grid size={{ xs: 4 }}>
+              <TextField
+                label="Total angle"
+                variant="outlined"
+                fullWidth
+                type="number"
+                size="small"
+                value={
+                  parameters.rotation_angles.user_defined?.angles_total || null
+                }
+                onChange={(e) =>
+                  setUserDefinedRotationAngles(
+                    parameters.rotation_angles.user_defined?.start_angle || 0,
+                    parameters.rotation_angles.user_defined?.stop_angle || 0,
+                    Number(e.target.value)
+                  )
+                }
+                placeholder="Total angles between"
+              />
+            </Grid>
+          </Grid>
+        )}
 
-      {!showExtraFields && (
-        <TextField
-          label="image path"
-          variant="outlined"
-          fullWidth
-          size="small"
-          value={
-            autoToggles.imagePath ? "auto" : parameters.image_key_path || ""
-          }
-          disabled={autoToggles.imagePath}
-          onChange={(e) => {
-            if (!autoToggles.imagePath) setImageKeyPath(e.target.value);
-          }}
-          placeholder="path to the image key in your data"
-          sx={{ mb: 1 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Button
-                  onClick={() => handleAutoToggle("imagePath")}
-                  variant={autoToggles.imagePath ? "contained" : "outlined"}
-                  size="small"
-                  sx={{ mr: -1 }}
-                >
-                  auto
-                </Button>
-              </InputAdornment>
-            ),
-          }}
-        />
-      )}
-
-      <ToggleButtonGroup
-        value={mode}
-        exclusive
-        size="small"
-        color="primary"
-        onChange={handleModeChange}
-        aria-label="Rotation Angle Mode"
-        fullWidth
-        sx={{ mb: 1 }}
-      >
-        <ToggleButton value="setAddress" aria-label="Set Address">
-          use rotation angle within data
-        </ToggleButton>
-        <ToggleButton value="defineCustom" aria-label="Define Custom">
-          set custom rotation angle
-        </ToggleButton>
-      </ToggleButtonGroup>
-
-      {/* Input Fields */}
-      {mode === "setAddress" ? (
-        <TextField
-          label="Path to rotation angle"
-          variant="outlined"
-          fullWidth
-          size="small"
-          value={
-            autoToggles.rotationAnglePath
-              ? "auto"
-              : parameters.rotation_angles.data_path || ""
-          }
-          disabled={autoToggles.rotationAnglePath}
-          onChange={(e) => {
-            if (!autoToggles.rotationAnglePath)
-              setRotationAnglesDataPath(e.target.value);
-          }}
-          placeholder="Path to rotation angle dataset in your data"
-          sx={{ mb: 1 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Button
-                  onClick={() => handleAutoToggle("rotationAnglePath")}
-                  variant={
-                    autoToggles.rotationAnglePath ? "contained" : "outlined"
-                  }
-                  size="small"
-                  sx={{ mr: -1 }}
-                >
-                  auto
-                </Button>
-              </InputAdornment>
-            ),
-          }}
-        />
-      ) : (
-        <Grid container spacing={2} sx={{ mb: 1 }}>
-          <Grid size={{ xs: 4 }}>
-            <TextField
-              label="Start angle"
-              variant="outlined"
-              fullWidth
-              type="number"
-              size="small"
-              value={
-                parameters.rotation_angles.user_defined?.start_angle || null
-              }
-              onChange={(e) =>
-                setUserDefinedRotationAngles(
-                  Number(e.target.value),
-                  parameters.rotation_angles.user_defined?.stop_angle || 0,
-                  parameters.rotation_angles.user_defined?.angles_total || 0
-                )
-              }
-              placeholder="First angle"
-            />
+        {showExtraFields && (
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 6 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Darks
+              </Typography>
+              <TextField
+                label="Path to darks file"
+                variant="outlined"
+                fullWidth
+                type="text"
+                size="small"
+                value={parameters.darks?.file || ""}
+                onChange={(e) =>
+                  setDarks(e.target.value, parameters.darks?.data_path || "")
+                }
+                sx={{ mb: 1 }}
+                placeholder="path to the hdf5/NeXuS darks file "
+              />
+              <TextField
+                label="Data path"
+                variant="outlined"
+                fullWidth
+                size="small"
+                type="text"
+                value={parameters.darks?.data_path || ""}
+                onChange={(e) =>
+                  setDarks(parameters.darks?.file || "", e.target.value)
+                }
+                sx={{ mb: 1 }}
+                placeholder="dataset that contains the darks data"
+              />
+            </Grid>
+            <Grid size={{ xs: 6 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Flats
+              </Typography>
+              <TextField
+                label="Path to flats file"
+                variant="outlined"
+                fullWidth
+                size="small"
+                type="text"
+                value={parameters.flats?.file || ""}
+                onChange={(e) =>
+                  setFlats(e.target.value, parameters.flats?.data_path || "")
+                }
+                sx={{ mb: 1 }}
+                placeholder="path to the hdf5/NeXuS flats file"
+              />
+              <TextField
+                label="Data path"
+                type="text"
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={parameters.flats?.data_path || ""}
+                onChange={(e) =>
+                  setFlats(parameters.flats?.file || "", e.target.value)
+                }
+                sx={{ mb: 1 }}
+                placeholder="dataset that contains the flats data"
+              />
+            </Grid>
           </Grid>
-          <Grid size={{ xs: 4 }}>
-            <TextField
-              label="Stop angle"
-              variant="outlined"
-              fullWidth
-              type="number"
-              size="small"
-              value={
-                parameters.rotation_angles.user_defined?.stop_angle || null
-              }
-              onChange={(e) =>
-                setUserDefinedRotationAngles(
-                  parameters.rotation_angles.user_defined?.start_angle || 0,
-                  Number(e.target.value),
-                  parameters.rotation_angles.user_defined?.angles_total || 0
-                )
-              }
-              placeholder="Last angle"
-            />
-          </Grid>
-          <Grid size={{ xs: 4 }}>
-            <TextField
-              label="Total angle"
-              variant="outlined"
-              fullWidth
-              type="number"
-              size="small"
-              value={
-                parameters.rotation_angles.user_defined?.angles_total || null
-              }
-              onChange={(e) =>
-                setUserDefinedRotationAngles(
-                  parameters.rotation_angles.user_defined?.start_angle || 0,
-                  parameters.rotation_angles.user_defined?.stop_angle || 0,
-                  Number(e.target.value)
-                )
-              }
-              placeholder="Total angles between"
-            />
-          </Grid>
-        </Grid>
-      )}
-
-      {showExtraFields && (
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 6 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Darks
-            </Typography>
-            <TextField
-              label="Path to darks file"
-              variant="outlined"
-              fullWidth
-              type="text"
-              size="small"
-              value={parameters.darks?.file || ""}
-              onChange={(e) =>
-                setDarks(e.target.value, parameters.darks?.data_path || "")
-              }
-              sx={{ mb: 1 }}
-              placeholder="path to the hdf5/NeXuS darks file "
-            />
-            <TextField
-              label="Data path"
-              variant="outlined"
-              fullWidth
-              size="small"
-              type="text"
-              value={parameters.darks?.data_path || ""}
-              onChange={(e) =>
-                setDarks(parameters.darks?.file || "", e.target.value)
-              }
-              sx={{ mb: 1 }}
-              placeholder="dataset that contains the darks data"
-            />
-          </Grid>
-          <Grid size={{ xs: 6 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Flats
-            </Typography>
-            <TextField
-              label="Path to flats file"
-              variant="outlined"
-              fullWidth
-              size="small"
-              type="text"
-              value={parameters.flats?.file || ""}
-              onChange={(e) =>
-                setFlats(e.target.value, parameters.flats?.data_path || "")
-              }
-              sx={{ mb: 1 }}
-              placeholder="path to the hdf5/NeXuS flats file"
-            />
-            <TextField
-              label="Data path"
-              type="text"
-              variant="outlined"
-              fullWidth
-              size="small"
-              value={parameters.flats?.data_path || ""}
-              onChange={(e) =>
-                setFlats(parameters.flats?.file || "", e.target.value)
-              }
-              sx={{ mb: 1 }}
-              placeholder="dataset that contains the flats data"
-            />
-          </Grid>
-        </Grid>
-      )}
+        )}
+      </Stack>
 
       <Modal open={isPreviewModalOpen} onClose={handleClosePreviewModal}>
         <Box

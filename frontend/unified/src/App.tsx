@@ -187,20 +187,12 @@ export const App: React.FC = () => {
         </Stack>
 
         <ApolloProvider client={apolloClientWorkflows}>
-          <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-            <Stack spacing={VERTICAL_SPACING} width="500px">
-              <Suspense>
-                <ProcessingView
-                  key={`process-${sessionName}`}
-                  visit={selectedVisit}
-                  beamline={beamline}
-                  startTime={session.startTime}
-                  scanIds={selectedScanIds}
-                />
-              </Suspense>
-            </Stack>
-            <WorkflowsDataFetcher visit={selectedVisit} />
-          </Grid>
+          <WorkflowsDataFetcher
+            visit={selectedVisit}
+            beamline={beamline}
+            startTime={session.startTime}
+            scanIds={selectedScanIds}
+          />
         </ApolloProvider>
       </>
     );
