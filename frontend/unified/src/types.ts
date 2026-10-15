@@ -1,3 +1,5 @@
+import { ProcessingViewQuery } from "./graphql/__generated__/ProcessingViewQuery.generated";
+
 const Technique = {
   Dpc: "Dpc",
   Nbed: "Nbed",
@@ -65,8 +67,6 @@ export const BEAMLINES_DEFAULT_TECHNIQUE = {
   [Beamline.P99]: Technique.Ptypy,
 };
 
-export type Option = { label: string; value: string; desc?: string };
-
 export type TemplateComponentProps = {
   setParameters: (_: object) => void;
   setResourceParameters: (_: object) => void;
@@ -87,3 +87,5 @@ export type Task = {
   name: string;
   status: TaskStatus;
 };
+
+export type Templates = ProcessingViewQuery["workflowTemplates"]["nodes"];

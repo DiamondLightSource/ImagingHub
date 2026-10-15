@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 
 import { Box, Chip, Drawer, Grid, Stack, Typography } from "@mui/material";
@@ -189,13 +189,15 @@ export const App: React.FC = () => {
         <ApolloProvider client={apolloClientWorkflows}>
           <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
             <Stack spacing={VERTICAL_SPACING} width="500px">
-              <ProcessingView
-                key={`process-${sessionName}`}
-                visit={selectedVisit}
-                beamline={beamline}
-                startTime={session.startTime}
-                scanIds={selectedScanIds}
-              />
+              <Suspense>
+                <ProcessingView
+                  key={`process-${sessionName}`}
+                  visit={selectedVisit}
+                  beamline={beamline}
+                  startTime={session.startTime}
+                  scanIds={selectedScanIds}
+                />
+              </Suspense>
             </Stack>
             <WorkflowsDataFetcher visit={selectedVisit} />
           </Grid>
