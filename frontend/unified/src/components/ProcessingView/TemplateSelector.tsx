@@ -9,14 +9,14 @@ import {
   Stack,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import { Option } from "../../types";
+import { Templates } from "../../types";
 
 const TemplateSelector = ({
   templateList,
   template,
   setTemplate,
 }: {
-  templateList: Option[];
+  templateList: Templates;
   template: string;
   setTemplate: (_: string) => void;
 }) => {
@@ -26,8 +26,8 @@ const TemplateSelector = ({
 
   const desc = (function () {
     for (const option of templateList) {
-      if (option.value === template) {
-        return option.desc;
+      if (option.name === template) {
+        return option.description;
       }
     }
     return "";
@@ -45,13 +45,13 @@ const TemplateSelector = ({
           onChange={handleSelect}
         >
           {templateList.map((opt) => (
-            <MenuItem key={opt.value} value={opt.value}>
-              {opt.label}
+            <MenuItem key={opt.name} value={opt.name}>
+              {opt.name}
             </MenuItem>
           ))}
         </Select>
         {template && (
-          <Tooltip title={desc}>
+          <Tooltip title={desc ?? "No description available"}>
             <IconButton>
               <InfoIcon />
             </IconButton>
