@@ -1,11 +1,10 @@
 import { Alert, Button, Snackbar, Typography } from "@mui/material";
-import { Beamline, Technique } from "../../types";
+import { Beamline, Technique, Templates } from "../../types";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation } from "@apollo/client/react";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { InstrumentSession } from "../SessionSelector";
 import TemplateSelector from "../ProcessingView/TemplateSelector";
-import { templateOptions } from "../../data/templates";
 import { getParamConfigComponent } from "./utils/getParamConfigComponent";
 import { useState } from "react";
 import {
@@ -19,6 +18,7 @@ type ParameterConfigurationProps = {
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
   scanIds: number[];
+  templateList: Templates;
 };
 
 export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
@@ -27,12 +27,10 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
   beamline,
   startTime,
   scanIds,
+  templateList,
 }: ParameterConfigurationProps) => {
-  const templateList = templateOptions.filter((option) =>
-    option.value.includes(technique.toLowerCase())
-  );
   const [template, setTemplate] = useState<string | null>(
-    templateList[0]?.value ?? null
+    templateList[0].name ?? null
   );
   const [templateParameters, setTemplateParameters] = useState<object>({});
   const [resourceParameters, setResourceParameters] = useState({
@@ -96,10 +94,6 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     );
   };
 
-  const PlaceholderComponent = (
-    <p>No available component for {template} template</p>
-  );
-
   const parameterConfigurationComponent = template
     ? getParamConfigComponent(
         technique,
@@ -121,7 +115,9 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
             setTemplate={setTemplate}
           />
           <Typography variant="h6">Options</Typography>
-          {parameterConfigurationComponent ?? PlaceholderComponent}
+          {parameterConfigurationComponent ?? (
+            <p>No available component for {template} template</p>
+          )}
           <Button
             disabled={!parameterConfigurationComponent}
             variant="contained"
@@ -132,7 +128,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
           </Button>
         </>
       ) : (
-        <p>No templates found</p>
+        <Typography>No templates available</Typography>
       )}
 
       <Snackbar
