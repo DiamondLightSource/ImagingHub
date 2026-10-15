@@ -35,7 +35,9 @@ const TechniqueSelector = ({
     _: React.MouseEvent<HTMLElement>,
     newTechnique: Technique
   ) => {
-    setTechnique(newTechnique);
+    if (newTechnique) {
+      setTechnique(newTechnique);
+    }
   };
   return (
     <Stack direction="column" spacing={1}>
