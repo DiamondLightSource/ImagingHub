@@ -10,6 +10,8 @@ import { Beamline } from "../../types";
 import { InstrumentSession } from "../SessionSelector";
 import ProcessingView from "../ProcessingView/ProcessingView";
 
+const EMPTY_WORKFLOW_NAME_QUERY_ERROR = "resource name may not be empty";
+
 const WorkflowDataViewer = ({
   visit,
   selectedWorkflow,
@@ -18,7 +20,7 @@ const WorkflowDataViewer = ({
   scanIds,
 }: {
   visit: Visit;
-  selectedWorkflow: string;
+  selectedWorkflow: string | null;
   beamline: Beamline;
   startTime: InstrumentSession["startTime"];
   scanIds: number[];
@@ -27,13 +29,14 @@ const WorkflowDataViewer = ({
   const { data, error } = useSuspenseQuery(WORKFLOWDATAVIEWER_QUERY, {
     variables: {
       visit: visit,
-      name: selectedWorkflow,
+      name: selectedWorkflow ?? "",
     },
+    errorPolicy: "all",
   });
 
-  if (error) return <>Error: {error.message}</>;
-  if (!data) return <>No data</>;
-  if (!data.workflow) return <>No workflow data</>;
+  if (error && !error.message.includes(EMPTY_WORKFLOW_NAME_QUERY_ERROR))
+    return <>Error: {error.message}</>;
+  if (!error && !data) return <>No data</>;
 
   return (
     <>
@@ -43,25 +46,43 @@ const WorkflowDataViewer = ({
         onChange={(_, newValue: number) => setTabIndex(newValue)}
       >
         <Tab label="Process" />
-        <Tab label="View" />
-        <Tab label="Log" />
+        <Tab
+          label="View"
+          disabled={
+            selectedWorkflow === null ||
+            data === undefined ||
+            data.workflow === undefined
+          }
+        />
+        <Tab
+          label="Log"
+          disabled={
+            selectedWorkflow === null ||
+            data === undefined ||
+            data.workflow === undefined
+          }
+        />
       </Tabs>
-      <TabContent index={2} selectedIndex={tabIndex}>
-        <InspectLogMeta queryData={data.workflow} />
-        <LogStreamer
-          visit={visit}
-          selectedWorkflow={selectedWorkflow}
-          queryData={data.workflow}
-        />
-      </TabContent>
+      {selectedWorkflow && data && data.workflow && (
+        <>
+          <TabContent index={2} selectedIndex={tabIndex}>
+            <InspectLogMeta queryData={data.workflow} />
+            <LogStreamer
+              visit={visit}
+              selectedWorkflow={selectedWorkflow}
+              queryData={data.workflow}
+            />
+          </TabContent>
 
-      <TabContent index={1} selectedIndex={tabIndex}>
-        <Plot
-          workflowName={selectedWorkflow}
-          visit={visit}
-          queryData={data.workflow}
-        />
-      </TabContent>
+          <TabContent index={1} selectedIndex={tabIndex}>
+            <Plot
+              workflowName={selectedWorkflow}
+              visit={visit}
+              queryData={data.workflow}
+            />
+          </TabContent>
+        </>
+      )}
 
       <TabContent index={0} selectedIndex={tabIndex}>
         <ProcessingView

@@ -41,17 +41,15 @@ const WorkflowsDataFetcher = ({
           </AccordionDetails>
         </Accordion>
       </Suspense>
-      {selectedWorkflow && (
-        <Suspense>
-          <WorkflowDataViewer
-            visit={visit}
-            selectedWorkflow={selectedWorkflow}
-            beamline={beamline}
-            startTime={startTime}
-            scanIds={scanIds}
-          />
-        </Suspense>
-      )}
+      <Suspense>
+        <WorkflowDataViewer
+          visit={visit}
+          selectedWorkflow={selectedWorkflow}
+          beamline={beamline}
+          startTime={startTime}
+          scanIds={scanIds}
+        />
+      </Suspense>
     </>
   );
 };
