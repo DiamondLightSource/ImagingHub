@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, Tab } from "@mui/material";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import LogStreamer from "./LogStreamer/LogStreamer";
@@ -33,6 +33,12 @@ const WorkflowDataViewer = ({
     },
     errorPolicy: "all",
   });
+
+  useEffect(() => {
+    if (!selectedWorkflow) {
+      setTabIndex(0);
+    }
+  }, [selectedWorkflow]);
 
   if (error && !error.message.includes(EMPTY_WORKFLOW_NAME_QUERY_ERROR))
     return <>Error: {error.message}</>;
