@@ -1,6 +1,10 @@
-import React from "react";
-import { Outlet, NavLink as RouterNavLink } from "react-router-dom";
-import { Box, CssBaseline, styled, Alert } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Outlet,
+  NavLink as RouterNavLink,
+  useOutletContext,
+} from "react-router-dom";
+import { Box, CssBaseline, styled, Alert, Stack, Divider } from "@mui/material";
 import {
   ColourSchemeButton,
   Footer,
@@ -11,6 +15,13 @@ import {
   useAuth,
   ProgressDelayed,
 } from "@diamondlightsource/sci-react-ui";
+import {
+  InstrumentSession,
+  NavbarSessionSelector,
+  OutletContextType,
+} from "../unified/src/components/NavbarSessionSelector";
+import { apolloClientUlims } from "./ApolloClient";
+import { ApolloProvider } from "@apollo/client/react";
 
 const AppContainer = styled(Box)({
   display: "flex",
@@ -33,6 +44,9 @@ const MainContainer = styled(Box)({
 const Layout = () => {
   const auth = useAuth();
 
+  const [selectedSession, setSelectedSession] =
+    useState<InstrumentSession | null>(null);
+
   if (auth.errors) {
     return <Alert severity="error">{auth.errors.join(", ")}</Alert>;
   }
@@ -45,31 +59,52 @@ const Layout = () => {
     auth.login();
   }
 
+  const ctx: OutletContextType = {
+    session: { selectedSession, setSelectedSession },
+  };
+
   return (
     <>
       <CssBaseline />
       <AppContainer>
         <Navbar
           logo="theme"
+          containerWidth={false}
           leftSlot={
-            <NavLinks>
-              <NavLink to="/" linkComponent={RouterNavLink}>
-                Home
-              </NavLink>
-              <NavLink to="/post-processing" linkComponent={RouterNavLink}>
-                Post Processing
-              </NavLink>
-              <NavLink to="/tomography" linkComponent={RouterNavLink}>
-                Tomography
-              </NavLink>
-              <NavLink to="/i14" linkComponent={RouterNavLink}>
-                I14
-              </NavLink>
-              <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
-                ePSIC
-              </NavLink>
-            </NavLinks>
+            <>
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                divider={<Divider orientation="vertical" flexItem />}
+              >
+                <NavLinks>
+                  <NavLink to="/" linkComponent={RouterNavLink}>
+                    Home
+                  </NavLink>
+                  <NavLink to="/post-processing" linkComponent={RouterNavLink}>
+                    Post Processing
+                  </NavLink>
+                  <NavLink to="/tomography" linkComponent={RouterNavLink}>
+                    Tomography
+                  </NavLink>
+                  <NavLink to="/i14" linkComponent={RouterNavLink}>
+                    I14
+                  </NavLink>
+                  <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
+                    ePSIC
+                  </NavLink>
+                </NavLinks>
+
+                <ApolloProvider client={apolloClientUlims}>
+                  <NavbarSessionSelector setSession={setSelectedSession} />
+                </ApolloProvider>
+              </Stack>
+            </>
           }
+          // centreSlot={
+
+          // }
           rightSlot={
             <>
               <User color="white" auth={auth} />
@@ -80,7 +115,7 @@ const Layout = () => {
           position="fixed"
         ></Navbar>
         <MainContainer>
-          <Outlet />
+          <Outlet context={ctx satisfies OutletContextType} />
         </MainContainer>
         <Footer
           copyright=""
@@ -99,5 +134,9 @@ const Layout = () => {
     </>
   );
 };
+
+export function useOutletContextTyped() {
+  return useOutletContext<OutletContextType>();
+}
 
 export default Layout;

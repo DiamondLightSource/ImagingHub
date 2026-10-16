@@ -15,6 +15,7 @@ import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
 import { Sidebar } from "./components/Sidebar";
 import { SESSION_QUERY } from "./graphql/SessionQuery";
+import { useOutletContextTyped } from "../../src/Layout";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
@@ -26,15 +27,15 @@ const useFedid = (): string => {
 };
 
 export const App: React.FC = () => {
-  const [sessionSelectionMode, setSessionSelectionMode] =
-    useState<SessionSelectionMode>(SessionSelectionMode.Latest);
-  const [customSession, setCustomSession] = useState<InstrumentSession | null>(
-    null
-  );
+  // const [sessionSelectionMode, setSessionSelectionMode] =
+  //   useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
   const { loading, error, data } = useQuery(SESSION_QUERY, {
     variables: { username: useFedid() },
+    // variables: { username: "twi18192" },
   });
+
+  const outletCtx = useOutletContextTyped();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -98,41 +99,41 @@ export const App: React.FC = () => {
     }
   };
 
-  const getSessionSelector = (
-    latestEnabled: boolean = true,
-    session: InstrumentSession | null,
-    sessionName: string | null
-  ) => {
-    return (
-      <Box justifyItems="center">
-        <Stack direction="row" spacing={2} alignItems="center" marginBottom={2}>
-          <Typography variant="h5">Session</Typography>
+  // const getSessionSelector = (
+  //   latestEnabled: boolean = true,
+  //   session: InstrumentSession | null,
+  //   sessionName: string | null
+  // ) => {
+  //   return (
+  //     <Box justifyItems="center">
+  //       <Stack direction="row" spacing={2} alignItems="center" marginBottom={2}>
+  //         <Typography variant="h5">Session</Typography>
 
-          {/* Show chips only when session & sessionName are defined */}
-          {session && sessionName ? (
-            <>
-              <Chip color="primary" variant="outlined" label={sessionName} />
-              <Chip
-                color="secondary"
-                variant="outlined"
-                label={session.instrument.name}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-        </Stack>
-        <SessionSelector
-          setSession={setCustomSession}
-          mode={
-            latestEnabled ? sessionSelectionMode : SessionSelectionMode.Custom
-          }
-          setMode={setSessionSelectionMode}
-          latestEnabled={latestEnabled}
-        />
-      </Box>
-    );
-  };
+  //         {/* Show chips only when session & sessionName are defined */}
+  //         {session && sessionName ? (
+  //           <>
+  //             <Chip color="primary" variant="outlined" label={sessionName} />
+  //             <Chip
+  //               color="secondary"
+  //               variant="outlined"
+  //               label={session.instrument.name}
+  //             />
+  //           </>
+  //         ) : (
+  //           <></>
+  //         )}
+  //       </Stack>
+  //       <SessionSelector
+  //         setSession={setCustomSession}
+  //         mode={
+  //           latestEnabled ? sessionSelectionMode : SessionSelectionMode.Custom
+  //         }
+  //         setMode={setSessionSelectionMode}
+  //         latestEnabled={latestEnabled}
+  //       />
+  //     </Box>
+  //   );
+  // };
 
   const latestSessionAvailable =
     data.account.instrumentSessionRoles.edges.length > 0;
@@ -141,18 +142,28 @@ export const App: React.FC = () => {
   // Case 2: No latest, custom
   // Case 3: Latest
 
+  const customSession = outletCtx.session.selectedSession;
+
   if (customSession != null || latestSessionAvailable) {
     let session = customSession;
-    // Get latest session, if available and latest session mode is selected
-    if (latestSessionAvailable) {
-      session = determineCurrentSession(
-        sessionSelectionMode,
-        data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
-        customSession
-      );
+
+    if (customSession == null) {
+      session =
+        data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
     } else {
       session = customSession;
     }
+
+    // Get latest session, if available and latest session mode is selected
+    // if (latestSessionAvailable) {
+    //   session = determineCurrentSession(
+    //     sessionSelectionMode,
+    //     data.account.instrumentSessionRoles.edges[0].node.instrumentSession,
+    //     customSession
+    //   );
+    // } else {
+    //   session = customSession;
+    // }
 
     if (session == null) {
       return;
@@ -179,11 +190,6 @@ export const App: React.FC = () => {
             updateSelectedScanIds={setSelectedScanIds}
           />
         </Drawer>
-        {/* Wrap the SessionSelector in a <Stack> as it the TextField won't remember
-        the session text otherwise */}
-        <Stack>
-          {getSessionSelector(latestSessionAvailable, session, sessionName)}
-        </Stack>
 
         <ApolloProvider client={apolloClientWorkflows}>
           <WorkflowsDataFetcher
@@ -197,20 +203,12 @@ export const App: React.FC = () => {
     );
   } else {
     return (
-      <>
-        <Stack spacing={VERTICAL_SPACING}>
-          {getSessionSelector(latestSessionAvailable, null, null)}
-          <Typography variant="body1">
-            Latest session not found. Please enter a session reference (e.g.
-            ab12345-1).
-          </Typography>
-        </Stack>
-        {/* Replicate the main grid here so our SessionSelector remains aligned */}
-        <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-          <Stack width="500px" />
-          <Stack width="500px" />
-        </Grid>
-      </>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="body1">
+          Session not found. Please enter a session reference above (e.g.
+          ab12345-1).
+        </Typography>
+      </Box>
     );
   }
 };
