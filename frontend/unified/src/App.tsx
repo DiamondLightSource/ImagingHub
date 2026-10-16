@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 
 import { Box, Chip, Drawer, Grid, Stack, Typography } from "@mui/material";
@@ -14,7 +14,6 @@ import { Beamline } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { useAuth } from "@diamondlightsource/sci-react-ui";
 import { Sidebar } from "./components/Sidebar";
-import ProcessingView from "./components/ProcessingView/ProcessingView";
 import { SESSION_QUERY } from "./graphql/SessionQuery";
 
 const VERTICAL_SPACING = 2;
