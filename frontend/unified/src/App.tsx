@@ -18,6 +18,7 @@ import { SESSION_QUERY } from "./graphql/SessionQuery";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
+const SIDEBAR_WIDTH = 300;
 
 const useFedid = (): string => {
   const token = useAuth().getToken();
@@ -172,28 +173,40 @@ export const App: React.FC = () => {
     const beamline = mapStringsToBeamline(session.instrument.name);
 
     return (
-      <>
-        <Drawer variant="permanent">
+      <Box sx={{ display: "flex" }}>
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: SIDEBAR_WIDTH,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: SIDEBAR_WIDTH,
+              boxSizing: "border-box",
+            },
+          }}
+        >
           <Sidebar
             scanIds={selectedScanIds}
             updateSelectedScanIds={setSelectedScanIds}
           />
         </Drawer>
-        {/* Wrap the SessionSelector in a <Stack> as it the TextField won't remember
+        <Box sx={{ flexGrow: 1 }}>
+          {/* Wrap the SessionSelector in a <Stack> as it the TextField won't remember
         the session text otherwise */}
-        <Stack>
-          {getSessionSelector(latestSessionAvailable, session, sessionName)}
-        </Stack>
+          <Stack>
+            {getSessionSelector(latestSessionAvailable, session, sessionName)}
+          </Stack>
 
-        <ApolloProvider client={apolloClientWorkflows}>
-          <WorkflowsDataFetcher
-            visit={selectedVisit}
-            beamline={beamline}
-            startTime={session.startTime}
-            scanIds={selectedScanIds}
-          />
-        </ApolloProvider>
-      </>
+          <ApolloProvider client={apolloClientWorkflows}>
+            <WorkflowsDataFetcher
+              visit={selectedVisit}
+              beamline={beamline}
+              startTime={session.startTime}
+              scanIds={selectedScanIds}
+            />
+          </ApolloProvider>
+        </Box>
+      </Box>
     );
   } else {
     return (
