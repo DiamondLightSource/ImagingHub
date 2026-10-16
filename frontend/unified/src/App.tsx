@@ -30,21 +30,21 @@ export const App: React.FC = () => {
   // const [sessionSelectionMode, setSessionSelectionMode] =
   //   useState<SessionSelectionMode>(SessionSelectionMode.Latest);
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
-  const { loading, error, data } = useQuery(SESSION_QUERY, {
-    variables: { username: useFedid() },
-    // variables: { username: "twi18192" },
-  });
+  // const { loading, error, data } = useQuery(SESSION_QUERY, {
+  //   variables: { username: useFedid() },
+  //   // variables: { username: "twi18192" },
+  // });
 
   const outletCtx = useOutletContextTyped();
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  if (data === undefined) {
-    return <p>Data undefined</p>;
-  }
-  if (data.account === null) {
-    return <p>Account null</p>;
-  }
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error : {error.message}</p>;
+  // if (data === undefined) {
+  //   return <p>Data undefined</p>;
+  // }
+  // if (data.account === null) {
+  //   return <p>Account null</p>;
+  // }
 
   /**
    * Determine the current session based on which session-selection mode is enabled.
@@ -135,24 +135,25 @@ export const App: React.FC = () => {
   //   );
   // };
 
-  const latestSessionAvailable =
-    data.account.instrumentSessionRoles.edges.length > 0;
+  // const latestSessionAvailable =
+  //   data.account.instrumentSessionRoles.edges.length > 0;
 
   // Case 1: No latest, no custom
   // Case 2: No latest, custom
   // Case 3: Latest
 
-  const customSession = outletCtx.session.selectedSession;
+  const session = outletCtx.session.selectedSession;
 
-  if (customSession != null || latestSessionAvailable) {
-    let session = customSession;
+  if (session != null) {
+    //|| latestSessionAvailable) {
+    // let session = customSession;
 
-    if (customSession == null) {
-      session =
-        data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
-    } else {
-      session = customSession;
-    }
+    // if (customSession == null) {
+    //   session =
+    //     data.account.instrumentSessionRoles.edges[0].node.instrumentSession;
+    // } else {
+    //   session = customSession;
+    // }
 
     // Get latest session, if available and latest session mode is selected
     // if (latestSessionAvailable) {
@@ -165,9 +166,9 @@ export const App: React.FC = () => {
     //   session = customSession;
     // }
 
-    if (session == null) {
-      return;
-    }
+    // if (session == null) {
+    //   return;
+    // }
 
     const sessionName = `${session.proposal.proposalCategory?.toLowerCase()}${session.proposal.proposalNumber}-${session.instrumentSessionNumber}`;
 

@@ -89,10 +89,3 @@ export type Task = {
 };
 
 export type Templates = ProcessingViewQuery["workflowTemplates"]["nodes"];
-
-const SessionStatus = {
-  VALID: "VALID",
-  NOT_FOUND: "NOT_FOUND",
-} as const;
-type SessionStatus = (typeof SessionStatus)[keyof typeof SessionStatus];
-export { SessionStatus };
