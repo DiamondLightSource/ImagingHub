@@ -1,31 +1,17 @@
 import {
   Stack,
-  Divider,
   Typography,
   TextField,
   InputAdornment,
   Button,
 } from "@mui/material";
 import { FlaskConical } from "lucide-react";
-import { SessionQuery } from "../graphql/__generated__/SessionQuery.generated";
 import { useQuery } from "@apollo/client/react";
 import { useEffect, useRef, useState } from "react";
 import { SESSIONSELECTOR_QUERY } from "../graphql/SessionSelectorQuery";
 import { SESSION_QUERY } from "../graphql/SessionQuery";
-import { useAuth } from "@diamondlightsource/sci-react-ui";
-
-type NonNullAccount = NonNullable<SessionQuery["account"]>;
-export type InstrumentSession =
-  NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
-
-export type SessionRefState = {
-  selectedSession: InstrumentSession;
-  setSelectedSession: (v: InstrumentSession) => void;
-};
-
-export type OutletContextType = {
-  session: SessionRefState;
-};
+import { useAuth, visitRegex } from "@diamondlightsource/sci-react-ui";
+import { AppState, InstrumentSession } from "../types";
 
 const useFedid = (): string => {
   const token = useAuth().getToken();
@@ -35,35 +21,46 @@ const useFedid = (): string => {
 
 type NavbarSessionSelectorProps = {
   setSession: (v: InstrumentSession) => void;
+  setAppState: (v: AppState) => void;
 };
 export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
   setSession,
+  setAppState: setAppState,
 }: NavbarSessionSelectorProps) => {
   const [sessionInputValue, setSessionInputValue] = useState("");
   const [beamline, setBeamline] = useState("");
 
   const latestSession = useRef<string>("");
 
-  const { data: accountData } = useQuery(SESSION_QUERY, {
-    // variables: { username: useFedid() },
-    variables: { username: "twi18192" },
-  });
+  const { data: accountData, loading: accountLoading } = useQuery(
+    SESSION_QUERY,
+    {
+      variables: { username: useFedid() },
+      // variables: { username: "twi18192" },
+    }
+  );
 
-  const { data } = useQuery(SESSIONSELECTOR_QUERY, {
+  const { data, loading } = useQuery(SESSIONSELECTOR_QUERY, {
     variables: { reference: sessionInputValue },
+    skip: visitRegex.exec(sessionInputValue) === null, // Don't perform the query if the input doesn't match the regex
   });
 
+  // Handle loading of main session data
   useEffect(() => {
+    console.log("cleanedvalue 2");
     if (data && data.instrumentSessionByReference) {
       console.log("data ", data, data.instrumentSessionByReference);
       setSession(data.instrumentSessionByReference);
       setBeamline(data.instrumentSessionByReference.instrument.name);
+      setAppState(AppState.VALID);
     } else {
       setSession(null);
       setBeamline("");
+      setAppState(loading ? AppState.LOADING : AppState.INVALID_SESSION);
     }
-  }, [data, setSession]);
+  }, [data, loading, setSession, setAppState]);
 
+  // Handle query for visits associated with user
   useEffect(() => {
     console.log("accountData");
     if (accountData) {
@@ -75,9 +72,18 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
             .instrumentSession;
         latestSession.current = `${instSess.proposal.proposalCategory.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
         setSessionInputValue(latestSession.current);
+      } else {
+        setAppState(AppState.LATEST_NOT_FOUND);
       }
     }
-  }, [accountData]);
+  }, [accountData, setAppState]);
+
+  // Handle loading state
+  useEffect(() => {
+    if (loading || accountLoading) {
+      setAppState(AppState.LOADING);
+    }
+  }, [loading, accountLoading, setAppState]);
 
   return (
     <Stack
@@ -138,6 +144,9 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
             },
           }}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            if (visitRegex.exec(sessionInputValue) === null) {
+              setAppState(AppState.FAILED_REGEX);
+            }
             setSessionInputValue(event.target.value);
           }}
 

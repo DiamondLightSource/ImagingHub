@@ -15,13 +15,14 @@ import {
   useAuth,
   ProgressDelayed,
 } from "@diamondlightsource/sci-react-ui";
-import {
-  InstrumentSession,
-  NavbarSessionSelector,
-  OutletContextType,
-} from "../unified/src/components/NavbarSessionSelector";
+import { NavbarSessionSelector } from "../unified/src/components/NavbarSessionSelector";
 import { apolloClientUlims } from "./ApolloClient";
 import { ApolloProvider } from "@apollo/client/react";
+import {
+  AppState,
+  InstrumentSession,
+  OutletContextType,
+} from "../unified/src/types";
 
 const AppContainer = styled(Box)({
   display: "flex",
@@ -47,6 +48,8 @@ const Layout = () => {
   const [selectedSession, setSelectedSession] =
     useState<InstrumentSession | null>(null);
 
+  const [appState, setAppState] = useState<AppState>(AppState.LOADING);
+
   if (auth.errors) {
     return <Alert severity="error">{auth.errors.join(", ")}</Alert>;
   }
@@ -60,7 +63,14 @@ const Layout = () => {
   }
 
   const ctx: OutletContextType = {
-    session: { selectedSession, setSelectedSession },
+    session: {
+      sessionVal: selectedSession,
+      setSessionVal: setSelectedSession,
+    },
+    appState: {
+      appStateVal: appState,
+      setAppStateVal: setAppState,
+    },
   };
 
   return (
@@ -97,7 +107,10 @@ const Layout = () => {
                 </NavLinks>
 
                 <ApolloProvider client={apolloClientUlims}>
-                  <NavbarSessionSelector setSession={setSelectedSession} />
+                  <NavbarSessionSelector
+                    setSession={setSelectedSession}
+                    setAppState={setAppState}
+                  />
                 </ApolloProvider>
               </Stack>
             </>
