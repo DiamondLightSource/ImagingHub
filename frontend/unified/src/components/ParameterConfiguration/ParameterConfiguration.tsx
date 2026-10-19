@@ -65,6 +65,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     // sending the mutation
     console.log("Submit job");
     const parameters = {
+      scanId: scanIds[0],
       ...templateParameters,
       ...resourceParameters,
     };
@@ -105,7 +106,6 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         template,
         setTemplateParameters,
         setResourceParameters,
-        scanIds,
         visitDirpath
       )
     : null;

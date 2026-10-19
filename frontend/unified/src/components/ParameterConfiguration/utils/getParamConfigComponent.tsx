@@ -20,7 +20,6 @@ export const getParamConfigComponent = (
   template: string,
   setTemplateParameters: (_: object) => void,
   setResourceParameters: (_: { nprocs: number; memory: string }) => void,
-  scanIds: number[],
   visitDirPath: string
 ) => {
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
@@ -51,7 +50,6 @@ export const getParamConfigComponent = (
         <PtyrexParameterConfiguration
           setParameters={setTemplateParameters}
           visitDirpath={visitDirPath}
-          scanIds={scanIds}
         />
       ),
     },

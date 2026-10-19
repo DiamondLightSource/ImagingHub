@@ -13,6 +13,7 @@ import { useOutletContextTyped } from "../../src/Layout";
 
 const VERTICAL_SPACING = 2;
 const HORIZONTAL_SPACING = 2;
+const SIDEBAR_WIDTH = 300;
 
 export const App: React.FC = () => {
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
@@ -59,23 +60,34 @@ export const App: React.FC = () => {
     const beamline = mapStringsToBeamline(sessionVal.instrument.name);
 
     return (
-      <>
-        <Drawer variant="permanent">
+      <Box sx={{ display: "flex" }}>
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: SIDEBAR_WIDTH,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: SIDEBAR_WIDTH,
+              boxSizing: "border-box",
+            },
+          }}
+        >
           <Sidebar
             scanIds={selectedScanIds}
             updateSelectedScanIds={setSelectedScanIds}
           />
         </Drawer>
-
-        <ApolloProvider client={apolloClientWorkflows}>
-          <WorkflowsDataFetcher
-            visit={selectedVisit}
-            beamline={beamline}
-            startTime={sessionVal.startTime}
-            scanIds={selectedScanIds}
-          />
-        </ApolloProvider>
-      </>
+        <Box sx={{ flexGrow: 1 }}>
+          <ApolloProvider client={apolloClientWorkflows}>
+            <WorkflowsDataFetcher
+              visit={selectedVisit}
+              beamline={beamline}
+              startTime={sessionVal.startTime}
+              scanIds={selectedScanIds}
+            />
+          </ApolloProvider>
+        </Box>
+      </Box>
     );
   } else if (appStateVal == AppState.LOADING) {
     return (

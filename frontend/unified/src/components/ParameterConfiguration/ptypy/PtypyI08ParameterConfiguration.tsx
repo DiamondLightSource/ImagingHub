@@ -14,7 +14,6 @@ const PtypyI08ParameterConfiguration = ({
   setParameters: (_: object) => void;
   setResourceParameters: (_: object) => void;
 }) => {
-  const [id, setId] = useState<string>("");
   const [binning, setBinning] = useState<string>("2");
   const [defocus, setDefocus] = useState<string>("50");
   const [memory, setMemory] = useState<string>("100Gi");
@@ -26,7 +25,6 @@ const PtypyI08ParameterConfiguration = ({
 
   useEffect(() => {
     setParameters({
-      id: id,
       outpath: outPath,
       defocus: defocus,
       binning: binning,
@@ -41,7 +39,6 @@ const PtypyI08ParameterConfiguration = ({
   }, [
     setParameters,
     setResourceParameters,
-    id,
     binning,
     defocus,
     memory,
@@ -63,13 +60,6 @@ const PtypyI08ParameterConfiguration = ({
       }}
     >
       <Stack direction="column" spacing={2}>
-        <TextField
-          error={id.length === 0}
-          label="Scan Number"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          size="small"
-        />
         <TextField
           label="Path to output folder"
           value={outPath}

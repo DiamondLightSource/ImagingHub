@@ -1,24 +1,32 @@
-import { Card, Stack, TextField } from "@mui/material";
+import { Card, InputAdornment, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TemplateComponentProps } from "../../types";
 
 export const PtyrexParameterConfiguration = ({
   setParameters,
   visitDirpath,
-  scanIds,
 }: TemplateComponentProps) => {
   const [configPath, setConfigPath] = useState<string>("");
   const [projectionNumber, setProjectionNumber] = useState<string>("");
 
   useEffect(() => {
     setParameters({
-      config_json: configPath,
-      scan_number: scanIds[0],
+      config_json: visitDirpath + configPath,
       proj_number: projectionNumber,
       nprocs: 4,
       memory: "32Gi",
     });
-  }, [configPath, projectionNumber]);
+  }, [setParameters, visitDirpath, configPath, projectionNumber]);
+
+  const displayVisitDir = {
+    input: {
+      startAdornment: (
+        <InputAdornment position="start" sx={{ mr: 0 }}>
+          {visitDirpath}
+        </InputAdornment>
+      ),
+    },
+  };
 
   return (
     <>
@@ -33,12 +41,15 @@ export const PtyrexParameterConfiguration = ({
       >
         <Stack direction="column" spacing={1}>
           <TextField
-            label={"Ptyrex config file path"}
+            size="small"
+            label="Ptyrex config file path"
             value={configPath}
             onChange={(e) => setConfigPath(e.target.value)}
+            slotProps={displayVisitDir}
           />
           <TextField
-            label={"Projection Number"}
+            size="small"
+            label="Projection Number"
             value={projectionNumber}
             onChange={(e) => setProjectionNumber(e.target.value)}
           />
