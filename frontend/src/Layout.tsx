@@ -115,9 +115,6 @@ const Layout = () => {
               </Stack>
             </>
           }
-          // centreSlot={
-
-          // }
           rightSlot={
             <>
               <User color="white" auth={auth} />

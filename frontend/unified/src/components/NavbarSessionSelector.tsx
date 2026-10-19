@@ -36,7 +36,6 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
     SESSION_QUERY,
     {
       variables: { username: useFedid() },
-      // variables: { username: "twi18192" },
     }
   );
 
@@ -47,7 +46,6 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
 
   // Handle loading of main session data
   useEffect(() => {
-    console.log("cleanedvalue 2");
     if (data && data.instrumentSessionByReference) {
       console.log("data ", data, data.instrumentSessionByReference);
       setSession(data.instrumentSessionByReference);
@@ -62,7 +60,6 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
 
   // Handle query for visits associated with user
   useEffect(() => {
-    console.log("accountData");
     if (accountData) {
       const latestSessionAvailable =
         accountData.account.instrumentSessionRoles.edges.length > 0;
@@ -90,7 +87,6 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
       direction="row"
       alignItems="center"
       justifyContent="flex-start"
-      // divider={<Divider orientation="vertical" flexItem />}
       spacing={2}
     >
       <Typography
