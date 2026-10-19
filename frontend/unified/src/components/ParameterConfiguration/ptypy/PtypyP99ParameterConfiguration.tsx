@@ -14,7 +14,6 @@ const PtypyP99ParameterConfiguration = ({
   setParameters: (_: object) => void;
   setResourceParameters: (_: object) => void;
 }) => {
-  const [id, setId] = useState<string>("");
   const [inPath, setInPath] = useState<string>(
     "processing/writenData/reconstruction_test_data"
   );
@@ -25,7 +24,6 @@ const PtypyP99ParameterConfiguration = ({
 
   useEffect(() => {
     setParameters({
-      id: id,
       inpath: inPath,
       outpath: outPath,
       usegpu: useGpu,
@@ -37,7 +35,6 @@ const PtypyP99ParameterConfiguration = ({
   }, [
     setParameters,
     setResourceParameters,
-    id,
     inPath,
     outPath,
     useGpu,
@@ -56,13 +53,6 @@ const PtypyP99ParameterConfiguration = ({
       }}
     >
       <Stack direction="column" spacing={2}>
-        <TextField
-          error={id.length === 0}
-          label="Scan Number"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          size="small"
-        />
         <TextField
           label="Path to raw data folder"
           value={inPath}
