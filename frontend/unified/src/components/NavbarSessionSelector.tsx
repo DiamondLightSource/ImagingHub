@@ -47,7 +47,6 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
   // Handle loading of main session data
   useEffect(() => {
     if (data && data.instrumentSessionByReference) {
-      console.log("data ", data, data.instrumentSessionByReference);
       setSession(data.instrumentSessionByReference);
       setBeamline(data.instrumentSessionByReference.instrument.name);
       setAppState(AppState.VALID);
@@ -108,7 +107,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
 
           sx={{
             marginLeft: 2,
-            // color: "primary.onContainer",
+
             "& .MuiOutlinedInput-root": {
               backgroundColor: "primary.container",
 

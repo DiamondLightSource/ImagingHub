@@ -12,7 +12,6 @@ import { Sidebar } from "./components/Sidebar";
 import { useOutletContextTyped } from "../../src/Layout";
 
 const VERTICAL_SPACING = 2;
-const HORIZONTAL_SPACING = 2;
 const SIDEBAR_WIDTH = 300;
 
 export const App: React.FC = () => {
@@ -46,8 +45,6 @@ export const App: React.FC = () => {
   const { appStateVal } = outletCtx.appState;
 
   if (appStateVal == AppState.VALID && sessionVal != null) {
-    const sessionName = `${sessionVal.proposal.proposalCategory?.toLowerCase()}${sessionVal.proposal.proposalNumber}-${sessionVal.instrumentSessionNumber}`;
-
     // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
     // a capitalised "proposal code", whereas the workflows service only accepts
     // it in lowercase
