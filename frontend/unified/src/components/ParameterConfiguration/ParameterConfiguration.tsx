@@ -105,7 +105,6 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
         template,
         setTemplateParameters,
         setResourceParameters,
-        scanIds,
         visitDirpath
       )
     : null;

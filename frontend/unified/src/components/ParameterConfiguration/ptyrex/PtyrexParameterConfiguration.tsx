@@ -5,7 +5,6 @@ import { TemplateComponentProps } from "../../types";
 export const PtyrexParameterConfiguration = ({
   setParameters,
   visitDirpath,
-  scanIds,
 }: TemplateComponentProps) => {
   const [configPath, setConfigPath] = useState<string>("");
   const [projectionNumber, setProjectionNumber] = useState<string>("");
@@ -13,12 +12,11 @@ export const PtyrexParameterConfiguration = ({
   useEffect(() => {
     setParameters({
       config_json: visitDirpath + configPath,
-      scan_number: scanIds[0],
       proj_number: projectionNumber,
       nprocs: 4,
       memory: "32Gi",
     });
-  }, [configPath, projectionNumber]);
+  }, [setParameters, visitDirpath, configPath, projectionNumber]);
 
   const displayVisitDir = {
     input: {
