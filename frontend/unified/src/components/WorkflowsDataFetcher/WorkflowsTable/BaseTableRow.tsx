@@ -62,7 +62,7 @@ const BaseTableRow = ({
           </Typography>
         </Box>
       </TableCell>
-      <TableCell>1</TableCell>
+      <TableCell>{data.parameters.scanId ?? "N/A"}</TableCell>
       <TableCell>
         {getWorkflowStatusIcon(data.status?.__typename ?? "Unknown")}
       </TableCell>
