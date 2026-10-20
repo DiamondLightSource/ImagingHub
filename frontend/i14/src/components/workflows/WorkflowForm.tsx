@@ -4,13 +4,10 @@ import React, { useState } from "react";
 import { Info } from "lucide-react";
 
 import Button from "@mui/material/Button";
-import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
@@ -23,6 +20,7 @@ import OptionSelect from "./OptionSelect";
 import OptionToggle from "./OptionToggle";
 import ElementSelect from "./ElementSelect";
 import UserVisits from "./UserVisits";
+import Section from "./../../../../shared_components/Section";
 
 import type {
   ElementPair,
@@ -203,7 +201,7 @@ export const WorkflowForm: FC = () => {
                   }}
                 />
                 {"mutual" === data.method && (
-                  <Stack spacing={2} sx={{ outline: '1px solid grey', p: 2 }}>
+                  <Section title="Method Parameters">
                     <OptionToggle
                       value={data.brute}
                       options={bruteOptions}
@@ -220,6 +218,7 @@ export const WorkflowForm: FC = () => {
                           variant="outlined"
                           size="small"
                           type="number"
+                          sx={{ minWidth: "160px" }}
                           inputProps={{ min: 0, max: 1, step: 0.1 }}
                           value={data.max_fractional_shift}
                           onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -237,7 +236,7 @@ export const WorkflowForm: FC = () => {
                         </Tooltip>
                       </Stack>
                     )}
-                  </Stack>
+                  </Section>
                 )}
               </>
             )}
