@@ -203,7 +203,7 @@ export const WorkflowForm: FC = () => {
                   }}
                 />
                 {"mutual" === data.method && (
-                  <>
+                  <Stack spacing={2} sx={{ outline: '1px solid grey', p: 2 }}>
                     <OptionToggle
                       value={data.brute}
                       options={bruteOptions}
@@ -237,7 +237,7 @@ export const WorkflowForm: FC = () => {
                         </Tooltip>
                       </Stack>
                     )}
-                  </>
+                  </Stack>
                 )}
               </>
             )}
