@@ -23,6 +23,7 @@ type WorkflowFormData = {
   edgeElementArray?: ElementPairArray[];
   edgeElement?: ElementPair;
   elementToAlign?: ElementPair;
+  method?: string;
   brute?: boolean;
   max_fractional_shift?: number;
 };

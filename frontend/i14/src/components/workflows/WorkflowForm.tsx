@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 
 import { initialData, techniqueOptions } from "../../data/form";
 import { templateOptions } from "../../data/templates";
-import { bruteOptions } from "../../data/xanes";
+import { methodOptions, bruteOptions } from "../../data/xanes";
 
 import DynamicArray from "./DynamicArray";
 import OptionSelect from "./OptionSelect";
@@ -92,6 +92,7 @@ export const WorkflowForm: FC = () => {
     e.preventDefault();
     const params = getElementString();
     params.set("outputFolder", data.outpath);
+    params.set("method", data.method);
     params.set("brute", data.brute);
     params.set("max_fractional_shift", data.max_fractional_shift);
     const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}?${params}`;
@@ -193,38 +194,50 @@ export const WorkflowForm: FC = () => {
               <>
                 <OptionToggle
                   title="Method"
-                  info="The method to apply to the data."
-                  value={data.brute}
-                  options={bruteOptions}
+                  info="The method to use for alignment"
+                  value={data.method}
+                  options={methodOptions}
                   onChange={(_, newValue) => {
-                    if (newValue === null) return;
-                    setData((prev) => ({ ...prev, brute: newValue }));
+                    if (newValue === null) return; // Prevent an unselected state
+                    setData((prev) => ({ ...prev, method: newValue }));
                   }}
                 />
-                {data.brute && (
-                  <Stack direction="row" alignItems="center">
-                    <TextField
-                      name="max_fractional_shift"
-                      label="Maximum fractional shift"
-                      variant="outlined"
-                      size="small"
-                      type="number"
-                      inputProps={{ min: 0, max: 1, step: 0.1 }}
-                      value={data.max_fractional_shift}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        const value = e.target.value;
-                        setData((prev) => ({
-                          ...prev,
-                          max_fractional_shift: value,
-                        }));
+                {"mutual" === data.method && (
+                  <>
+                    <OptionToggle
+                      value={data.brute}
+                      options={bruteOptions}
+                      onChange={(_, newValue) => {
+                        if (newValue === null) return;
+                        setData((prev) => ({ ...prev, brute: newValue }));
                       }}
                     />
-                    <Tooltip title="This number is used to define the maximum shift that could be applied to an axis, as a fraction of the size of the axis. Setting it to a higher number results in longer duration of alignment.">
-                      <IconButton>
-                        <Info />
-                      </IconButton>
-                    </Tooltip>
-                  </Stack>
+                    {data.brute && (
+                      <Stack direction="row" alignItems="center">
+                        <TextField
+                          name="max_fractional_shift"
+                          label="Maximum fractional shift"
+                          variant="outlined"
+                          size="small"
+                          type="number"
+                          inputProps={{ min: 0, max: 1, step: 0.1 }}
+                          value={data.max_fractional_shift}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            const value = e.target.value;
+                            setData((prev) => ({
+                              ...prev,
+                              max_fractional_shift: value,
+                            }));
+                          }}
+                        />
+                        <Tooltip title="This number is used to define the maximum shift that could be applied to an axis, as a fraction of the size of the axis. Setting it to a higher number results in longer duration of alignment.">
+                          <IconButton>
+                            <Info />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+                    )}
+                  </>
                 )}
               </>
             )}

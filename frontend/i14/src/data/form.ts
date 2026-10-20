@@ -7,6 +7,7 @@ export const initialData: WorkflowFormData = {
   edgeElementArray: [{ id: "1", element: "H", transition: "Ka" }],
   edgeElement: { element: "H", transition: "Ka" },
   elementToAlign: { element: "H", transition: "Ka" },
+  method: "mutual",
   brute: false,
   max_fractional_shift: 0.2,
 };
