@@ -9,7 +9,7 @@ type ElementPairArray = {
 
 type GridPanel = (string | null)[][];
 
-type Option = { label: string; value: string; desc?: string };
+type Option = { label: string; value: string | boolean; desc?: string };
 
 type GridOption = Option & {
   row?: number;
@@ -23,4 +23,7 @@ type WorkflowFormData = {
   edgeElementArray?: ElementPairArray[];
   edgeElement?: ElementPair;
   elementToAlign?: ElementPair;
+  method?: string;
+  brute?: boolean;
+  max_fractional_shift?: number;
 };

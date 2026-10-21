@@ -1,12 +1,8 @@
-import { Info } from "lucide-react";
-
-import FormLabel from "@mui/material/FormLabel";
-import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
-import Tooltip from "@mui/material/Tooltip";
 
 import OptionPanel from "./OptionPanel";
-import { elementOptions, transitionOptions } from "../../data/elements";
+import { elementOptions, transitionOptions } from "../../data/xanes";
+import FieldLabel from "./../../../../shared_components/FieldLabel";
 
 interface ElementSelectValue {
   element: string;
@@ -28,19 +24,7 @@ export default function ElementSelect({
 }: ElementSelectProps) {
   return (
     <Stack spacing={0} sx={{ mt: "0px !important" }}>
-      {title && (
-        <Stack direction="row" alignItems="center">
-          <FormLabel>{title}</FormLabel>
-          {info && (
-            <Tooltip title={info}>
-              <IconButton aria-label="Information" size="small">
-                <Info />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Stack>
-      )}
-
+      {title && <FieldLabel title={title} info={info} />}
       <Stack direction="row" spacing={1} alignItems="center">
         <OptionPanel
           useGrid

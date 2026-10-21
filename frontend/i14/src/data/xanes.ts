@@ -162,3 +162,28 @@ const transitions: [string, string][] = [
 export const transitionOptions: Option[] = transitions.map(
   ([value, label]) => ({ value, label })
 );
+
+const method: [string, string][] = [
+  ["Mutual", "mutual"],
+  ["Fourier", "fourier"],
+];
+
+export const methodOptions: Option[] = method.map(([label, value]) => ({
+  label,
+  value,
+}));
+
+const brute: [string, boolean, string][] = [
+  ["Brute", true, "Brute force image shift estimation"],
+  [
+    "Mutual Information",
+    false,
+    "Register two images by translation using the mutual information metric",
+  ],
+];
+
+export const bruteOptions: Option[] = brute.map(([label, value, desc]) => ({
+  label,
+  value,
+  desc,
+}));

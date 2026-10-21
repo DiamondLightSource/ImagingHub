@@ -1,22 +1,26 @@
 import type { FC, ChangeEvent } from "react";
 import React, { useState } from "react";
 
+import { Info } from "lucide-react";
+
 import Button from "@mui/material/Button";
-import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { initialData } from "../../data/form";
+import { initialData, techniqueOptions } from "../../data/form";
 import { templateOptions } from "../../data/templates";
+import { methodOptions, bruteOptions } from "../../data/xanes";
 
 import DynamicArray from "./DynamicArray";
 import OptionSelect from "./OptionSelect";
+import OptionToggle from "./OptionToggle";
 import ElementSelect from "./ElementSelect";
 import UserVisits from "./UserVisits";
+import Section from "./../../../../shared_components/Section";
 
 import type {
   ElementPair,
@@ -26,18 +30,17 @@ import type {
 } from "../../types/workflowFields";
 
 export const WorkflowForm: FC = () => {
-  const techniques = ["dpc", "xanes", "xrd", "xrf"] as const;
-  type ToggleGroup = (typeof techniques)[number];
-  const getFilteredTemplates = (toggle: ToggleGroup): Option[] => {
+  const getFilteredTemplates = (toggle): Option[] => {
     return (templateOptions ?? []).filter((o) => o.value.includes(toggle));
   };
 
   const [data, setData] = useState<WorkflowFormData>(() => {
     const defaultTechnique =
-      techniques.find((t) => initialData.template.includes(t)) ?? techniques[0];
+      techniqueOptions.find((t) => initialData.template.includes(t.value)) ??
+      techniqueOptions[0];
     return {
       ...initialData,
-      technique: defaultTechnique,
+      technique: defaultTechnique.value,
     };
   });
 
@@ -45,15 +48,12 @@ export const WorkflowForm: FC = () => {
     data.technique
   );
 
-  const handleToggleChange = (
-    _event: React.MouseEvent<HTMLElement>,
-    next: ToggleGroup | null
-  ) => {
-    if (!next) return;
-    const filteredTemplates = getFilteredTemplates(next);
+  const handleToggleChange = (_, newValue) => {
+    if (!newValue) return;
+    const filteredTemplates = getFilteredTemplates(newValue);
     setData((prev) => ({
       ...prev,
-      technique: next,
+      technique: newValue,
       template: filteredTemplates[0].value,
     }));
   };
@@ -90,6 +90,9 @@ export const WorkflowForm: FC = () => {
     e.preventDefault();
     const params = getElementString();
     params.set("outputFolder", data.outpath);
+    params.set("method", data.method);
+    params.set("brute", data.brute);
+    params.set("max_fractional_shift", data.max_fractional_shift);
     const url = `https://workflows.diamond.ac.uk/templates/${data.template}/${data.visit}?${params}`;
     openInNewTab(url);
   };
@@ -101,21 +104,12 @@ export const WorkflowForm: FC = () => {
         <br />
         <form onSubmit={handleSubmit}>
           <Stack direction="column" spacing={2}>
-            <Stack direction="column" spacing={0}>
-              <FormLabel>Technique</FormLabel>
-              <ToggleButtonGroup
-                exclusive
-                value={data.technique}
-                onChange={handleToggleChange}
-                aria-label="Technique"
-              >
-                {techniques.map((t) => (
-                  <ToggleButton key={t} value={t}>
-                    {t.toUpperCase()}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </Stack>
+            <OptionToggle
+              title="Technique"
+              value={data.technique}
+              options={techniqueOptions}
+              onChange={handleToggleChange}
+            />
             <OptionSelect
               label="Template"
               value={data.template}
@@ -194,7 +188,58 @@ export const WorkflowForm: FC = () => {
                 }
               />
             )}
-
+            {"xanes" === data.template && (
+              <>
+                <OptionToggle
+                  title="Method"
+                  info="The method to use for alignment"
+                  value={data.method}
+                  options={methodOptions}
+                  onChange={(_, newValue) => {
+                    if (newValue === null) return; // Prevent an unselected state
+                    setData((prev) => ({ ...prev, method: newValue }));
+                  }}
+                />
+                {"mutual" === data.method && (
+                  <Section title="Method Parameters">
+                    <OptionToggle
+                      value={data.brute}
+                      options={bruteOptions}
+                      onChange={(_, newValue) => {
+                        if (newValue === null) return;
+                        setData((prev) => ({ ...prev, brute: newValue }));
+                      }}
+                    />
+                    {data.brute && (
+                      <Stack direction="row" alignItems="center">
+                        <TextField
+                          name="max_fractional_shift"
+                          label="Maximum fractional shift"
+                          variant="outlined"
+                          size="small"
+                          type="number"
+                          sx={{ minWidth: "160px" }}
+                          inputProps={{ min: 0, max: 1, step: 0.1 }}
+                          value={data.max_fractional_shift}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            const value = e.target.value;
+                            setData((prev) => ({
+                              ...prev,
+                              max_fractional_shift: value,
+                            }));
+                          }}
+                        />
+                        <Tooltip title="This number is used to define the maximum shift that could be applied to an axis, as a fraction of the size of the axis. Setting it to a higher number results in longer duration of alignment.">
+                          <IconButton>
+                            <Info />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+                    )}
+                  </Section>
+                )}
+              </>
+            )}
             <TextField
               name="outpath"
               label="Output path"
