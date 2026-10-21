@@ -1,6 +1,10 @@
-import React from "react";
-import { Outlet, NavLink as RouterNavLink } from "react-router-dom";
-import { Box, CssBaseline, styled, Alert } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Outlet,
+  NavLink as RouterNavLink,
+  useOutletContext,
+} from "react-router-dom";
+import { Box, CssBaseline, styled, Alert, Stack, Divider } from "@mui/material";
 import {
   ColourSchemeButton,
   Footer,
@@ -11,6 +15,14 @@ import {
   useAuth,
   ProgressDelayed,
 } from "@diamondlightsource/sci-react-ui";
+import { NavbarSessionSelector } from "../unified/src/components/NavbarSessionSelector";
+import { apolloClientUlims } from "./ApolloClient";
+import { ApolloProvider } from "@apollo/client/react";
+import {
+  AppState,
+  InstrumentSession,
+  OutletContextType,
+} from "../unified/src/types";
 
 const AppContainer = styled(Box)({
   display: "flex",
@@ -33,6 +45,11 @@ const MainContainer = styled(Box)({
 const Layout = () => {
   const auth = useAuth();
 
+  const [selectedSession, setSelectedSession] =
+    useState<InstrumentSession | null>(null);
+
+  const [appState, setAppState] = useState<AppState>(AppState.LOADING);
+
   if (auth.errors) {
     return <Alert severity="error">{auth.errors.join(", ")}</Alert>;
   }
@@ -45,30 +62,58 @@ const Layout = () => {
     auth.login();
   }
 
+  const ctx: OutletContextType = {
+    session: {
+      sessionVal: selectedSession,
+      setSessionVal: setSelectedSession,
+    },
+    appState: {
+      appStateVal: appState,
+      setAppStateVal: setAppState,
+    },
+  };
+
   return (
     <>
       <CssBaseline />
       <AppContainer>
         <Navbar
           logo="theme"
+          containerWidth={false}
           leftSlot={
-            <NavLinks>
-              <NavLink to="/" linkComponent={RouterNavLink}>
-                Home
-              </NavLink>
-              <NavLink to="/post-processing" linkComponent={RouterNavLink}>
-                Post Processing
-              </NavLink>
-              <NavLink to="/tomography" linkComponent={RouterNavLink}>
-                Tomography
-              </NavLink>
-              <NavLink to="/i14" linkComponent={RouterNavLink}>
-                I14
-              </NavLink>
-              <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
-                ePSIC
-              </NavLink>
-            </NavLinks>
+            <>
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                divider={<Divider orientation="vertical" flexItem />}
+              >
+                <NavLinks>
+                  <NavLink to="/" linkComponent={RouterNavLink}>
+                    Home
+                  </NavLink>
+                  <NavLink to="/post-processing" linkComponent={RouterNavLink}>
+                    Post Processing
+                  </NavLink>
+                  <NavLink to="/tomography" linkComponent={RouterNavLink}>
+                    Tomography
+                  </NavLink>
+                  <NavLink to="/i14" linkComponent={RouterNavLink}>
+                    I14
+                  </NavLink>
+                  <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
+                    ePSIC
+                  </NavLink>
+                </NavLinks>
+
+                <ApolloProvider client={apolloClientUlims}>
+                  <NavbarSessionSelector
+                    setSession={setSelectedSession}
+                    setAppState={setAppState}
+                  />
+                </ApolloProvider>
+              </Stack>
+            </>
           }
           rightSlot={
             <>
@@ -80,7 +125,7 @@ const Layout = () => {
           position="fixed"
         ></Navbar>
         <MainContainer>
-          <Outlet />
+          <Outlet context={ctx satisfies OutletContextType} />
         </MainContainer>
         <Footer
           copyright=""
@@ -99,5 +144,9 @@ const Layout = () => {
     </>
   );
 };
+
+export function useOutletContextTyped() {
+  return useOutletContext<OutletContextType>();
+}
 
 export default Layout;

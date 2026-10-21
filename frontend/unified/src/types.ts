@@ -1,4 +1,5 @@
 import { ProcessingViewQuery } from "./graphql/__generated__/ProcessingViewQuery.generated";
+import { SessionQuery } from "./graphql/__generated__/SessionQuery.generated";
 
 const Technique = {
   Dpc: "Dpc",
@@ -89,3 +90,29 @@ export type Task = {
 };
 
 export type Templates = ProcessingViewQuery["workflowTemplates"]["nodes"];
+
+const AppState = {
+  LOADING: "LOADING",
+  LATEST_NOT_FOUND: "LATEST_NOT_FOUND",
+  INVALID_SESSION: "INVALID_SESSION",
+  FAILED_REGEX: "FAILED_REGEX",
+  VALID: "VALID",
+  ERROR: "ERROR",
+} as const;
+type AppState = (typeof AppState)[keyof typeof AppState];
+export { AppState };
+
+type NonNullAccount = NonNullable<SessionQuery["account"]>;
+export type InstrumentSession =
+  NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
+
+export type OutletContextType = {
+  session: {
+    sessionVal: InstrumentSession;
+    setSessionVal: React.Dispatch<React.SetStateAction<InstrumentSession>>;
+  };
+  appState: {
+    appStateVal: AppState;
+    setAppStateVal: React.Dispatch<React.SetStateAction<AppState>>;
+  };
+};
