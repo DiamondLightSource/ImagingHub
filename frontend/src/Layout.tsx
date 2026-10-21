@@ -42,7 +42,6 @@ const Layout = () => {
 
   const [appStatus, setAppStatus] = useState<AppStatus>({
     state: AppState.LOADING,
-    message: "",
   });
 
   if (auth.errors) {

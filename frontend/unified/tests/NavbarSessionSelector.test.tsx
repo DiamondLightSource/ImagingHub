@@ -104,7 +104,7 @@ const VALID_SESSIONSELECTOR_QUERY = {
   },
 };
 
-// Mock response for a valid session string
+// Mock response for a valid session string, but non-imaging beamline
 const NON_IMAGING_BEAMLINE = "I18";
 const VALID_SESSIONSELECTOR_QUERY_NON_IMAGING = {
   request: {
