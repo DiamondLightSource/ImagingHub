@@ -117,19 +117,6 @@ const Layout = () => {
       <MainContainer>
         <Outlet context={ctx satisfies OutletContextType} />
       </MainContainer>
-      <Footer
-        copyright=""
-        logo="theme"
-        style={{
-          width: "100%",
-          backgroundColor: "#4C5266",
-          display: "flex",
-          justifyContent: "center",
-        }}
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      ></Footer>
     </>
   );
 };
