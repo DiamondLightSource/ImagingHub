@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import { Box, Drawer, Typography } from "@mui/material";
+import { Box, Drawer, Typography, Alert } from "@mui/material";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
@@ -95,25 +95,35 @@ export const App: React.FC = () => {
   } else if (appStatusVal.state == AppState.LATEST_NOT_FOUND) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">
+        <Alert severity="info" variant="standard">
           Latest session not found. Please enter a session reference above (e.g.
           ab12345-1).
-        </Typography>
+        </Alert>
       </Box>
     );
   } else if (appStatusVal.state == AppState.FAILED_REGEX) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">
+        <Alert severity="info" variant="standard">
           Session must be of the following format: ab12345-1
-        </Typography>
+        </Alert>
+      </Box>
+    );
+  } else if (appStatusVal.state == AppState.INVALID_SESSION) {
+    return (
+      <Box sx={{ p: VERTICAL_SPACING }}>
+        <Alert severity="warning" variant="standard">
+          {appStatusVal.message}
+        </Alert>
       </Box>
     );
   } else {
-    // Handle the AppState.ERROR and AppState.INVALID_SESSION cases
+    // Handle the AppState.ERROR case
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">{appStatusVal.message}</Typography>
+        <Alert severity="error" variant="standard">
+          {appStatusVal.message}
+        </Alert>
       </Box>
     );
   }
