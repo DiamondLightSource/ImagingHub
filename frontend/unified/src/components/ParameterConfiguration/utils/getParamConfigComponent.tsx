@@ -1,5 +1,6 @@
 import { ReactElement, Suspense } from "react";
 import { Technique } from "../../../types";
+import { DpcParameterConfiguration } from "../dpc/DpcParameterConfiguration";
 import { MibParameterConfiguration } from "../mib/MibParameterConfiguration";
 import PtypyI08ParameterConfiguration from "../ptypy/PtypyI08ParameterConfiguration";
 import PtypyP99ParameterConfiguration from "../ptypy/PtypyP99ParameterConfiguration";
@@ -23,7 +24,14 @@ export const getParamConfigComponent = (
   visitDirPath: string
 ) => {
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
-    [Technique.Dpc]: {},
+    [Technique.Dpc]: {
+      "dpc-batch": (
+        <DpcParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+    },
     [Technique.Nbed]: {},
     [Technique.Mib]: {
       "e02mib2x-auto": (
