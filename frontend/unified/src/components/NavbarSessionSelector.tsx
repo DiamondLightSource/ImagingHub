@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { SESSIONSELECTOR_QUERY } from "../graphql/SessionSelectorQuery";
 import { SESSION_QUERY } from "../graphql/SessionQuery";
 import { useAuth, visitRegex } from "@diamondlightsource/sci-react-ui";
-import { AppState, InstrumentSession } from "../types";
+import { AppState, AppStatus, Beamline, InstrumentSession } from "../types";
 
 const useFedid = (): string => {
   const token = useAuth().getToken();
@@ -26,11 +26,11 @@ const useFedid = (): string => {
 
 type NavbarSessionSelectorProps = {
   setSession: (v: InstrumentSession) => void;
-  setAppState: (v: AppState) => void;
+  setAppStatus: (v: AppStatus) => void;
 };
 export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
   setSession,
-  setAppState: setAppState,
+  setAppStatus: setAppStatus,
 }: NavbarSessionSelectorProps) => {
   const [sessionInputValue, setSessionInputValue] = useState("");
   const [beamline, setBeamline] = useState("");
@@ -53,20 +53,36 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
   // Handle loading of main session data
   useEffect(() => {
     if (data && data.instrumentSessionByReference) {
-      setSession(data.instrumentSessionByReference);
-      setBeamline(data.instrumentSessionByReference.instrument.name);
-      setAppState(AppState.VALID);
+      const beamline = data.instrumentSessionByReference.instrument.name;
+      if (Object.values(Beamline).includes(beamline.toLowerCase())) {
+        setSession(data.instrumentSessionByReference);
+        setBeamline(beamline);
+        setAppStatus({ state: AppState.VALID });
+      } else {
+        setSession(null);
+        setBeamline("");
+        setAppStatus({
+          state: AppState.INVALID_SESSION,
+          message: `Invalid session: Session ${sessionInputValue} is associated with ${beamline}. ${beamline} is not an imaging beamline.`,
+        });
+      }
     } else {
       setSession(null);
       setBeamline("");
       if (error) {
-        setAppState(AppState.ERROR);
+        setAppStatus({
+          state: AppState.ERROR,
+          message: `GraphQL error: ${error.message}`,
+        });
       } else if (loading || accountLoading) {
-        setAppState(AppState.LOADING);
+        setAppStatus({ state: AppState.LOADING });
       } else if (visitRegex.exec(sessionInputValue) === null) {
-        setAppState(AppState.FAILED_REGEX);
+        setAppStatus({ state: AppState.FAILED_REGEX });
       } else {
-        setAppState(AppState.INVALID_SESSION);
+        setAppStatus({
+          state: AppState.INVALID_SESSION,
+          message: `Invalid session: ${sessionInputValue} not found.`,
+        });
       }
     }
   }, [data, error, loading]);
@@ -83,14 +99,17 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
         latestSession.current = `${instSess.proposal.proposalCategory.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
         setSessionInputValue(latestSession.current);
       } else {
-        setAppState(AppState.LATEST_NOT_FOUND);
+        setAppStatus({ state: AppState.LATEST_NOT_FOUND });
       }
     } else if (accountError) {
-      setAppState(AppState.ERROR);
+      setAppStatus({
+        state: AppState.ERROR,
+        message: `GraphQL error: ${accountError.message}`,
+      });
     } else if (accountLoading) {
-      setAppState(AppState.LOADING);
+      setAppStatus({ state: AppState.LOADING });
     }
-  }, [accountData, accountError, setAppState]);
+  }, [accountData, accountError, setAppStatus]);
 
   return (
     <Stack
@@ -151,7 +170,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
           }}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             if (visitRegex.exec(event.target.value) === null) {
-              setAppState(AppState.FAILED_REGEX);
+              setAppStatus({ state: AppState.FAILED_REGEX });
             }
             setSessionInputValue(event.target.value);
           }}

@@ -42,9 +42,9 @@ export const App: React.FC = () => {
   };
 
   const { sessionVal } = outletCtx.session;
-  const { appStateVal } = outletCtx.appState;
+  const { appStatusVal } = outletCtx.appStatus;
 
-  if (appStateVal == AppState.VALID && sessionVal != null) {
+  if (appStatusVal.state == AppState.VALID && sessionVal != null) {
     // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
     // a capitalised "proposal code", whereas the workflows service only accepts
     // it in lowercase
@@ -86,13 +86,13 @@ export const App: React.FC = () => {
         </Box>
       </Box>
     );
-  } else if (appStateVal == AppState.LOADING) {
+  } else if (appStatusVal.state == AppState.LOADING) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Progress />
       </Box>
     );
-  } else if (appStateVal == AppState.LATEST_NOT_FOUND) {
+  } else if (appStatusVal.state == AppState.LATEST_NOT_FOUND) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Typography variant="body1">
@@ -101,7 +101,7 @@ export const App: React.FC = () => {
         </Typography>
       </Box>
     );
-  } else if (appStateVal == AppState.FAILED_REGEX) {
+  } else if (appStatusVal.state == AppState.FAILED_REGEX) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Typography variant="body1">
@@ -109,19 +109,11 @@ export const App: React.FC = () => {
         </Typography>
       </Box>
     );
-  } else if (appStateVal == AppState.ERROR) {
-    return (
-      <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">GraphQL error.</Typography>
-      </Box>
-    );
   } else {
+    // Handle the AppState.ERROR and AppState.INVALID_SESSION cases
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">
-          Invalid session. Please enter a session reference above (e.g.
-          ab12345-1).
-        </Typography>
+        <Typography variant="body1">{appStatusVal.message}</Typography>
       </Box>
     );
   }
