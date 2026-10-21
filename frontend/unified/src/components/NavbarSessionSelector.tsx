@@ -5,6 +5,7 @@ import {
   InputAdornment,
   Button,
 } from "@mui/material";
+import React from "react";
 import { FlaskConical } from "lucide-react";
 import { useQuery } from "@apollo/client/react";
 import { useEffect, useRef, useState } from "react";
@@ -15,8 +16,12 @@ import { AppState, InstrumentSession } from "../types";
 
 const useFedid = (): string => {
   const token = useAuth().getToken();
-  const parseToken = JSON.parse(atob(token.split(".")[1]));
-  return parseToken.fedid;
+  try {
+    const parseToken = JSON.parse(atob(token.split(".")[1]));
+    return parseToken.fedid;
+  } catch {
+    return "";
+  }
 };
 
 type NavbarSessionSelectorProps = {
@@ -32,14 +37,15 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
 
   const latestSession = useRef<string>("");
 
-  const { data: accountData, loading: accountLoading } = useQuery(
-    SESSION_QUERY,
-    {
-      variables: { username: useFedid() },
-    }
-  );
+  const {
+    data: accountData,
+    loading: accountLoading,
+    error: accountError,
+  } = useQuery(SESSION_QUERY, {
+    variables: { username: useFedid() },
+  });
 
-  const { data, loading } = useQuery(SESSIONSELECTOR_QUERY, {
+  const { data, loading, error } = useQuery(SESSIONSELECTOR_QUERY, {
     variables: { reference: sessionInputValue },
     skip: visitRegex.exec(sessionInputValue) === null, // Don't perform the query if the input doesn't match the regex
   });
@@ -53,9 +59,17 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
     } else {
       setSession(null);
       setBeamline("");
-      setAppState(loading ? AppState.LOADING : AppState.INVALID_SESSION);
+      if (error) {
+        setAppState(AppState.ERROR);
+      } else if (loading || accountLoading) {
+        setAppState(AppState.LOADING);
+      } else if (visitRegex.exec(sessionInputValue) === null) {
+        setAppState(AppState.FAILED_REGEX);
+      } else {
+        setAppState(AppState.INVALID_SESSION);
+      }
     }
-  }, [data, loading, setSession, setAppState]);
+  }, [data, error, loading]);
 
   // Handle query for visits associated with user
   useEffect(() => {
@@ -71,15 +85,12 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
       } else {
         setAppState(AppState.LATEST_NOT_FOUND);
       }
-    }
-  }, [accountData, setAppState]);
-
-  // Handle loading state
-  useEffect(() => {
-    if (loading || accountLoading) {
+    } else if (accountError) {
+      setAppState(AppState.ERROR);
+    } else if (accountLoading) {
       setAppState(AppState.LOADING);
     }
-  }, [loading, accountLoading, setAppState]);
+  }, [accountData, accountError, setAppState]);
 
   return (
     <Stack
@@ -139,7 +150,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
             },
           }}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            if (visitRegex.exec(sessionInputValue) === null) {
+            if (visitRegex.exec(event.target.value) === null) {
               setAppState(AppState.FAILED_REGEX);
             }
             setSessionInputValue(event.target.value);

@@ -97,6 +97,7 @@ const AppState = {
   INVALID_SESSION: "INVALID_SESSION",
   FAILED_REGEX: "FAILED_REGEX",
   VALID: "VALID",
+  ERROR: "ERROR",
 } as const;
 type AppState = (typeof AppState)[keyof typeof AppState];
 export { AppState };

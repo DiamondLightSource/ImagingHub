@@ -109,6 +109,12 @@ export const App: React.FC = () => {
         </Typography>
       </Box>
     );
+  } else if (appStateVal == AppState.ERROR) {
+    return (
+      <Box sx={{ p: VERTICAL_SPACING }}>
+        <Typography variant="body1">GraphQL error.</Typography>
+      </Box>
+    );
   } else {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
