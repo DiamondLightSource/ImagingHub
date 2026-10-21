@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import type { ReactNode } from "react";
 
-import { iconSize } from "../../data/form";
+import { iconSize } from "./data/ui";
 
 type IdentifiableItem = {
   id: number;
