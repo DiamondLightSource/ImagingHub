@@ -24,15 +24,6 @@ import {
   OutletContextType,
 } from "../unified/src/types";
 
-const AppContainer = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  minHeight: "100vh",
-  alignItems: "center",
-  bgcolor: "background.default",
-  overflowX: "hidden",
-});
-
 const MainContainer = styled(Box)({
   display: "grid",
   gap: "30px",
@@ -76,71 +67,69 @@ const Layout = () => {
   return (
     <>
       <CssBaseline />
-      <AppContainer>
-        <Navbar
-          logo="theme"
-          containerWidth={false}
-          leftSlot={
-            <>
-              <Stack
-                direction="row"
-                alignItems="center"
-                spacing={2}
-                divider={<Divider orientation="vertical" flexItem />}
-              >
-                <NavLinks>
-                  <NavLink to="/" linkComponent={RouterNavLink}>
-                    Home
-                  </NavLink>
-                  <NavLink to="/post-processing" linkComponent={RouterNavLink}>
-                    Post Processing
-                  </NavLink>
-                  <NavLink to="/tomography" linkComponent={RouterNavLink}>
-                    Tomography
-                  </NavLink>
-                  <NavLink to="/i14" linkComponent={RouterNavLink}>
-                    I14
-                  </NavLink>
-                  <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
-                    ePSIC
-                  </NavLink>
-                </NavLinks>
+      <Navbar
+        logo="theme"
+        containerWidth={false}
+        leftSlot={
+          <>
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={2}
+              divider={<Divider orientation="vertical" flexItem />}
+            >
+              <NavLinks>
+                <NavLink to="/" linkComponent={RouterNavLink}>
+                  Home
+                </NavLink>
+                <NavLink to="/post-processing" linkComponent={RouterNavLink}>
+                  Post Processing
+                </NavLink>
+                <NavLink to="/tomography" linkComponent={RouterNavLink}>
+                  Tomography
+                </NavLink>
+                <NavLink to="/i14" linkComponent={RouterNavLink}>
+                  I14
+                </NavLink>
+                <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
+                  ePSIC
+                </NavLink>
+              </NavLinks>
 
-                <ApolloProvider client={apolloClientUlims}>
-                  <NavbarSessionSelector
-                    setSession={setSelectedSession}
-                    setAppState={setAppState}
-                  />
-                </ApolloProvider>
-              </Stack>
-            </>
-          }
-          rightSlot={
-            <>
-              <User color="white" auth={auth} />
-              <ColourSchemeButton />
-            </>
-          }
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          position="fixed"
-        ></Navbar>
-        <MainContainer>
-          <Outlet context={ctx satisfies OutletContextType} />
-        </MainContainer>
-        <Footer
-          copyright=""
-          logo="theme"
-          style={{
-            width: "100%",
-            backgroundColor: "#4C5266",
-            display: "flex",
-            justifyContent: "center",
-          }}
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-          }}
-        ></Footer>
-      </AppContainer>
+              <ApolloProvider client={apolloClientUlims}>
+                <NavbarSessionSelector
+                  setSession={setSelectedSession}
+                  setAppState={setAppState}
+                />
+              </ApolloProvider>
+            </Stack>
+          </>
+        }
+        rightSlot={
+          <>
+            <User color="white" auth={auth} />
+            <ColourSchemeButton />
+          </>
+        }
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        position="fixed"
+      ></Navbar>
+      <MainContainer>
+        <Outlet context={ctx satisfies OutletContextType} />
+      </MainContainer>
+      <Footer
+        copyright=""
+        logo="theme"
+        style={{
+          width: "100%",
+          backgroundColor: "#4C5266",
+          display: "flex",
+          justifyContent: "center",
+        }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+      ></Footer>
     </>
   );
 };
