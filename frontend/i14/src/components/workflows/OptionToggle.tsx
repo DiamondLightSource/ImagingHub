@@ -1,6 +1,5 @@
 import type { MouseEvent } from "react";
 
-import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
@@ -10,6 +9,8 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { Info } from "lucide-react";
 
 import { iconSize } from "../../data/form";
+import FieldLabel from "./../../../../shared_components/FieldLabel";
+
 import type { Option } from "../../types/workflowFields";
 
 type Props = {
@@ -29,19 +30,8 @@ export default function OptionToggle({
 }: Props) {
   const selected = options.find((o) => o.value === value);
   return (
-    <Stack>
-      {title && (
-        <Stack direction="row" alignItems="center">
-          <FormLabel>{title}</FormLabel>
-          {info && (
-            <Tooltip title={info}>
-              <IconButton aria-label="Information" size="small">
-                <Info size={iconSize} />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Stack>
-      )}
+    <Stack spacing={0} sx={{ mt: "0px !important" }}>
+      {title && <FieldLabel title={title} info={info} />}
       <Stack direction="row" spacing={1} alignItems="center">
         <ToggleButtonGroup
           exclusive
