@@ -112,7 +112,7 @@ const Layout = () => {
           </>
         }
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        position="fixed"
+        position="sticky"
       ></Navbar>
       <MainContainer>
         <Outlet context={ctx satisfies OutletContextType} />
