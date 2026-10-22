@@ -11,13 +11,17 @@ import type { TemplateComponentProps } from "./../../../types";
 export const SparseXanesParameterConfiguration = (
   props: TemplateComponentProps
 ) => {
-  const { setParameters, visitDirpath } = props;
-  const [edgeElement, setEdgeElement] = useState("");
+  const { setParameters } = props;
+  const [edgeElement, setEdgeElement] = useState({
+    element: "",
+    transition: "",
+  });
 
   useEffect(() => {
     setParameters((prev) => ({
       ...prev,
-      edgeElement: edgeElement,
+      edgeElement: edgeElement.element,
+      edgeTransition: edgeElement.transition,
     }));
   }, [edgeElement]);
 
