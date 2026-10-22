@@ -21,14 +21,9 @@ type Props = {
   onChange: (event: MouseEvent<HTMLElement>, value: string | null) => void;
 };
 
-export default function OptionToggle({
-  title,
-  info,
-  value,
-  options,
-  onChange,
-}: Props) {
+const OptionToggle = ({ title, info, value, options, onChange }: Props) => {
   const selected = options.find((o) => o.value === value);
+
   return (
     <Stack spacing={0} sx={{ mt: "0px !important" }}>
       {title && <FieldLabel title={title} info={info} />}
@@ -47,7 +42,7 @@ export default function OptionToggle({
         </ToggleButtonGroup>
 
         {selected?.desc && (
-          <Tooltip title={selected?.desc ?? ""}>
+          <Tooltip title={selected.desc}>
             <IconButton size="small">
               <Info />
             </IconButton>
@@ -56,4 +51,6 @@ export default function OptionToggle({
       </Stack>
     </Stack>
   );
-}
+};
+
+export default OptionToggle;
