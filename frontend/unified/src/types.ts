@@ -113,8 +113,10 @@ export type InstrumentSession =
 
 export type OutletContextType = {
   session: {
-    sessionVal: InstrumentSession;
-    setSessionVal: React.Dispatch<React.SetStateAction<InstrumentSession>>;
+    sessionVal: InstrumentSession | null;
+    setSessionVal: React.Dispatch<
+      React.SetStateAction<InstrumentSession | null>
+    >;
   };
   appStatus: {
     appStatusVal: AppStatus;

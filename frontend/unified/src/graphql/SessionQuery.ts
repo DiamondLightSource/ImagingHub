@@ -21,6 +21,7 @@ export const SESSION_QUERY: TypedDocumentNode<
               instrumentSessionNumber
               instrument {
                 name
+                key
               }
               startTime
             }

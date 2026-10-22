@@ -52,6 +52,7 @@ const HAS_LATEST_SESSION = {
                   instrumentSessionNumber: 1,
                   instrument: {
                     name: "DIAD",
+                    key: "K11",
                     __typename: "Instrument",
                   },
                   startTime: "2023-01-20T09:00:00",
@@ -87,7 +88,8 @@ const VALID_SESSIONSELECTOR_QUERY = {
       data: {
         instrumentSessionByReference: {
           instrument: {
-            name: "I14",
+            name: "DIAD",
+            key: "K11",
             __typename: "Instrument",
           },
           instrumentSessionNumber: Number(sessionNumber), // Populate based on variables
@@ -123,6 +125,7 @@ const VALID_SESSIONSELECTOR_QUERY_NON_IMAGING = {
         instrumentSessionByReference: {
           instrument: {
             name: NON_IMAGING_BEAMLINE,
+            key: NON_IMAGING_BEAMLINE,
             __typename: "Instrument",
           },
           instrumentSessionNumber: Number(sessionNumber), // Populate based on variables

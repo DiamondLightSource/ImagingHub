@@ -7,7 +7,6 @@ import {
 import { Box, CssBaseline, styled, Alert, Stack, Divider } from "@mui/material";
 import {
   ColourSchemeButton,
-  Footer,
   Navbar,
   NavLink,
   NavLinks,

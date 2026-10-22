@@ -49,7 +49,7 @@ export const App: React.FC = () => {
     // a capitalised "proposal code", whereas the workflows service only accepts
     // it in lowercase
     const selectedVisit = {
-      proposalCode: sessionVal?.proposal.proposalCategory.toLowerCase(),
+      proposalCode: sessionVal?.proposal.proposalCategory?.toLowerCase(),
       proposalNumber: sessionVal?.proposal.proposalNumber,
       number: sessionVal?.instrumentSessionNumber,
     };

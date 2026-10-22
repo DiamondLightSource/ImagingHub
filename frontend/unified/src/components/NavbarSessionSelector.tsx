@@ -25,7 +25,7 @@ const useFedid = (): string => {
 };
 
 type NavbarSessionSelectorProps = {
-  setSession: (v: InstrumentSession) => void;
+  setSession: (v: InstrumentSession | null) => void;
   setAppStatus: (v: AppStatus) => void;
 };
 export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
@@ -53,17 +53,18 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
   // Handle loading of main session data
   useEffect(() => {
     if (data && data.instrumentSessionByReference) {
-      const beamline = data.instrumentSessionByReference.instrument.name;
-      if (Object.values(Beamline).includes(beamline.toLowerCase())) {
+      const beamlineKey = data.instrumentSessionByReference.instrument.key;
+      const beamlineName = data.instrumentSessionByReference.instrument.name;
+      if (Object.values(Beamline).includes(beamlineKey.toLowerCase())) {
         setSession(data.instrumentSessionByReference);
-        setBeamline(beamline);
+        setBeamline(beamlineName);
         setAppStatus({ state: AppState.VALID });
       } else {
         setSession(null);
-        setBeamline("");
+        setBeamline(beamlineName);
         setAppStatus({
           state: AppState.INVALID_SESSION,
-          message: `Invalid session: Session ${sessionInputValue} is associated with ${beamline}. ${beamline} is not an imaging beamline.`,
+          message: `Invalid session: Session ${sessionInputValue} is associated with ${beamlineName}. ${beamlineName} is not an imaging beamline.`,
         });
       }
     } else {
@@ -89,14 +90,14 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
 
   // Handle query for visits associated with user
   useEffect(() => {
-    if (accountData) {
+    if (accountData && accountData.account) {
       const latestSessionAvailable =
         accountData.account.instrumentSessionRoles.edges.length > 0;
       if (latestSessionAvailable) {
         const instSess =
           accountData.account.instrumentSessionRoles.edges[0].node
             .instrumentSession;
-        latestSession.current = `${instSess.proposal.proposalCategory.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
+        latestSession.current = `${instSess.proposal.proposalCategory?.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
         setSessionInputValue(latestSession.current);
       } else {
         setAppStatus({ state: AppState.LATEST_NOT_FOUND });

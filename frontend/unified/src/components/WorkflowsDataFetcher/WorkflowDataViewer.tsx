@@ -6,8 +6,7 @@ import { Plot } from "./Plot/Plot";
 import { useSuspenseQuery } from "@apollo/client/react";
 import InspectLogMeta from "./InspectLogMeta";
 import { WORKFLOWDATAVIEWER_QUERY } from "../../graphql/WorkflowDataFetcher/WorkflowDataViewerQuery";
-import { Beamline } from "../../types";
-import { InstrumentSession } from "../SessionSelector";
+import { Beamline, InstrumentSession } from "../../types";
 import ProcessingView from "../ProcessingView/ProcessingView";
 
 const EMPTY_WORKFLOW_NAME_QUERY_ERROR = "resource name may not be empty";
