@@ -9,6 +9,7 @@ import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderCon
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
+import { SparseXanesParameterConfiguration } from "../xanes/SparseXanesParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 
@@ -84,11 +85,16 @@ export const getParamConfigComponent = (
     },
     [Technique.Xanes]: {
       xanes: (
-        <Suspense fallback={<p>Fetching workflow template...</p>}>
-          <XanesAutoprocessingParameterConfiguration
-            setParameters={setTemplateParameters}
-          />
-        </Suspense>
+        <XanesAutoprocessingParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xanes-sparse": (
+        <SparseXanesParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
       ),
     },
     [Technique.Xrd]: {
