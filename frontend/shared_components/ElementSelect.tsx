@@ -15,12 +15,12 @@ type ElementSelectProps = {
   onChange: (value: ElementPair) => void;
 };
 
-export default function ElementSelect({
+const ElementSelect = ({
   title,
   info,
   value,
   onChange,
-}: ElementSelectProps) {
+}: ElementSelectProps) => {
   return (
     <Stack spacing={0} sx={{ mt: "0px !important" }}>
       {title && <FieldLabel title={title} info={info} />}
@@ -40,4 +40,6 @@ export default function ElementSelect({
       </Stack>
     </Stack>
   );
-}
+};
+
+export default ElementSelect;
