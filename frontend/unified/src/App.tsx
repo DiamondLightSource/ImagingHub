@@ -92,17 +92,19 @@ export const App: React.FC = () => {
           onOpen={() => setShowParamConfigDrawer(true)}
           onClose={() => setShowParamConfigDrawer(false)}
         >
-          <Navbar visibility="hidden" />
-          <Suspense>
-            <ApolloProvider client={apolloClientWorkflows}>
-              <ProcessingView
-                visit={selectedVisit}
-                beamline={beamline}
-                startTime={sessionVal.startTime}
-                scanIds={selectedScanIds}
-              />
-            </ApolloProvider>
-          </Suspense>
+          <Box padding={2}>
+            <Navbar visibility="hidden" />
+            <Suspense>
+              <ApolloProvider client={apolloClientWorkflows}>
+                <ProcessingView
+                  visit={selectedVisit}
+                  beamline={beamline}
+                  startTime={sessionVal.startTime}
+                  scanIds={selectedScanIds}
+                />
+              </ApolloProvider>
+            </Suspense>
+          </Box>
         </SwipeableDrawer>
         <Box sx={{ flexGrow: 1 }}>
           <ApolloProvider client={apolloClientWorkflows}>
