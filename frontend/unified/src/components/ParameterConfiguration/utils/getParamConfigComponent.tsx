@@ -9,6 +9,8 @@ import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderCon
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
+import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
+import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -89,7 +91,20 @@ export const getParamConfigComponent = (
         </Suspense>
       ),
     },
-    [Technique.Xrd]: {},
+    [Technique.Xrd]: {
+      "xrd1d-batch": (
+        <Xrd1dParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xrd2d-batch": (
+        <Xrd2dParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+    },
   };
 
   return TEMPLATE_TO_COMPONENT_MAPPING[technique][template];
