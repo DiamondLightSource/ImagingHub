@@ -11,15 +11,23 @@ import type { TemplateComponentProps } from "./../../../types";
 export const XanesAutoprocessingParameterConfiguration = (
   props: TemplateComponentProps
 ) => {
-  const { setParameters, visitDirpath } = props;
-  const [edgeElement, setEdgeElement] = useState("");
-  const [elementToAlign, setElementToAlign] = useState("");
+  const { setParameters } = props;
+  const [edgeElement, setEdgeElement] = useState({
+    element: "",
+    transition: "",
+  });
+  const [elementToAlign, setElementToAlign] = useState({
+    element: "",
+    transition: "",
+  });
 
   useEffect(() => {
     setParameters((prev) => ({
       ...prev,
-      edgeElement: edgeElement,
-      elementToAlign: elementToAlign,
+      edgeElement: edgeElement.element,
+      edgeTransition: edgeElement.transition,
+      elementToAlign: elementToAlign.element,
+      transitionToAlign: elementToAlign.transition,
     }));
   }, [edgeElement, elementToAlign]);
 
