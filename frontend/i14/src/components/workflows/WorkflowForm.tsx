@@ -13,21 +13,24 @@ import Typography from "@mui/material/Typography";
 
 import { initialData, techniqueOptions } from "../../data/form";
 import { templateOptions } from "../../data/templates";
-import { methodOptions, bruteOptions } from "../../data/xanes";
+import {
+  methodOptions,
+  bruteOptions,
+} from "./../../../../shared_components/data/xanes";
 
 import DynamicArray from "./../../../../shared_components/DynamicArray";
-import OptionSelect from "./OptionSelect";
-import OptionToggle from "./OptionToggle";
-import ElementSelect from "./ElementSelect";
-import UserVisits from "./UserVisits";
+import ElementSelect from "./../../../../shared_components/ElementSelect";
+import OptionSelect from "./../../../../shared_components/OptionSelect";
+import OptionToggle from "./../../../../shared_components/OptionToggle";
 import Section from "./../../../../shared_components/Section";
+import UserVisits from "./UserVisits";
 
+import type { WorkflowFormData } from "./../../types/form";
 import type {
   ElementPair,
   ElementPairArray,
-  WorkflowFormData,
   Option,
-} from "../../types/workflowFields";
+} from "./../../../../shared_components/types";
 
 export const WorkflowForm: FC = () => {
   const getFilteredTemplates = (toggle): Option[] => {
