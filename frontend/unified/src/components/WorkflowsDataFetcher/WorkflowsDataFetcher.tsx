@@ -9,20 +9,8 @@ import {
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import WorkflowDataViewer from "./WorkflowDataViewer";
-import { Beamline, InstrumentSession } from "../../types";
 
-const WorkflowsDataFetcher = ({
-  visit,
-  beamline,
-  startTime,
-  scanIds,
-}: {
-  visit: Visit;
-
-  beamline: Beamline;
-  startTime: InstrumentSession["startTime"];
-  scanIds: number[];
-}) => {
+const WorkflowsDataFetcher = ({ visit }: { visit: Visit }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
   return (
     <>
@@ -41,13 +29,12 @@ const WorkflowsDataFetcher = ({
         </Accordion>
       </Suspense>
       <Suspense>
-        <WorkflowDataViewer
-          visit={visit}
-          selectedWorkflow={selectedWorkflow}
-          beamline={beamline}
-          startTime={startTime}
-          scanIds={scanIds}
-        />
+        {selectedWorkflow && (
+          <WorkflowDataViewer
+            visit={visit}
+            selectedWorkflow={selectedWorkflow}
+          />
+        )}
       </Suspense>
     </>
   );

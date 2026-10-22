@@ -106,12 +106,7 @@ export const App: React.FC = () => {
         </SwipeableDrawer>
         <Box sx={{ flexGrow: 1 }}>
           <ApolloProvider client={apolloClientWorkflows}>
-            <WorkflowsDataFetcher
-              visit={selectedVisit}
-              beamline={beamline}
-              startTime={sessionVal.startTime}
-              scanIds={selectedScanIds}
-            />
+            <WorkflowsDataFetcher visit={selectedVisit} />
           </ApolloProvider>
         </Box>
         <Box
