@@ -1,21 +1,32 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import { Box, Drawer, Alert } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Drawer,
+  IconButton,
+  SwipeableDrawer,
+  Tooltip,
+} from "@mui/material";
+import { ChevronsLeft } from "lucide-react";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
 import { AppState, Beamline } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
-import { Progress } from "@diamondlightsource/sci-react-ui";
+import { Navbar, Progress } from "@diamondlightsource/sci-react-ui";
 import { Sidebar } from "./components/Sidebar";
 import { useOutletContextTyped } from "../../src/Layout";
+import ProcessingView from "./components/ProcessingView/ProcessingView";
 
 const VERTICAL_SPACING = 2;
 const SIDEBAR_WIDTH = 300;
 
 export const App: React.FC = () => {
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
+  const [showParamConfigDrawer, setShowParamConfigDrawer] =
+    useState<boolean>(false);
   const outletCtx = useOutletContextTyped();
 
   const mapStringsToBeamline = (beamline: string): Beamline => {
@@ -74,6 +85,25 @@ export const App: React.FC = () => {
             updateSelectedScanIds={setSelectedScanIds}
           />
         </Drawer>
+        <SwipeableDrawer
+          variant="temporary"
+          anchor="right"
+          open={showParamConfigDrawer}
+          onOpen={() => setShowParamConfigDrawer(true)}
+          onClose={() => setShowParamConfigDrawer(false)}
+        >
+          <Navbar visibility="hidden" />
+          <Suspense>
+            <ApolloProvider client={apolloClientWorkflows}>
+              <ProcessingView
+                visit={selectedVisit}
+                beamline={beamline}
+                startTime={sessionVal.startTime}
+                scanIds={selectedScanIds}
+              />
+            </ApolloProvider>
+          </Suspense>
+        </SwipeableDrawer>
         <Box sx={{ flexGrow: 1 }}>
           <ApolloProvider client={apolloClientWorkflows}>
             <WorkflowsDataFetcher
@@ -83,6 +113,17 @@ export const App: React.FC = () => {
               scanIds={selectedScanIds}
             />
           </ApolloProvider>
+        </Box>
+        <Box
+          sx={{
+            marginLeft: 1,
+          }}
+        >
+          <Tooltip title="Open parameter configuration">
+            <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+              <ChevronsLeft />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
     );
