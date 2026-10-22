@@ -15,7 +15,7 @@ import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDat
 
 import { AppState, Beamline } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
-import { Navbar, Progress } from "@diamondlightsource/sci-react-ui";
+import { Progress } from "@diamondlightsource/sci-react-ui";
 import { Sidebar } from "./components/Sidebar";
 import { useOutletContextTyped } from "../../src/Layout";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
@@ -94,7 +94,6 @@ export const App: React.FC = () => {
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
           <Box padding={2}>
-            <Navbar visibility="hidden" />
             <Suspense>
               <ApolloProvider client={apolloClientWorkflows}>
                 <ProcessingView
