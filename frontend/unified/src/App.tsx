@@ -91,6 +91,7 @@ export const App: React.FC = () => {
           open={showParamConfigDrawer}
           onOpen={() => setShowParamConfigDrawer(true)}
           onClose={() => setShowParamConfigDrawer(false)}
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
           <Box padding={2}>
             <Navbar visibility="hidden" />
