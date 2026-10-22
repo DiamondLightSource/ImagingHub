@@ -1,4 +1,4 @@
-import type { GridPanel, GridOption, Option } from "../types/workflowFields";
+import type { GridPanel, GridOption, Option } from "./../types";
 
 const empty = (count: number) => new Array(count).fill(null);
 

@@ -1,4 +1,4 @@
-import type { Option } from "../types/workflowFields";
+import type { Option } from "./../../../shared_components/types";
 
 export const templateOptions: Option[] = [
   {

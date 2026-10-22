@@ -8,10 +8,10 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import { Info } from "lucide-react";
 
-import { iconSize } from "../../data/form";
-import FieldLabel from "./../../../../shared_components/FieldLabel";
+import { iconSize } from "./data/ui";
+import FieldLabel from "./FieldLabel";
 
-import type { Option } from "../../types/workflowFields";
+import type { Option } from "./types";
 
 type Props = {
   title?: string;

@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 
 import { buttonSx, OptionButton } from "./OptionButton";
-import type { GridOption } from "../types/workflowFields";
+import type { GridOption } from "./types";
 
 type Props = {
   value: string;

@@ -1,5 +1,6 @@
-import type { WorkflowFormData } from "../types/workflowFields";
-export const iconSize: number = 22;
+import type { Option } from "./../../../shared_components/types";
+import type { WorkflowFormData } from "./../types/form";
+
 export const initialData: WorkflowFormData = {
   visit: "",
   template: "dpc-batch",
