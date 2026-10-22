@@ -102,17 +102,24 @@ const AppState = {
 type AppState = (typeof AppState)[keyof typeof AppState];
 export { AppState };
 
+export type AppStatus = {
+  state: AppState;
+  message?: string;
+};
+
 type NonNullAccount = NonNullable<SessionQuery["account"]>;
 export type InstrumentSession =
   NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
 
 export type OutletContextType = {
   session: {
-    sessionVal: InstrumentSession;
-    setSessionVal: React.Dispatch<React.SetStateAction<InstrumentSession>>;
+    sessionVal: InstrumentSession | null;
+    setSessionVal: React.Dispatch<
+      React.SetStateAction<InstrumentSession | null>
+    >;
   };
-  appState: {
-    appStateVal: AppState;
-    setAppStateVal: React.Dispatch<React.SetStateAction<AppState>>;
+  appStatus: {
+    appStatusVal: AppStatus;
+    setAppStatusVal: React.Dispatch<React.SetStateAction<AppStatus>>;
   };
 };

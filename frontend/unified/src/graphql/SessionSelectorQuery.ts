@@ -12,6 +12,7 @@ export const SESSIONSELECTOR_QUERY: TypedDocumentNode<
     instrumentSessionByReference(reference: $reference) {
       instrument {
         name
+        key
       }
       instrumentSessionNumber
       proposal {

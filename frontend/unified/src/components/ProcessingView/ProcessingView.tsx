@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Beamline, BEAMLINES_DEFAULT_TECHNIQUE, Technique } from "../../types";
+import {
+  Beamline,
+  BEAMLINES_DEFAULT_TECHNIQUE,
+  Technique,
+  InstrumentSession,
+} from "../../types";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import TechniqueSelector from "./TechniqueSelector";
 import {
@@ -10,7 +15,6 @@ import {
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import { ParameterConfiguration } from "../ParameterConfiguration/ParameterConfiguration";
-import { InstrumentSession } from "../SessionSelector";
 
 const ProcessingView = ({
   visit,

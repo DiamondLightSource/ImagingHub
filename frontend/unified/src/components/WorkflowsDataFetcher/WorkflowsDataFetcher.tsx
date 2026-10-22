@@ -9,8 +9,7 @@ import {
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import WorkflowDataViewer from "./WorkflowDataViewer";
-import { Beamline } from "../../types";
-import { InstrumentSession } from "../SessionSelector";
+import { Beamline, InstrumentSession } from "../../types";
 
 const WorkflowsDataFetcher = ({
   visit,

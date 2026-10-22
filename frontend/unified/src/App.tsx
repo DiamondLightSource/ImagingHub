@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import { Box, Drawer, Typography } from "@mui/material";
+import { Box, Drawer, Alert } from "@mui/material";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
@@ -42,14 +42,14 @@ export const App: React.FC = () => {
   };
 
   const { sessionVal } = outletCtx.session;
-  const { appStateVal } = outletCtx.appState;
+  const { appStatusVal } = outletCtx.appStatus;
 
-  if (appStateVal == AppState.VALID && sessionVal != null) {
+  if (appStatusVal.state === AppState.VALID && sessionVal !== null) {
     // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
     // a capitalised "proposal code", whereas the workflows service only accepts
     // it in lowercase
     const selectedVisit = {
-      proposalCode: sessionVal?.proposal.proposalCategory.toLowerCase(),
+      proposalCode: sessionVal?.proposal.proposalCategory?.toLowerCase(),
       proposalNumber: sessionVal?.proposal.proposalNumber,
       number: sessionVal?.instrumentSessionNumber,
     };
@@ -86,42 +86,44 @@ export const App: React.FC = () => {
         </Box>
       </Box>
     );
-  } else if (appStateVal == AppState.LOADING) {
+  } else if (appStatusVal.state === AppState.LOADING) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Progress />
       </Box>
     );
-  } else if (appStateVal == AppState.LATEST_NOT_FOUND) {
+  } else if (appStatusVal.state === AppState.LATEST_NOT_FOUND) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">
+        <Alert severity="info" variant="standard">
           Latest session not found. Please enter a session reference above (e.g.
           ab12345-1).
-        </Typography>
+        </Alert>
       </Box>
     );
-  } else if (appStateVal == AppState.FAILED_REGEX) {
+  } else if (appStatusVal.state === AppState.FAILED_REGEX) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">
+        <Alert severity="info" variant="standard">
           Session must be of the following format: ab12345-1
-        </Typography>
+        </Alert>
       </Box>
     );
-  } else if (appStateVal == AppState.ERROR) {
+  } else if (appStatusVal.state === AppState.INVALID_SESSION) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">GraphQL error.</Typography>
+        <Alert severity="warning" variant="standard">
+          {appStatusVal.message}
+        </Alert>
       </Box>
     );
   } else {
+    // Handle the AppState.ERROR case
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
-        <Typography variant="body1">
-          Invalid session. Please enter a session reference above (e.g.
-          ab12345-1).
-        </Typography>
+        <Alert severity="error" variant="standard">
+          {appStatusVal.message}
+        </Alert>
       </Box>
     );
   }

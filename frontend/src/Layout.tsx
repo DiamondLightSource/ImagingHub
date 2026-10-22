@@ -7,7 +7,6 @@ import {
 import { Box, CssBaseline, styled, Alert, Stack, Divider } from "@mui/material";
 import {
   ColourSchemeButton,
-  Footer,
   Navbar,
   NavLink,
   NavLinks,
@@ -20,6 +19,7 @@ import { apolloClientUlims } from "./ApolloClient";
 import { ApolloProvider } from "@apollo/client/react";
 import {
   AppState,
+  AppStatus,
   InstrumentSession,
   OutletContextType,
 } from "../unified/src/types";
@@ -39,7 +39,9 @@ const Layout = () => {
   const [selectedSession, setSelectedSession] =
     useState<InstrumentSession | null>(null);
 
-  const [appState, setAppState] = useState<AppState>(AppState.LOADING);
+  const [appStatus, setAppStatus] = useState<AppStatus>({
+    state: AppState.LOADING,
+  });
 
   if (auth.errors) {
     return <Alert severity="error">{auth.errors.join(", ")}</Alert>;
@@ -58,9 +60,9 @@ const Layout = () => {
       sessionVal: selectedSession,
       setSessionVal: setSelectedSession,
     },
-    appState: {
-      appStateVal: appState,
-      setAppStateVal: setAppState,
+    appStatus: {
+      appStatusVal: appStatus,
+      setAppStatusVal: setAppStatus,
     },
   };
 
@@ -99,7 +101,7 @@ const Layout = () => {
               <ApolloProvider client={apolloClientUlims}>
                 <NavbarSessionSelector
                   setSession={setSelectedSession}
-                  setAppState={setAppState}
+                  setAppStatus={setAppStatus}
                 />
               </ApolloProvider>
             </Stack>
