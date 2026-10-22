@@ -1,4 +1,4 @@
-import type { Option } from "../../types/workflowFields";
+import type { Option } from "./../../../shared_components/types";
 import type { UserVisitsQuery } from "./__generated__/UserVisits.generated";
 
 const formatDate = (d: Date): string =>

@@ -2,7 +2,7 @@ import { type FC } from "react";
 import Button from "@mui/material/Button";
 import type { SxProps, Theme } from "@mui/material/styles";
 
-import type { GridOption } from "../types/workflowFields";
+import type { GridOption } from "./types";
 
 type OptionButtonProps = {
   option: GridOption;
