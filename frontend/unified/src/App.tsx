@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import { Box, Drawer, Typography, Alert } from "@mui/material";
+import { Box, Drawer, Alert } from "@mui/material";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
@@ -44,7 +44,7 @@ export const App: React.FC = () => {
   const { sessionVal } = outletCtx.session;
   const { appStatusVal } = outletCtx.appStatus;
 
-  if (appStatusVal.state == AppState.VALID && sessionVal != null) {
+  if (appStatusVal.state === AppState.VALID && sessionVal !== null) {
     // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
     // a capitalised "proposal code", whereas the workflows service only accepts
     // it in lowercase
@@ -86,13 +86,13 @@ export const App: React.FC = () => {
         </Box>
       </Box>
     );
-  } else if (appStatusVal.state == AppState.LOADING) {
+  } else if (appStatusVal.state === AppState.LOADING) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Progress />
       </Box>
     );
-  } else if (appStatusVal.state == AppState.LATEST_NOT_FOUND) {
+  } else if (appStatusVal.state === AppState.LATEST_NOT_FOUND) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Alert severity="info" variant="standard">
@@ -101,7 +101,7 @@ export const App: React.FC = () => {
         </Alert>
       </Box>
     );
-  } else if (appStatusVal.state == AppState.FAILED_REGEX) {
+  } else if (appStatusVal.state === AppState.FAILED_REGEX) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Alert severity="info" variant="standard">
@@ -109,7 +109,7 @@ export const App: React.FC = () => {
         </Alert>
       </Box>
     );
-  } else if (appStatusVal.state == AppState.INVALID_SESSION) {
+  } else if (appStatusVal.state === AppState.INVALID_SESSION) {
     return (
       <Box sx={{ p: VERTICAL_SPACING }}>
         <Alert severity="warning" variant="standard">
