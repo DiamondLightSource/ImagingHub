@@ -22,6 +22,7 @@ import ProcessingView from "./components/ProcessingView/ProcessingView";
 
 const VERTICAL_SPACING = 2;
 const SIDEBAR_WIDTH = 300;
+const PARAM_CONFIG_DRAWER_WIDTH = 600;
 
 export const App: React.FC = () => {
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
@@ -93,7 +94,7 @@ export const App: React.FC = () => {
           onClose={() => setShowParamConfigDrawer(false)}
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
-          <Box padding={2}>
+          <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
             <Suspense>
               <ApolloProvider client={apolloClientWorkflows}>
                 <ProcessingView
