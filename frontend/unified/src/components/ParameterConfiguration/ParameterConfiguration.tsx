@@ -3,7 +3,7 @@ import { Beamline, Technique } from "../../types";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation, useSuspenseQuery } from "@apollo/client/react";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import { InstrumentSession } from "../SessionSelector";
+import { InstrumentSession } from "../../types";
 import TemplateSelector from "../ProcessingView/TemplateSelector";
 import { getParamConfigComponent } from "./utils/getParamConfigComponent";
 import { useState } from "react";
@@ -36,7 +36,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     templateList.length > 0 ? templateList[0].name : null
   );
   const [templateParameters, setTemplateParameters] = useState<object>({});
-  const [resourceParameters, setResourceParameters] = useState({
+  const [resourceParameters, setResourceParameters] = useState<object>({
     nprocs: 1,
     memory: "20Gi",
   });
@@ -48,7 +48,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
   if (error) console.error(`Error: ${error.message}`);
 
-  const sessionYear = new Date(startTime).getFullYear();
+  const sessionYear = new Date(startTime as string).getFullYear();
   const visitDirpath = determineBeamlineVisitDirpath(
     beamline,
     sessionYear,
