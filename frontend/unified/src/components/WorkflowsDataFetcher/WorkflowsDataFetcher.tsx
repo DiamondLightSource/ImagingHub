@@ -47,7 +47,7 @@ const WorkflowsDataFetcher = ({
             )}
           </Stack>
         ) : (
-          <Stack direction="row">
+          <Stack direction="row" spacing={1}>
             <WorkflowsList
               visit={visit}
               selectedWorkflow={selectedWorkflow}
