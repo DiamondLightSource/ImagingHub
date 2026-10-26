@@ -158,8 +158,10 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   };
 
   return (
-    <Paper elevation={0} sx={{ padding: 2, width: 350 }}>
-      <Typography variant="h5">Jobs</Typography>
+    <Paper elevation={0} sx={{ width: 350 }}>
+      <Typography variant="h5" padding={2}>
+        Jobs
+      </Typography>
       <Stack direction="column">
         {data &&
           data.nodes.map((workflow) => [
@@ -225,7 +227,8 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
       }
     >
       <Box
-        paddingY={2}
+        paddingY={1}
+        paddingX={2}
         sx={(theme) => ({
           "&:hover": {
             backgroundColor: alpha(theme.palette.primary.main, 0.15),
