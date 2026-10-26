@@ -16,6 +16,12 @@ import { TABLECONTENT_FRAGMENT } from "../../graphql/WorkflowDataFetcher/Workflo
 import { TableContentFragment } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getWorkflowStatusIcon } from "./WorkflowsTable/StatusIcons";
+import { BaseTableRowFragment } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/BaseTableRowFragment.generated";
+import { LIVETABLEROW_SUBSCRIPTION } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/LiveTableRowSubscription";
+import { apolloClientWorkflows } from "../../../../src/ApolloClient";
+import { TableRowWrapperFragment } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableRowWrapperFragment.generated";
+import { TABLEROWWRAPPER_FRAGMENT } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/TableRowWrapperFragment";
+import { finishedStatuses } from "./WorkflowsTable/utils/utils";
 
 type WorkflowsListProps = {
   visit: Visit;
@@ -165,10 +171,10 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
       <Stack direction="column">
         {data &&
           data.nodes.map((workflow) => [
-            <WorkflowEntry
+            <WorkflowEntryWrapper
               key={workflow.name}
-              workflow={workflow}
-              isSelected={workflow.name === selectedWorkflow}
+              queryData={workflow}
+              selectedWorkflow={selectedWorkflow}
               setSelectedWorkflow={setSelectedWorkflow}
             />,
           ])}
@@ -202,7 +208,10 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
 }: WorkflowEntryProps) => {
   const createTimeInfoString = () => {
     if (workflow.status?.__typename === "WorkflowRunningStatus") {
-      return `started: ${workflow.status.startTime}`;
+      const difference = Date.now() - Date.parse(workflow.status.startTime);
+      const mins = Math.floor(difference / 1000 / 60);
+      const seconds = Math.floor(difference / 1000) - mins * 60;
+      return `running: ${Math.floor(mins)}m ${Math.floor(seconds)}s`;
     } else if (
       workflow.status?.__typename === "WorkflowPendingStatus" ||
       !workflow.status
@@ -263,5 +272,104 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
         <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
       </Box>
     </div>
+  );
+};
+
+type LiveWorkflowEntryProps = {
+  workflowName: string;
+  visit: Visit;
+  onNullSubscriptionData: () => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
+};
+
+const LiveWorkflowEntry = ({
+  workflowName,
+  visit,
+  onNullSubscriptionData,
+  selectedWorkflow,
+  setSelectedWorkflow,
+}: LiveWorkflowEntryProps) => {
+  const [queryData, setQueryData] = useState<BaseTableRowFragment | null>(null);
+  apolloClientWorkflows
+    .subscribe({
+      query: LIVETABLEROW_SUBSCRIPTION,
+      variables: {
+        visit: visit,
+        name: workflowName,
+      },
+    })
+    .subscribe({
+      next: (result) => {
+        if (result.data?.workflow) {
+          setQueryData(result.data.workflow);
+        } else {
+          onNullSubscriptionData();
+          setQueryData(null);
+        }
+      },
+      error: (error) => {
+        console.error("Subscription error:", error);
+      },
+      complete: () => {
+        console.log("Subscription completed");
+        onNullSubscriptionData();
+      },
+    });
+  return queryData ? (
+    <WorkflowEntry
+      workflow={queryData}
+      isSelected={selectedWorkflow === queryData.name}
+      setSelectedWorkflow={setSelectedWorkflow}
+    />
+  ) : null;
+};
+
+type WorkflowEntryWrapperProps = {
+  queryData: TableRowWrapperFragment;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
+};
+
+const WorkflowEntryWrapper = ({
+  queryData,
+  selectedWorkflow,
+  setSelectedWorkflow,
+}: WorkflowEntryWrapperProps) => {
+  const [isNull, setIsNull] = useState<boolean>(false);
+  const { complete, data } = useFragment({
+    fragment: TABLEROWWRAPPER_FRAGMENT,
+    fragmentName: "TableRowWrapperFragment",
+    from: queryData,
+  });
+
+  if (!data) {
+    return <p>no data</p>;
+  }
+
+  if (!complete) {
+    return <p>loading...</p>;
+  }
+
+  const finished =
+    data.status?.__typename && finishedStatuses.has(data.status.__typename);
+  const onNullSubscriptionData = () => {
+    setIsNull(true);
+  };
+
+  return finished || isNull ? (
+    <WorkflowEntry
+      workflow={data}
+      isSelected={selectedWorkflow === queryData.name}
+      setSelectedWorkflow={setSelectedWorkflow}
+    />
+  ) : (
+    <LiveWorkflowEntry
+      visit={data.visit}
+      workflowName={data.name}
+      onNullSubscriptionData={onNullSubscriptionData}
+      selectedWorkflow={selectedWorkflow}
+      setSelectedWorkflow={setSelectedWorkflow}
+    />
   );
 };
