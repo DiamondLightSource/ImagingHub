@@ -164,7 +164,7 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   };
 
   return (
-    <Paper elevation={0} sx={{ width: 350 }}>
+    <Paper elevation={0} sx={{ width: 350, height: "100%" }}>
       <Typography variant="h5" padding={2}>
         Jobs
       </Typography>
@@ -191,6 +191,7 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
           `${from}-${to} on page ${page + 1}`
         }
       />
+      <Paper elevation={0} sx={{ height: "100%" }} />
     </Paper>
   );
 };
