@@ -1,15 +1,7 @@
 import { Suspense, useState } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import {
-  Alert,
-  Box,
-  Drawer,
-  IconButton,
-  Stack,
-  SwipeableDrawer,
-  Tooltip,
-} from "@mui/material";
+import { Alert, Box, Drawer, IconButton, Stack, Tooltip } from "@mui/material";
 import { ChevronsLeft, List, Table } from "lucide-react";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
@@ -68,7 +60,7 @@ export const App: React.FC = () => {
             updateSelectedScanIds={setSelectedScanIds}
           />
         </Drawer>
-        <SwipeableDrawer
+        <Drawer
           variant="temporary"
           anchor="right"
           open={showParamConfigDrawer}
@@ -88,7 +80,7 @@ export const App: React.FC = () => {
               </ApolloProvider>
             </Suspense>
           </Box>
-        </SwipeableDrawer>
+        </Drawer>
         <Box sx={{ flexGrow: 1 }}>
           <ApolloProvider client={apolloClientWorkflows}>
             <WorkflowsDataFetcher
