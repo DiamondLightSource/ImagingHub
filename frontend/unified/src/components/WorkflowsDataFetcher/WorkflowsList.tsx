@@ -238,6 +238,9 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
       }
     >
       <Box
+        className={
+          isSelected ? "workflow-entry-selected" : "workflow-entry-unselected"
+        }
         paddingY={1}
         paddingX={2}
         sx={(theme) => ({
@@ -245,9 +248,9 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
             backgroundColor: alpha(theme.palette.primary.main, 0.15),
             cursor: "pointer",
           },
-          backgroundColor: isSelected
-            ? alpha(theme.palette.primary.main, 0.25)
-            : "",
+          "&.workflow-entry-selected": {
+            backgroundColor: alpha(theme.palette.primary.main, 0.25),
+          },
         })}
       >
         <Stack direction="row" spacing={1}>
