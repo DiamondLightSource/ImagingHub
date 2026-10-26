@@ -30,29 +30,6 @@ export const App: React.FC = () => {
     useState<boolean>(false);
   const outletCtx = useOutletContextTyped();
 
-  const mapStringsToBeamline = (beamline: string): Beamline => {
-    switch (beamline) {
-      case "DIAD":
-        return Beamline.DIAD;
-      case "I08-1":
-        return Beamline["I08-1"];
-      case "I12":
-        return Beamline.I12;
-      case "I13-1":
-        return Beamline["I13-1"];
-      case "I13-2":
-        return Beamline["I13-2"];
-      case "I14":
-        return Beamline.I14;
-      case "E02":
-        return Beamline.E02;
-      case "E01":
-        return Beamline.E01;
-      default:
-        console.error(`Unrecognised beamline: ${beamline}`);
-    }
-  };
-
   const { sessionVal } = outletCtx.session;
   const { appStatusVal } = outletCtx.appStatus;
 
@@ -66,7 +43,8 @@ export const App: React.FC = () => {
       number: sessionVal?.instrumentSessionNumber,
     };
 
-    const beamline = mapStringsToBeamline(sessionVal.instrument.name);
+    const beamline =
+      Beamline[sessionVal.instrument.name as keyof typeof Beamline];
 
     return (
       <Box sx={{ display: "flex" }}>
