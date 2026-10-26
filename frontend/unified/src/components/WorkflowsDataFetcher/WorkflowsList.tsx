@@ -7,6 +7,7 @@ import {
   TablePagination,
   Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { Suspense, useCallback, useState } from "react";
 import { WorkflowsTableQueryVariables } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/WorkflowsTableQuery.generated";
 import { WORKFLOWSTABLE_QUERY } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/WorkflowsTableQuery";
@@ -18,10 +19,14 @@ import { getWorkflowStatusIcon } from "./WorkflowsTable/StatusIcons";
 
 type WorkflowsListProps = {
   visit: Visit;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 };
 
 export const WorkflowsList: React.FC<WorkflowsListProps> = ({
   visit,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: WorkflowsListProps) => {
   const [selectedLimit, setSelectedLimit] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -56,6 +61,8 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
             selectedLimit={selectedLimit}
             setSelectedLimit={onChangeLimit}
             setCursor={setCursor}
+            setSelectedWorkflow={setSelectedWorkflow}
+            selectedWorkflow={selectedWorkflow}
           />
         )}
       </Suspense>
@@ -70,6 +77,8 @@ type WorkflowsListContentsProps = {
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
   setCursor: (newCursor: string | null) => void;
+  selectedWorkflow: string | null;
+  setSelectedWorkflow: (_: string | null) => void;
 };
 
 interface TablePaginationActionProps {
@@ -87,6 +96,8 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   selectedLimit,
   setSelectedLimit,
   setCursor,
+  selectedWorkflow,
+  setSelectedWorkflow,
 }: WorkflowsListContentsProps) => {
   const { complete, data } = useFragment({
     fragment: TABLECONTENT_FRAGMENT,
@@ -152,7 +163,12 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
       <Stack direction="column">
         {data &&
           data.nodes.map((workflow) => [
-            <WorkflowEntry key={workflow.name} workflow={workflow} />,
+            <WorkflowEntry
+              key={workflow.name}
+              workflow={workflow}
+              isSelected={workflow.name === selectedWorkflow}
+              setSelectedWorkflow={setSelectedWorkflow}
+            />,
           ])}
       </Stack>
       <TablePagination
@@ -173,10 +189,14 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
 
 type WorkflowEntryProps = {
   workflow: TableContentFragment["nodes"][0];
+  isSelected: boolean;
+  setSelectedWorkflow: (_: string | null) => void;
 };
 
 const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
   workflow,
+  isSelected,
+  setSelectedWorkflow,
 }: WorkflowEntryProps) => {
   const createTimeInfoString = () => {
     if (workflow.status?.__typename === "WorkflowRunningStatus") {
@@ -197,12 +217,31 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
   };
 
   return (
-    <Box paddingY={2}>
-      <Stack direction="row" spacing={1}>
-        <Typography>{workflow.name}</Typography>
-        {getWorkflowStatusIcon(workflow.status?.__typename ?? "Unknown")}
-      </Stack>
-      <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
-    </Box>
+    <div
+      onClick={() =>
+        isSelected
+          ? setSelectedWorkflow(null)
+          : setSelectedWorkflow(workflow.name)
+      }
+    >
+      <Box
+        paddingY={2}
+        sx={(theme) => ({
+          "&:hover": {
+            backgroundColor: alpha(theme.palette.primary.main, 0.15),
+            cursor: "pointer",
+          },
+          backgroundColor: isSelected
+            ? alpha(theme.palette.primary.main, 0.25)
+            : "",
+        })}
+      >
+        <Stack direction="row" spacing={1}>
+          <Typography>{workflow.name}</Typography>
+          {getWorkflowStatusIcon(workflow.status?.__typename ?? "Unknown")}
+        </Stack>
+        <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
+      </Box>
+    </div>
   );
 };
