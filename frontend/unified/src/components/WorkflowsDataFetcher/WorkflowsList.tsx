@@ -180,6 +180,7 @@ const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
           ])}
       </Stack>
       <TablePagination
+        sx={{ borderBottom: "none" }}
         rowsPerPageOptions={[5]}
         rowsPerPage={selectedLimit}
         count={500}
