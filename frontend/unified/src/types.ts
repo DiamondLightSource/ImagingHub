@@ -21,14 +21,14 @@ export { Technique };
  */
 const Beamline = {
   DIAD: "k11",
+  E01: "e01",
+  E02: "e02",
   "I08-1": "i08-1",
   I12: "i12",
   "I13-1": "i13-1",
   "I13-2": "i13-2",
   I14: "i14",
-  E01: "e01",
-  E02: "e02",
-  P99: "p99",
+  "P99 TEST": "p99",
 } as const;
 type Beamline = (typeof Beamline)[keyof typeof Beamline];
 export { Beamline };
@@ -53,7 +53,7 @@ export const BEAMLINE_TECHNIQUES_SUBSET = {
     Technique.Mib,
   ],
   [Beamline.E01]: [Technique.Dpc, Technique.Nbed, Technique.Ptyrex],
-  [Beamline.P99]: [Technique.Ptypy],
+  [Beamline["P99 TEST"]]: [Technique.Ptypy],
 };
 
 export const BEAMLINES_DEFAULT_TECHNIQUE = {
@@ -65,7 +65,7 @@ export const BEAMLINES_DEFAULT_TECHNIQUE = {
   [Beamline["I13-1"]]: Technique.Ptycho,
   [Beamline["I13-2"]]: Technique.Ptycho,
   [Beamline.I14]: Technique.Dpc,
-  [Beamline.P99]: Technique.Ptypy,
+  [Beamline["P99 TEST"]]: Technique.Ptypy,
 };
 
 export type TemplateComponentProps = {
