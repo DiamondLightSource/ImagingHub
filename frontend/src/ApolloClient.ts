@@ -51,6 +51,15 @@ export const apolloClientWorkflows = new ApolloClient({
       Workflow: {
         keyFields: ["name"],
       },
+      WorkflowErroredStatus: {
+        keyFields: ["startTime"],
+      },
+      WorkflowFailedStatus: {
+        keyFields: ["startTime"],
+      },
+      WorkflowRunningStatus: {
+        keyFields: ["startTime"],
+      },
       WorkflowSucceededStatus: {
         keyFields: ["startTime"],
       },
