@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import WorkflowDataViewer from "./WorkflowDataViewer";
-import { WorkflowsList } from "./WorkflowsList";
+import { WorkflowsList } from "./WorkflowsList/WorkflowsList";
 import { WorkflowsViewMode } from "../../types";
 
 const WorkflowsDataFetcher = ({
