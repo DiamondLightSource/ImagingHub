@@ -178,12 +178,31 @@ type WorkflowEntryProps = {
 const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
   workflow,
 }: WorkflowEntryProps) => {
+  const createTimeInfoString = () => {
+    if (workflow.status?.__typename === "WorkflowRunningStatus") {
+      return `started: ${workflow.status.startTime}`;
+    } else if (
+      workflow.status?.__typename === "WorkflowPendingStatus" ||
+      !workflow.status
+    ) {
+      return "?";
+    } else {
+      const difference =
+        Date.parse(workflow.status.endTime) -
+        Date.parse(workflow.status.startTime);
+      const mins = Math.floor(difference / 60 / 1000);
+      const seconds = Math.floor(difference / 1000) - mins * 60;
+      return `${Math.floor(mins)}m ${Math.floor(seconds)}s`;
+    }
+  };
+
   return (
     <Box paddingY={2}>
       <Stack direction="row" spacing={1}>
         <Typography>{workflow.name}</Typography>
         {getWorkflowStatusIcon(workflow.status?.__typename ?? "Unknown")}
       </Stack>
+      <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
     </Box>
   );
 };
