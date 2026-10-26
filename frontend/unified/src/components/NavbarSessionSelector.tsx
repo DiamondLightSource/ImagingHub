@@ -86,7 +86,15 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
         });
       }
     }
-  }, [data, error, loading]);
+  }, [
+    data,
+    error,
+    loading,
+    accountLoading,
+    sessionInputValue,
+    setAppStatus,
+    setSession,
+  ]);
 
   // Handle query for visits associated with user
   useEffect(() => {
@@ -110,7 +118,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
     } else if (accountLoading) {
       setAppStatus({ state: AppState.LOADING });
     }
-  }, [accountData, accountError, setAppStatus]);
+  }, [accountData, accountError, setAppStatus, accountLoading]);
 
   return (
     <Stack
