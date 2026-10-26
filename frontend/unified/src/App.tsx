@@ -108,19 +108,27 @@ export const App: React.FC = () => {
                 <ChevronsLeft />
               </IconButton>
             </Tooltip>
-            <IconButton
-              onClick={() =>
+            <Tooltip
+              title={
                 workflowsViewMode === WorkflowsViewMode.List
-                  ? setWorkflowsViewMode(WorkflowsViewMode.Table)
-                  : setWorkflowsViewMode(WorkflowsViewMode.List)
+                  ? "Table view"
+                  : "List view"
               }
             >
-              {workflowsViewMode === WorkflowsViewMode.List ? (
-                <Table />
-              ) : (
-                <List />
-              )}
-            </IconButton>
+              <IconButton
+                onClick={() =>
+                  workflowsViewMode === WorkflowsViewMode.List
+                    ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                    : setWorkflowsViewMode(WorkflowsViewMode.List)
+                }
+              >
+                {workflowsViewMode === WorkflowsViewMode.List ? (
+                  <Table />
+                ) : (
+                  <List />
+                )}
+              </IconButton>
+            </Tooltip>
           </Stack>
         </Box>
       </Box>
