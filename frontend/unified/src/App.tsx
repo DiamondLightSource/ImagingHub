@@ -6,14 +6,15 @@ import {
   Box,
   Drawer,
   IconButton,
+  Stack,
   SwipeableDrawer,
   Tooltip,
 } from "@mui/material";
-import { ChevronsLeft } from "lucide-react";
+import { ChevronsLeft, List, Table } from "lucide-react";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
-import { AppState, Beamline } from "./types";
+import { AppState, Beamline, WorkflowsViewMode } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { Sidebar } from "./components/Sidebar";
@@ -28,6 +29,9 @@ export const App: React.FC = () => {
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
   const [showParamConfigDrawer, setShowParamConfigDrawer] =
     useState<boolean>(false);
+  const [workflowsViewMode, setWorkflowsViewMode] = useState<WorkflowsViewMode>(
+    WorkflowsViewMode.List
+  );
   const outletCtx = useOutletContextTyped();
 
   const mapStringsToBeamline = (beamline: string): Beamline => {
@@ -109,7 +113,10 @@ export const App: React.FC = () => {
         </SwipeableDrawer>
         <Box sx={{ flexGrow: 1 }}>
           <ApolloProvider client={apolloClientWorkflows}>
-            <WorkflowsDataFetcher visit={selectedVisit} />
+            <WorkflowsDataFetcher
+              visit={selectedVisit}
+              workflowsViewMode={workflowsViewMode}
+            />
           </ApolloProvider>
         </Box>
         <Box
@@ -117,11 +124,26 @@ export const App: React.FC = () => {
             marginLeft: 1,
           }}
         >
-          <Tooltip title="Open parameter configuration">
-            <IconButton onClick={() => setShowParamConfigDrawer(true)}>
-              <ChevronsLeft />
+          <Stack direction="column">
+            <Tooltip title="Open parameter configuration">
+              <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+                <ChevronsLeft />
+              </IconButton>
+            </Tooltip>
+            <IconButton
+              onClick={() =>
+                workflowsViewMode === WorkflowsViewMode.List
+                  ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                  : setWorkflowsViewMode(WorkflowsViewMode.List)
+              }
+            >
+              {workflowsViewMode === WorkflowsViewMode.List ? (
+                <Table />
+              ) : (
+                <List />
+              )}
             </IconButton>
-          </Tooltip>
+          </Stack>
         </Box>
       </Box>
     );
