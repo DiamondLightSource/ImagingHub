@@ -240,7 +240,24 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
         })}
       >
         <Stack direction="row" spacing={1}>
-          <Typography>{workflow.name}</Typography>
+          <Box sx={{ display: "grid" }}>
+            <Typography
+              gridRow={1}
+              gridColumn={1}
+              fontWeight="bold"
+              visibility={isSelected ? "visible" : "hidden"}
+            >
+              {workflow.name}
+            </Typography>
+            <Typography
+              gridRow={1}
+              gridColumn={1}
+              fontWeight="normal"
+              visibility={isSelected ? "hidden" : "visible"}
+            >
+              {workflow.name}
+            </Typography>
+          </Box>
           {getWorkflowStatusIcon(workflow.status?.__typename ?? "Unknown")}
         </Stack>
         <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
