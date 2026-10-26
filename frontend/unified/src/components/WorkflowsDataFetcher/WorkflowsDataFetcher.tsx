@@ -5,6 +5,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Stack,
   Typography,
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
@@ -25,28 +26,36 @@ const WorkflowsDataFetcher = ({
     <>
       <Suspense>
         {workflowsViewMode === WorkflowsViewMode.Table ? (
-          <Accordion defaultExpanded>
-            <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
-              <Typography variant="h5">Jobs</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <JobsTable
+          <Stack direction="column">
+            <Accordion defaultExpanded>
+              <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
+                <Typography variant="h5">Jobs</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <JobsTable
+                  visit={visit}
+                  selectedWorkflow={selectedWorkflow}
+                  setSelectedWorkflow={setSelectedWorkflow}
+                />
+              </AccordionDetails>
+            </Accordion>
+            {selectedWorkflow && (
+              <WorkflowDataViewer
                 visit={visit}
                 selectedWorkflow={selectedWorkflow}
-                setSelectedWorkflow={setSelectedWorkflow}
               />
-            </AccordionDetails>
-          </Accordion>
+            )}
+          </Stack>
         ) : (
-          <WorkflowsList visit={visit} />
-        )}
-      </Suspense>
-      <Suspense>
-        {selectedWorkflow && (
-          <WorkflowDataViewer
-            visit={visit}
-            selectedWorkflow={selectedWorkflow}
-          />
+          <Stack direction="row">
+            <WorkflowsList visit={visit} />
+            {selectedWorkflow && (
+              <WorkflowDataViewer
+                visit={visit}
+                selectedWorkflow={selectedWorkflow}
+              />
+            )}
+          </Stack>
         )}
       </Suspense>
     </>
