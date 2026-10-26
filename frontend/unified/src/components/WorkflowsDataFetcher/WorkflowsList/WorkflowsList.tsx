@@ -10,19 +10,19 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { Suspense, useCallback, useState } from "react";
-import { WorkflowsTableQueryVariables } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/WorkflowsTableQuery.generated";
-import { WORKFLOWSTABLE_QUERY } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/WorkflowsTableQuery";
+import { WorkflowsTableQueryVariables } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/WorkflowsTableQuery.generated";
+import { WORKFLOWSTABLE_QUERY } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/WorkflowsTableQuery";
 import { useFragment, useQuery } from "@apollo/client/react";
-import { TABLECONTENT_FRAGMENT } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
-import { TableContentFragment } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
+import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
+import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getWorkflowStatusIcon } from "./WorkflowsTable/StatusIcons";
-import { BaseTableRowFragment } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/BaseTableRowFragment.generated";
-import { LIVETABLEROW_SUBSCRIPTION } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/LiveTableRowSubscription";
-import { apolloClientWorkflows } from "../../../../src/ApolloClient";
-import { TableRowWrapperFragment } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableRowWrapperFragment.generated";
-import { TABLEROWWRAPPER_FRAGMENT } from "../../graphql/WorkflowDataFetcher/WorkflowsTable/TableRowWrapperFragment";
-import { finishedStatuses } from "./WorkflowsTable/utils/utils";
+import { getWorkflowStatusIcon } from "../WorkflowsTable/StatusIcons";
+import { BaseTableRowFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/BaseTableRowFragment.generated";
+import { LIVETABLEROW_SUBSCRIPTION } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/LiveTableRowSubscription";
+import { apolloClientWorkflows } from "../../../../../src/ApolloClient";
+import { TableRowWrapperFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableRowWrapperFragment.generated";
+import { TABLEROWWRAPPER_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableRowWrapperFragment";
+import { finishedStatuses } from "../WorkflowsTable/utils/utils";
 
 type WorkflowsListProps = {
   visit: Visit;
