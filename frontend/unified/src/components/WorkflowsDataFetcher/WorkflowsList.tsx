@@ -1,6 +1,7 @@
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import {
   Box,
+  CircularProgress,
   IconButton,
   Paper,
   Stack,
@@ -213,7 +214,7 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
       const difference = Date.now() - Date.parse(workflow.status.startTime);
       const mins = Math.floor(difference / 1000 / 60);
       const seconds = Math.floor(difference / 1000) - mins * 60;
-      return `running: ${Math.floor(mins)}m ${Math.floor(seconds)}s`;
+      return `${Math.floor(mins)}m ${Math.floor(seconds)}s`;
     } else if (
       workflow.status?.__typename === "WorkflowPendingStatus" ||
       !workflow.status
@@ -274,7 +275,12 @@ const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
           </Box>
           {getWorkflowStatusIcon(workflow.status?.__typename ?? "Unknown")}
         </Stack>
-        <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
+        <Stack direction="row" display="flex" alignItems="center" spacing={0.5}>
+          {workflow.status?.__typename === "WorkflowRunningStatus" && (
+            <CircularProgress variant="indeterminate" size={10} />
+          )}
+          <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
+        </Stack>
       </Box>
     </div>
   );
