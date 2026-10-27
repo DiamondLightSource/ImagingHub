@@ -22,10 +22,8 @@ import { AppState, AppStatus, OutletContextType } from "../unified/src/types";
 const MainContainer = styled(Box)({
   display: "grid",
   gap: "30px",
-  padding: "20px",
   flex: 1,
   alignItems: "flex-start",
-  margin: "30px auto",
 });
 
 const Layout = () => {

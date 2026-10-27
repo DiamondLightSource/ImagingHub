@@ -7,6 +7,21 @@ export const TABLEROWWRAPPER_FRAGMENT: TypedDocumentNode<TableRowWrapperFragment
     ...BaseTableRowFragment
     status {
       __typename
+      ... on WorkflowRunningStatus {
+        startTime
+      }
+      ... on WorkflowSucceededStatus {
+        startTime
+        endTime
+      }
+      ... on WorkflowFailedStatus {
+        startTime
+        endTime
+      }
+      ... on WorkflowErroredStatus {
+        startTime
+        endTime
+      }
     }
     visit {
       proposalCode

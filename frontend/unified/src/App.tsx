@@ -1,19 +1,12 @@
 import { useState, Suspense } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import {
-  Box,
-  Drawer,
-  IconButton,
-  SwipeableDrawer,
-  Tooltip,
-} from "@mui/material";
-
-import { ChevronsLeft } from "lucide-react";
+import { Box, Drawer, IconButton, Stack, Tooltip } from "@mui/material";
+import { ChevronsLeft, List, Table } from "lucide-react";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
-import { Beamline, InstrumentSession } from "./types";
+import { Beamline, WorkflowsViewMode, InstrumentSession } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { Sidebar } from "./components/Sidebar";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
@@ -29,6 +22,9 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
   const [showParamConfigDrawer, setShowParamConfigDrawer] =
     useState<boolean>(false);
+  const [workflowsViewMode, setWorkflowsViewMode] = useState<WorkflowsViewMode>(
+    WorkflowsViewMode.List
+  );
 
   // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
   // a capitalised "proposal code", whereas the workflows service only accepts
@@ -59,7 +55,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           updateSelectedScanIds={setSelectedScanIds}
         />
       </Drawer>
-      <SwipeableDrawer
+      <Drawer
         variant="temporary"
         anchor="right"
         open={showParamConfigDrawer}
@@ -79,10 +75,13 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
             </ApolloProvider>
           </Suspense>
         </Box>
-      </SwipeableDrawer>
+      </Drawer>
       <Box sx={{ flexGrow: 1 }}>
         <ApolloProvider client={apolloClientWorkflows}>
-          <WorkflowsDataFetcher visit={selectedVisit} />
+          <WorkflowsDataFetcher
+              visit={selectedVisit}
+              workflowsViewMode={workflowsViewMode}
+            />
         </ApolloProvider>
       </Box>
       <Box
@@ -90,11 +89,34 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           marginLeft: 1,
         }}
       >
-        <Tooltip title="Open parameter configuration">
-          <IconButton onClick={() => setShowParamConfigDrawer(true)}>
-            <ChevronsLeft />
-          </IconButton>
-        </Tooltip>
+          <Stack direction="column">
+          <Tooltip title="Open parameter configuration">
+            <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+              <ChevronsLeft />
+            </IconButton>
+          </Tooltip>
+            <Tooltip
+              title={
+                workflowsViewMode === WorkflowsViewMode.List
+                  ? "Table view"
+                  : "List view"
+              }
+            >
+              <IconButton
+                onClick={() =>
+                  workflowsViewMode === WorkflowsViewMode.List
+                    ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                    : setWorkflowsViewMode(WorkflowsViewMode.List)
+                }
+              >
+                {workflowsViewMode === WorkflowsViewMode.List ? (
+                  <Table />
+                ) : (
+                  <List />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Stack>
       </Box>
     </Box>
   );

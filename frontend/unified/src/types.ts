@@ -120,3 +120,11 @@ export type OutletContextType = {
     setAppStatusVal: React.Dispatch<React.SetStateAction<AppStatus>>;
   };
 };
+
+const WorkflowsViewMode = {
+  Table: "Table",
+  List: "List",
+} as const;
+type WorkflowsViewMode =
+  (typeof WorkflowsViewMode)[keyof typeof WorkflowsViewMode];
+export { WorkflowsViewMode };
