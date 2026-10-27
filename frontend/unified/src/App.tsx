@@ -79,9 +79,9 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
       <Box sx={{ flexGrow: 1 }}>
         <ApolloProvider client={apolloClientWorkflows}>
           <WorkflowsDataFetcher
-              visit={selectedVisit}
-              workflowsViewMode={workflowsViewMode}
-            />
+            visit={selectedVisit}
+            workflowsViewMode={workflowsViewMode}
+          />
         </ApolloProvider>
       </Box>
       <Box
@@ -89,34 +89,34 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           marginLeft: 1,
         }}
       >
-          <Stack direction="column">
+        <Stack direction="column">
           <Tooltip title="Open parameter configuration">
             <IconButton onClick={() => setShowParamConfigDrawer(true)}>
               <ChevronsLeft />
             </IconButton>
           </Tooltip>
-            <Tooltip
-              title={
+          <Tooltip
+            title={
+              workflowsViewMode === WorkflowsViewMode.List
+                ? "Table view"
+                : "List view"
+            }
+          >
+            <IconButton
+              onClick={() =>
                 workflowsViewMode === WorkflowsViewMode.List
-                  ? "Table view"
-                  : "List view"
+                  ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                  : setWorkflowsViewMode(WorkflowsViewMode.List)
               }
             >
-              <IconButton
-                onClick={() =>
-                  workflowsViewMode === WorkflowsViewMode.List
-                    ? setWorkflowsViewMode(WorkflowsViewMode.Table)
-                    : setWorkflowsViewMode(WorkflowsViewMode.List)
-                }
-              >
-                {workflowsViewMode === WorkflowsViewMode.List ? (
-                  <Table />
-                ) : (
-                  <List />
-                )}
-              </IconButton>
-            </Tooltip>
-          </Stack>
+              {workflowsViewMode === WorkflowsViewMode.List ? (
+                <Table />
+              ) : (
+                <List />
+              )}
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Box>
     </Box>
   );
