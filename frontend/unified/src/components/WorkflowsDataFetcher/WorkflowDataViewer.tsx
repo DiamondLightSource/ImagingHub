@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import LogStreamer from "./LogStreamer/LogStreamer";
 import { Plot } from "./Plot/Plot";
@@ -27,7 +27,7 @@ const WorkflowDataViewer = ({
   if (!data.workflow) return <>No workflow data</>;
 
   return (
-    <>
+    <Box flexGrow={2}>
       <Tabs
         variant="fullWidth"
         value={tabIndex}
@@ -54,7 +54,7 @@ const WorkflowDataViewer = ({
           />
         </TabContent>
       </>
-    </>
+    </Box>
   );
 };
 

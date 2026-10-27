@@ -1,19 +1,12 @@
 import { Suspense, useState } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
-import {
-  Alert,
-  Box,
-  Drawer,
-  IconButton,
-  SwipeableDrawer,
-  Tooltip,
-} from "@mui/material";
-import { ChevronsLeft } from "lucide-react";
+import { Alert, Box, Drawer, IconButton, Stack, Tooltip } from "@mui/material";
+import { ChevronsLeft, List, Table } from "lucide-react";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
-import { AppState, Beamline } from "./types";
+import { AppState, Beamline, WorkflowsViewMode } from "./types";
 import { apolloClientWorkflows } from "../../src/ApolloClient";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { Sidebar } from "./components/Sidebar";
@@ -28,6 +21,9 @@ export const App: React.FC = () => {
   const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
   const [showParamConfigDrawer, setShowParamConfigDrawer] =
     useState<boolean>(false);
+  const [workflowsViewMode, setWorkflowsViewMode] = useState<WorkflowsViewMode>(
+    WorkflowsViewMode.List
+  );
   const outletCtx = useOutletContextTyped();
 
   const { sessionVal } = outletCtx.session;
@@ -64,7 +60,7 @@ export const App: React.FC = () => {
             updateSelectedScanIds={setSelectedScanIds}
           />
         </Drawer>
-        <SwipeableDrawer
+        <Drawer
           variant="temporary"
           anchor="right"
           open={showParamConfigDrawer}
@@ -84,10 +80,13 @@ export const App: React.FC = () => {
               </ApolloProvider>
             </Suspense>
           </Box>
-        </SwipeableDrawer>
+        </Drawer>
         <Box sx={{ flexGrow: 1 }}>
           <ApolloProvider client={apolloClientWorkflows}>
-            <WorkflowsDataFetcher visit={selectedVisit} />
+            <WorkflowsDataFetcher
+              visit={selectedVisit}
+              workflowsViewMode={workflowsViewMode}
+            />
           </ApolloProvider>
         </Box>
         <Box
@@ -95,11 +94,34 @@ export const App: React.FC = () => {
             marginLeft: 1,
           }}
         >
-          <Tooltip title="Open parameter configuration">
-            <IconButton onClick={() => setShowParamConfigDrawer(true)}>
-              <ChevronsLeft />
-            </IconButton>
-          </Tooltip>
+          <Stack direction="column">
+            <Tooltip title="Open parameter configuration">
+              <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+                <ChevronsLeft />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                workflowsViewMode === WorkflowsViewMode.List
+                  ? "Table view"
+                  : "List view"
+              }
+            >
+              <IconButton
+                onClick={() =>
+                  workflowsViewMode === WorkflowsViewMode.List
+                    ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                    : setWorkflowsViewMode(WorkflowsViewMode.List)
+                }
+              >
+                {workflowsViewMode === WorkflowsViewMode.List ? (
+                  <Table />
+                ) : (
+                  <List />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Box>
       </Box>
     );
