@@ -20,10 +20,11 @@ import { ApolloProvider } from "@apollo/client/react";
 import { AppState, AppStatus, OutletContextType } from "../unified/src/types";
 
 const MainContainer = styled(Box)({
-  display: "grid",
+  display: "flex",
+  flexDirection: "column",
   gap: "30px",
-  flex: 1,
-  alignItems: "flex-start",
+  minHeight: 0,
+  flexGrow: 1,
 });
 
 const Layout = () => {
@@ -53,42 +54,48 @@ const Layout = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        height: "100vh",
+        maxHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <CssBaseline />
       <Navbar
         logo="theme"
         containerWidth={false}
+        position="static"
         leftSlot={
-          <>
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={2}
-              divider={<Divider orientation="vertical" flexItem />}
-            >
-              <NavLinks>
-                <NavLink to="/" linkComponent={RouterNavLink}>
-                  Home
-                </NavLink>
-                <NavLink to="/post-processing" linkComponent={RouterNavLink}>
-                  Post Processing
-                </NavLink>
-                <NavLink to="/tomography" linkComponent={RouterNavLink}>
-                  Tomography
-                </NavLink>
-                <NavLink to="/i14" linkComponent={RouterNavLink}>
-                  I14
-                </NavLink>
-                <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
-                  ePSIC
-                </NavLink>
-              </NavLinks>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={2}
+            divider={<Divider orientation="vertical" flexItem />}
+          >
+            <NavLinks>
+              <NavLink to="/" linkComponent={RouterNavLink}>
+                Home
+              </NavLink>
+              <NavLink to="/post-processing" linkComponent={RouterNavLink}>
+                Post Processing
+              </NavLink>
+              <NavLink to="/tomography" linkComponent={RouterNavLink}>
+                Tomography
+              </NavLink>
+              <NavLink to="/i14" linkComponent={RouterNavLink}>
+                I14
+              </NavLink>
+              <NavLink to="/ePSIC" linkComponent={RouterNavLink}>
+                ePSIC
+              </NavLink>
+            </NavLinks>
 
-              <ApolloProvider client={apolloClientUlims}>
-                <NavbarSessionSelector setAppStatus={setAppStatus} />
-              </ApolloProvider>
-            </Stack>
-          </>
+            <ApolloProvider client={apolloClientUlims}>
+              <NavbarSessionSelector setAppStatus={setAppStatus} />
+            </ApolloProvider>
+          </Stack>
         }
         rightSlot={
           <>
@@ -97,12 +104,11 @@ const Layout = () => {
           </>
         }
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        position="sticky"
-      ></Navbar>
+      />
       <MainContainer>
         <Outlet context={ctx satisfies OutletContextType} />
       </MainContainer>
-    </>
+    </Box>
   );
 };
 

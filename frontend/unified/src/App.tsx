@@ -7,7 +7,10 @@ import { ChevronsLeft, List, Table } from "lucide-react";
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
 import { Beamline, WorkflowsViewMode, InstrumentSession } from "./types";
-import { apolloClientWorkflows } from "../../src/ApolloClient";
+import {
+  apolloClientWorkflows,
+  apolloClientUlimsScans,
+} from "../../src/ApolloClient";
 import { Sidebar } from "./components/Sidebar";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
 
@@ -35,10 +38,12 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
     number: session.instrumentSessionNumber,
   };
 
+  const sessionRef = `${selectedVisit.proposalCode}${selectedVisit.proposalNumber}-${selectedVisit.number}`;
+
   const beamline = Beamline[session.instrument.name as keyof typeof Beamline];
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100%" }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -46,14 +51,18 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: SIDEBAR_WIDTH,
+            height: "100%",
             boxSizing: "border-box",
           },
         }}
       >
-        <Sidebar
-          scanIds={selectedScanIds}
-          updateSelectedScanIds={setSelectedScanIds}
-        />
+        <ApolloProvider client={apolloClientUlimsScans}>
+          <Sidebar
+            sessionRef={sessionRef}
+            scanIds={selectedScanIds}
+            updateSelectedScanIds={setSelectedScanIds}
+          />
+        </ApolloProvider>
       </Drawer>
       <Drawer
         variant="temporary"

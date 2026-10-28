@@ -18,6 +18,8 @@ export const AppWrapper: React.FC<AppWrapperProps> = ({
 
   const { appStatusVal } = outletCtx.appStatus;
 
+  console.log("appstatus", appStatusVal);
+
   switch (appStatusVal.state) {
     case "VALID": {
       // Render the main app
