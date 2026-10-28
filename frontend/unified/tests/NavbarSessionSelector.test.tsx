@@ -214,11 +214,8 @@ const INVALID_SESSIONSELECTOR_QUERY = {
   },
 };
 
-// ------------------------------------------------------------
-// Test latest session not available
-// ------------------------------------------------------------
 const noLatestSessionMock = [NO_LATEST_SESSION];
-test("latest session does not exist", async () => {
+test("test handling of non-existent latest session", async () => {
   await act(() =>
     render(
       <MockedProvider mocks={noLatestSessionMock}>
@@ -243,11 +240,8 @@ test("latest session does not exist", async () => {
   );
 });
 
-// ------------------------------------------------------------
-// Test existence of latest session
-// ------------------------------------------------------------
 const latestSessionMock = [HAS_LATEST_SESSION, VALID_SESSIONSELECTOR_QUERY];
-test("latest session", async () => {
+test("test handling of latest session", async () => {
   await act(() =>
     render(
       <MockedProvider mocks={latestSessionMock}>
@@ -274,10 +268,7 @@ test("latest session", async () => {
   expect(screen.getByText("Latest")).toBeEnabled();
 });
 
-// ------------------------------------------------------------
-// Test clicking of latest button
-// ------------------------------------------------------------
-test("jump to latest session", async () => {
+test("test clicking of latest button", async () => {
   const user = userEvent.setup();
 
   await act(() =>
@@ -318,10 +309,7 @@ test("jump to latest session", async () => {
   expect(input).toHaveDisplayValue(LATEST_SESSION);
 });
 
-// ------------------------------------------------------------
-// Test invalid session selector input - regex failure
-// ------------------------------------------------------------
-test("session regex failure", async () => {
+test("invalid session selector input - regex failure", async () => {
   const user = userEvent.setup();
 
   await act(() =>
@@ -345,11 +333,8 @@ test("session regex failure", async () => {
   );
 });
 
-// ------------------------------------------------------------
-// Test invalid session selector input - session not found
-// ------------------------------------------------------------
 const invalidSessionMock = [NO_LATEST_SESSION, INVALID_SESSIONSELECTOR_QUERY];
-test("invalid session", async () => {
+test("invalid session selector input - session not found", async () => {
   const user = userEvent.setup();
 
   await act(() =>
@@ -375,11 +360,8 @@ test("invalid session", async () => {
   );
 });
 
-// ------------------------------------------------------------
-// Test valid session selector input
-// ------------------------------------------------------------
 const validSessionMock = [NO_LATEST_SESSION, VALID_SESSIONSELECTOR_QUERY];
-test("valid session", async () => {
+test("valid session selector input", async () => {
   const user = userEvent.setup();
 
   await act(() =>
@@ -407,14 +389,11 @@ test("valid session", async () => {
   );
 });
 
-// ------------------------------------------------------------
-// Test the handling of a non-imaging beamline
-// ------------------------------------------------------------
 const nonImagingMock = [
   NO_LATEST_SESSION,
   VALID_SESSIONSELECTOR_QUERY_NON_IMAGING,
 ];
-test("non-imaging beamline", async () => {
+test("handle non-imaging beamline", async () => {
   const user = userEvent.setup();
 
   await act(() =>

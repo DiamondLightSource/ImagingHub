@@ -185,7 +185,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
           }}
         />
 
-        {latestSession.current !== "" ? (
+        {latestSession.current !== "" && (
           <Button
             variant="contained"
             onClick={() => {
@@ -194,8 +194,6 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
           >
             Latest
           </Button>
-        ) : (
-          <></>
         )}
       </Stack>
     </Stack>
