@@ -19,7 +19,7 @@ export const GET_WORKFLOW_TEMPLATE: TypedDocumentNode<
   WorkflowTemplateQuery,
   WorkflowTemplateQueryVariables
 > = gql`
-  query workflowTemplate($name: String!) {
+  query workflowTemplateQuery($name: String!) {
     workflowTemplate(name: $name) {
       name
       maintainer
@@ -35,7 +35,7 @@ export const SUBMIT_WORKFLOW_TEMPLATE: TypedDocumentNode<
   SubmitWorkflowTemplateMutation,
   SubmitWorkflowTemplateMutationVariables
 > = gql`
-  mutation submitWorkflowTemplate(
+  mutation submitWorkflowTemplateMutation(
     $name: String!
     $visit: VisitInput!
     $parameters: JSON!
