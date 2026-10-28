@@ -17,12 +17,7 @@ import {
 import { NavbarSessionSelector } from "../unified/src/components/NavbarSessionSelector";
 import { apolloClientUlims } from "./ApolloClient";
 import { ApolloProvider } from "@apollo/client/react";
-import {
-  AppState,
-  AppStatus,
-  InstrumentSession,
-  OutletContextType,
-} from "../unified/src/types";
+import { AppState, AppStatus, OutletContextType } from "../unified/src/types";
 
 const MainContainer = styled(Box)({
   display: "grid",
@@ -33,9 +28,6 @@ const MainContainer = styled(Box)({
 
 const Layout = () => {
   const auth = useAuth();
-
-  const [selectedSession, setSelectedSession] =
-    useState<InstrumentSession | null>(null);
 
   const [appStatus, setAppStatus] = useState<AppStatus>({
     state: AppState.LOADING,
@@ -54,10 +46,6 @@ const Layout = () => {
   }
 
   const ctx: OutletContextType = {
-    session: {
-      sessionVal: selectedSession,
-      setSessionVal: setSelectedSession,
-    },
     appStatus: {
       appStatusVal: appStatus,
       setAppStatusVal: setAppStatus,
@@ -97,10 +85,7 @@ const Layout = () => {
               </NavLinks>
 
               <ApolloProvider client={apolloClientUlims}>
-                <NavbarSessionSelector
-                  setSession={setSelectedSession}
-                  setAppStatus={setAppStatus}
-                />
+                <NavbarSessionSelector setAppStatus={setAppStatus} />
               </ApolloProvider>
             </Stack>
           </>

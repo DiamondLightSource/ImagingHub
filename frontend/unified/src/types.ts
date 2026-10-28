@@ -102,22 +102,19 @@ const AppState = {
 type AppState = (typeof AppState)[keyof typeof AppState];
 export { AppState };
 
-export type AppStatus = {
-  state: AppState;
-  message?: string;
-};
+export type AppStatus =
+  | { state: "LOADING" }
+  | { state: "LATEST_NOT_FOUND" }
+  | { state: "INVALID_SESSION"; message: string }
+  | { state: "FAILED_REGEX" }
+  | { state: "VALID"; session: InstrumentSession }
+  | { state: "ERROR"; message: string };
 
 type NonNullAccount = NonNullable<SessionQuery["account"]>;
 export type InstrumentSession =
   NonNullAccount["instrumentSessionRoles"]["edges"][0]["node"]["instrumentSession"];
 
 export type OutletContextType = {
-  session: {
-    sessionVal: InstrumentSession | null;
-    setSessionVal: React.Dispatch<
-      React.SetStateAction<InstrumentSession | null>
-    >;
-  };
   appStatus: {
     appStatusVal: AppStatus;
     setAppStatusVal: React.Dispatch<React.SetStateAction<AppStatus>>;

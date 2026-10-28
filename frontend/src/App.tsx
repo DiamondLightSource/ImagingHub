@@ -2,6 +2,7 @@ import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { default as TomographyApp } from "../tomography/src/App";
 import { App as I14App } from "../i14/src/App";
 import { App as EpsicApp } from "../ePSIC/src/App";
+import { AppWrapper as UnifiedAppWrapper } from "../unified/src/AppWrapper";
 import { App as UnifiedApp } from "../unified/src/App";
 import { default as Dashboard } from "../dashboard/src/App";
 import { default as Layout } from "./Layout";
@@ -21,7 +22,12 @@ const App: React.FC = () => {
             path="post-processing/*"
             element={
               <ApolloProvider client={apolloClientUlims}>
-                <UnifiedApp />
+                <UnifiedAppWrapper
+                  // App wrapper is decoupled from app to make testing easier
+                  // Use render prop to pass `InstrumentSession` data from wrapper to app
+                  // https://react.dev/reference/react/cloneElement#passing-data-with-a-render-prop
+                  renderItem={(session) => <UnifiedApp session={session} />}
+                ></UnifiedAppWrapper>
               </ApolloProvider>
             }
           />

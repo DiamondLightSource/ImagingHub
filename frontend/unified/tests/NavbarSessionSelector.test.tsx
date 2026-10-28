@@ -1,17 +1,75 @@
-import React from "react";
+import React, { useState, ReactNode } from "react";
 import "@testing-library/jest-dom";
 import { expect, test, vi, afterEach } from "vitest";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
+import { Box } from "@mui/material";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { NavbarSessionSelector } from "../src/components/NavbarSessionSelector";
 import { SESSION_QUERY } from "../src/graphql/SessionQuery";
 import { SESSIONSELECTOR_QUERY } from "../src/graphql/SessionSelectorQuery";
-import { AppState, AppStatus } from "../src/types";
+import { AppStatus, OutletContextType } from "../src/types";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter, Outlet, Route, Routes } from "react-router-dom";
+import { AppWrapper } from "../src/AppWrapper";
+import { SessionSelectorQueryVariables } from "../src/graphql/__generated__/SessionSelectorQuery.generated";
 
 afterEach(() => {
   vi.clearAllMocks();
 });
+
+// Allow testing while using components that use `useOutletContext`
+// https://stackoverflow.com/a/73854973
+interface RenderRouteWithOutletContextProps<T> {
+  context: T;
+  children: ReactNode;
+}
+
+const RenderRouteWithOutletContext = <T,>({
+  context,
+  children,
+}: RenderRouteWithOutletContextProps<T>) => {
+  return (
+    <MemoryRouter>
+      <Routes>
+        <Route path="/" element={<Outlet context={context as T} />}>
+          <Route index element={children} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  );
+};
+
+const MAINAPP_ID = "mainapp-box";
+const TestComponent = () => {
+  const [appStatus, setAppStatus] = useState<AppStatus>({ state: "LOADING" });
+
+  const ctx: OutletContextType = {
+    appStatus: {
+      appStatusVal: appStatus,
+      setAppStatusVal: setAppStatus,
+    },
+  };
+
+  return (
+    <>
+      <NavbarSessionSelector setAppStatus={setAppStatus} />
+      <RenderRouteWithOutletContext context={ctx}>
+        <AppWrapper
+          renderItem={(_) => (
+            // Use an empty box as a stand-in for the main app itself
+            <Box sx={{ display: "flex" }} data-testid={MAINAPP_ID} />
+          )}
+        ></AppWrapper>
+      </RenderRouteWithOutletContext>
+    </>
+  );
+};
 
 // Mock response for when there is no latest session available
 const NO_LATEST_SESSION = {
@@ -77,7 +135,7 @@ const VALID_SESSIONSELECTOR_QUERY = {
     query: SESSIONSELECTOR_QUERY,
     variables: () => true,
   },
-  result: (variables) => {
+  result: (variables: SessionSelectorQueryVariables) => {
     const { reference } = variables;
 
     const proposalCategory = reference.slice(0, 2);
@@ -104,6 +162,7 @@ const VALID_SESSIONSELECTOR_QUERY = {
       },
     };
   },
+  maxUsageCount: 2,
 };
 
 // Mock response for a valid session string, but non-imaging beamline
@@ -113,7 +172,7 @@ const VALID_SESSIONSELECTOR_QUERY_NON_IMAGING = {
     query: SESSIONSELECTOR_QUERY,
     variables: () => true,
   },
-  result: (variables) => {
+  result: (variables: SessionSelectorQueryVariables) => {
     const { reference } = variables;
 
     const proposalCategory = reference.slice(0, 2);
@@ -155,262 +214,209 @@ const INVALID_SESSIONSELECTOR_QUERY = {
   },
 };
 
-type MockCall<T> = {
-  arg: T;
-  occurrence: number;
-};
-function removeDuplicates(arr: AppStatus[][]): MockCall<AppState>[] {
-  // Removes consecutive duplicates from call array
-  // Instead returns a list of arguments and their occurrences
-  // e.g. [['arg', 1], ['arg2', 5]]
-
-  const out: MockCall<AppState>[] = [];
-  let prev = null;
-  for (const v of arr) {
-    if (v[0].state !== prev) {
-      out.push({ arg: v[0].state, occurrence: 1 });
-      prev = v[0].state;
-    } else {
-      out.slice(-1)[0].occurrence += 1;
-    }
-  }
-
-  return out;
-}
-function getValue(elem: MockCall<AppState>): AppState {
-  return elem.arg;
-}
-function getOccurrence<T>(elem: MockCall<T>): number {
-  return elem.occurrence;
-}
-function expectStartup(arr: MockCall<AppState>[], value: AppState) {
-  expect(getValue(arr[0])).toStrictEqual(AppState.LOADING);
-  expect(getValue(arr[1])).toStrictEqual(value);
-}
-
-// Test latest session not available
 const noLatestSessionMock = [NO_LATEST_SESSION];
-test("latest session does not exist", async () => {
-  const setAppState = vi.fn();
-  const setSession = vi.fn();
-
+test("test handling of non-existent latest session", async () => {
   await act(() =>
     render(
       <MockedProvider mocks={noLatestSessionMock}>
-        <NavbarSessionSelector
-          setAppStatus={setAppState}
-          setSession={setSession}
-        />
+        <TestComponent />
       </MockedProvider>
     )
   );
 
-  // Wait for the last call
+  // Check that loading spinner is displayed
+  expect(screen.queryByRole("progressbar")).toBeInTheDocument();
+
+  // Wait for message to appear
   await waitFor(() =>
-    expect(setAppState).lastCalledWith({ state: AppState.LATEST_NOT_FOUND })
-  );
-
-  // Remove duplicate calls, as calling setState() with the same arguments
-  // doesn't result in a rerender
-  const dedup = removeDuplicates(setAppState.mock.calls);
-  expect(
-    dedup.slice(0, -1).every((v) => getValue(v) === AppState.LOADING)
-  ).toBeTruthy();
-  expect(getValue(dedup.slice(-1)[0])).toStrictEqual(AppState.LATEST_NOT_FOUND);
-});
-
-// Test invalid session selector input - regex failure
-test("session regex failure", async () => {
-  const user = userEvent.setup();
-
-  const setAppState = vi.fn();
-  const setSession = vi.fn();
-
-  await act(() =>
-    render(
-      <MockedProvider mocks={noLatestSessionMock}>
-        <NavbarSessionSelector
-          setSession={setSession}
-          setAppStatus={setAppState}
-        />
-      </MockedProvider>
+    expect(screen.getByTestId("appstate-msg")).toHaveTextContent(
+      "Latest session not found. Please enter a session reference above (e.g. ab12345-1)."
     )
   );
 
-  const input = screen.getByRole("textbox");
-
-  // Wait for initial request to check if latest session exists
+  // Check that the latest session button is not visible
   await waitFor(() =>
-    expect(setAppState).calledWith({ state: AppState.LATEST_NOT_FOUND })
+    expect(screen.queryByText("Latest")).not.toBeInTheDocument()
   );
-
-  const INPUT = "fail :(";
-  await user.type(input, INPUT);
-
-  const dedup = removeDuplicates(setAppState.mock.calls);
-
-  expectStartup(dedup, AppState.LATEST_NOT_FOUND);
-  expect(getValue(dedup[2])).toStrictEqual(AppState.FAILED_REGEX);
-  expect(getOccurrence(dedup[2])).toStrictEqual(INPUT.length);
 });
 
-// Test invalid session selector input - session not found
-const invalidSessionMock = [NO_LATEST_SESSION, INVALID_SESSIONSELECTOR_QUERY];
-test("invalid session", async () => {
-  const user = userEvent.setup();
-
-  const setAppState = vi.fn();
-  const setSession = vi.fn();
-
-  await act(() =>
-    render(
-      <MockedProvider mocks={invalidSessionMock}>
-        <NavbarSessionSelector
-          setSession={setSession}
-          setAppStatus={setAppState}
-        />
-      </MockedProvider>
-    )
-  );
-
-  const input = screen.getByRole("textbox");
-
-  // Wait for initial request to check if latest session exists
-  await waitFor(() =>
-    expect(setAppState).calledWith({ state: AppState.LATEST_NOT_FOUND })
-  );
-  const INPUT = "mg44685-1";
-  await user.type(input, INPUT);
-
-  // Wait for final state change
-  await waitFor(() =>
-    expect(setAppState).calledWith({
-      state: AppState.INVALID_SESSION,
-      message: `Invalid session: ${INPUT} not found.`,
-    })
-  );
-
-  const dedup = removeDuplicates(setAppState.mock.calls);
-
-  expectStartup(dedup, AppState.LATEST_NOT_FOUND);
-  expect(getValue(dedup[2])).toStrictEqual(AppState.FAILED_REGEX);
-  expect(getOccurrence(dedup[2])).toStrictEqual(INPUT.length - 1);
-  expect(getValue(dedup.slice(-1)[0])).toStrictEqual(AppState.INVALID_SESSION);
-});
-
-// Test valid session selector input
-const validSessionMock = [NO_LATEST_SESSION, VALID_SESSIONSELECTOR_QUERY];
-test("valid session", async () => {
-  const user = userEvent.setup();
-
-  const setAppState = vi.fn();
-  const setSession = vi.fn();
-
-  await act(() =>
-    render(
-      <MockedProvider mocks={validSessionMock}>
-        <NavbarSessionSelector
-          setSession={setSession}
-          setAppStatus={setAppState}
-        />
-      </MockedProvider>
-    )
-  );
-
-  const input = screen.getByRole("textbox");
-
-  // Wait for initial request to check if latest session exists
-  await waitFor(() =>
-    expect(setAppState).toHaveBeenCalledWith({
-      state: AppState.LATEST_NOT_FOUND,
-    })
-  );
-
-  const SESSION = "mg44685-1";
-  await user.type(input, SESSION);
-
-  // Wait for last state change
-  await waitFor(() =>
-    expect(setAppState).toHaveBeenCalledWith({ state: AppState.VALID })
-  );
-
-  const dedup = removeDuplicates(setAppState.mock.calls);
-  expectStartup(dedup, AppState.LATEST_NOT_FOUND);
-  expect(getValue(dedup[2])).toStrictEqual(AppState.FAILED_REGEX);
-  expect(getOccurrence(dedup[2])).toStrictEqual(SESSION.length - 1);
-  expect(getValue(dedup.slice(-1)[0])).toStrictEqual(AppState.VALID);
-});
-
-// Test existence of latest session
 const latestSessionMock = [HAS_LATEST_SESSION, VALID_SESSIONSELECTOR_QUERY];
-test("latest session", async () => {
-  const setAppState = vi.fn();
-  const setSession = vi.fn();
+test("test handling of latest session", async () => {
+  await act(() =>
+    render(
+      <MockedProvider mocks={latestSessionMock}>
+        <TestComponent />
+      </MockedProvider>
+    )
+  );
+
+  // Check that loading spinner is displayed
+  expect(screen.queryByRole("progressbar")).toBeInTheDocument();
+
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
+
+  // Check that session selector has latest session in input
+  const input = await screen.findByRole("textbox");
+  const EXPECTED = "mg33746-1";
+  expect(input).toHaveDisplayValue(EXPECTED);
+
+  // Check that the main app is being rendered
+  await screen.findByTestId(MAINAPP_ID);
+
+  // Check that the latest button is enabled
+  expect(screen.getByText("Latest")).toBeEnabled();
+});
+
+test("test clicking of latest button", async () => {
+  const user = userEvent.setup();
 
   await act(() =>
     render(
       <MockedProvider mocks={latestSessionMock}>
-        <NavbarSessionSelector
-          setSession={setSession}
-          setAppStatus={setAppState}
-        />
+        <TestComponent />
       </MockedProvider>
     )
   );
 
-  const input = screen.getByRole("textbox");
+  // Check that loading spinner is displayed
+  expect(screen.queryByRole("progressbar")).toBeInTheDocument();
 
-  const EXPECTED = "mg33746-1";
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
 
-  // Wait for initial request to check if latest session exists
-  await waitFor(() =>
-    expect(setAppState).toHaveBeenCalledWith({ state: AppState.VALID })
+  // 1. Check that session selector has latest session in input
+  const input = await screen.findByRole("textbox");
+  const LATEST_SESSION = "mg33746-1";
+  expect(input).toHaveDisplayValue(LATEST_SESSION);
+
+  // Check that the main app is being rendered
+  await screen.findByTestId(MAINAPP_ID);
+
+  // 2. Type new session reference
+  const INPUT = "mg44685-1";
+  await user.clear(input);
+  await user.type(input, INPUT);
+
+  // 3. Check that new session reference is in textbox
+  expect(input).toHaveDisplayValue(INPUT);
+
+  // 4. Click the latest button
+  const latestButton = screen.getByText("Latest");
+  await user.click(latestButton);
+
+  // 5. Check that textbox has latest session reference
+  expect(input).toHaveDisplayValue(LATEST_SESSION);
+});
+
+test("invalid session selector input - regex failure", async () => {
+  const user = userEvent.setup();
+
+  await act(() =>
+    render(
+      <MockedProvider mocks={noLatestSessionMock}>
+        <TestComponent />
+      </MockedProvider>
+    )
   );
 
-  const dedup = removeDuplicates(setAppState.mock.calls);
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
 
-  expect(getValue(dedup[0])).toStrictEqual(AppState.LOADING);
-  expect(getValue(dedup[1])).toStrictEqual(AppState.VALID);
-  expect(dedup.length).toStrictEqual(2);
-  expect(input.value).toStrictEqual(EXPECTED);
+  // Type 'fail :(' into the session selector textbox
+  const input = await screen.findByRole("textbox");
+  const INPUT = "fail :(";
+  await user.type(input, INPUT);
+
+  expect(screen.getByTestId("appstate-msg")).toHaveTextContent(
+    "Session must be of the following format: ab12345-1"
+  );
+});
+
+const invalidSessionMock = [NO_LATEST_SESSION, INVALID_SESSIONSELECTOR_QUERY];
+test("invalid session selector input - session not found", async () => {
+  const user = userEvent.setup();
+
+  await act(() =>
+    render(
+      <MockedProvider mocks={invalidSessionMock}>
+        <TestComponent />
+      </MockedProvider>
+    )
+  );
+
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
+
+  // Type invalid session reference into textbox
+  const input = screen.getByRole("textbox");
+  const INPUT = "mg44685-1";
+  await user.type(input, INPUT);
+
+  await waitFor(() =>
+    expect(screen.getByTestId("appstate-msg")).toHaveTextContent(
+      `Invalid session: Session ${INPUT} not found.`
+    )
+  );
+});
+
+const validSessionMock = [NO_LATEST_SESSION, VALID_SESSIONSELECTOR_QUERY];
+test("valid session selector input", async () => {
+  const user = userEvent.setup();
+
+  await act(() =>
+    render(
+      <MockedProvider mocks={validSessionMock}>
+        <TestComponent />
+      </MockedProvider>
+    )
+  );
+
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
+
+  // Type valid session reference into textbox
+  const input = screen.getByRole("textbox");
+  const SESSION = "mg44685-1";
+  await user.type(input, SESSION);
+
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
+
+  // Check that the main app is being rendered
+  await waitFor(() =>
+    expect(screen.getByTestId(MAINAPP_ID)).toBeInTheDocument()
+  );
 });
 
 const nonImagingMock = [
   NO_LATEST_SESSION,
   VALID_SESSIONSELECTOR_QUERY_NON_IMAGING,
 ];
-test("non-imaging beamline", async () => {
+test("handle non-imaging beamline", async () => {
   const user = userEvent.setup();
-
-  const setAppState = vi.fn();
-  const setSession = vi.fn();
 
   await act(() =>
     render(
       <MockedProvider mocks={nonImagingMock}>
-        <NavbarSessionSelector
-          setSession={setSession}
-          setAppStatus={setAppState}
-        />
+        <TestComponent />
       </MockedProvider>
     )
   );
 
-  await waitFor(() =>
-    expect(setAppState).calledWith({ state: AppState.LATEST_NOT_FOUND })
-  );
-  const INPUT = "ab12345-1";
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
 
+  const INPUT = "ab12345-1";
   const input = screen.getByRole("textbox");
   await user.type(input, INPUT);
 
-  await waitFor(() =>
-    expect(setAppState).calledWith({
-      state: AppState.INVALID_SESSION,
-      message: `Invalid session: Session ${INPUT} is associated with ${NON_IMAGING_BEAMLINE}. ${NON_IMAGING_BEAMLINE} is not an imaging beamline.`,
-    })
-  );
+  // Wait for progressbar to disappear
+  await waitForElementToBeRemoved(() => screen.queryByRole("progressbar"));
 
-  const dedup = removeDuplicates(setAppState.mock.calls);
-  expectStartup(dedup, AppState.LATEST_NOT_FOUND);
+  await waitFor(() =>
+    expect(screen.getByTestId("appstate-msg")).toHaveTextContent(
+      `Invalid session: Session ${INPUT} is associated with ${NON_IMAGING_BEAMLINE}. ${NON_IMAGING_BEAMLINE} is not an imaging beamline.`
+    )
+  );
 });

@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { SESSIONSELECTOR_QUERY } from "../graphql/SessionSelectorQuery";
 import { SESSION_QUERY } from "../graphql/SessionQuery";
 import { useAuth, visitRegex } from "@diamondlightsource/sci-react-ui";
-import { AppState, AppStatus, Beamline, InstrumentSession } from "../types";
+import { AppState, AppStatus, Beamline } from "../types";
 
 const useFedid = (): string => {
   const token = useAuth().getToken();
@@ -25,11 +25,9 @@ const useFedid = (): string => {
 };
 
 type NavbarSessionSelectorProps = {
-  setSession: (v: InstrumentSession | null) => void;
   setAppStatus: (v: AppStatus) => void;
 };
 export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
-  setSession,
   setAppStatus: setAppStatus,
 }: NavbarSessionSelectorProps) => {
   const [sessionInputValue, setSessionInputValue] = useState("");
@@ -50,74 +48,64 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
     skip: visitRegex.exec(sessionInputValue) === null, // Don't perform the query if the input doesn't match the regex
   });
 
+  const isLoading = loading || accountLoading;
+
+  useEffect(() => {
+    if (isLoading) {
+      setAppStatus({ state: AppState.LOADING });
+    }
+  }, [isLoading, setAppStatus]);
+
+  useEffect(() => {
+    if (accountError) {
+      setAppStatus({ state: AppState.ERROR, message: accountError.message });
+    } else if (error) {
+      setAppStatus({ state: AppState.ERROR, message: error.message });
+    }
+  }, [accountError, error, setAppStatus]);
+
   // Handle loading of main session data
   useEffect(() => {
-    if (data && data.instrumentSessionByReference) {
-      const beamlineName = data.instrumentSessionByReference.instrument.name;
-      if (Object.keys(Beamline).includes(beamlineName)) {
-        setSession(data.instrumentSessionByReference);
-        setBeamline(beamlineName);
-        setAppStatus({ state: AppState.VALID });
-      } else {
-        setSession(null);
-        setBeamline(beamlineName);
-        setAppStatus({
-          state: AppState.INVALID_SESSION,
-          message: `Invalid session: Session ${sessionInputValue} is associated with ${beamlineName}. ${beamlineName} is not an imaging beamline.`,
-        });
-      }
-    } else {
-      setSession(null);
-      setBeamline("");
-      if (error) {
-        setAppStatus({
-          state: AppState.ERROR,
-          message: `GraphQL error: ${error.message}`,
-        });
-      } else if (loading || accountLoading) {
-        setAppStatus({ state: AppState.LOADING });
-      } else if (visitRegex.exec(sessionInputValue) === null) {
-        setAppStatus({ state: AppState.FAILED_REGEX });
+    if (data) {
+      if (data.instrumentSessionByReference) {
+        const beamlineName = data.instrumentSessionByReference.instrument.name;
+        if (Object.keys(Beamline).includes(beamlineName)) {
+          setBeamline(beamlineName);
+          setAppStatus({
+            state: AppState.VALID,
+            session: data.instrumentSessionByReference,
+          });
+        } else {
+          setBeamline(beamlineName);
+          setAppStatus({
+            state: AppState.INVALID_SESSION,
+            message: `Invalid session: Session ${sessionInputValue} is associated with ${beamlineName}. ${beamlineName} is not an imaging beamline.`,
+          });
+        }
       } else {
         setAppStatus({
           state: AppState.INVALID_SESSION,
-          message: `Invalid session: ${sessionInputValue} not found.`,
+          message: `Invalid session: Session ${sessionInputValue} not found.`,
         });
       }
     }
-  }, [
-    data,
-    error,
-    loading,
-    accountLoading,
-    sessionInputValue,
-    setAppStatus,
-    setSession,
-  ]);
+  }, [data, sessionInputValue, setAppStatus]);
 
   // Handle query for visits associated with user
   useEffect(() => {
-    if (accountData && accountData.account) {
-      const latestSessionAvailable =
-        accountData.account.instrumentSessionRoles.edges.length > 0;
-      if (latestSessionAvailable) {
-        const instSess =
-          accountData.account.instrumentSessionRoles.edges[0].node
-            .instrumentSession;
-        latestSession.current = `${instSess.proposal.proposalCategory?.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
-        setSessionInputValue(latestSession.current);
+    if (accountData) {
+      const instSess =
+        accountData?.account?.instrumentSessionRoles?.edges?.[0]?.node
+          ?.instrumentSession;
+      if (instSess) {
+        const latest = `${instSess.proposal.proposalCategory?.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
+        latestSession.current = latest;
+        setSessionInputValue(latest);
       } else {
         setAppStatus({ state: AppState.LATEST_NOT_FOUND });
       }
-    } else if (accountError) {
-      setAppStatus({
-        state: AppState.ERROR,
-        message: `GraphQL error: ${accountError.message}`,
-      });
-    } else if (accountLoading) {
-      setAppStatus({ state: AppState.LOADING });
     }
-  }, [accountData, accountError, setAppStatus, accountLoading]);
+  }, [accountData, setAppStatus]);
 
   return (
     <Stack
@@ -197,15 +185,16 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
           }}
         />
 
-        <Button
-          variant="contained"
-          disabled={latestSession.current == ""}
-          onClick={() => {
-            setSessionInputValue(latestSession.current);
-          }}
-        >
-          Latest
-        </Button>
+        {latestSession.current !== "" && (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setSessionInputValue(latestSession.current);
+            }}
+          >
+            Latest
+          </Button>
+        )}
       </Stack>
     </Stack>
   );
