@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 
 const PtypyP99ParameterConfiguration = ({
   setParameters,
-  setResourceParameters,
 }: {
   setParameters: (_: object) => void;
   setResourceParameters: (_: object) => void;
@@ -26,21 +25,8 @@ const PtypyP99ParameterConfiguration = ({
     setParameters({
       inpath: inPath,
       outpath: outPath,
-      usegpu: useGpu,
     });
-    setResourceParameters({
-      memory: memory,
-      nprocs: nprocs,
-    });
-  }, [
-    setParameters,
-    setResourceParameters,
-    inPath,
-    outPath,
-    useGpu,
-    memory,
-    nprocs,
-  ]);
+  }, [setParameters, inPath, outPath]);
 
   return (
     <Card
@@ -64,27 +50,6 @@ const PtypyP99ParameterConfiguration = ({
           value={outPath}
           onChange={(e) => setOutPath(e.target.value)}
           size="small"
-        />
-        <TextField
-          label="Requested CPU memory"
-          value={memory}
-          onChange={(e) => setMemory(e.target.value)}
-          size="small"
-        />
-        <TextField
-          label="Nr. of processes"
-          value={nprocs}
-          onChange={(e) => setNprocs(e.target.value)}
-          size="small"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={useGpu}
-              onChange={(e) => setUseGpu(e.target.checked)}
-            />
-          }
-          label="Use GPU"
         />
       </Stack>
     </Card>

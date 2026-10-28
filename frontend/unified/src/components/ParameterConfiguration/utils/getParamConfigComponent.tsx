@@ -9,6 +9,7 @@ import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderCon
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
+import { ResourceForm } from "../../ResourceForm";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -19,6 +20,7 @@ type TemplateComponentMapping = {
 export const getParamConfigComponent = (
   technique: Technique,
   template: string,
+  resourceDisplayList: object,
   setTemplateParameters: (_: object) => void,
   setResourceParameters: (_: { nprocs: number; memory: string }) => void,
   visitDirPath: string
@@ -41,32 +43,52 @@ export const getParamConfigComponent = (
     [Technique.Ptycho]: {},
     [Technique.Ptypy]: {
       "ptypy-i08-1-from-config": (
-        <PtypyI08ParameterConfiguration
-          setParameters={setTemplateParameters}
-          setResourceParameters={setResourceParameters}
-        />
+        <Suspense fallback={<p>Fetching workflow template...</p>}>
+          <PtypyI08ParameterConfiguration
+            setParameters={setTemplateParameters}
+          />
+          <ResourceForm
+            resourceDisplayList={resourceDisplayList}
+            setResourceParameters={setResourceParameters}
+          />
+        </Suspense>
       ),
       "ptypy-p99-from-config": (
-        <PtypyP99ParameterConfiguration
-          setParameters={setTemplateParameters}
-          setResourceParameters={setResourceParameters}
-        />
+        <Suspense fallback={<p>Fetching workflow template...</p>}>
+          <PtypyP99ParameterConfiguration
+            setParameters={setTemplateParameters}
+          />
+          <ResourceForm
+            resourceDisplayList={resourceDisplayList}
+            setResourceParameters={setResourceParameters}
+          />
+        </Suspense>
       ),
     },
     [Technique.Ptyrex]: {
       "ptyrex-submission": (
-        <PtyrexParameterConfiguration
-          setParameters={setTemplateParameters}
-          visitDirpath={visitDirPath}
-        />
+        <Suspense fallback={<p>Fetching workflow template...</p>}>
+          <PtyrexParameterConfiguration
+            setParameters={setTemplateParameters}
+            visitDirpath={visitDirPath}
+          />
+          <ResourceForm
+            resourceDisplayList={resourceDisplayList}
+            setResourceParameters={setResourceParameters}
+          />
+        </Suspense>
       ),
     },
-    [Technique.Tomo]: {
+    [Technique.Httomo]: {
       "httomo-cor-sweep": (
         <LoaderProvider>
           <CorSweepParameterConfiguration
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
+          />
+          <ResourceForm
+            resourceDisplayList={resourceDisplayList}
+            setResourceParameters={setResourceParameters}
           />
         </LoaderProvider>
       ),
@@ -76,6 +98,10 @@ export const getParamConfigComponent = (
             setParameters={setTemplateParameters}
             setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
+          />
+          <ResourceForm
+            resourceDisplayList={resourceDisplayList}
+            setResourceParameters={setResourceParameters}
           />
         </LoaderProvider>
       ),

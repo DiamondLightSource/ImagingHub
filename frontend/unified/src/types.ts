@@ -8,7 +8,7 @@ const Technique = {
   Ptycho: "Ptycho",
   Ptyrex: "Ptyrex",
   Ptypy: "Ptypy",
-  Tomo: "Tomo",
+  Httomo: "Httomo",
   Xanes: "Xanes",
   Xrd: "Xrd",
 } as const;
@@ -26,7 +26,7 @@ const Beamline = {
   "I08-1": "i08-1",
   I12: "i12",
   "I13-1": "i13-1",
-  "I13-2": "i13-2",
+  I13: "i13",
   I14: "i14",
   "P99 TEST": "p99",
 } as const;
@@ -34,17 +34,17 @@ type Beamline = (typeof Beamline)[keyof typeof Beamline];
 export { Beamline };
 
 export const BEAMLINE_TECHNIQUES_SUBSET = {
-  [Beamline.DIAD]: [Technique.Tomo],
-  [Beamline.I12]: [Technique.Tomo],
+  [Beamline.DIAD]: [Technique.Httomo],
+  [Beamline.I12]: [Technique.Httomo],
   [Beamline["I08-1"]]: [Technique.Ptycho, Technique.Ptypy],
   [Beamline["I13-1"]]: [
     Technique.Dpc,
     Technique.Ptyrex,
-    Technique.Tomo,
+    Technique.Httomo,
     Technique.Xanes,
     Technique.Xrd,
   ],
-  [Beamline["I13-2"]]: [Technique.Ptycho, Technique.Tomo],
+  [Beamline["I13"]]: [Technique.Ptycho, Technique.Httomo],
   [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
   [Beamline.E02]: [
     Technique.Dpc,
@@ -57,13 +57,13 @@ export const BEAMLINE_TECHNIQUES_SUBSET = {
 };
 
 export const BEAMLINES_DEFAULT_TECHNIQUE = {
-  [Beamline.DIAD]: Technique.Tomo,
+  [Beamline.DIAD]: Technique.Httomo,
   [Beamline.E02]: Technique.Mib,
   [Beamline.E01]: Technique.Ptyrex,
-  [Beamline.I12]: Technique.Tomo,
+  [Beamline.I12]: Technique.Httomo,
   [Beamline["I08-1"]]: Technique.Ptycho,
   [Beamline["I13-1"]]: Technique.Ptycho,
-  [Beamline["I13-2"]]: Technique.Ptycho,
+  [Beamline["I13"]]: Technique.Httomo,
   [Beamline.I14]: Technique.Dpc,
   [Beamline["P99 TEST"]]: Technique.Ptypy,
 };
