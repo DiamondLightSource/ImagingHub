@@ -18,7 +18,7 @@ export type MetadataComponent<T> = {
   formatter: (v: T) => string;
 };
 
-type BeamlineConfig2 = {
+type BeamlineConfig = {
   ulims_schema: string;
   version: string;
   startTime: (data: ScanNodeRaw) => string | undefined | null;
@@ -35,13 +35,12 @@ export function isMetadataComponent<T>(
 
 export function convertScanRequestToObject(data: ScanNodeRaw): ScanNodeRaw {
   if (data?.data?.scan_parameters?.scan_request) {
-    console.log(data.data.scan_parameters.scan_request);
-    var scanParameters = {
+    const scanParameters = {
       ...data.data.scan_parameters,
       scan_request: JSON.parse(data.data.scan_parameters.scan_request),
     };
-    var newData = { ...data.data, scan_parameters: scanParameters };
-    var newScanData = { ...data, data: newData };
+    const newData = { ...data.data, scan_parameters: scanParameters };
+    const newScanData = { ...data, data: newData };
 
     return newScanData;
   }
@@ -72,8 +71,7 @@ export function getProcessedScanNode(
   const processedScanNodes: ScanNodeProcessed[] = parsedNodes.map((x) => {
     return {
       ...x,
-      scanNumber:
-        schema.scanNumber(x) ?? Number(regex.exec(x.title)?.[0]) ?? null,
+      scanNumber: schema.scanNumber(x) ?? Number(regex.exec(x.title)?.[0]),
       beamline: data?.instrumentSessionByReference?.instrument?.key ?? null,
       startTime: fmtDate(schema.startTime(x)),
       endTime: fmtDate(schema.endTime(x)),
@@ -85,24 +83,12 @@ export function getProcessedScanNode(
 
 export function getBeamlineConfig(
   schema: string | null
-): BeamlineConfig2 | null {
+): BeamlineConfig | null {
   if (schema) {
     const baseName = schema.split("/").slice(0, -1).join("/");
-    console.log("baseName", baseName);
     const versionNumber = schema.split("/").at(-1);
 
     for (const conf of BEAMLINE_CONFIG) {
-      console.log(
-        "baseName === conf.ulims_schema",
-        baseName,
-        conf.ulims_schema
-      );
-      console.log(
-        "`${versionNumber}.json` === conf.version",
-        `${versionNumber}.json`,
-        conf.version
-      );
-
       // TODO: Perform better version number matching
       if (
         baseName === conf.ulims_schema &&
@@ -112,18 +98,17 @@ export function getBeamlineConfig(
       }
     }
   }
-
   return null;
 }
 
-const BEAMLINE_CONFIG: BeamlineConfig2[] = [
+const BEAMLINE_CONFIG: BeamlineConfig[] = [
   {
     ulims_schema:
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/dummy_scan",
     version: "0.0.1",
     startTime: (v) => v.data?.scan_parameters?.start_time,
     endTime: (v) => v.data?.scan_parameters?.end_time,
-    scanNumber: (v) => null,
+    scanNumber: (_) => null,
     components: [
       {
         groupTitle: "Times",
@@ -226,12 +211,12 @@ const BEAMLINE_CONFIG: BeamlineConfig2[] = [
           {
             title: "Slit Size X",
             getter: (v) => v.data?.optical_parameters?.slit_size_x,
-            formatter: (v) => FORMATTER.NONE,
+            formatter: FORMATTER.NONE,
           },
           {
             title: "Slit Size Y",
             getter: (v) => v.data?.optical_parameters?.slit_size_y,
-            formatter: (v) => FORMATTER.NONE,
+            formatter: FORMATTER.NONE,
           },
         ],
       },

@@ -1,9 +1,8 @@
 import { Alert, Button, Snackbar, Typography } from "@mui/material";
-import { Beamline, Technique } from "../../types";
+import { Beamline, Technique, InstrumentSession } from "../../types";
 import { SUBMIT_WORKFLOW_TEMPLATE } from "../../../../tomography/src/components/workflows/Submission";
 import { useMutation, useSuspenseQuery } from "@apollo/client/react";
 import { Visit } from "@diamondlightsource/sci-react-ui";
-import { InstrumentSession } from "../SessionSelector";
 import TemplateSelector from "../ProcessingView/TemplateSelector";
 import { getParamConfigComponent } from "./utils/getParamConfigComponent";
 import { useState } from "react";

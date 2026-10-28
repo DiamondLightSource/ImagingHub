@@ -22,7 +22,7 @@ export function formatDate(date: Date | null) {
   return "No date";
 }
 
-// Infinite scroll example:
+// Derived from infinite scroll example:
 // https://www.material-react-table.com/docs/examples/infinite-scrolling
 
 const columnHelper = createMRTColumnHelper<ScanNodeProcessed>();
@@ -66,11 +66,6 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
     return desc;
   };
 
-  console.log("sorting ", isDescSort(sorting));
-
-  console.log("scanselector");
-
-  // let cursor: string | null = null;
   const { data, loading, fetchMore, client } = useQuery(
     INSTRUMENTSESSION_QUERY,
     {
@@ -86,21 +81,16 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
 
   useEffect(() => {
     if (isDescSort(sorting)) {
-      console.log("assign descPage");
       descPage.current =
         data?.instrumentSessionByReference?.datasets.pageInfo ?? null;
     } else {
-      console.log("assign ascPage");
       ascPage.current =
         data?.instrumentSessionByReference?.datasets.pageInfo ?? null;
     }
-  }, [data]);
-
-  console.log(data);
+  }, [data, sorting]);
 
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
-  // console.log("scans[0].title", (scans[0]) ? scans[0].title : "");
   const fetchMoreOnBottomReached = useCallback(
     (containerRefElement?: HTMLDivElement | null) => {
       if (containerRefElement) {
@@ -129,7 +119,7 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
         }
       }
     },
-    [loading]
+    [loading, fetchMore, sessionRef, sorting]
   );
 
   let parsedNodes: ScanNodeProcessed[] = [];
@@ -145,10 +135,7 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
     return 0;
   });
 
-  console.log("sortDesc ", isDescSort(sorting));
-
   const previousRow = useRef<MRT_Row<ScanNodeProcessed> | null>(null);
-  console.log("previousRow ", previousRow, ", rowSelection ", rowSelection);
 
   const table: MRT_TableInstance<ScanNodeProcessed> = useMaterialReactTable({
     columns: columns,
@@ -159,8 +146,6 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
     enablePagination: false,
     manualSorting: true,
     manualFiltering: true,
-    // mrtTheme: DiamondDSIntegrations.mrtTheme,
-    // ...DiamondDSIntegrations.mrtOptions(),
     enableRowSelection: false,
     enableMultiRowSelection: false,
     enableBottomToolbar: false,
@@ -175,22 +160,18 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
         setRowSelection((prev) => {
           // Shift + click selection
           // https://stackoverflow.com/a/56178061
-          let newState = { ...prev };
-
-          console.log("e.shiftKey ", e.shiftKey);
+          const newState = { ...prev };
 
           if (e.shiftKey && previousRow.current) {
             if (previousRow.current.index < row.index) {
               for (let i = previousRow.current.index; i <= row.index; i++) {
                 newState[i] = true;
               }
-              // or the opposite
             } else {
               for (let i = row.index; i <= previousRow.current.index; i++) {
                 newState[i] = true;
               }
             }
-            console.log("newState ", newState);
             return newState;
           } else if (e.ctrlKey) {
             return {
@@ -216,11 +197,7 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
       rowSelection,
       sorting,
     },
-
     enableRowVirtualization: true,
-    // rowVirtualizerInstanceRef: rowVirtualizerInstanceRef,
-    // rowVirtualizerOptions: { overscan: 4 },
-
     muiTableContainerProps: {
       ref: tableContainerRef, //get access to the table container element
       sx: {
@@ -231,32 +208,25 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
     },
   });
 
+  // useEffect to perform an action when the selection state changes:
+  // https://www.material-react-table.com/docs/guides/row-selection#read-row-selection-state-from-table-instance
   useEffect(() => {
     // Get session reference of selected row
     const selectedIdx = Object.keys(table.getState().rowSelection);
-    console.log("selected ", selectedIdx);
+    // console.log("selected ", selectedIdx);
 
     const selectedData = selectedIdx
       .filter((x) => rowSelection[x])
       .map((x) => table.getRow(x).original);
     onScanSelect(selectedData);
+
+    // `onScanSelect` should not be placed into dependency list as it causes an infinite loop
   }, [table.getState().rowSelection]);
 
   useEffect(() => {
     const pageData = isDescSort(sorting) ? descPage.current : ascPage.current;
-    console.log("fetchMore sorting ", isDescSort(sorting));
-    console.log("first ", isDescSort(sorting) ? FETCH_SIZE : null);
-    console.log("last ", !isDescSort(sorting) ? FETCH_SIZE : null);
-    console.log(
-      "after ",
-      isDescSort(sorting) ? (pageData?.endCursor ?? null) : null
-    );
-    console.log(
-      "before ",
-      !isDescSort(sorting) ? (pageData?.startCursor ?? null) : null
-    );
 
-    // Only fetch is the sort order has actually changed
+    // Only fetch when the sort order has actually changed
     if (prevDesc.current !== isDescSort(sorting)) {
       client.resetStore();
       fetchMore({
@@ -272,7 +242,7 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
 
     sortingChanged.current = true;
     prevDesc.current = isDescSort(sorting);
-  }, [sorting]);
+  }, [sorting, client, fetchMore, sessionRef]);
 
   return <MaterialReactTable table={table} />;
 }

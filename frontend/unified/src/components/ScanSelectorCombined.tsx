@@ -35,7 +35,10 @@ export const ScanSelectorCombined = ({
       </ToggleButtonGroup>
 
       {selectorType === "new" ? (
-        <ScanSelector onScanSelect={setScanIds} sessionRef={sessionRef} />
+        <ScanSelector
+          onScanSelect={(v) => setScanIds(v.map((x) => x.scanNumber))}
+          sessionRef={sessionRef}
+        />
       ) : (
         <ScanSelectorLegacy scanIds={scanIds} setScanIds={setScanIds} />
       )}

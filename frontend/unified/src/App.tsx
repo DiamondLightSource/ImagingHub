@@ -33,14 +33,16 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   // a capitalised "proposal code", whereas the workflows service only accepts
   // it in lowercase
   const selectedVisit = {
-    proposalCode: session.proposal.proposalCategory?.toLowerCase() ?? "",
-    proposalNumber: session.proposal.proposalNumber,
+    proposalCode: session?.proposal?.proposalCategory?.toLowerCase() ?? "",
+    proposalNumber: session.proposal?.proposalNumber ?? NaN,
     number: session.instrumentSessionNumber,
   };
 
   const sessionRef = `${selectedVisit.proposalCode}${selectedVisit.proposalNumber}-${selectedVisit.number}`;
 
   const beamline = Beamline[session.instrument.name as keyof typeof Beamline];
+
+  console.log("scanIds", selectedScanIds);
 
   return (
     <Box sx={{ display: "flex", height: "100%" }}>
