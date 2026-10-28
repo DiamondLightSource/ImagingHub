@@ -70,7 +70,7 @@ export const BEAMLINES_DEFAULT_TECHNIQUE = {
 
 export type TemplateComponentProps = {
   setParameters: (_: object) => void;
-  setResourceParameters: (_: object) => void;
+  setResourceParameters?: (_: object) => void;
   visitDirpath: string;
 };
 

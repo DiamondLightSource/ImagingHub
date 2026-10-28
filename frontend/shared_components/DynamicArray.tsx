@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import type { ReactNode } from "react";
 
-import { iconSize } from "../../data/form";
+import { iconSize } from "./data/ui";
 
 type IdentifiableItem = {
   id: number;
@@ -48,7 +48,7 @@ export default function DynamicArray<Item extends IdentifiableItem>({
 
   return (
     <Stack direction="column" sx={{ mt: "0px !important" }}>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" sx={{ mb: desc ? 0 : 1 }}>
         <FormLabel>{title}</FormLabel>
 
         {desc && (

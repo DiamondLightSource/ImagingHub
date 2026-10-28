@@ -5,7 +5,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import { Info } from "lucide-react";
 
-import { iconSize } from "../i14/src/data/form";
+import { iconSize } from "./data/ui";
 
 type FieldLabelProps = {
   title: string;

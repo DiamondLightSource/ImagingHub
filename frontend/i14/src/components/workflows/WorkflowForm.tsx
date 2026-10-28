@@ -15,7 +15,7 @@ import { initialData, techniqueOptions } from "../../data/form";
 import { templateOptions } from "../../data/templates";
 import { methodOptions, bruteOptions } from "../../data/xanes";
 
-import DynamicArray from "./DynamicArray";
+import DynamicArray from "./../../../../shared_components/DynamicArray";
 import OptionSelect from "./OptionSelect";
 import OptionToggle from "./OptionToggle";
 import ElementSelect from "./ElementSelect";
