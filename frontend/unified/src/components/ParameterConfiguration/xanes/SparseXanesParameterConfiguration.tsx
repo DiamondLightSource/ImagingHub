@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-import ElementSelect from "./../../../../../shared_components/ElementSelect";
-
+import ElementField from "./../base/ElementField";
 import LayoutCard from "./../base/LayoutCard";
 import MultiScanField from "./../base/MultiScanField";
 import VisitDirField from "./../base/VisitDirField";
@@ -11,28 +10,14 @@ import type { TemplateComponentProps } from "./../../../types";
 export const SparseXanesParameterConfiguration = (
   props: TemplateComponentProps
 ) => {
-  const { setParameters } = props;
-  const [edgeElement, setEdgeElement] = useState({
-    element: "",
-    transition: "",
-  });
-
-  useEffect(() => {
-    setParameters((prev) => ({
-      ...prev,
-      edgeElement: edgeElement.element,
-      edgeTransition: edgeElement.transition,
-    }));
-  }, [edgeElement]);
-
   return (
     <LayoutCard>
       <MultiScanField {...props} />
-      <ElementSelect
+      <ElementField
+        {...props}
         title="Edge Element"
         info="Line group to be aligned"
-        value={edgeElement}
-        onChange={(value) => setEdgeElement(value)}
+        parameterNames={["edgeElement", "edgeTransition"]}
       />
       <VisitDirField
         {...props}
