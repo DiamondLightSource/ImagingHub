@@ -55,6 +55,9 @@ const TableContent = ({
   const pageInfo = data.pageInfo;
   const fetchedWorkflows = data.nodes;
 
+  // Table is 5 rows high
+  const emptyRows = 5 - fetchedWorkflows.length;
+
   const handlePageChange = (_: unknown, newPage: number) => {
     setCurrentPage(newPage);
   };
@@ -123,6 +126,12 @@ const TableContent = ({
                 setSelectedWorkflow={setSelectedWorkflow}
               />
             ))}
+            {emptyRows > 0 && (
+              // 65 is the normal row height
+              <TableRow style={{ height: 65 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>
