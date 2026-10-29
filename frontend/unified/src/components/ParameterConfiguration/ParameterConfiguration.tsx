@@ -60,6 +60,29 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     scanIds[0]
   );
 
+  function getDefaults(obj: object) {
+    return Object.keys(obj).reduce(function (result: object, key: string) {
+      if (key === "memory" || key === "nprocs" || key === "usegpu") {
+        result[key] = obj[key];
+      }
+      return result;
+    }, {});
+  }
+
+  type info = {
+    nprocs: string | null;
+    memory: string | null;
+    usegpu: boolean | null;
+  };
+  type tmplateinfo = { name: string; info: info };
+  let resourceDisplayList: tmplateinfo = {};
+
+  data.workflowTemplates.nodes.forEach((q) => {
+    if (q.name.startsWith(technique.toLowerCase())) {
+      resourceDisplayList[q.name] = getDefaults(q.arguments.properties);
+    }
+  });
+
   const handleSubmitJob = () => {
     // TODO: Validate parameters against JSON schema attached to the workflow template before
     // sending the mutation
@@ -104,6 +127,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     ? getParamConfigComponent(
         technique,
         template,
+        resourceDisplayList[template],
         setTemplateParameters,
         setResourceParameters,
         visitDirpath

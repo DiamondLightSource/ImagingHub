@@ -14,6 +14,7 @@ export const PARAMETERCONFIGURATION_QUERY: TypedDocumentNode<
       nodes {
         name
         description
+        arguments
       }
     }
   }
