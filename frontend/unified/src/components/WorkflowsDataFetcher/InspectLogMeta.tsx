@@ -105,7 +105,13 @@ const InspectLogMeta = ({
         disabled={!logUrl}
         key={"ButtonKey"}
         variant="contained"
-        onClick={() => logUrl && openInNewTab(logUrl)}
+        onClick={async () => {
+          if (logUrl) {
+            openInNewTab(logUrl);
+            const resp = await fetch(logUrl);
+            console.log("response to fetching log is: ", resp);
+          }
+        }}
       >
         Open Log
       </Button>
