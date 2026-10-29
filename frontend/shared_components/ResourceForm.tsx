@@ -1,18 +1,24 @@
-import { FC, ChangeEvent, useState } from "react";
+import { FC, ChangeEvent } from "react";
 import { InputLabel, Grid, Stack, TextField } from "@mui/material";
 
-type FormRes = { cpus: string; gpus: string; nprocs: string; memory: string };
-
-const initialData: FormRes = {
-  cpus: "1",
-  gpus: "0",
-  nprocs: "8",
-  memory: "16Gi",
+export type ResourceFormProps = {
+  params: ResourceParameters;
+  setParams: (_: ResourceParameters) => void;
+  showGpu?: boolean;
 };
 
-export const ResourceForm: FC = () => {
-  const [res, setRes] = useState<FormRes>(initialData);
+export type ResourceParameters = {
+  cpus: string;
+  gpus: string | null;
+  nprocs: string;
+  memory: string;
+};
 
+export const ResourceForm: FC<ResourceFormProps> = ({
+  params,
+  setParams,
+  showGpu = true,
+}: ResourceFormProps) => {
   return (
     <Grid container justifyContent="start" spacing={1}>
       <Grid size={8}>
@@ -27,25 +33,27 @@ export const ResourceForm: FC = () => {
             size="small"
             placeholder="8"
             type="number"
-            value={res.cpus}
+            value={params.cpus}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, cpus: value }));
+              setParams((prev) => ({ ...prev, cpus: value }));
             }}
           />
-          <TextField
-            name="gpus"
-            label="gpus"
-            variant="outlined"
-            size="small"
-            placeholder="1"
-            type="number"
-            value={res.gpus}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              const value = e.target.value;
-              setRes((prev) => ({ ...prev, gpus: value }));
-            }}
-          />
+          {showGpu && (
+            <TextField
+              name="gpus"
+              label="gpus"
+              variant="outlined"
+              size="small"
+              placeholder="1"
+              type="number"
+              value={params.gpus}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value;
+                setParams((prev) => ({ ...prev, gpus: value }));
+              }}
+            />
+          )}
           <TextField
             name="nprocs"
             label="number of processes"
@@ -53,10 +61,10 @@ export const ResourceForm: FC = () => {
             size="small"
             placeholder="8"
             type="number"
-            value={res.nprocs}
+            value={params.nprocs}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, nprocs: value }));
+              setParams((prev) => ({ ...prev, nprocs: value }));
             }}
           />
           <TextField
@@ -66,10 +74,10 @@ export const ResourceForm: FC = () => {
             size="small"
             placeholder="16Gi"
             type="text"
-            value={res.memory}
+            value={params.memory}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const value = e.target.value;
-              setRes((prev) => ({ ...prev, memory: value }));
+              setParams((prev) => ({ ...prev, memory: value }));
             }}
           />
         </Stack>

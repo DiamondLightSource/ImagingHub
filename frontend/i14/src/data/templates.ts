@@ -31,4 +31,9 @@ export const templateOptions: Option[] = [
     value: "xrd2d-batch",
     desc: "XRD 2D is a utility which performs Azimuthal integration (ExcaliburXRDIntegration) and saves result to a nxs file",
   },
+  {
+    label: "XRF",
+    value: "xrf-tomography",
+    desc: "XRF will stack, align and normalise a list of projections acquired for multiple edge transitions, then reconstruct 3D volumetric maps for each element/edge",
+  },
 ];

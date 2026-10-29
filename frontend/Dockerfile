@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run relay
+RUN npm run codegen
 
 RUN npm run build 
 

@@ -1,2 +1,29 @@
-type WorkflowFormData = { visit: string; template: string; outpath: string };
-type Option = { label: string; value: string; desc?: string };
+type ElementPair = {
+  element: string;
+  transition: string;
+};
+
+type ElementPairArray = {
+  id: number;
+} & ElementPair;
+
+type GridPanel = (string | null)[][];
+
+type Option = { label: string; value: string | boolean; desc?: string };
+
+type GridOption = Option & {
+  row?: number;
+  column?: number;
+};
+
+type WorkflowFormData = {
+  visit: string;
+  template: string;
+  outpath: string;
+  edgeElementArray?: ElementPairArray[];
+  edgeElement?: ElementPair;
+  elementToAlign?: ElementPair;
+  method?: string;
+  brute?: boolean;
+  max_fractional_shift?: number;
+};

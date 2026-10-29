@@ -1,0 +1,693 @@
+type Artifact {
+	"""
+	The file name of the artifact
+	"""
+	name: String!
+	"""
+	The download URL for the artifact
+	"""
+	url: Url!
+	"""
+	The MIME type of the artifact data
+	"""
+	mimeType: String!
+}
+
+scalar Creator
+
+"""
+Implement the DateTime<Utc> scalar
+
+The input/output is a string in RFC3339 format.
+"""
+scalar DateTime
+
+"""
+A scalar that can represent any JSON value.
+"""
+scalar JSON
+
+"""
+A scalar that can represent any JSON Object value.
+"""
+scalar JSONObject
+
+"""
+Represents a label selector for filtering workflows based on labels
+"""
+input LabelSelector {
+	"""
+	The label key to filter on
+	"""
+	key: String!
+	"""
+	The operator to use for the label selection
+	"""
+	operator: WorkflowLabelSelectorOperator!
+	"""
+	The values to match against the label key (if applicable)
+	"""
+	values: [String!]
+}
+
+"""
+A single log line streamed from a pod
+"""
+type LogEntry {
+	"""
+	The log line content
+	"""
+	content: String!
+	"""
+	The name of the pod producing the log
+	"""
+	podName: String!
+}
+
+"""
+The root mutation of the service
+"""
+type Mutation {
+	"""
+	submit specific workflow template
+	"""
+	submitWorkflowTemplate(name: String!, visit: VisitInput!, parameters: JSON!): Workflow!
+	"""
+	Submit a manifest (YAML) as a one-off Workflow within a visit's namespace.
+	
+	The input is typically a `WorkflowTemplate` (the manifest developers author and
+	store in their repository). It is submitted via the Argo Server API so the graph
+	remains the single source of truth for submissions. To match the behaviour of the
+	workflows CLI, the manifest is coerced into a one-off Workflow: `kind` is set to
+	`Workflow`, and a fixed `metadata.name` is rewritten to a `metadata.generateName`
+	(suffixed with `-`) so repeated submissions yield fresh, uniquely named Workflows.
+	"""
+	submitWorkflow(visit: VisitInput!, manifest: String!): Workflow!
+	"""
+	Create a Trigger from a template
+	"""
+	createTrigger(templateRef: String!, name: String, visit: VisitInput): Trigger
+}
+
+"""
+Represents Relay Node types
+"""
+union NodeValue = Workflow
+
+"""
+Information about pagination in a connection
+"""
+type PageInfo @shareable {
+	"""
+	When paginating backwards, are there more items?
+	"""
+	hasPreviousPage: Boolean!
+	"""
+	When paginating forwards, are there more items?
+	"""
+	hasNextPage: Boolean!
+	"""
+	When paginating backwards, the cursor to continue.
+	"""
+	startCursor: String
+	"""
+	When paginating forwards, the cursor to continue.
+	"""
+	endCursor: String
+}
+
+"""
+The root query of the service
+"""
+type Query {
+	node(id: ID!): NodeValue
+	"""
+	Get a single [`Workflow`] by proposal, visit, and name.
+	
+	In case of two workflows with the same name, returns the most recent.
+	"""
+	workflow(visit: VisitInput!, name: String!): Workflow @deprecated(reason: "Use workflowById instead")
+	"""
+	Get a single [`Workflow`] by unique ID.
+	"""
+	workflowById(id: ID!): Workflow
+	"""
+	Find all workflows available for a given visit
+	"""
+	workflows(visit: VisitInput!, cursor: String, limit: Int, filter: WorkflowFilter): WorkflowConnection!
+	"""
+	Retrieves a single cluster workflow template by name
+	"""
+	workflowTemplate(name: String!): WorkflowTemplate!
+	"""
+	Retrieves all cluster workflow templates with respective pagination data
+	"""
+	workflowTemplates(cursor: String, limit: Int, filter: WorkflowTemplatesFilter): WorkflowTemplateConnection!
+	"""
+	Get a specific Trigger by name and visit
+	"""
+	trigger(name: String!, visit: String): Trigger
+	"""
+	Get multiple Triggers across namespaces
+	"""
+	triggers(cursor: String, limit: Int): TriggerConnection!
+}
+
+"""
+Supported DLS science groups
+"""
+enum ScienceGroup {
+	"""
+	Macromolecular Crystallography
+	"""
+	MX
+	"""
+	Workflows Examples
+	"""
+	EXAMPLES
+	"""
+	Magnetic Materials
+	"""
+	MAGNETIC_MATERIALS
+	"""
+	Soft Condensed Matter
+	"""
+	CONDENSED_MATTER
+	"""
+	Imaging and Microscopy
+	"""
+	IMAGING
+	"""
+	Biological Cryo-Imaging
+	"""
+	BIO_CRYO_IMAGING
+	"""
+	Structures and Surfaces
+	"""
+	SURFACES
+	"""
+	Crystallography
+	"""
+	CRYSTALLOGRAPHY
+	"""
+	Spectroscopy
+	"""
+	SPECTROSCOPY
+}
+
+"""
+The root mutation of the service
+"""
+type Subscription {
+	"""
+	Processing to subscribe to logs for a single pod of a workflow
+	"""
+	logs(visit: VisitInput!, workflowName: String!, taskId: String!): LogEntry!
+	"""
+	Processing to subscribe to data for all workflows in a session
+	"""
+	workflow(visit: VisitInput!, name: String!): Workflow!
+}
+
+type Task {
+	"""
+	Unique name of the task
+	"""
+	id: String!
+	"""
+	Display name of the task
+	"""
+	name: String!
+	"""
+	Current status of a task
+	"""
+	status: TaskStatus!
+	"""
+	Parent of a task
+	"""
+	depends: [String!]!
+	"""
+	Children of a task
+	"""
+	dependencies: [String!]!
+	"""
+	Artifacts produced by a task
+	"""
+	artifacts: [Artifact!]!
+	"""
+	Node type - Pod, DAG, etc
+	"""
+	stepType: String!
+	"""
+	Start time for a task on a workflow
+	"""
+	startTime: DateTime
+	"""
+	End time for a task on a workflow
+	"""
+	endTime: DateTime
+	"""
+	A human readable message indicating details about why this step is in this condition
+	"""
+	message: String
+}
+
+enum TaskStatus {
+	PENDING
+	RUNNING
+	SUCCEEDED
+	SKIPPED
+	FAILED
+	ERROR
+	OMITTED
+}
+
+scalar Template
+
+"""
+Information about where the template is stored
+"""
+type TemplateSource {
+	"""
+	The URL of the GitHub repository
+	"""
+	repositoryUrl: String!
+	"""
+	The path to the template within the repository
+	"""
+	path: String!
+	"""
+	The current tracked branch of the repository
+	"""
+	targetRevision: String!
+}
+
+"""
+A Trigger for creating automated workflows
+"""
+type Trigger {
+	"""
+	The name of the Trigger
+	"""
+	name: String
+	"""
+	The name of a ClusterTriggerTemplate that the Trigger is created from
+	"""
+	templateRef: String
+	"""
+	The beamline that the Trigger monitors
+	"""
+	beamline: String
+}
+
+type TriggerConnection @shareable {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+	"""
+	A list of edges.
+	"""
+	edges: [TriggerEdge!]!
+	"""
+	A list of nodes.
+	"""
+	nodes: [Trigger!]!
+}
+
+"""
+An edge in a connection.
+"""
+type TriggerEdge @shareable {
+	"""
+	The item at the end of the edge
+	"""
+	node: Trigger!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+}
+
+"""
+URL is a String implementing the [URL Standard](http://url.spec.whatwg.org/)
+"""
+scalar Url
+
+"""
+A visit to an instrument as part of a session
+"""
+type Visit {
+	"""
+	Project Proposal Code
+	"""
+	proposalCode: String!
+	"""
+	Project Proposal Number
+	"""
+	proposalNumber: Int!
+	"""
+	Session visit Number
+	"""
+	number: Int!
+}
+
+"""
+A visit to an instrument as part of a session
+"""
+input VisitInput {
+	"""
+	Project Proposal Code
+	"""
+	proposalCode: String!
+	"""
+	Project Proposal Number
+	"""
+	proposalNumber: Int!
+	"""
+	Session visit Number
+	"""
+	number: Int!
+}
+
+type Workflow {
+	"""
+	The unique ID derived from the visit, name and uid
+	"""
+	id: ID!
+	"""
+	The name given to the workflow, unique within a given visit
+	"""
+	name: String!
+	"""
+	The visit the Workflow was run against
+	"""
+	visit: Visit!
+	"""
+	The current status of the workflow
+	"""
+	status: WorkflowStatus
+	"""
+	The top-level workflow parameters
+	"""
+	parameters: JSONObject
+	"""
+	The name of the template used to run the workflow
+	"""
+	templateRef: String
+	"""
+	The workflow creator
+	"""
+	creator: WorkflowCreator!
+}
+
+type WorkflowConnection @shareable {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+	"""
+	A list of edges.
+	"""
+	edges: [WorkflowEdge!]!
+	"""
+	A list of nodes.
+	"""
+	nodes: [Workflow!]!
+}
+
+"""
+Information about the creator of a workflow.
+"""
+type WorkflowCreator {
+	"""
+	An identifier unique to the creator of the workflow.
+	Typically this is the creator's Fed-ID.
+	"""
+	creatorId: String!
+}
+
+"""
+An edge in a connection.
+"""
+type WorkflowEdge @shareable {
+	"""
+	The item at the end of the edge
+	"""
+	node: Workflow!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+}
+
+"""
+All tasks in the workflow have errored
+"""
+type WorkflowErroredStatus {
+	"""
+	Time at which this workflow started
+	"""
+	startTime: DateTime!
+	"""
+	Time at which this workflow completed
+	"""
+	endTime: DateTime!
+	"""
+	A human readable message indicating details about why the workflow is in this condition
+	"""
+	message: String
+	"""
+	Tasks created by the workflow
+	"""
+	tasks: [Task!]!
+}
+
+"""
+All tasks in the workflow have failed
+"""
+type WorkflowFailedStatus {
+	"""
+	Time at which this workflow started
+	"""
+	startTime: DateTime!
+	"""
+	Time at which this workflow completed
+	"""
+	endTime: DateTime!
+	"""
+	A human readable message indicating details about why the workflow is in this condition
+	"""
+	message: String
+	"""
+	Tasks created by the workflow
+	"""
+	tasks: [Task!]!
+}
+
+"""
+All the supported Workflows filters
+"""
+input WorkflowFilter {
+	"""
+	The status of the workflow (e.g., pending, running, succeeded, failed, error)
+	"""
+	workflowStatusFilter: WorkflowStatusFilter
+	"""
+	The fedid of the user who created the workflow
+	"""
+	creator: Creator
+	"""
+	The workflow template
+	"""
+	template: Template
+	"""
+	Additional label selectors for filtering workflows
+	"""
+	labelSelectors: [LabelSelector!]
+}
+
+"""
+Supported operators for label selection in workflows
+"""
+enum WorkflowLabelSelectorOperator {
+	"""
+	Match resources with an exact label value.
+	"""
+	EQ
+	"""
+	Match resources with a label value that is not equal to a specified value.
+	"""
+	NE
+	"""
+	Match resources with a label value in a set of values.
+	"""
+	IN
+	"""
+	Match resources with a label value not in a set of values.
+	"""
+	NOT_IN
+	"""
+	Match resources that have a specific label key, regardless of its value.
+	"""
+	EXISTS
+	"""
+	Match resources that do not have a specific label key.
+	"""
+	DOES_NOT_EXIST
+}
+
+type WorkflowPendingStatus {
+	"""
+	A human readable message indicating details about why the workflow is in this condition
+	"""
+	message: String
+}
+
+type WorkflowRunningStatus {
+	"""
+	Time at which this workflow started
+	"""
+	startTime: DateTime!
+	"""
+	A human readable message indicating details about why the workflow is in this condition
+	"""
+	message: String
+	"""
+	Tasks created by the workflow
+	"""
+	tasks: [Task!]!
+}
+
+"""
+The status of a workflow
+"""
+union WorkflowStatus = WorkflowPendingStatus | WorkflowRunningStatus | WorkflowSucceededStatus | WorkflowFailedStatus | WorkflowErroredStatus
+
+"""
+Represents workflow status filters
+"""
+input WorkflowStatusFilter {
+	pending: Boolean! = false
+	running: Boolean! = false
+	succeeded: Boolean! = false
+	failed: Boolean! = false
+	error: Boolean! = false
+}
+
+"""
+All tasks in the workflow have succeded
+"""
+type WorkflowSucceededStatus {
+	"""
+	Time at which this workflow started
+	"""
+	startTime: DateTime!
+	"""
+	Time at which this workflow completed
+	"""
+	endTime: DateTime!
+	"""
+	A human readable message indicating details about why the workflow is in this condition
+	"""
+	message: String
+	"""
+	Tasks created by the workflow
+	"""
+	tasks: [Task!]!
+}
+
+type WorkflowTemplate {
+	"""
+	The name given to the workflow template, globally unique
+	"""
+	name: String!
+	"""
+	The group who maintains the workflow template
+	"""
+	maintainer: String!
+	"""
+	A human readable title for the workflow template
+	"""
+	title: String
+	"""
+	A human readable description of the workflow which is created
+	"""
+	description: String
+	"""
+	The repository storing the code associated with this template.
+	"""
+	repository: String
+	"""
+	A JSON Schema describing the arguments of a Workflow Template
+	"""
+	arguments: JSON!
+	"""
+	A JSON Forms UI Schema describing how to render the arguments of the Workflow Template
+	"""
+	uiSchema: JSON
+	"""
+	Information about where the template is obtained from
+	"""
+	templateSource: TemplateSource
+}
+
+type WorkflowTemplateConnection @shareable {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+	"""
+	A list of edges.
+	"""
+	edges: [WorkflowTemplateEdge!]!
+	"""
+	A list of nodes.
+	"""
+	nodes: [WorkflowTemplate!]!
+}
+
+"""
+An edge in a connection.
+"""
+type WorkflowTemplateEdge @shareable {
+	"""
+	The item at the end of the edge
+	"""
+	node: WorkflowTemplate!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+}
+
+"""
+Supported label filters for ClusterWorkflowTemplates
+"""
+input WorkflowTemplatesFilter {
+	"""
+	The science group owning the template eg imaging
+	"""
+	scienceGroup: [ScienceGroup!]
+}
+
+"""
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM_VALUE
+"""
+Directs the executor to include this field or fragment only when the `if` argument is true.
+"""
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+"""
+Directs the executor to skip this field or fragment when the `if` argument is true.
+"""
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+"""
+Provides a scalar specification URL for specifying the behavior of custom scalar types.
+"""
+directive @specifiedBy(url: String!) on SCALAR
+extend schema @link(
+	url: "https://specs.apollo.dev/federation/v2.5",
+	import: ["@key", "@tag", "@shareable", "@inaccessible", "@override", "@external", "@provides", "@requires", "@composeDirective", "@interfaceObject", "@requiresScopes"]
+)

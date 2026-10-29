@@ -1,80 +1,124 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
-import { SessionSelector } from "./components/SessionSelector";
-import { ScanSelector } from "./components/ScanSelector";
+import { useState, Suspense } from "react";
+import { ApolloProvider } from "@apollo/client/react";
 
-const VERTICAL_SPACING = 2;
-const HORIZONTAL_SPACING = 2;
+import { Box, Drawer, IconButton, Stack, Tooltip } from "@mui/material";
+import { ChevronsLeft, List, Table } from "lucide-react";
 
-export const App: React.FC = () => {
-  return (
-    <>
-      <Grid container spacing={HORIZONTAL_SPACING} columns={2}>
-        <Stack spacing={VERTICAL_SPACING}>
-          <Typography variant="h5">Session</Typography>
-          <SessionSelector />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Scan</Typography>
-          <ScanSelector />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">App</Typography>
-          <PlaceholderComponent
-            placeholderText="App selector component placeholder"
-            height={100}
-            width={500}
-          />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Parameter Configuration</Typography>
-          <PlaceholderComponent
-            placeholderText="Parameter configuration component placeholder"
-            height={200}
-            width={500}
-          />
-        </Stack>
-        <Stack spacing={VERTICAL_SPACING}>
-          <Typography variant="h5">Plot</Typography>
-          <PlaceholderComponent
-            placeholderText="Plot component placeholder"
-            height={200}
-            width={500}
-          />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Log</Typography>
-          <PlaceholderComponent
-            placeholderText="Log component placeholder"
-            height={200}
-            width={500}
-          />
-          <Divider sx={{ width: "100%" }} />
-          <Typography variant="h5">Jobs</Typography>
-          <PlaceholderComponent
-            placeholderText="Jobs component placeholder"
-            height={200}
-            width={500}
-          />
-        </Stack>
-      </Grid>
-    </>
+import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
+
+import { Beamline, WorkflowsViewMode, InstrumentSession } from "./types";
+import { apolloClientWorkflows } from "../../src/ApolloClient";
+import { Sidebar } from "./components/Sidebar";
+import ProcessingView from "./components/ProcessingView/ProcessingView";
+
+const SIDEBAR_WIDTH = 300;
+const PARAM_CONFIG_DRAWER_WIDTH = 600;
+
+type AppProps = {
+  session: InstrumentSession;
+};
+
+export const App: React.FC<AppProps> = ({ session }: AppProps) => {
+  const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
+  const [showParamConfigDrawer, setShowParamConfigDrawer] =
+    useState<boolean>(false);
+  const [workflowsViewMode, setWorkflowsViewMode] = useState<WorkflowsViewMode>(
+    WorkflowsViewMode.List
   );
-};
 
-type PlaceholderComponentProps = {
-  placeholderText: string;
-  height: number;
-  width: number;
-};
+  // TODO: using `toLowerCase()` as the ULIMS instrument session service returns
+  // a capitalised "proposal code", whereas the workflows service only accepts
+  // it in lowercase
+  const selectedVisit = {
+    proposalCode: session.proposal.proposalCategory?.toLowerCase() ?? "",
+    proposalNumber: session.proposal.proposalNumber,
+    number: session.instrumentSessionNumber,
+  };
 
-const PlaceholderComponent = ({
-  placeholderText,
-  height,
-  width,
-}: PlaceholderComponentProps) => {
+  const beamline = Beamline[session.instrument.name as keyof typeof Beamline];
+
   return (
-    <Box
-      sx={{ width: width, height: height, border: "1px dashed grey" }}
-      alignContent="center"
-      justifyItems="center"
-    >
-      <p>{placeholderText}</p>
+    <Box sx={{ display: "flex" }}>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: SIDEBAR_WIDTH,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: SIDEBAR_WIDTH,
+            boxSizing: "border-box",
+          },
+        }}
+      >
+        <Sidebar
+          scanIds={selectedScanIds}
+          updateSelectedScanIds={setSelectedScanIds}
+        />
+      </Drawer>
+      <Drawer
+        variant="temporary"
+        anchor="right"
+        open={showParamConfigDrawer}
+        onOpen={() => setShowParamConfigDrawer(true)}
+        onClose={() => setShowParamConfigDrawer(false)}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
+        ModalProps={{ keepMounted: true }}
+      >
+        <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
+          <Suspense>
+            <ApolloProvider client={apolloClientWorkflows}>
+              <ProcessingView
+                visit={selectedVisit}
+                beamline={beamline}
+                startTime={session.startTime}
+                scanIds={selectedScanIds}
+              />
+            </ApolloProvider>
+          </Suspense>
+        </Box>
+      </Drawer>
+      <Box sx={{ flexGrow: 1 }}>
+        <ApolloProvider client={apolloClientWorkflows}>
+          <WorkflowsDataFetcher
+            visit={selectedVisit}
+            workflowsViewMode={workflowsViewMode}
+          />
+        </ApolloProvider>
+      </Box>
+      <Box
+        sx={{
+          marginLeft: 1,
+        }}
+      >
+        <Stack direction="column">
+          <Tooltip title="Open parameter configuration">
+            <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+              <ChevronsLeft />
+            </IconButton>
+          </Tooltip>
+          <Tooltip
+            title={
+              workflowsViewMode === WorkflowsViewMode.List
+                ? "Table view"
+                : "List view"
+            }
+          >
+            <IconButton
+              onClick={() =>
+                workflowsViewMode === WorkflowsViewMode.List
+                  ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                  : setWorkflowsViewMode(WorkflowsViewMode.List)
+              }
+            >
+              {workflowsViewMode === WorkflowsViewMode.List ? (
+                <Table />
+              ) : (
+                <List />
+              )}
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Box>
     </Box>
   );
 };

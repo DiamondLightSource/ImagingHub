@@ -1,0 +1,376 @@
+schema @link(url: "https://specs.apollo.dev/federation/v2.7", import: ["@key", "@shareable"]) {
+  query: Query
+  mutation: Mutation
+}
+
+type Account {
+  username: String!
+  emailAddress: String
+  title: String
+  givenName: String @deprecated(reason: "given_name is deprecated, please use preferred_given_name instead.")
+  preferredGivenName: String
+  familyName: String
+  type: AccountType!
+  state: AccountState!
+  proposalRoles(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [ProposalRoleSortInput!] = null, filterBy: ProposalRoleFilterInput = null): ProposalAccountConnection!
+  instrumentSessionRoles(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [InstrumentSessionRoleSortInput!] = null, filterBy: InstrumentSessionRoleFilterInput = null): InstrumentSessionRoleConnection!
+}
+
+input AccountFilterInput {
+  emailAddress: StringFilterInput = null
+  givenName: StringFilterInput = null
+  preferredGivenName: StringFilterInput = null
+  familyName: StringFilterInput = null
+}
+
+enum AccountSortField {
+  familyName
+  givenName
+  preferredGivenName
+}
+
+input AccountSortInput {
+  field: AccountSortField!
+  orderBy: SortOrder!
+}
+
+enum AccountState {
+  enabled
+  disabled
+}
+
+enum AccountType {
+  user
+  staff
+  functional
+}
+
+input BooleanFilterInput {
+  eq: Boolean = null
+  neq: Boolean = null
+}
+
+input CreateInstrumentSessionInput {
+  """Number of the proposal the session is for"""
+  proposalNumber: Int!
+
+  """Name of the instrument the session is for"""
+  instrumentName: String!
+
+  """
+  Instrument Session information that isn't needed by the Session Service but should be passed through the UAS
+  """
+  additionalInfo: JSON = null
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+input DateTimeFilterInput {
+  eq: DateTime = null
+  neq: DateTime = null
+  gt: DateTime = null
+  lt: DateTime = null
+  gte: DateTime = null
+  lte: DateTime = null
+}
+
+type Instrument {
+  name: String!
+  key: String!
+  scienceGroup: String
+  description: String
+  proposals(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [ProposalSortInput!] = null, filterBy: ProposalFilterInput = null): ProposalConnection!
+  instrumentSessions(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [InstrumentSessionSortInput!] = null, filterBy: InstrumentSessionFilterInput = null): InstrumentSessionConnection!
+
+  """
+  Get paginated staff accounts for this instrument. Trusted users see all accounts; fedid users see only accounts linked to sessions or instruments they are associated with.
+  """
+  staff(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [AccountSortInput!] = null, filterBy: AccountFilterInput = null): StaffConnection!
+}
+
+type InstrumentSession @key(fields: "instrumentSessionNumber proposal {proposalNumber}") @key(fields: "instrumentSessionReference") {
+  instrumentSessionNumber: Int!
+  instrumentSessionReference: String
+  startTime: DateTime
+  endTime: DateTime
+  type: String
+  state: String
+  riskRating: String
+  proposal: Proposal!
+  instrument: Instrument!
+  roles: [InstrumentSessionRole!]!
+}
+
+type InstrumentSessionConnection @shareable {
+  edges: [InstrumentSessionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type InstrumentSessionEdge @shareable {
+  cursor: String!
+  node: InstrumentSession!
+}
+
+input InstrumentSessionFilterInput {
+  instrumentSessionNumber: IntFilterInput = null
+  startTime: DateTimeFilterInput = null
+  endTime: DateTimeFilterInput = null
+  type: StringFilterInput = null
+  state: InstrumentSessionStateFilterInput = null
+  riskRating: StringFilterInput = null
+  proposalNumber: IntFilterInput = null
+  proposalCategory: StringFilterInput = null
+}
+
+type InstrumentSessionMutations @key(fields: "instrumentSessionNumber proposalNumber") {
+  instrumentSessionNumber: Int!
+  proposalNumber: Int!
+}
+
+type InstrumentSessionRole {
+  account: Account!
+  role: String!
+  onSite: Boolean!
+  instrumentSession(filterBy: InstrumentSessionFilterInput = null): InstrumentSession!
+}
+
+type InstrumentSessionRoleConnection @shareable {
+  edges: [InstrumentSessionRoleEdge!]!
+  pageInfo: PageInfo!
+}
+
+type InstrumentSessionRoleEdge @shareable {
+  cursor: String!
+  node: InstrumentSessionRole!
+}
+
+input InstrumentSessionRoleFilterInput {
+  role: StringFilterInput = null
+  onSite: BooleanFilterInput = null
+}
+
+enum InstrumentSessionRoleSortField {
+  instrumentSessionNumber
+  role
+  onSite
+}
+
+input InstrumentSessionRoleSortInput {
+  field: InstrumentSessionRoleSortField!
+  orderBy: SortOrder!
+}
+
+enum InstrumentSessionSortField {
+  instrumentSessionNumber
+  startTime
+  endTime
+  type
+  state
+  riskRating
+  proposalNumber
+}
+
+input InstrumentSessionSortInput {
+  field: InstrumentSessionSortField!
+  orderBy: SortOrder!
+}
+
+enum InstrumentSessionState {
+  CANCELLED
+  COMPLETED
+  FUTURE
+  IN_PROGRESS
+}
+
+input InstrumentSessionStateFilterInput {
+  eq: InstrumentSessionState = null
+  neq: InstrumentSessionState = null
+}
+
+input IntFilterInput {
+  eq: Int = null
+  neq: Int = null
+  gt: Int = null
+  lt: Int = null
+  gte: Int = null
+  lte: Int = null
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
+
+type Mutation {
+  createInstrumentSession(input: CreateInstrumentSessionInput!): InstrumentSession!
+  instrumentSession(proposalNumber: Int!, instrumentSessionNumber: Int!): InstrumentSessionMutations
+}
+
+type PageInfo @shareable {
+  startCursor: String
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type Proposal @key(fields: "proposalNumber") @key(fields: "proposalReference") {
+  proposalNumber: Int!
+  proposalCategory: String
+  title: String
+  summary: String
+  state: ProposalState!
+  proposalReference: String
+  instrumentSessions(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [InstrumentSessionSortInput!] = null, filterBy: InstrumentSessionFilterInput = null): InstrumentSessionConnection!
+  instruments: [Instrument!]!
+  roles: [ProposalAccount!]!
+}
+
+type ProposalAccount {
+  account: Account!
+  role: String!
+  proposal(filterBy: ProposalFilterInput = null): Proposal
+}
+
+type ProposalAccountConnection @shareable {
+  edges: [ProposalAccountEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProposalAccountEdge @shareable {
+  cursor: String!
+  node: ProposalAccount!
+}
+
+type ProposalConnection @shareable {
+  edges: [ProposalEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProposalEdge @shareable {
+  cursor: String!
+  node: Proposal!
+}
+
+input ProposalFilterInput {
+  proposalNumber: IntFilterInput = null
+  proposalCategory: StringFilterInput = null
+  title: StringFilterInput = null
+  state: ProposalStateFilterInput = null
+}
+
+input ProposalRoleFilterInput {
+  role: StringFilterInput = null
+}
+
+enum ProposalRoleSortField {
+  proposalNumber
+  role
+}
+
+input ProposalRoleSortInput {
+  field: ProposalRoleSortField!
+  orderBy: SortOrder!
+}
+
+enum ProposalSortField {
+  proposalNumber
+}
+
+input ProposalSortInput {
+  field: ProposalSortField!
+  orderBy: SortOrder!
+}
+
+enum ProposalState {
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+input ProposalStateFilterInput {
+  eq: ProposalState = null
+  neq: ProposalState = null
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+
+  """Get a proposal by its number"""
+  proposal(proposalNumber: Int!): Proposal
+
+  """Get a list of proposals"""
+  proposals(first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [ProposalSortInput!] = null, filterBy: ProposalFilterInput = null): ProposalConnection!
+
+  """
+  Get a proposal by its reference string e.g. 'MX12345'. The lookup is case-insensitive.
+  """
+  proposalByReference(reference: String!): Proposal
+
+  """Get a instrument session"""
+  instrumentSession(proposalNumber: Int!, instrumentSessionNumber: Int!): InstrumentSession
+
+  """
+  Get an instrument session by its reference string e.g. 'MX12345-1'. The lookup is case-insensitive.
+  """
+  instrumentSessionByReference(reference: String!): InstrumentSession
+
+  """Get a list of instrument sessions"""
+  instrumentSessions(proposalNumber: Int = null @deprecated(reason: "proposalNumber is deprecated; use filterBy.proposalNumber instead."), proposalCategory: String = null @deprecated(reason: "proposalCategory is deprecated; use filterBy.proposalCategory instead."), first: Int = null, last: Int = null, after: String = null, before: String = null, sortBy: [InstrumentSessionSortInput!] = null, filterBy: InstrumentSessionFilterInput = null): InstrumentSessionConnection!
+
+  """Get an instrument by name"""
+  instrumentByName(name: String!): Instrument
+
+  """Get an instrument by key"""
+  instrumentByKey(key: String!): Instrument
+
+  """Get a list of instruments"""
+  instruments(scienceGroup: String = null): [Instrument!]!
+
+  """Get an account"""
+  account(username: String!): Account
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+type Staff {
+  username: String!
+  emailAddress: String
+  title: String
+  givenName: String @deprecated(reason: "given_name is deprecated, please use preferred_given_name instead.")
+  preferredGivenName: String
+  familyName: String
+  type: AccountType!
+  state: AccountState!
+}
+
+type StaffConnection @shareable {
+  edges: [StaffEdge!]!
+  pageInfo: PageInfo!
+}
+
+type StaffEdge @shareable {
+  cursor: String!
+  node: Staff!
+}
+
+input StringFilterInput {
+  eq: String = null
+  neq: String = null
+  contains: String = null
+  notContains: String = null
+  startsWith: String = null
+  endsWith: String = null
+}
+
+scalar _Any
+
+union _Entity = InstrumentSession | InstrumentSessionMutations | Proposal
+
+type _Service {
+  sdl: String!
+}

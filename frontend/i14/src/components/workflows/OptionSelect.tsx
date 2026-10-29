@@ -1,13 +1,14 @@
 import React, { FC } from "react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  IconButton,
-  Tooltip,
-  Grid,
-} from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
+
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+
+import { Info } from "lucide-react";
+
 import type { SelectChangeEvent } from "@mui/material/Select";
 import type { Option } from "../../types/workflowFields";
 
@@ -24,7 +25,8 @@ const OptionSelect: FC<Props> = ({ label, value, options, onChange }) => {
   return (
     <FormControl>
       <InputLabel shrink>{label}</InputLabel>
-      <Grid>
+
+      <Stack direction="row" alignItems="center">
         <Select
           native
           label={label}
@@ -38,12 +40,15 @@ const OptionSelect: FC<Props> = ({ label, value, options, onChange }) => {
             </option>
           ))}
         </Select>
-        <Tooltip title={selected?.desc ?? ""}>
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
-      </Grid>
+
+        {selected?.desc && (
+          <Tooltip title={selected?.desc ?? ""}>
+            <IconButton size="small">
+              <Info />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Stack>
     </FormControl>
   );
 };
