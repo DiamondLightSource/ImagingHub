@@ -128,7 +128,6 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
           `${from}-${to} on page ${page + 1}`
         }
       />
-      <Paper elevation={0} sx={{ height: "100%" }} />
     </Paper>
   );
 };
