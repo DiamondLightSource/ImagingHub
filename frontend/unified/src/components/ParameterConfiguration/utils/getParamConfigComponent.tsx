@@ -11,6 +11,7 @@ import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfigurati
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
+import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -75,6 +76,15 @@ export const getParamConfigComponent = (
       "httomo-fbp-180": (
         <LoaderProvider>
           <Fbp180ParameterConfiguration
+            setParameters={setTemplateParameters}
+            setResourceParameters={setResourceParameters}
+            visitDirpath={visitDirPath}
+          />
+        </LoaderProvider>
+      ),
+      "httomo-workshop": (
+        <LoaderProvider>
+          <SyntheticDataParameterConfiguration
             setParameters={setTemplateParameters}
             setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
