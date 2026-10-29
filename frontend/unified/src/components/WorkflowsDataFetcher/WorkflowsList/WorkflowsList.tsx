@@ -1,10 +1,11 @@
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { Box } from "@mui/material";
-import { Suspense, useCallback, useState } from "react";
+import { Suspense } from "react";
 import { WorkflowsTableQueryVariables } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/WorkflowsTableQuery.generated";
 import { WORKFLOWSTABLE_QUERY } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/WorkflowsTableQuery";
 import { useQuery } from "@apollo/client/react";
 import { WorkflowsListContents } from "./WorkflowsListContents";
+import { useServerSidePagination } from "../useServerSidePagination";
 
 type WorkflowsListProps = {
   visit: Visit;
@@ -17,15 +18,15 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
   selectedWorkflow,
   setSelectedWorkflow,
 }: WorkflowsListProps) => {
-  const [selectedLimit, setSelectedLimit] = useState<number>(5);
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [cursor, setCursor] = useState<string | null>(null);
-
-  const onChangeLimit = useCallback((limit: number) => {
-    setSelectedLimit(limit);
-    setCurrentPage(0);
-    setCursor(null);
-  }, []);
+  const {
+    cursor,
+    currentPage,
+    setCurrentPage,
+    selectedLimit,
+    goToPage,
+    changeLimit,
+    updatePageInfo,
+  } = useServerSidePagination();
 
   const queryVariables: WorkflowsTableQueryVariables = {
     visit,
@@ -48,10 +49,11 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             selectedLimit={selectedLimit}
-            setSelectedLimit={onChangeLimit}
-            setCursor={setCursor}
+            setSelectedLimit={changeLimit}
             setSelectedWorkflow={setSelectedWorkflow}
             selectedWorkflow={selectedWorkflow}
+            updatePageInfo={updatePageInfo}
+            onPageChange={goToPage}
           />
         )}
       </Suspense>

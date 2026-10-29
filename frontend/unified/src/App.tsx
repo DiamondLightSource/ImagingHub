@@ -62,6 +62,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
         onOpen={() => setShowParamConfigDrawer(true)}
         onClose={() => setShowParamConfigDrawer(false)}
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
+        ModalProps={{ keepMounted: true }}
       >
         <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
           <Suspense>

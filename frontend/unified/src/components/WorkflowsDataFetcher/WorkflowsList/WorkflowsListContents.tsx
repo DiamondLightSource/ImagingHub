@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { WorkflowEntryWrapper } from "./WorkflowEntryWrapper";
+import { useEffect } from "react";
 
 type WorkflowsListContentsProps = {
   queryData: TableContentFragment;
@@ -18,9 +19,14 @@ type WorkflowsListContentsProps = {
   setCurrentPage: (newPage: number) => void;
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
-  setCursor: (newCursor: string | null) => void;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
+  updatePageInfo: (hasNextPage: boolean, endCursor: string | null) => void;
+  onPageChange: (
+    page: number,
+    endCursor?: string | null,
+    hasNextPage?: boolean
+  ) => void;
 };
 
 interface TablePaginationActionProps {
@@ -37,9 +43,10 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   setCurrentPage,
   selectedLimit,
   setSelectedLimit,
-  setCursor,
   selectedWorkflow,
   setSelectedWorkflow,
+  updatePageInfo,
+  onPageChange,
 }: WorkflowsListContentsProps) => {
   const { complete, data } = useFragment({
     fragment: TABLECONTENT_FRAGMENT,
@@ -47,10 +54,14 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
     from: queryData,
   });
 
+  const pageInfo = data.pageInfo;
+
+  useEffect(() => {
+    updatePageInfo(pageInfo?.hasNextPage, pageInfo?.endCursor ?? null);
+  }, [pageInfo, updatePageInfo]);
+
   if (!complete) return <div>Not Complete</div>;
   if (!data) return <div>No Data</div>;
-
-  const pageInfo = data.pageInfo;
 
   const handlePageChange = (_: unknown, newPage: number) => {
     setCurrentPage(newPage);
@@ -70,13 +81,13 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
       event: React.MouseEvent<HTMLButtonElement>
     ) => {
       onPaginationPageChange(event, page - 1);
-      setCursor(pageInfo.startCursor);
+      onPageChange(page - 1, pageInfo?.endCursor, pageInfo?.hasNextPage);
     };
     const handleNextPageButtonClick = (
       event: React.MouseEvent<HTMLButtonElement>
     ) => {
       onPaginationPageChange(event, page + 1);
-      setCursor(pageInfo.endCursor);
+      onPageChange(page + 1, pageInfo?.endCursor, pageInfo?.hasNextPage);
     };
 
     return (
@@ -128,7 +139,6 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
           `${from}-${to} on page ${page + 1}`
         }
       />
-      <Paper elevation={0} sx={{ height: "100%" }} />
     </Paper>
   );
 };
