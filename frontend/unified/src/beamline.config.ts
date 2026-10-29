@@ -19,7 +19,7 @@ export type MetadataComponent<T> = {
 };
 
 type BeamlineConfig = {
-  ulims_schema: string;
+  ulimsSchema: string;
   version: string;
   startTime: (data: ScanNodeRaw) => string | undefined | null;
   endTime: (data: ScanNodeRaw) => string | undefined | null;
@@ -83,7 +83,7 @@ export function getBeamlineConfig(
     for (const conf of BEAMLINE_CONFIG) {
       // TODO: Perform better version number matching
       if (
-        baseName === conf.ulims_schema &&
+        baseName === conf.ulimsSchema &&
         versionNumber === `${conf.version}.json`
       ) {
         return conf;
@@ -96,7 +96,7 @@ export function getBeamlineConfig(
 const BEAMLINE_CONFIG: BeamlineConfig[] = [
   {
     // Provide schema version that this config is valid for
-    ulims_schema:
+    ulimsSchema:
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/dummy_scan",
     version: "0.0.1",
 
@@ -129,7 +129,7 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
     ],
   },
   {
-    ulims_schema:
+    ulimsSchema:
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/mapping_scan",
     version: "1.0.0",
     startTime: (v) => v.data?.scan_parameters?.start_time,
