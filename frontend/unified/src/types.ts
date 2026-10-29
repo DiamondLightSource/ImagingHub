@@ -75,6 +75,12 @@ export type TemplateComponentProps = {
   visitDirpath?: string;
 };
 
+export type ResourceParameters = {
+  nprocs: string | null;
+  memory: string | null;
+  usegpu: boolean | null;
+};
+
 export type TaskStatus =
   | "PENDING"
   | "RUNNING"
