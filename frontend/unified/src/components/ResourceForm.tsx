@@ -28,10 +28,15 @@ export const ResourceForm: FC = ({
   resourceDisplayList,
   setResourceParameters,
 }: any) => {
-
-  const [memory, setMemory] = useState<string>(resourceDisplayList.memory?.default)
-  const [nprocs, setNprocs] = useState<string>(resourceDisplayList.nprocs?.default)
-  const [useGpu, setUseGpu] = useState<boolean>(resourceDisplayList.usegpu?.default)
+  const [memory, setMemory] = useState<string>(
+    resourceDisplayList.memory?.default
+  );
+  const [nprocs, setNprocs] = useState<string>(
+    resourceDisplayList.nprocs?.default
+  );
+  const [useGpu, setUseGpu] = useState<boolean>(
+    resourceDisplayList.usegpu?.default
+  );
 
   useEffect(() => {
     (setResourceParameters({
@@ -44,8 +49,8 @@ export const ResourceForm: FC = ({
 
   return (
     <>
-      {resourceDisplayList.memory?.default || 
-      resourceDisplayList.nprocs?.default || 
+      {resourceDisplayList.memory?.default ||
+      resourceDisplayList.nprocs?.default ||
       resourceDisplayList.usegpu?.default ? (
         <Card
           variant="outlined"
