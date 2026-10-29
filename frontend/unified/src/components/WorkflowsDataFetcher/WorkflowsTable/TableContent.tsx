@@ -16,6 +16,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import TableRowWrapper from "./TableRowWrapper";
 import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
 import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
+import { getWorkflowStatusIcon } from "./StatusIcons";
 
 interface TableContentProps {
   queryData: TableContentFragment;
@@ -37,6 +38,15 @@ interface TablePaginationActionProps {
   page: number;
   onPageChange: (event: MouseEvent<HTMLButtonElement>, newPage: number) => void;
 }
+
+const EmptyTableRow = () => {
+  return (
+    <TableRow sx={{ visibility: "hidden" }}>
+      <TableCell colSpan={5} />
+      <TableCell>{getWorkflowStatusIcon("Unknown")}</TableCell>
+    </TableRow>
+  );
+};
 
 const TableContent = ({
   queryData,
@@ -65,6 +75,9 @@ const TableContent = ({
   if (!data) return <div>No Data</div>;
 
   const fetchedWorkflows = data.nodes;
+
+  // Table is 5 rows high
+  const emptyRows = 5 - fetchedWorkflows.length;
 
   const handlePageChange = (_: unknown, newPage: number) => {
     setCurrentPage(newPage);
@@ -134,6 +147,7 @@ const TableContent = ({
                 setSelectedWorkflow={setSelectedWorkflow}
               />
             ))}
+            {Array(emptyRows).fill(<EmptyTableRow />)}
           </TableBody>
           <TableFooter>
             <TableRow>
