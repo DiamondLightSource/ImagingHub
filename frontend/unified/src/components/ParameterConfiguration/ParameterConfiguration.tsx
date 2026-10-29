@@ -60,8 +60,8 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     scanIds[0]
   );
 
-  function dataMap(obj: any) {
-    return Object.keys(obj).reduce(function (result: any, key: any) {
+  function getDefaults(obj: object) {
+    return Object.keys(obj).reduce(function (result: object, key: string) {
       if (key === "memory" || key === "nprocs" || key === "usegpu") {
         result[key] = obj[key];
       }
@@ -69,13 +69,17 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     }, {});
   }
 
-  type info = { nprocs: string; memory: string; usegpu: boolean };
+  type info = {
+    nprocs: string | null;
+    memory: string | null;
+    usegpu: boolean | null;
+  };
   type tmplateinfo = { name: string; info: info };
   let resourceDisplayList: tmplateinfo = {};
 
-  data.workflowTemplates.nodes.forEach((q: any) => {
+  data.workflowTemplates.nodes.forEach((q) => {
     if (q.name.startsWith(technique.toLowerCase())) {
-      resourceDisplayList[q.name] = dataMap(q.arguments.properties);
+      resourceDisplayList[q.name] = getDefaults(q.arguments.properties);
     }
   });
 

@@ -1,17 +1,13 @@
-import { FC, ChangeEvent, useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import {
-  InputLabel,
-  Grid,
   Stack,
   TextField,
   FormControlLabel,
   Checkbox,
   Card,
-  Typography,
 } from "@mui/material";
 
 export type ResourceFormProps = {
-  //params: ResourceParameters;
   setParams: (_: ResourceParameters) => void;
   showGpu?: boolean;
   setUseGpu: (_: boolean | null) => void;
@@ -32,22 +28,10 @@ export const ResourceForm: FC = ({
   resourceDisplayList,
   setResourceParameters,
 }: any) => {
-  var defaultMem: string = "20Gi";
-  var defaultNprocs: string = "1";
-  var defaultGpu: boolean = true;
-  if (Object.hasOwn(resourceDisplayList, "memory")) {
-    defaultMem = resourceDisplayList.memory.default;
-  }
-  if (Object.hasOwn(resourceDisplayList, "nprocs")) {
-    defaultNprocs = resourceDisplayList.nprocs.default;
-  }
-  if (Object.hasOwn(resourceDisplayList, "usegpu")) {
-    defaultGpu = resourceDisplayList.usegpu.default;
-  }
 
-  const [memory, setMemory] = useState<string>(defaultMem);
-  const [nprocs, setNprocs] = useState<string>(defaultNprocs);
-  const [useGpu, setUseGpu] = useState<boolean>(defaultGpu);
+  const [memory, setMemory] = useState<string>(resourceDisplayList.memory?.default)
+  const [nprocs, setNprocs] = useState<string>(resourceDisplayList.nprocs?.default)
+  const [useGpu, setUseGpu] = useState<boolean>(resourceDisplayList.usegpu?.default)
 
   useEffect(() => {
     (setResourceParameters({
@@ -60,9 +44,9 @@ export const ResourceForm: FC = ({
 
   return (
     <>
-      {Object.hasOwn(resourceDisplayList, "memory") ||
-      Object.hasOwn(resourceDisplayList, "nprocs") ||
-      Object.hasOwn(resourceDisplayList, "usegpu") ? (
+      {resourceDisplayList.memory?.default || 
+      resourceDisplayList.nprocs?.default || 
+      resourceDisplayList.usegpu?.default ? (
         <Card
           variant="outlined"
           sx={{
@@ -73,7 +57,7 @@ export const ResourceForm: FC = ({
           }}
         >
           <Stack direction="column" spacing={2}>
-            {Object.hasOwn(resourceDisplayList, "memory") && (
+            {resourceDisplayList.memory?.default && (
               <TextField
                 label="Requested CPU memory"
                 value={memory}
@@ -81,16 +65,17 @@ export const ResourceForm: FC = ({
                 size="small"
               />
             )}
-            {Object.hasOwn(resourceDisplayList, "nprocs") && (
+            {resourceDisplayList.nprocs?.default && (
               <TextField
                 label="Nr. of processes"
                 value={nprocs}
                 onChange={(e) => setNprocs(e.target.value)}
                 size="small"
+                type="number"
               />
             )}
           </Stack>
-          {Object.hasOwn(resourceDisplayList, "usegpu") && (
+          {resourceDisplayList.usegpu?.default && (
             <FormControlLabel
               control={
                 <Checkbox
