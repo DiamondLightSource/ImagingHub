@@ -26,7 +26,7 @@ export const determineBeamlineRawDataFilepath = (
 
 export const determineBeamlineVisitDirpath = (
   beamline: Beamline,
-  year: string,
+  year: number,
   visit: Visit
 ) => {
   return `/dls/${beamline}/data/${year}/${visitToText(visit)}/`;

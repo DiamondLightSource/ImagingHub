@@ -35,7 +35,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
     templateList.length > 0 ? templateList[0].name : null
   );
   const [templateParameters, setTemplateParameters] = useState<object>({});
-  const [resourceParameters, setResourceParameters] = useState({
+  const [resourceParameters, setResourceParameters] = useState<object>({
     nprocs: 1,
     memory: "20Gi",
   });
@@ -47,7 +47,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
   if (error) console.error(`Error: ${error.message}`);
 
-  const sessionYear = new Date(startTime).getFullYear();
+  const sessionYear = new Date(startTime as string).getFullYear();
   const visitDirpath = determineBeamlineVisitDirpath(
     beamline,
     sessionYear,
