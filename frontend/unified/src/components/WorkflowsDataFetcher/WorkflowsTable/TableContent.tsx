@@ -11,11 +11,12 @@ import {
   TableRow,
 } from "@mui/material";
 import { useFragment } from "@apollo/client/react";
-import { ChangeEvent, MouseEvent } from "react";
+import { ChangeEvent, MouseEvent, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import TableRowWrapper from "./TableRowWrapper";
 import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
 import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
+import { getWorkflowStatusIcon } from "./StatusIcons";
 
 interface TableContentProps {
   queryData: TableContentFragment;
@@ -23,9 +24,14 @@ interface TableContentProps {
   setCurrentPage: (newPage: number) => void;
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
-  setCursor: (newCursor: string | null) => void;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
+  updatePageInfo: (hasNextPage: boolean, endCursor: string | null) => void;
+  onPageChange: (
+    page: number,
+    endCursor?: string | null,
+    hasNextPage?: boolean
+  ) => void;
 }
 
 interface TablePaginationActionProps {
@@ -33,15 +39,25 @@ interface TablePaginationActionProps {
   onPageChange: (event: MouseEvent<HTMLButtonElement>, newPage: number) => void;
 }
 
+const EmptyTableRow = () => {
+  return (
+    <TableRow sx={{ visibility: "hidden" }}>
+      <TableCell colSpan={5} />
+      <TableCell>{getWorkflowStatusIcon("Unknown")}</TableCell>
+    </TableRow>
+  );
+};
+
 const TableContent = ({
   queryData,
   currentPage,
   setCurrentPage,
   selectedLimit,
   setSelectedLimit,
-  setCursor,
   selectedWorkflow,
   setSelectedWorkflow,
+  updatePageInfo,
+  onPageChange,
 }: TableContentProps) => {
   const { complete, data } = useFragment({
     fragment: TABLECONTENT_FRAGMENT,
@@ -49,11 +65,19 @@ const TableContent = ({
     from: queryData,
   });
 
+  const pageInfo = data.pageInfo;
+
+  useEffect(() => {
+    updatePageInfo(pageInfo?.hasNextPage, pageInfo?.endCursor ?? null);
+  }, [pageInfo, updatePageInfo]);
+
   if (!complete) return <div>Not Complete</div>;
   if (!data) return <div>No Data</div>;
 
-  const pageInfo = data.pageInfo;
   const fetchedWorkflows = data.nodes;
+
+  // Table is 5 rows high
+  const emptyRows = 5 - fetchedWorkflows.length;
 
   const handlePageChange = (_: unknown, newPage: number) => {
     setCurrentPage(newPage);
@@ -71,13 +95,13 @@ const TableContent = ({
       event: MouseEvent<HTMLButtonElement>
     ) => {
       onPaginationPageChange(event, page - 1);
-      setCursor(pageInfo.startCursor);
+      onPageChange(page - 1, pageInfo?.endCursor, pageInfo?.hasNextPage);
     };
     const handleNextPageButtonClick = (
       event: MouseEvent<HTMLButtonElement>
     ) => {
       onPaginationPageChange(event, page + 1);
-      setCursor(pageInfo.endCursor);
+      onPageChange(page + 1, pageInfo?.endCursor, pageInfo?.hasNextPage);
     };
 
     return (
@@ -123,6 +147,7 @@ const TableContent = ({
                 setSelectedWorkflow={setSelectedWorkflow}
               />
             ))}
+            {Array(emptyRows).fill(<EmptyTableRow />)}
           </TableBody>
           <TableFooter>
             <TableRow>

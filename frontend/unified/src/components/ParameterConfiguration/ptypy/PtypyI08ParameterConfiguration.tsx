@@ -9,19 +9,14 @@ import { useEffect, useState } from "react";
 
 const PtypyI08ParameterConfiguration = ({
   setParameters,
-  setResourceParameters,
 }: {
   setParameters: (_: object) => void;
-  setResourceParameters: (_: object) => void;
 }) => {
   const [binning, setBinning] = useState<string>("2");
   const [defocus, setDefocus] = useState<string>("50");
-  const [memory, setMemory] = useState<string>("100Gi");
-  const [nprocs, setNprocs] = useState<string>("1");
   const [numIter, setNumIter] = useState<string>("100");
   const [probeModes, setProbeModes] = useState<string>("1");
   const [outPath, setOutPath] = useState<string>("processing/workflows/ptypy");
-  const [useGpu, setUseGpu] = useState<boolean>(true);
 
   useEffect(() => {
     setParameters({
@@ -30,24 +25,8 @@ const PtypyI08ParameterConfiguration = ({
       binning: binning,
       numiter: numIter,
       probeModes: probeModes,
-      usegpu: useGpu,
     });
-    setResourceParameters({
-      memory: memory,
-      nprocs: nprocs,
-    });
-  }, [
-    setParameters,
-    setResourceParameters,
-    binning,
-    defocus,
-    memory,
-    nprocs,
-    numIter,
-    probeModes,
-    outPath,
-    useGpu,
-  ]);
+  }, [setParameters, binning, defocus, numIter, probeModes, outPath]);
 
   return (
     <Card
@@ -79,18 +58,6 @@ const PtypyI08ParameterConfiguration = ({
           size="small"
         />
         <TextField
-          label="Requested CPU memory"
-          value={memory}
-          onChange={(e) => setMemory(e.target.value)}
-          size="small"
-        />
-        <TextField
-          label="Nr. of processes"
-          value={nprocs}
-          onChange={(e) => setNprocs(e.target.value)}
-          size="small"
-        />
-        <TextField
           label="Nr. of iterations"
           value={binning}
           onChange={(e) => setNumIter(e.target.value)}
@@ -101,15 +68,6 @@ const PtypyI08ParameterConfiguration = ({
           value={probeModes}
           onChange={(e) => setProbeModes(e.target.value)}
           size="small"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={useGpu}
-              onChange={(e) => setUseGpu(e.target.checked)}
-            />
-          }
-          label="Use GPU"
         />
       </Stack>
     </Card>
