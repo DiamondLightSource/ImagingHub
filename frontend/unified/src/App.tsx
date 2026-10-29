@@ -48,7 +48,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   }, [sessionRef]);
 
   return (
-    <Box sx={{ display: "flex", height: "100%" }}>
+    <Box sx={{ display: "flex" }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -56,7 +56,6 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: SIDEBAR_WIDTH,
-            height: "100%",
             boxSizing: "border-box",
           },
         }}
