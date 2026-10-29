@@ -1,4 +1,4 @@
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
 import { Box, Drawer, IconButton, Stack, Tooltip } from "@mui/material";
@@ -7,7 +7,10 @@ import { ChevronsLeft, List, Table } from "lucide-react";
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
 import { Beamline, WorkflowsViewMode, InstrumentSession } from "./types";
-import { apolloClientWorkflows } from "../../src/ApolloClient";
+import {
+  apolloClientWorkflows,
+  apolloClientUlimsScans,
+} from "../../src/ApolloClient";
 import { Sidebar } from "./components/Sidebar";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
 
@@ -30,12 +33,19 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   // a capitalised "proposal code", whereas the workflows service only accepts
   // it in lowercase
   const selectedVisit = {
-    proposalCode: session.proposal.proposalCategory?.toLowerCase() ?? "",
-    proposalNumber: session.proposal.proposalNumber,
+    proposalCode: session?.proposal?.proposalCategory?.toLowerCase() ?? "",
+    proposalNumber: session.proposal?.proposalNumber ?? NaN,
     number: session.instrumentSessionNumber,
   };
 
+  const sessionRef = `${selectedVisit.proposalCode}${selectedVisit.proposalNumber}-${selectedVisit.number}`;
+
   const beamline = Beamline[session.instrument.name as keyof typeof Beamline];
+
+  // Clear selected scan IDs when session changes
+  useEffect(() => {
+    setSelectedScanIds([]);
+  }, [sessionRef]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -50,10 +60,13 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           },
         }}
       >
-        <Sidebar
-          scanIds={selectedScanIds}
-          updateSelectedScanIds={setSelectedScanIds}
-        />
+        <ApolloProvider client={apolloClientUlimsScans}>
+          <Sidebar
+            sessionRef={sessionRef}
+            scanIds={selectedScanIds}
+            updateSelectedScanIds={setSelectedScanIds}
+          />
+        </ApolloProvider>
       </Drawer>
       <Drawer
         variant="temporary"

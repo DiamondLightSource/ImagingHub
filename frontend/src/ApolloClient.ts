@@ -9,6 +9,7 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { OperationTypeNode } from "graphql";
 import { createClient } from "graphql-ws";
 import { readTokenStore } from "./token";
+import { relayStylePagination } from "./pagination";
 
 const httpLinkWorkflows = new HttpLink({
   uri: import.meta.env.VITE_WORKFLOWS_GRAPHQL_HTTP_ENDPOINT,
@@ -74,4 +75,19 @@ const httpLinkUlims = new HttpLink({
 export const apolloClientUlims = new ApolloClient({
   link: authLink.concat(httpLinkUlims),
   cache: new InMemoryCache(),
+});
+
+export const apolloClientUlimsScans = new ApolloClient({
+  link: authLink.concat(httpLinkUlims),
+  cache: new InMemoryCache({
+    typePolicies: {
+      InstrumentSession: {
+        keyFields: ["proposal"],
+        fields: {
+          // https://www.apollographql.com/docs/react/pagination/cursor-based#relay-style-cursor-pagination
+          datasets: relayStylePagination(["reference", "filter"]), //, "pagination", ["first", "after"]]),
+        },
+      },
+    },
+  }),
 });

@@ -1,5 +1,6 @@
 import { ProcessingViewQuery } from "./graphql/__generated__/ProcessingViewQuery.generated";
 import { SessionQuery } from "./graphql/__generated__/SessionQuery.generated";
+import { InstrumentSessionQuery } from "./graphql/__generated__/InstrumentSessionQuery.generated";
 
 const Technique = {
   Dpc: "Dpc",
@@ -128,3 +129,22 @@ const WorkflowsViewMode = {
 type WorkflowsViewMode =
   (typeof WorkflowsViewMode)[keyof typeof WorkflowsViewMode];
 export { WorkflowsViewMode };
+
+export type ScanNodeRaw = Omit<
+  NonNullable<
+    InstrumentSessionQuery["instrumentSessionByReference"]
+  >["datasets"]["edges"][0]["node"],
+  "data"
+> & { data: { [key: string]: any } };
+
+export type ScanNodeProcessed = ScanNodeRaw & {
+  scanNumber: number;
+  beamline: string | null;
+  startTime: Date | null;
+  endTime: Date | null;
+  scanRequest: { [key: string]: any } | null;
+};
+
+export type PageInfo = NonNullable<
+  InstrumentSessionQuery["instrumentSessionByReference"]
+>["datasets"]["pageInfo"];
