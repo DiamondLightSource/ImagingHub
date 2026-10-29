@@ -1,4 +1,4 @@
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { ApolloProvider } from "@apollo/client/react";
 
 import { Box, Drawer, IconButton, Stack, Tooltip } from "@mui/material";
@@ -42,7 +42,10 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
 
   const beamline = Beamline[session.instrument.name as keyof typeof Beamline];
 
-  console.log("scanIds", selectedScanIds);
+  // Clear selected scan IDs when session changes
+  useEffect(() => {
+    setSelectedScanIds([]);
+  }, [sessionRef]);
 
   return (
     <Box sx={{ display: "flex", height: "100%" }}>

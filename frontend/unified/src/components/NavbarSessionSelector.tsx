@@ -97,7 +97,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
       const instSess =
         accountData?.account?.instrumentSessionRoles?.edges?.[0]?.node
           ?.instrumentSession;
-      if (instSess) {
+      if (instSess && instSess.proposal) {
         const latest = `${instSess.proposal.proposalCategory?.toLowerCase()}${instSess.proposal.proposalNumber}-${instSess.instrumentSessionNumber}`;
         latestSession.current = latest;
         setSessionInputValue(latest);

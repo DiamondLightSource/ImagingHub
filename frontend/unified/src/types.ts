@@ -142,6 +142,7 @@ export type ScanNodeProcessed = ScanNodeRaw & {
   beamline: string | null;
   startTime: Date | null;
   endTime: Date | null;
+  scanRequest: { [key: string]: any } | null;
 };
 
 export type PageInfo = NonNullable<

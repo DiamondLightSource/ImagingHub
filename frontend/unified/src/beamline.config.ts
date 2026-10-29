@@ -12,7 +12,7 @@ export type MetadataContainer = {
 };
 
 export type MetadataComponent<T> = {
-  getter: (data: ScanNodeRaw) => T | undefined | null;
+  getter: (data: ScanNodeProcessed) => T | undefined | null;
   group?: string;
   title?: string;
   formatter: (v: T) => string;
@@ -24,6 +24,7 @@ type BeamlineConfig = {
   startTime: (data: ScanNodeRaw) => string | undefined | null;
   endTime: (data: ScanNodeRaw) => string | undefined | null;
   scanNumber: (data: ScanNodeRaw) => number | undefined | null;
+  scanRequest: (data: ScanNodeRaw) => string | undefined | null;
   components: Array<MetadataComponent<any> | MetadataContainer>;
 };
 
@@ -31,20 +32,6 @@ export function isMetadataComponent<T>(
   v: MetadataComponent<T> | MetadataContainer
 ): v is MetadataComponent<T> {
   return (v as MetadataComponent<T>).getter !== undefined;
-}
-
-export function convertScanRequestToObject(data: ScanNodeRaw): ScanNodeRaw {
-  if (data?.data?.scan_parameters?.scan_request) {
-    const scanParameters = {
-      ...data.data.scan_parameters,
-      scan_request: JSON.parse(data.data.scan_parameters.scan_request),
-    };
-    const newData = { ...data.data, scan_parameters: scanParameters };
-    const newScanData = { ...data, data: newData };
-
-    return newScanData;
-  }
-  return data;
 }
 
 const fmtDate: (x: string | null | undefined) => Date | null = (x) => {
@@ -66,15 +53,20 @@ export function getProcessedScanNode(
   // Regex to match scan number in Nexus file name
   const regex = new RegExp("\\d{5,}");
 
-  const parsedNodes = nodes.map((x) => convertScanRequestToObject(x));
+  const parseScanRequest = (
+    v: string | null | undefined
+  ): { [key: object]: any } | null => {
+    return v ? JSON.parse(v) : null;
+  };
 
-  const processedScanNodes: ScanNodeProcessed[] = parsedNodes.map((x) => {
+  const processedScanNodes: ScanNodeProcessed[] = nodes.map((x) => {
     return {
       ...x,
       scanNumber: schema.scanNumber(x) ?? Number(regex.exec(x.title)?.[0]),
       beamline: data?.instrumentSessionByReference?.instrument?.key ?? null,
       startTime: fmtDate(schema.startTime(x)),
       endTime: fmtDate(schema.endTime(x)),
+      scanRequest: parseScanRequest(schema.scanRequest(x)),
     };
   });
 
@@ -103,24 +95,33 @@ export function getBeamlineConfig(
 
 const BEAMLINE_CONFIG: BeamlineConfig[] = [
   {
+    // Provide schema version that this config is valid for
     ulims_schema:
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/dummy_scan",
     version: "0.0.1",
+
+    // Functions to fetch commonly used pieces of data
     startTime: (v) => v.data?.scan_parameters?.start_time,
     endTime: (v) => v.data?.scan_parameters?.end_time,
     scanNumber: (_) => null,
+    scanRequest: (_) => null,
     components: [
       {
         groupTitle: "Times",
         children: [
           {
+            // Title of metadata component
             title: "Start time",
-            getter: (v) => v.data?.scan_parameters?.start_time,
+
+            // Function to fetch metadata from a `ScanNodeProcessed` object
+            getter: (v) => v?.startTime,
+
+            // Function to format the metadata value for display
             formatter: FORMATTER.DATETIME,
           },
           {
             title: "End time",
-            getter: (v) => v.data?.scan_parameters?.end_time,
+            getter: (v) => v?.endTime,
             formatter: FORMATTER.DATETIME,
           },
         ],
@@ -134,6 +135,7 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
     startTime: (v) => v.data?.scan_parameters?.start_time,
     endTime: (v) => v.data?.scan_parameters?.end_time,
     scanNumber: (v) => v.data?.scan_parameters?.scan_number,
+    scanRequest: (v) => v.data?.scan_parameters?.scan_request,
     components: [
       {
         title: "Sample name",
@@ -145,12 +147,12 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
         children: [
           {
             title: "Start time",
-            getter: (v) => v.data?.scan_parameters?.start_time,
+            getter: (v) => v?.startTime,
             formatter: FORMATTER.DATETIME,
           },
           {
             title: "End time",
-            getter: (v) => v.data?.scan_parameters?.end_time,
+            getter: (v) => v?.endTime,
             formatter: FORMATTER.DATETIME,
           },
         ],
@@ -171,9 +173,7 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
           {
             title: "Exposure time",
             getter: (v) =>
-              v.data?.scan_parameters?.scan_request?.detectors?.[
-                "BL14I-ML-SCAN-01"
-              ]?.exposureTime,
+              v?.scanRequest?.detectors?.["BL14I-ML-SCAN-01"]?.exposureTime,
             formatter: (v) => `${v} s`,
           },
         ],
@@ -184,23 +184,20 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
           {
             title: "Scan ROI",
             getter: (v) =>
-              v.data?.scan_parameters?.scan_request?.compoundModel?.regions?.[0]
-                ?.roi?.lengths,
+              v?.scanRequest?.compoundModel?.regions?.[0]?.roi?.lengths,
             formatter: (v) =>
               v.map((x) => `${(x * 1e3).toFixed(2)} μm`).join(" x "),
           },
           {
             title: "X Axis Step",
             getter: (v) =>
-              v.data?.scan_parameters?.scan_request?.compoundModel?.models?.[0]
-                ?.xAxisStep,
+              v?.scanRequest?.compoundModel?.models?.[0]?.xAxisStep,
             formatter: (v) => `${v * 1e6} nm`,
           },
           {
             title: "Y Axis Step",
             getter: (v) =>
-              v.data?.scan_parameters?.scan_request?.compoundModel?.models?.[0]
-                ?.yAxisStep,
+              v?.scanRequest?.compoundModel?.models?.[0]?.yAxisStep,
             formatter: (v) => `${v * 1e6} nm`,
           },
         ],
@@ -223,9 +220,8 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
       {
         title: "Element list",
         getter: (v) =>
-          v.data?.scan_parameters?.scan_request?.processingRequest?.request?.[
-            "i14-xrf"
-          ]?.[0]?.element_list,
+          v?.scanRequest?.processingRequest?.request?.["i14-xrf"]?.[0]
+            ?.element_list,
         formatter: FORMATTER.NONE,
       },
     ],
