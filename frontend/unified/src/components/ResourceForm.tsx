@@ -45,7 +45,7 @@ export const ResourceForm: FC = ({
       useGpu: useGpu,
     }),
       [setResourceParameters, memory, nprocs, useGpu]);
-  }, []);
+  }, [setResourceParameters, memory, nprocs, useGpu]);
 
   return (
     <>
