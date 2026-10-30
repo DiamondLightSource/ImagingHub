@@ -5,11 +5,29 @@ import { NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
 import { decode } from "fast-png";
 import { proxyService } from "../../../../../tomography/src/api/services";
-import loadData from "../../../../../tomography/src/components/crop/SampleLoad";
 import { DataPlotter } from "./DataPlotter";
 import { DataLoadingProgress } from "./DataLoadingProgress";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import { ArtifactSelectorFragmentFragment } from "./__generated__/ArtifactSelector.generated";
+
+const imageIterator = (
+  height: number,
+  width: number,
+  totalImages: number,
+  tifUrl: string,
+  setLoadingImageIndex: React.Dispatch<React.SetStateAction<number | undefined>>
+): AsyncGenerator<NDT> => {
+  const generator = (async function* () {
+    for (let i = 0; i < totalImages; i++) {
+      setLoadingImageIndex(i);
+      const pngData = await proxyService.getTiffPage(tifUrl, i, 1);
+      const decodedPng = decode(pngData.buffer);
+      yield ndarray(decodedPng.data, [height, width]) as NDT;
+    }
+  })();
+
+  return generator;
+};
 
 type PlotProps = {
   workflowName: string | null;
@@ -57,10 +75,25 @@ export const Plot: React.FC<PlotProps> = ({
         return;
       }
 
-      loadData(url, 1, setLoadingImageIndex, setTotalImages).then((data) => {
-        setLoadingImageIndex(null);
-        setArtifactData(data);
-      });
+      const {
+        page_count: pageCount,
+        width,
+        height,
+      } = await proxyService.getTiffMetadata(url);
+      setTotalImages(pageCount);
+      const iter = imageIterator(
+        height,
+        width,
+        pageCount,
+        url,
+        setLoadingImageIndex
+      );
+
+      setArtifactData([]);
+      for await (const image of iter) {
+        setArtifactData((prev) => [...prev, image]);
+      }
+      setLoadingImageIndex(null);
     };
 
     if (artifact !== null) {
@@ -88,22 +121,29 @@ export const Plot: React.FC<PlotProps> = ({
 
   const displayDataPlotterOrLoadingProgress = () => {
     if (isPlottingEnabled && workflowName !== null && artifact !== null) {
-      if (artifactData !== null && totalImages !== null) {
+      if (
+        artifactData !== null &&
+        artifactData.length >= 1 &&
+        totalImages !== null
+      ) {
         return (
-          <DataPlotter
-            artifact={artifact}
-            data={artifactData}
-            totalImages={totalImages}
-          />
+          <>
+            <DataPlotter
+              loadingIndex={loadingImageIndex}
+              artifact={artifact}
+              data={artifactData}
+              totalImages={totalImages}
+            />
+            {loadingImageIndex && (
+              <DataLoadingProgress
+                mimeType={artifact.mimeType}
+                totalImages={totalImages}
+                loadingImageIndex={loadingImageIndex}
+              />
+            )}
+          </>
         );
       }
-      return (
-        <DataLoadingProgress
-          mimeType={artifact.mimeType}
-          totalImages={totalImages}
-          loadingImageIndex={loadingImageIndex}
-        />
-      );
     }
   };
 

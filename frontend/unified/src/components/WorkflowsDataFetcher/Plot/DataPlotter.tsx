@@ -7,6 +7,7 @@ type DataPlotterProps = {
   artifact: Artifact;
   data: NDT[];
   totalImages: number;
+  loadingIndex: number | null;
 };
 
 const EXPAND_PLOT_HEIGHT_STYLING = { display: "grid", height: "75vh" };
@@ -15,6 +16,7 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
   artifact,
   data,
   totalImages,
+  loadingIndex,
 }: DataPlotterProps) => {
   const [displayedImageIndex, setDisplayedImageIndex] = useState<number>(0);
 
@@ -53,7 +55,20 @@ export const DataPlotter: React.FC<DataPlotterProps> = ({
           min={0}
           max={totalImages - 1}
           defaultValue={0}
-          onChange={(_, value: number) => setDisplayedImageIndex(value)}
+          onChange={(_, value: number) => {
+            if (loadingIndex !== null) {
+              if (loadingIndex < totalImages - 1 && value < loadingIndex) {
+                setDisplayedImageIndex(value);
+              } else {
+                // TODO: trying to display an image that hasn't yet been fetched, display some
+                // kind of feedback that this can't be done
+              }
+            } else {
+              // `loadingIndex` is null when the process of data-fetching is not occurring,
+              // in which case it's fine to select any image
+              setDisplayedImageIndex(value);
+            }
+          }}
         />
       </div>
     );
