@@ -14,7 +14,6 @@ import WorkflowDataViewer from "./WorkflowDataViewer";
 import { WorkflowsList } from "./WorkflowsList/WorkflowsList";
 import { ScanNodeProcessed, WorkflowsViewMode } from "../../types";
 import { MetadataDisplay } from "../MetadataDisplay";
-import { MetadataDisplayCondensed } from "../MetadataDisplayCondensed";
 
 const WorkflowsDataFetcher = ({
   visit,
@@ -61,7 +60,7 @@ const WorkflowsDataFetcher = ({
           <Stack direction="row" spacing={1}>
             <Stack spacing={2}>
               <Box sx={{ p: 2 }}>
-                <MetadataDisplayCondensed selectedScanData={scanData} />
+                <MetadataDisplay condensed selectedScanData={scanData} />
               </Box>
               <WorkflowsList
                 visit={visit}
