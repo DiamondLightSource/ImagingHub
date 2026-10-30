@@ -40,29 +40,27 @@ export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
 
   return (
     <BoxHorizontallyCenteredContent>
-      <>
-        <CircularProgress
-          variant="determinate"
-          enableTrackSlot
-          size={80}
-          value={Math.round(
-            (loadingImageIndex / totalImages) * 100 + (1 / totalImages) * 100
-          )}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography
-            variant="caption"
-            component="div"
-          >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
-        </Box>
-      </>
+      <CircularProgress
+        variant="determinate"
+        enableTrackSlot
+        size={80}
+        value={Math.round(
+          (loadingImageIndex / totalImages) * 100 + (1 / totalImages) * 100
+        )}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography
+          variant="caption"
+          component="div"
+        >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
+      </Box>
     </BoxHorizontallyCenteredContent>
   );
 };
