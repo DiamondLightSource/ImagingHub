@@ -51,7 +51,7 @@ export const SyntheticDataParameterConfiguration: React.FC<
           data_path: "auto",
           image_key_path: "auto",
           rotation_angles: "auto",
-          preview: loaderPreview,
+          preview: { detector_y: loaderPreview },
         },
       },
     ];
