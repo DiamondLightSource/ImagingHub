@@ -76,6 +76,7 @@ export const Plot: React.FC<PlotProps> = ({
       return (
         <Suspense fallback={<div>Loading...</div>}>
           <ArtifactSelector
+            key={workflowName}
             setArtifact={setArtifact}
             isPlottingEnabled={isPlottingEnabled}
             queryData={queryData}
