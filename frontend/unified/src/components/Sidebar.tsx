@@ -1,16 +1,17 @@
 import { Navbar } from "@diamondlightsource/sci-react-ui";
 import { Box, Typography, Stack } from "@mui/material";
 import { ScanSelectorCombined } from "./ScanSelectorCombined";
+import { ScanNodeProcessed } from "../types";
 
 type SidebarProps = {
-  scanIds: number[];
-  updateSelectedScanIds: (_: number[]) => void;
+  scanData: ScanNodeProcessed[];
+  updateScanData: (_: ScanNodeProcessed[]) => void;
   sessionRef: string;
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  scanIds,
-  updateSelectedScanIds,
+  scanData,
+  updateScanData,
   sessionRef,
 }: SidebarProps) => {
   return (
@@ -37,8 +38,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         This is to ensure infinite scroll works correctly. */}
         <Box sx={{ height: "100%", minHeight: 0 }}>
           <ScanSelectorCombined
-            scanIds={scanIds}
-            setScanIds={updateSelectedScanIds}
+            scanData={scanData}
+            updateScanData={updateScanData}
             sessionRef={sessionRef}
           />
         </Box>
