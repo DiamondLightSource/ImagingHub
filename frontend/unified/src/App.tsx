@@ -56,7 +56,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   }, [sessionRef]);
 
   return (
-    <Box sx={{ display: "flex", overflow: "auto" }}>
+    <Box sx={{ display: "flex", height: "100%" }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -98,7 +98,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           </Suspense>
         </Box>
       </Drawer>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, overflow: "auto" }}>
         <ApolloProvider client={apolloClientWorkflows}>
           <WorkflowsDataFetcher
             visit={selectedVisit}
