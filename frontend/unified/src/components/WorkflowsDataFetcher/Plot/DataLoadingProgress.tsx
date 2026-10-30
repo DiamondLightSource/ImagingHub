@@ -63,7 +63,6 @@ export const DataLoadingProgress: React.FC<DataLoadingProgressProps> = ({
           >{`${loadingImageIndex + 1} / ${totalImages}`}</Typography>
         </Box>
       </>
-      )
     </BoxHorizontallyCenteredContent>
   );
 };
