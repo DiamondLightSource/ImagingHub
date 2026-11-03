@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { TextField } from "@mui/material";
 
@@ -7,12 +7,14 @@ import type { TemplateComponentProps } from "./../../../types";
 const SingleScanField = ({ setParameters }: TemplateComponentProps) => {
   const [singleScan, setSingleScan] = useState("");
 
-  useEffect(() => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const single = e.target.value;
+    setSingleScan(single);
     setParameters((prev) => ({
       ...prev,
-      scanNumber: singleScan,
+      scanNumber: Number(single),
     }));
-  }, [singleScan]);
+  };
 
   return (
     <TextField
@@ -20,7 +22,7 @@ const SingleScanField = ({ setParameters }: TemplateComponentProps) => {
       type="number"
       label={"Scan Number"}
       value={singleScan}
-      onChange={(e) => setSingleScan(Number(e.target.value))}
+      onChange={handleChange}
     />
   );
 };

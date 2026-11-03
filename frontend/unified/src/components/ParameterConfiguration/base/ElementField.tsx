@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
-
-import { TextField } from "@mui/material";
+import { useState } from "react";
 
 import ElementSelect from "./../../../../../shared_components/ElementSelect";
+import type { ElementPair } from "./../../../../../shared_components/types";
 import type { TemplateComponentProps } from "./../../../types";
 
 type ElementFieldProps = TemplateComponentProps & {
@@ -17,25 +16,26 @@ const ElementField = ({
   info,
   parameterNames,
 }: ElementFieldProps) => {
-  const [value, setValue] = useState({
-    element: "",
-    transition: "",
+  const [value, setValue] = useState<ElementPair>({
+    element: "-",
+    transition: "-",
   });
 
-  useEffect(() => {
+  const handleChange = (newValue: ElementPair) => {
+    setValue(newValue);
     setParameters((prev) => ({
       ...prev,
-      [parameterNames[0]]: value.element,
-      [parameterNames[1]]: value.transition,
+      [parameterNames[0]]: newValue.element,
+      [parameterNames[1]]: newValue.transition,
     }));
-  }, [value]);
+  };
 
   return (
     <ElementSelect
       title={title}
       info={info}
       value={value}
-      onChange={(value) => setValue(value)}
+      onChange={handleChange}
     />
   );
 };
