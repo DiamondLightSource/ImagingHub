@@ -12,20 +12,21 @@ const MultiScanField = ({ setParameters }: TemplateComponentProps) => {
     { id: 1, start: "", end: "", excluded: "" },
   ]);
 
-  useEffect(() => {
+  const handleChange = (newItem: MultiScanArray[]) => {
+    setScans(newItem);
     setParameters((prev) => ({
       ...prev,
-      multiScan: scans.map(({ id, ...range }) => ({
+      multiScan: newItem.map(({ id, ...range }) => ({
         multiScan: validateScanRange(range).parsed,
       })),
     }));
-  }, [scans]);
+  };
 
   return (
     <DynamicArray<MultiScanArray>
       title="Scan Range"
       items={scans}
-      onChange={setScans}
+      onChange={handleChange}
       createItem={(id) => ({
         id,
         start: "",
