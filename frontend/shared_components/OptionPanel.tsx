@@ -21,7 +21,7 @@ const OptionPanel: FC<Props> = ({
   useGrid = false,
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const selected = options.find((o) => o.value === value) ?? options[0];
+  const selected = options.find((o) => o.value === value);
 
   const isOpen = Boolean(anchorEl);
 

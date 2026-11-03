@@ -17,8 +17,8 @@ const ElementField = ({
   parameterNames,
 }: ElementFieldProps) => {
   const [value, setValue] = useState<ElementPair>({
-    element: "-",
-    transition: "-",
+    element: "",
+    transition: "",
   });
 
   const handleChange = (newValue: ElementPair) => {

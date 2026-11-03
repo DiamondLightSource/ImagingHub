@@ -146,8 +146,8 @@ export const WorkflowForm: FC = () => {
                   }
                   createItem={(id) => ({
                     id,
-                    element: "H",
-                    transition: "Ka",
+                    element: "",
+                    transition: "",
                   })}
                   renderItem={(item, onUpdate) => (
                     <ElementSelect
