@@ -11,6 +11,7 @@ import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfigurati
 import { SparseXanesParameterConfiguration } from "../xanes/SparseXanesParameterConfiguration";
 import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
+import { XanesPointParameterConfiguration } from "../xanes/XanesPointParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 
@@ -103,6 +104,12 @@ export const getParamConfigComponent = (
       ),
       "xanes-sparse": (
         <SparseXanesParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xanes-point": (
+        <XanesPointParameterConfiguration
           setParameters={setTemplateParameters}
           visitDirpath={visitDirPath}
         />
