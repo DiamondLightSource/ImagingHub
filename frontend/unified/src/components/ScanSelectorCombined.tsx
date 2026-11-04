@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ScanSelector } from "./ScanSelector";
 import { ScanSelector as ScanSelectorLegacy } from "./ScanSelectorLegacy";
 import { ScanNodeProcessed } from "../types";
+import { ScanSearch } from "./ScanSearch";
+import { DatasetFilterInput } from "../../../src/__generated__/types";
 
 type ScanSelectorCombinedProps = {
   sessionRef: string;
@@ -15,6 +17,15 @@ export const ScanSelectorCombined = ({
   updateScanData,
 }: ScanSelectorCombinedProps) => {
   const [selectorType, setSelectorType] = useState("legacy");
+  const [searchScanNumber, setSearchScanNumber] = useState<string | null>(null);
+
+  const filter: DatasetFilterInput | null = searchScanNumber
+    ? {
+        title: {
+          contains: searchScanNumber,
+        },
+      }
+    : null;
 
   return (
     <Stack
@@ -36,7 +47,14 @@ export const ScanSelectorCombined = ({
       </ToggleButtonGroup>
 
       {selectorType === "new" ? (
-        <ScanSelector updateScanData={updateScanData} sessionRef={sessionRef} />
+        <>
+          <ScanSearch setSearchScanNumber={setSearchScanNumber} />
+          <ScanSelector
+            updateScanData={updateScanData}
+            sessionRef={sessionRef}
+            filter={filter}
+          />
+        </>
       ) : (
         <ScanSelectorLegacy
           scanIds={scanData.map((x) => x.scanNumber)}

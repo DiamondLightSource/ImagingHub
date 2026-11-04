@@ -14,6 +14,7 @@ import { useQuery } from "@apollo/client/react";
 import type { ScanNodeProcessed, PageInfo } from "../types";
 import { INSTRUMENTSESSION_QUERY } from "../graphql/InstrumentSessionQuery";
 import { getProcessedScanNode } from "../beamline.config";
+import { DatasetFilterInput } from "../../../src/__generated__/types";
 
 export function formatDate(date: Date | null) {
   if (date) {
@@ -45,8 +46,13 @@ const columns = [
 type ScanSelectorProp = {
   sessionRef: string;
   updateScanData: (scans: ScanNodeProcessed[]) => void;
+  filter: DatasetFilterInput | null;
 };
-export function ScanSelector({ sessionRef, updateScanData }: ScanSelectorProp) {
+export function ScanSelector({
+  sessionRef,
+  updateScanData,
+  filter,
+}: ScanSelectorProp) {
   const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
 
   const FETCH_SIZE = 30;
@@ -75,6 +81,7 @@ export function ScanSelector({ sessionRef, updateScanData }: ScanSelectorProp) {
         last: !isDescSort(sorting) ? FETCH_SIZE : null,
         after: null,
         before: null,
+        filter: filter,
       },
     }
   );
