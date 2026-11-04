@@ -138,7 +138,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
             <p>No available component for {template} template</p>
           )}
           <ResourceForm
-            key={`${template}-rsource-form`}
+            key={`${template}-resource-form`}
             resourceDisplayList={resourceDisplayList[template]}
             setResourceParameters={setResourceParameters}
           />
