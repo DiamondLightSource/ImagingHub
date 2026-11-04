@@ -1,10 +1,9 @@
 import { useEffect, useCallback, useState, type FC } from "react";
 
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
-
-import { ChevronDown } from "lucide-react";
 
 import { buttonSx, OptionButton } from "./OptionButton";
 import type { GridOption } from "./types";
@@ -80,12 +79,12 @@ const OptionPanel: FC<Props> = ({
       >
         {selected?.label ?? ""}
         {!selected?.label && (
-          <ChevronDown
-            size={12}
+          <ArrowDropDownIcon
+            fontSize={"small"}
             style={{
               position: "absolute",
-              right: 6,
-              top: 12,
+              right: 0,
+              top: 18,
               transform: "translateY(-50%)",
             }}
           />
