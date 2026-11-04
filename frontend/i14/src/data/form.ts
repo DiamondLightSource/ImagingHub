@@ -1,12 +1,13 @@
-import type { WorkflowFormData } from "../types/workflowFields";
-export const iconSize: number = 22;
+import type { Option } from "./../../../shared_components/types";
+import type { WorkflowFormData } from "./../types/form";
+
 export const initialData: WorkflowFormData = {
   visit: "",
   template: "dpc-batch",
   outpath: "/dls/i14/data/",
-  edgeElementArray: [{ id: "1", element: "H", transition: "Ka" }],
-  edgeElement: { element: "H", transition: "Ka" },
-  elementToAlign: { element: "H", transition: "Ka" },
+  edgeElementArray: [{ id: "1", element: "", transition: "" }],
+  edgeElement: { element: "", transition: "" },
+  elementToAlign: { element: "", transition: "" },
   method: "mutual",
   brute: false,
   max_fractional_shift: 0.2,

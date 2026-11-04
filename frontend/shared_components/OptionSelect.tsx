@@ -10,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { Info } from "lucide-react";
 
 import type { SelectChangeEvent } from "@mui/material/Select";
-import type { Option } from "../../types/workflowFields";
+import type { Option } from "./types";
 
 type Props = {
   label: string;

@@ -8,11 +8,13 @@ import { PtyrexParameterConfiguration } from "../ptyrex/PtyrexParameterConfigura
 import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderContext";
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
-import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
 import { ResourceForm } from "../../ResourceForm";
+import { SparseXanesParameterConfiguration } from "../xanes/SparseXanesParameterConfiguration";
+import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
+import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
+import { XanesPointParameterConfiguration } from "../xanes/XanesPointParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
-import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -120,11 +122,22 @@ export const getParamConfigComponent = (
     },
     [Technique.Xanes]: {
       xanes: (
-        <Suspense fallback={<p>Fetching workflow template...</p>}>
-          <XanesAutoprocessingParameterConfiguration
-            setParameters={setTemplateParameters}
-          />
-        </Suspense>
+        <XanesAutoprocessingParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xanes-sparse": (
+        <SparseXanesParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xanes-point": (
+        <XanesPointParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
       ),
     },
     [Technique.Xrd]: {

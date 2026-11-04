@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import type { FC } from "react";
 import type { SelectChangeEvent } from "@mui/material/Select";
 
-import OptionSelect from "./OptionSelect";
+import OptionSelect from "./../../../../shared_components/OptionSelect";
 import { proposalToOptions } from "../../data/utils";
 
 import type {

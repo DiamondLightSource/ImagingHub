@@ -1,11 +1,12 @@
-import { useState, type FC } from "react";
+import { useEffect, useCallback, useState, type FC } from "react";
 
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 
 import { buttonSx, OptionButton } from "./OptionButton";
-import type { GridOption } from "../types/workflowFields";
+import type { GridOption } from "./types";
 
 type Props = {
   value: string;
@@ -21,7 +22,8 @@ const OptionPanel: FC<Props> = ({
   useGrid = false,
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const selected = options.find((o) => o.value === value) ?? options[0];
+  const [highlightedValue, setHighlightedValue] = useState(null);
+  const selected = options.find((o) => o.value === value);
 
   const isOpen = Boolean(anchorEl);
 
@@ -31,12 +33,41 @@ const OptionPanel: FC<Props> = ({
 
   const handleClose = () => {
     setAnchorEl(null);
+    setHighlightedValue(null);
   };
 
   const handleSelect = (value: string) => {
     onChange(value);
     handleClose();
   };
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!/^[a-z]$/i.test(event.key)) return; // Check key pressed is one letter
+
+      const letter = event.key.toLowerCase();
+      const matches = options.filter((o) =>
+        o.label?.toLowerCase().startsWith(letter)
+      );
+      if (!matches.length) return;
+
+      event.preventDefault(); // Prevent browser reaction to key press
+      const currentValue = highlightedValue ?? value;
+      const currentIndex = matches.findIndex((o) => o.value === currentValue);
+      // Increment the index and reset to 0 if it is the end of the array
+      const next = matches[(currentIndex + 1) % matches.length];
+
+      setHighlightedValue(next.value);
+    },
+    [options, value, highlightedValue]
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+    document.addEventListener("keydown", handleKeyDown);
+    // Prevent listener from running in the background
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleKeyDown]);
 
   return (
     <>
@@ -46,7 +77,18 @@ const OptionPanel: FC<Props> = ({
         sx={{ ...buttonSx }}
         onClick={handleOpen}
       >
-        {selected?.label ?? "-"}
+        {selected?.label ?? ""}
+        {!selected?.label && (
+          <ArrowDropDownIcon
+            fontSize={"small"}
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 18,
+              transform: "translateY(-50%)",
+            }}
+          />
+        )}
       </Button>
 
       <Popover open={isOpen} anchorEl={anchorEl} onClose={handleClose}>
@@ -71,6 +113,7 @@ const OptionPanel: FC<Props> = ({
                 key={opt.value}
                 option={opt}
                 selected={opt.value === value}
+                highlighted={highlightedValue}
                 useGrid={useGrid}
                 onSelect={handleSelect}
               />

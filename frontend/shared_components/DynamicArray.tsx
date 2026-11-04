@@ -12,23 +12,23 @@ type IdentifiableItem = {
   id: number;
 };
 
-interface DynamicArrayProps<Item extends IdentifiableItem> {
+type DynamicArrayProps<Item extends IdentifiableItem> = {
   title: string;
   desc?: string;
   items?: Item[];
   onChange: (items: Item[]) => void;
   createItem: (id: number) => Item;
   renderItem: (item: Item, onUpdate: (updatedItem: Item) => void) => ReactNode;
-}
+};
 
-export default function DynamicArray<Item extends IdentifiableItem>({
+const DynamicArray = <Item extends IdentifiableItem>({
   title,
   desc,
   items = [],
   onChange,
   createItem,
   renderItem,
-}: DynamicArrayProps<Item>) {
+}: DynamicArrayProps<Item>) => {
   const handleAdd = () => {
     const highestId = Math.max(0, ...items.map((item) => item.id));
     const newItem = createItem(highestId + 1);
@@ -105,4 +105,6 @@ export default function DynamicArray<Item extends IdentifiableItem>({
       </Stack>
     </Stack>
   );
-}
+};
+
+export default DynamicArray;
