@@ -75,9 +75,9 @@ export type TemplateComponentProps = {
 };
 
 export type ResourceParameters = {
-  nprocs: string | null;
-  memory: string | null;
-  usegpu: boolean | null;
+  nprocs?: string;
+  memory?: string;
+  usegpu?: boolean;
 };
 
 export type TaskStatus =
