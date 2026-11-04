@@ -71,8 +71,13 @@ export const BEAMLINES_DEFAULT_TECHNIQUE = {
 
 export type TemplateComponentProps = {
   setParameters: (_: object) => void;
-  setResourceParameters?: (_: object) => void;
-  visitDirpath: string;
+  visitDirpath?: string;
+};
+
+export type ResourceParameters = {
+  nprocs?: string;
+  memory?: string;
+  usegpu?: boolean;
 };
 
 export type TaskStatus =

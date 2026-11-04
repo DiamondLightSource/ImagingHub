@@ -1,17 +1,10 @@
-import {
-  Card,
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Card, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { TemplateComponentProps } from "../../../types";
 
 const PtypyI08ParameterConfiguration = ({
   setParameters,
-}: {
-  setParameters: (_: object) => void;
-}) => {
+}: TemplateComponentProps) => {
   const [binning, setBinning] = useState<string>("2");
   const [defocus, setDefocus] = useState<string>("50");
   const [numIter, setNumIter] = useState<string>("100");

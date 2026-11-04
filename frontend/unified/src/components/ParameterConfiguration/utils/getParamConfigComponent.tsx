@@ -9,7 +9,6 @@ import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderCon
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
-import { ResourceForm } from "../../ResourceForm";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
@@ -23,9 +22,7 @@ type TemplateComponentMapping = {
 export const getParamConfigComponent = (
   technique: Technique,
   template: string,
-  resourceDisplayList: object,
   setTemplateParameters: (_: object) => void,
-  setResourceParameters: (_: { nprocs: number; memory: string }) => void,
   visitDirPath: string
 ) => {
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
@@ -50,20 +47,12 @@ export const getParamConfigComponent = (
           <PtypyI08ParameterConfiguration
             setParameters={setTemplateParameters}
           />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
-          />
         </Suspense>
       ),
       "ptypy-p99-from-config": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
           <PtypyP99ParameterConfiguration
             setParameters={setTemplateParameters}
-          />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
           />
         </Suspense>
       ),
@@ -75,10 +64,6 @@ export const getParamConfigComponent = (
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
-          />
         </Suspense>
       ),
     },
@@ -89,22 +74,13 @@ export const getParamConfigComponent = (
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
-          />
         </LoaderProvider>
       ),
       "httomo-fbp-180": (
         <LoaderProvider>
           <Fbp180ParameterConfiguration
             setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
-          />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
           />
         </LoaderProvider>
       ),
@@ -112,7 +88,6 @@ export const getParamConfigComponent = (
         <LoaderProvider>
           <SyntheticDataParameterConfiguration
             setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
           />
         </LoaderProvider>
