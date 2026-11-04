@@ -17,8 +17,6 @@ export const ResourceForm = ({
   resourceDisplayList,
   setResourceParameters,
 }: ResourceFormProps) => {
-  console.log(resourceDisplayList)
-
   const [memory, setMemory] = useState<string | undefined>(
     resourceDisplayList.memory
   );
