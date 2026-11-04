@@ -17,6 +17,8 @@ export const ResourceForm = ({
   resourceDisplayList,
   setResourceParameters,
 }: ResourceFormProps) => {
+  console.log(resourceDisplayList)
+
   const [memory, setMemory] = useState<string | undefined>(
     resourceDisplayList.memory
   );
@@ -68,7 +70,7 @@ export const ResourceForm = ({
               />
             )}
           </Stack>
-          {resourceDisplayList.usegpu && (
+          {Object.hasOwn(resourceDisplayList, "usegpu") && (
             <FormControlLabel
               control={
                 <Checkbox
