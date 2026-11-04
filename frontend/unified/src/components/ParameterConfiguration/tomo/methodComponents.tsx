@@ -73,3 +73,46 @@ export const StripeRemovalParameterConfiguration: React.FC<
     </FormGroup>
   );
 };
+
+export type DistortionCorrectionParameters = {
+  coefficientsFilepath: string;
+};
+
+type DistortionCorrectionParameterConfigurationProps = {
+  active: boolean;
+  setActive: (_: boolean) => void;
+  parameters: DistortionCorrectionParameters;
+  setParameters: (_: DistortionCorrectionParameters) => void;
+};
+
+export const DistortionCorrectionParameterConfiguration: React.FC<
+  DistortionCorrectionParameterConfigurationProps
+> = ({ active, setActive, parameters, setParameters }) => {
+  return (
+    <FormGroup>
+      <FormControlLabel
+        label="Apply distortion correction"
+        control={
+          <Switch
+            checked={active}
+            onChange={(e) => setActive(e.target.checked)}
+            slotProps={{ input: { "aria-label": "controlled" } }}
+          />
+        }
+      />
+      {active && (
+        <Stack spacing={2} direction="row">
+          <TextField
+            variant="outlined"
+            size="small"
+            label="Coefficients filepath"
+            value={parameters.coefficientsFilepath}
+            onChange={(e) =>
+              setParameters({ coefficientsFilepath: e.target.value })
+            }
+          />
+        </Stack>
+      )}
+    </FormGroup>
+  );
+};
