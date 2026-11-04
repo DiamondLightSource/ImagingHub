@@ -1,5 +1,5 @@
 import { ReactElement, Suspense } from "react";
-import { Technique } from "../../../types";
+import { ResourceParameters, Technique } from "../../../types";
 import { DpcParameterConfiguration } from "../dpc/DpcParameterConfiguration";
 import { MibParameterConfiguration } from "../mib/MibParameterConfiguration";
 import PtypyI08ParameterConfiguration from "../ptypy/PtypyI08ParameterConfiguration";
@@ -23,9 +23,9 @@ type TemplateComponentMapping = {
 export const getParamConfigComponent = (
   technique: Technique,
   template: string,
-  resourceDisplayList: object,
+  resourceDisplayList: ResourceParameters,
   setTemplateParameters: (_: object) => void,
-  setResourceParameters: (_: { nprocs: number; memory: string }) => void,
+  setResourceParameters: (_: ResourceParameters) => void,
   visitDirPath: string
 ) => {
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
@@ -99,7 +99,6 @@ export const getParamConfigComponent = (
         <LoaderProvider>
           <Fbp180ParameterConfiguration
             setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
           />
           <ResourceForm
@@ -112,7 +111,6 @@ export const getParamConfigComponent = (
         <LoaderProvider>
           <SyntheticDataParameterConfiguration
             setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
           />
         </LoaderProvider>
