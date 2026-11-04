@@ -4,6 +4,7 @@ import {
   FormControlLabel,
   FormGroup,
   InputAdornment,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -189,9 +190,10 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
           <FormControlLabel
             label="Apply stripe removal"
             control={
-              <Checkbox
+              <Switch
                 checked={applyStripeRemoval}
                 onChange={(e) => setApplyStripeRemoval(e.target.checked)}
+                slotProps={{ input: { "aria-label": "controlled" } }}
               />
             }
           />
