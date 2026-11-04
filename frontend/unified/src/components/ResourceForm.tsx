@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Stack,
   TextField,
@@ -6,52 +6,40 @@ import {
   Checkbox,
   Card,
 } from "@mui/material";
+import { ResourceParameters } from "../types";
 
-export type ResourceFormProps = {
-  setParams: (_: ResourceParameters) => void;
-  showGpu?: boolean;
-  setUseGpu: (_: boolean | null) => void;
-  setMemory: (_: string | null) => void;
-  setNprocs: (_: string | null) => void;
-  showGpuChoice: boolean;
-  showMemChoice: boolean;
-  showProcChoice: boolean;
+type ResourceFormProps = {
+  resourceDisplayList: ResourceParameters;
+  setResourceParameters: (_: ResourceParameters) => void;
 };
 
-export type ResourceParameters = {
-  useGpu: boolean;
-  nprocs: string;
-  memory: string;
-};
-
-export const ResourceForm: FC = ({
+export const ResourceForm = ({
   resourceDisplayList,
   setResourceParameters,
-}: any) => {
-  const [memory, setMemory] = useState<string>(
-    resourceDisplayList.memory?.default
+}: ResourceFormProps) => {
+  const [memory, setMemory] = useState<string | undefined>(
+    resourceDisplayList.memory
   );
-  const [nprocs, setNprocs] = useState<string>(
-    resourceDisplayList.nprocs?.default
+  const [nprocs, setNprocs] = useState<string | undefined>(
+    resourceDisplayList.nprocs
   );
-  const [useGpu, setUseGpu] = useState<boolean>(
-    resourceDisplayList.usegpu?.default
+  const [useGpu, setUseGpu] = useState<boolean | undefined>(
+    resourceDisplayList.usegpu
   );
 
   useEffect(() => {
-    (setResourceParameters({
+    setResourceParameters({
       memory: memory,
       nprocs: nprocs,
-      useGpu: useGpu,
-    }),
-      [setResourceParameters, memory, nprocs, useGpu]);
+      usegpu: useGpu,
+    });
   }, [setResourceParameters, memory, nprocs, useGpu]);
 
   return (
     <>
-      {resourceDisplayList.memory?.default ||
-      resourceDisplayList.nprocs?.default ||
-      resourceDisplayList.usegpu?.default ? (
+      {(resourceDisplayList.memory ||
+        resourceDisplayList.nprocs ||
+        resourceDisplayList.usegpu) && (
         <Card
           variant="outlined"
           sx={{
@@ -62,7 +50,7 @@ export const ResourceForm: FC = ({
           }}
         >
           <Stack direction="column" spacing={2}>
-            {resourceDisplayList.memory?.default && (
+            {resourceDisplayList.memory && (
               <TextField
                 label="Requested CPU memory"
                 value={memory}
@@ -70,7 +58,7 @@ export const ResourceForm: FC = ({
                 size="small"
               />
             )}
-            {resourceDisplayList.nprocs?.default && (
+            {resourceDisplayList.nprocs && (
               <TextField
                 label="Nr. of processes"
                 value={nprocs}
@@ -80,7 +68,7 @@ export const ResourceForm: FC = ({
               />
             )}
           </Stack>
-          {resourceDisplayList.usegpu?.default && (
+          {resourceDisplayList.usegpu && (
             <FormControlLabel
               control={
                 <Checkbox
@@ -92,8 +80,6 @@ export const ResourceForm: FC = ({
             />
           )}
         </Card>
-      ) : (
-        <></>
       )}
     </>
   );
