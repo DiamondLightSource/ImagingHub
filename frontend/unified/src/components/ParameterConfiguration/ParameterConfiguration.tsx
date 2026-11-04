@@ -70,7 +70,9 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 
   templateList.forEach((t) => {
     // TODO: find a fix for "t.arguments.properties" linting error
-    resourceDisplayList[t.name] = getDefaultResourceParameters(t.arguments.properties);
+    resourceDisplayList[t.name] = getDefaultResourceParameters(
+      t.arguments.properties
+    );
   });
 
   const handleSubmitJob = () => {
