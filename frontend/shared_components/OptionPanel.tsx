@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 
+import { ChevronDown } from "lucide-react";
+
 import { buttonSx, OptionButton } from "./OptionButton";
 import type { GridOption } from "./types";
 
@@ -46,7 +48,18 @@ const OptionPanel: FC<Props> = ({
         sx={{ ...buttonSx }}
         onClick={handleOpen}
       >
-        {selected?.label ?? "-"}
+        {selected?.label ?? ""}
+				{!selected?.label && (
+						<ChevronDown
+							size={12}
+							style={{
+								position: "absolute",
+								right: 6,
+								top: 12,
+								transform: "translateY(-50%)",
+							}}
+						/>
+					)}
       </Button>
 
       <Popover open={isOpen} anchorEl={anchorEl} onClose={handleClose}>
