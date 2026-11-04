@@ -1,13 +1,4 @@
-import {
-  Card,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  InputAdornment,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Card, InputAdornment, TextField, Typography } from "@mui/material";
 import Loader from "../../../../../tomography/src/components/loader/Loader";
 import { useLoader } from "../../../../../tomography/src/contexts/LoaderContext";
 import { TemplateComponentProps } from "../../../types";
@@ -186,24 +177,12 @@ export const Fbp180ParameterConfiguration: React.FC<TemplateComponentProps> = ({
         >
           <strong>Pipeline configuration</strong>
         </Typography>
-        <FormGroup sx={{ marginBottom: 2 }}>
-          <FormControlLabel
-            label="Apply stripe removal"
-            control={
-              <Switch
-                checked={applyStripeRemoval}
-                onChange={(e) => setApplyStripeRemoval(e.target.checked)}
-                slotProps={{ input: { "aria-label": "controlled" } }}
-              />
-            }
-          />
-          {applyStripeRemoval && (
-            <StripeRemovalParameterConfiguration
-              parameters={stripeRemovalParameters}
-              setParameters={setStripeRemovalParameters}
-            />
-          )}
-        </FormGroup>
+        <StripeRemovalParameterConfiguration
+          active={applyStripeRemoval}
+          setActive={setApplyStripeRemoval}
+          parameters={stripeRemovalParameters}
+          setParameters={setStripeRemovalParameters}
+        />
         <TextField
           variant="outlined"
           size="small"
