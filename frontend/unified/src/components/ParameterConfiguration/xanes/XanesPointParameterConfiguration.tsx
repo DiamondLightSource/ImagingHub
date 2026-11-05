@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import ElementField from "./../base/ElementField";
 import LayoutCard from "./../base/LayoutCard";
-import SingleScanField from "./../base/SingleScanField";
+import NumberField from "./../base/NumberField";
 import VisitDirField from "./../base/VisitDirField";
 
 import type { TemplateComponentProps } from "./../../../types";
@@ -12,7 +12,7 @@ export const XanesPointParameterConfiguration = (
 ) => {
   return (
     <LayoutCard>
-      <SingleScanField {...props} />
+      <NumberField {...props} label="Scan Number" parameterName="scanNumber" />
       <ElementField
         {...props}
         title="Edge Element"
