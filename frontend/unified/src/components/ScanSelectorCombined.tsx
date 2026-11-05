@@ -1,10 +1,8 @@
 import { Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useState } from "react";
-import { ScanSelector } from "./ScanSelector";
 import { ScanSelector as ScanSelectorLegacy } from "./ScanSelectorLegacy";
 import { ScanNodeProcessed } from "../types";
-import { ScanSearch } from "./ScanSearch";
-import { DatasetFilterInput } from "../../../src/__generated__/types";
+import { ScanSelector } from "./ScanSelector";
 
 type ScanSelectorCombinedProps = {
   sessionRef: string;
@@ -17,15 +15,6 @@ export const ScanSelectorCombined = ({
   updateScanData,
 }: ScanSelectorCombinedProps) => {
   const [selectorType, setSelectorType] = useState("legacy");
-  const [searchScanNumber, setSearchScanNumber] = useState<string | null>(null);
-
-  const filter: DatasetFilterInput | null = searchScanNumber
-    ? {
-        title: {
-          contains: searchScanNumber,
-        },
-      }
-    : null;
 
   return (
     <Stack
@@ -47,14 +36,7 @@ export const ScanSelectorCombined = ({
       </ToggleButtonGroup>
 
       {selectorType === "new" ? (
-        <>
-          <ScanSearch setSearchScanNumber={setSearchScanNumber} />
-          <ScanSelector
-            updateScanData={updateScanData}
-            sessionRef={sessionRef}
-            filter={filter}
-          />
-        </>
+        <ScanSelector sessionRef={sessionRef} updateScanData={updateScanData} />
       ) : (
         <ScanSelectorLegacy
           scanIds={scanData.map((x) => x.scanNumber)}

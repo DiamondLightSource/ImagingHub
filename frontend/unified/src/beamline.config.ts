@@ -18,10 +18,11 @@ export type MetadataComponent<T> = {
   formatter: (v: T) => string;
 };
 
-type BeamlineConfig = {
+export type BeamlineConfig = {
   ulimsSchema: string;
   version: string;
   startTime: (data: ScanNodeRaw) => string | undefined | null;
+  startTimePath: string | undefined | null;
   endTime: (data: ScanNodeRaw) => string | undefined | null;
   scanNumber: (data: ScanNodeRaw) => number | undefined | null;
   scanRequest: (data: ScanNodeRaw) => string | undefined | null;
@@ -39,8 +40,11 @@ const fmtDate: (x: string | null | undefined) => Date | null = (x) => {
 };
 
 export function getProcessedScanNode(
-  data: InstrumentSessionQuery
+  data: InstrumentSessionQuery | null | undefined
 ): ScanNodeProcessed[] {
+  if (!data) {
+    return [];
+  }
   const nodes: ScanNodeRaw[] = data.instrumentSessionByReference
     ? data.instrumentSessionByReference?.datasets.edges.map((x) => x.node)
     : [];
@@ -101,10 +105,15 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
     version: "0.0.1",
 
     // Functions to fetch commonly used pieces of data
+    // Takes values from a `ScanNodeRaw` object
+    // Used to build the `ScanNodeProcessed` object
     startTime: (v) => v.data?.scan_parameters?.start_time,
+    startTimePath: "$.scan_parameters.start_time",
     endTime: (v) => v.data?.scan_parameters?.end_time,
     scanNumber: (_) => null,
     scanRequest: (_) => null,
+
+    // Components take data from a `ScanNodeProcessed` object
     components: [
       {
         groupTitle: "Times",
@@ -133,6 +142,7 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/mapping_scan",
     version: "1.0.0",
     startTime: (v) => v.data?.scan_parameters?.start_time,
+    startTimePath: "$.scan_parameters.start_time",
     endTime: (v) => v.data?.scan_parameters?.end_time,
     scanNumber: (v) => v.data?.scan_parameters?.scan_number,
     scanRequest: (v) => v.data?.scan_parameters?.scan_request,

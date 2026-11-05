@@ -15,7 +15,7 @@ export const ScanSearch = ({ setSearchScanNumber }: ScanSearchProps) => {
   const [number, setNumber] = useState("");
 
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack display="flex" direction="row" spacing={2}>
       <TextField
         label="Scan number"
         value={number}

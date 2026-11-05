@@ -148,3 +148,8 @@ export type ScanNodeProcessed = ScanNodeRaw & {
 export type PageInfo = NonNullable<
   InstrumentSessionQuery["instrumentSessionByReference"]
 >["datasets"]["pageInfo"];
+
+export type ScanDateRange = {
+  start?: Date | null;
+  end?: Date | null;
+};
