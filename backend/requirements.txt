@@ -1,7 +1,7 @@
 aiofiles==24.1.0
 annotated-types==0.7.0
 anyio==4.8.0
-certifi==2024.12.14
+certifi==2026.10.23
 click==8.1.8
 dnspython==2.7.0
 email_validator==2.2.0
