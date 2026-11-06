@@ -3,9 +3,9 @@ type ElementPair = {
   transition: string;
 };
 
-type ElementPairArray = {
+type ElementPairArray = ({
   id: number;
-} & ElementPair;
+} & ElementPair)[];
 
 type ScanRange = {
   start: number;
@@ -19,9 +19,7 @@ type RawScanRange = {
   excluded?: string;
 };
 
-type MultiScanArray = {
-  id: number;
-} & ScanRange;
+type MultiScanArray = ({ id: number } & ScanRange)[];
 
 type GridPanel = (string | null)[][];
 

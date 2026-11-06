@@ -8,11 +8,11 @@ import type { MultiScanArray } from "./../../../../../shared_components/types";
 import type { TemplateComponentProps } from "./../../../types";
 
 const MultiScanField = ({ setParameters }: TemplateComponentProps) => {
-  const [scans, setScans] = useState<MultiScanArray[]>([
+  const [scans, setScans] = useState<MultiScanArray>([
     { id: 1, start: "", end: "", excluded: "" },
   ]);
 
-  const handleChange = (newItem: MultiScanArray[]) => {
+  const handleChange = (newItem: MultiScanArray) => {
     setScans(newItem);
     setParameters((prev) => ({
       ...prev,

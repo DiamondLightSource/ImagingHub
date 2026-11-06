@@ -7,7 +7,7 @@ type WorkflowFormData = {
   visit: string;
   template: string;
   outpath: string;
-  edgeElementArray?: ElementPairArray[];
+  edgeElementArray?: ElementPairArray;
   edgeElement?: ElementPair;
   elementToAlign?: ElementPair;
   method?: string;
