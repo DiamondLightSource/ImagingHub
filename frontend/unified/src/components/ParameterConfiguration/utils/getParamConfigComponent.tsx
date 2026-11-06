@@ -42,14 +42,14 @@ export const getParamConfigComponent = (
     },
     [Technique.Ptycho]: {},
     [Technique.Ptypy]: {
-      "ptypy-i08-1-from-config": (
+      "ptypy-i08-1-nexus": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
           <PtypyI08ParameterConfiguration
             setParameters={setTemplateParameters}
           />
         </Suspense>
       ),
-      "ptypy-p99-from-config": (
+      "ptypy-p99-nexus": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
           <PtypyP99ParameterConfiguration
             setParameters={setTemplateParameters}
