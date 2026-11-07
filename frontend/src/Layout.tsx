@@ -66,7 +66,7 @@ const Layout = () => {
       <Navbar
         logo="theme"
         containerWidth={false}
-        position="static"
+        position="sticky"
         leftSlot={
           <Stack
             direction="row"

@@ -6,7 +6,12 @@ import { ChevronsLeft, List, Table } from "lucide-react";
 
 import WorkflowsDataFetcher from "./components/WorkflowsDataFetcher/WorkflowsDataFetcher";
 
-import { Beamline, WorkflowsViewMode, InstrumentSession } from "./types";
+import {
+  Beamline,
+  WorkflowsViewMode,
+  InstrumentSession,
+  ScanNodeProcessed,
+} from "./types";
 import {
   apolloClientWorkflows,
   apolloClientUlimsScans,
@@ -22,7 +27,10 @@ type AppProps = {
 };
 
 export const App: React.FC<AppProps> = ({ session }: AppProps) => {
-  const [selectedScanIds, setSelectedScanIds] = useState<number[]>([]);
+  const [selectedScanIds, setSelectedScanIds] = useState<ScanNodeProcessed[]>(
+    []
+  );
+
   const [showParamConfigDrawer, setShowParamConfigDrawer] =
     useState<boolean>(false);
   const [workflowsViewMode, setWorkflowsViewMode] = useState<WorkflowsViewMode>(
@@ -48,7 +56,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   }, [sessionRef]);
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100%" }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -63,8 +71,8 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
         <ApolloProvider client={apolloClientUlimsScans}>
           <Sidebar
             sessionRef={sessionRef}
-            scanIds={selectedScanIds}
-            updateSelectedScanIds={setSelectedScanIds}
+            scanData={selectedScanIds}
+            updateScanData={setSelectedScanIds}
           />
         </ApolloProvider>
       </Drawer>
@@ -84,17 +92,18 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
                 visit={selectedVisit}
                 beamline={beamline}
                 startTime={session.startTime}
-                scanIds={selectedScanIds}
+                scanIds={selectedScanIds.map((x) => x.scanNumber)}
               />
             </ApolloProvider>
           </Suspense>
         </Box>
       </Drawer>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, overflow: "auto" }}>
         <ApolloProvider client={apolloClientWorkflows}>
           <WorkflowsDataFetcher
             visit={selectedVisit}
             workflowsViewMode={workflowsViewMode}
+            scanData={selectedScanIds}
           />
         </ApolloProvider>
       </Box>
