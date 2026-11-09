@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 
 import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Tooltip from "@mui/material/Tooltip";
-
-import { Info } from "lucide-react";
 
 import ElementField from "./../base/ElementField";
 import LayoutCard from "./../base/LayoutCard";
 import MultiScanField from "./../base/MultiScanField";
+import NumberField from "./../base/NumberField";
 import VisitDirField from "./../base/VisitDirField";
 
 import { initialData } from "./../../../../../shared_components/data/xanesForm";
@@ -84,34 +79,13 @@ export const XanesAutoprocessingParameterConfiguration = (
             }}
           />
           {data.brute && (
-            <Stack direction="row" alignItems="center">
-              <TextField
-                name="max_fractional_shift"
-                label="Maximum fractional shift"
-                variant="outlined"
-                size="small"
-                type="number"
-                sx={{ minWidth: "160px" }}
-                inputProps={{ min: 0, max: 1, step: 0.1 }}
-                value={data.max_fractional_shift}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  const value = e.target.value;
-                  setData((prev) => ({
-                    ...prev,
-                    max_fractional_shift: value,
-                  }));
-                  setParameters((prev) => ({
-                    ...prev,
-                    max_fractional_shift: value,
-                  }));
-                }}
-              />
-              <Tooltip title="This number is used to define the maximum shift that could be applied to an axis, as a fraction of the size of the axis. Setting it to a higher number results in longer duration of alignment.">
-                <IconButton>
-                  <Info />
-                </IconButton>
-              </Tooltip>
-            </Stack>
+            <NumberField
+              {...props}
+              parameterName="max_fractional_shift"
+              label="Maximum fractional shift"
+              info="This number is used to define the maximum shift that could be applied to an axis, as a fraction of the size of the axis. Setting it to a higher number results in longer duration of alignment."
+              inProps={{ min: 0, max: 1, step: 0.1 }}
+            />
           )}
         </Section>
       )}
