@@ -1,7 +1,7 @@
 import { Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useState } from "react";
 import { ScanSelector as ScanSelectorLegacy } from "./ScanSelectorLegacy";
-import { ScanNodeProcessed } from "../types";
+import { ScanNodeProcessed } from "../../types";
 import { ScanSelector } from "./ScanSelector";
 
 type ScanSelectorCombinedProps = {

@@ -1,12 +1,12 @@
 import { ScanSearch } from "./ScanSearch";
 import { ScanDateFilter } from "./ScanDateFilter";
 import { ScanSelectorTable } from "./ScanSelectorTable";
-import { ScanNodeProcessed, ScanDateRange } from "../types";
+import { ScanNodeProcessed, ScanDateRange } from "../../types";
 import { useState } from "react";
-import { DatasetFilterInput } from "../../../src/__generated__/types";
-import { getBeamlineConfig, getProcessedScanNode } from "../beamline.config";
+import { DatasetFilterInput } from "../../../../src/__generated__/types";
+import { getBeamlineConfig, getProcessedScanNode } from "../../beamline.config";
 import { useQuery } from "@apollo/client/react";
-import { INSTRUMENTSESSION_QUERY } from "../graphql/InstrumentSessionQuery";
+import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 
 type ScanSelectorProps = {
   sessionRef: string;

@@ -11,10 +11,10 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client/react";
 
-import type { ScanNodeProcessed, PageInfo } from "../types";
-import { INSTRUMENTSESSION_QUERY } from "../graphql/InstrumentSessionQuery";
-import { getProcessedScanNode } from "../beamline.config";
-import { DatasetFilterInput } from "../../../src/__generated__/types";
+import type { ScanNodeProcessed, PageInfo } from "../../types";
+import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
+import { getProcessedScanNode } from "../../beamline.config";
+import { DatasetFilterInput } from "../../../../src/__generated__/types";
 
 export function formatDate(date: Date | null) {
   if (date) {

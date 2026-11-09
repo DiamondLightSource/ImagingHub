@@ -1,6 +1,6 @@
 import { Navbar } from "@diamondlightsource/sci-react-ui";
 import { Box, Typography, Stack } from "@mui/material";
-import { ScanSelectorCombined } from "./ScanSelectorCombined";
+import { ScanSelectorCombined } from "./ScanSelector/ScanSelectorCombined";
 import { ScanNodeProcessed } from "../types";
 
 type SidebarProps = {

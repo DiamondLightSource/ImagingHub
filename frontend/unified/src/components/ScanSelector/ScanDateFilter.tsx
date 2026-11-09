@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Filter } from "lucide-react";
-import { ScanDateRange } from "../types";
+import { ScanDateRange } from "../../types";
 import { useEffect, useState } from "react";
 
 const HOURS_TO_MS = 60 * 60 * 1000;
@@ -66,7 +66,7 @@ export const ScanDateFilter = ({
       >
         <Stack sx={{ p: 2 }}>
           <Typography variant="h6">Scan start time</Typography>
-          <Box sx={{ p: 5 }}>
+          <Box sx={{ p: 5, paddingTop: 6 }}>
             <DateTimeFilterSlider
               sessionDateRange={sessionDateRange}
               timeRange={scanDateFilter}
@@ -179,9 +179,20 @@ export function DateTimeFilterSlider({
       min={minSlider}
       max={maxSlider}
       valueLabelFormat={(v, _) => {
-        return new Date(v * HOURS_TO_MS).toLocaleString(undefined, {
-          timeZone: "UTC",
-        });
+        return (
+          <Stack alignItems="center">
+            <Typography variant="caption" justifyContent="center">
+              {new Date(v * HOURS_TO_MS).toLocaleDateString(undefined, {
+                timeZone: "UTC",
+              })}
+            </Typography>
+            <Typography variant="caption" justifyContent="center">
+              {new Date(v * HOURS_TO_MS).toLocaleTimeString(undefined, {
+                timeZone: "UTC",
+              })}
+            </Typography>
+          </Stack>
+        );
       }}
       marks={[
         {
