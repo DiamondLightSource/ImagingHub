@@ -12,6 +12,7 @@ const Technique = {
   Httomo: "Httomo",
   Xanes: "Xanes",
   Xrd: "Xrd",
+  Xrf: "Xrf",
 } as const;
 type Technique = (typeof Technique)[keyof typeof Technique];
 export { Technique };
@@ -46,7 +47,12 @@ export const BEAMLINE_TECHNIQUES_SUBSET = {
     Technique.Xrd,
   ],
   [Beamline["I13"]]: [Technique.Ptycho, Technique.Httomo],
-  [Beamline.I14]: [Technique.Dpc, Technique.Xanes, Technique.Xrd],
+  [Beamline.I14]: [
+    Technique.Dpc,
+    Technique.Xanes,
+    Technique.Xrd,
+    Technique.Xrf,
+  ],
   [Beamline.E02]: [
     Technique.Dpc,
     Technique.Nbed,
