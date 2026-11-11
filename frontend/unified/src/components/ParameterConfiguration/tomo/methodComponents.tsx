@@ -109,7 +109,7 @@ export const DistortionCorrectionParameterConfiguration: React.FC<
         }
       />
       {active && (
-        <Stack spacing={2} direction="row">
+        <Stack spacing={2} direction="row" marginBottom={2}>
           <TextField
             variant="outlined"
             size="small"
