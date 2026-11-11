@@ -21,8 +21,8 @@ VITE_KEYCLOAK_CLIENT_ID = "ImagingHubDev"
 VITE_KEYCLOAK_SCOPE = "openid profile posix-uid email"
 VITE_WORKFLOWS_GRAPHQL_HTTP_ENDPOINT = "https://staging.workflows.diamond.ac.uk/graphql"
 VITE_WORKFLOWS_GRAPHQL_WS_ENDPOINT = "wss://staging.workflows.diamond.ac.uk/graphql/ws"
-VITE_ULIMS_GRAPHQL_HTTP_ENDPOINT = "https://ulims-dev.diamond.ac.uk/graphql"
-VITE_ULIMS_GRAPHQL_WS_ENDPOINT = "wss://ulims-dev.diamond.ac.uk/graphql/ws"
+VITE_ULIMS_GRAPHQL_HTTP_ENDPOINT = "https://ulims-dev-graph.diamond.ac.uk/graphql"
+VITE_ULIMS_GRAPHQL_WS_ENDPOINT = "wss://ulims-dev-graph.diamond.ac.uk/graphql/ws"
 ```
 
 #### Install dependencies and generate code from GraphQL schema

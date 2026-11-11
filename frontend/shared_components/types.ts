@@ -1,3 +1,12 @@
+type ElementPair = {
+  element: string;
+  transition: string;
+};
+
+type ElementPairArray = ({
+  id: number;
+} & ElementPair)[];
+
 type ScanRange = {
   start: number;
   end: number;
@@ -10,6 +19,13 @@ type RawScanRange = {
   excluded?: string;
 };
 
-type MultiScanArray = {
-  id: number;
-} & ScanRange;
+type MultiScanArray = ({ id: number } & ScanRange)[];
+
+type GridPanel = (string | null)[][];
+
+type Option = { label: string; value: string; desc?: string };
+
+type GridOption = Option & {
+  row?: number;
+  column?: number;
+};

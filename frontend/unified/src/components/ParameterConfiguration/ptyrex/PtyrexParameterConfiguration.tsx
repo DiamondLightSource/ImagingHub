@@ -1,6 +1,6 @@
 import { Card, InputAdornment, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TemplateComponentProps } from "../../types";
+import { TemplateComponentProps } from "../../../types";
 
 export const PtyrexParameterConfiguration = ({
   setParameters,
