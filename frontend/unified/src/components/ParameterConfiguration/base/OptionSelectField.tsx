@@ -18,11 +18,11 @@ const OptionSelectField = ({
 }: OptionSelectFieldProps) => {
   const [value, setValue] = useState("");
 
-  const handleChange = (newValue: ElementPair) => {
-    setValue(newValue);
+  const handleChange = (e) => {
+    setValue(e.target.value);
     setParameters((prev) => ({
       ...prev,
-      [parameterName]: value,
+      [parameterName]: e.target.value,
     }));
   };
 
