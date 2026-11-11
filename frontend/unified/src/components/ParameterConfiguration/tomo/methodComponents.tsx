@@ -13,7 +13,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 
 export type StripeRemovalParameters = {
   snr: number;
@@ -216,8 +215,14 @@ const Centering360ParameterConfiguration: React.FC<
 };
 
 type CenteringParameterConfigurationProps =
-  | Centering180ParameterConfigurationProps
-  | Centering360ParameterConfigurationProps;
+  | (Centering180ParameterConfigurationProps & {
+      methodType: CenteringMethodType[180];
+      setMethodType: (_: CenteringMethodType) => void;
+    })
+  | (Centering360ParameterConfigurationProps & {
+      methodType: CenteringMethodType[360];
+      setMethodType: (_: CenteringMethodType) => void;
+    });
 
 const CenteringMethodType = {
   180: "180",
@@ -225,14 +230,11 @@ const CenteringMethodType = {
 } as const;
 type CenteringMethodType =
   (typeof CenteringMethodType)[keyof typeof CenteringMethodType];
+export { CenteringMethodType };
 
 export const CenteringParameterConfiguration: React.FC<
   CenteringParameterConfigurationProps
-> = ({ parameters, setParameters }) => {
-  const [methodType, setMethodType] = useState<CenteringMethodType>(
-    CenteringMethodType[180]
-  );
-
+> = ({ methodType, setMethodType, parameters, setParameters }) => {
   return (
     <div style={{ marginBottom: 10 }}>
       <Typography>Centering</Typography>
