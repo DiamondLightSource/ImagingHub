@@ -54,6 +54,7 @@ export const StripeRemovalParameterConfiguration: React.FC<
             size="small"
             label="snr"
             value={parameters.snr}
+            type="number"
             onChange={(e) =>
               setParameters({ ...parameters, snr: Number(e.target.value) })
             }
@@ -63,6 +64,7 @@ export const StripeRemovalParameterConfiguration: React.FC<
             size="small"
             label="la_size"
             value={parameters.laSize}
+            type="number"
             onChange={(e) =>
               setParameters({ ...parameters, laSize: Number(e.target.value) })
             }
@@ -72,6 +74,7 @@ export const StripeRemovalParameterConfiguration: React.FC<
             size="small"
             label="sm_size"
             value={parameters.smSize}
+            type="number"
             onChange={(e) =>
               setParameters({ ...parameters, smSize: Number(e.target.value) })
             }
