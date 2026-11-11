@@ -16,10 +16,10 @@ import {
   apolloClientWorkflows,
   apolloClientUlimsScans,
 } from "../../src/ApolloClient";
-import { Sidebar } from "./components/Sidebar";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
+import { useResizableWidth } from "./hooks/useResizableWidth";
+import { ScanSelector } from "./components/ScanSelector/ScanSelector";
 
-const SIDEBAR_WIDTH = 300;
 const PARAM_CONFIG_DRAWER_WIDTH = 600;
 
 type AppProps = {
@@ -30,6 +30,8 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   const [selectedScanIds, setSelectedScanIds] = useState<ScanNodeProcessed[]>(
     []
   );
+
+  const sidebar = useResizableWidth(440, 340, 720);
 
   const [showParamConfigDrawer, setShowParamConfigDrawer] =
     useState<boolean>(false);
@@ -56,89 +58,154 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
   }, [sessionRef]);
 
   return (
-    <Box sx={{ display: "flex", height: "100%" }}>
-      <Drawer
-        variant="permanent"
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
+      <Box
+        ref={sidebar.containerRef}
         sx={{
-          width: SIDEBAR_WIDTH,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: SIDEBAR_WIDTH,
-            boxSizing: "border-box",
-          },
+          flex: 1,
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          minHeight: 0,
+          overflow: { xs: "auto", md: "hidden" },
         }}
       >
         <ApolloProvider client={apolloClientUlimsScans}>
-          <Sidebar
-            sessionRef={sessionRef}
-            scanData={selectedScanIds}
-            updateScanData={setSelectedScanIds}
-          />
-        </ApolloProvider>
-      </Drawer>
-      <Drawer
-        variant="temporary"
-        anchor="right"
-        open={showParamConfigDrawer}
-        onClose={() => setShowParamConfigDrawer(false)}
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
-        ModalProps={{ keepMounted: true }}
-      >
-        <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
-          <Suspense>
-            <ApolloProvider client={apolloClientWorkflows}>
-              <ProcessingView
-                visit={selectedVisit}
-                beamline={beamline}
-                startTime={session.startTime}
-                scanIds={selectedScanIds.map((x) => x.scanNumber)}
-              />
-            </ApolloProvider>
-          </Suspense>
-        </Box>
-      </Drawer>
-      <Box sx={{ flexGrow: 1, overflow: "auto" }}>
-        <ApolloProvider client={apolloClientWorkflows}>
-          <WorkflowsDataFetcher
-            visit={selectedVisit}
-            workflowsViewMode={workflowsViewMode}
-            scanData={selectedScanIds}
-          />
-        </ApolloProvider>
-      </Box>
-      <Box
-        sx={{
-          marginLeft: 1,
-        }}
-      >
-        <Stack direction="column">
-          <Tooltip title="Open parameter configuration">
-            <IconButton onClick={() => setShowParamConfigDrawer(true)}>
-              <ChevronsLeft />
-            </IconButton>
-          </Tooltip>
-          <Tooltip
-            title={
-              workflowsViewMode === WorkflowsViewMode.List
-                ? "Table view"
-                : "List view"
-            }
+          <Box
+            sx={{
+              position: "relative",
+              width: { xs: "100%", md: sidebar.width },
+              flex: { xs: "0 0 auto", md: `0 0 ${sidebar.width}px` },
+              maxHeight: { xs: "45vh", md: "none" },
+              display: "flex",
+              flexDirection: "column",
+              minHeight: 0,
+              borderStyle: "solid",
+              borderWidth: { xs: "0 0 1px 0", md: "0 1px 0 0" },
+              borderColor: "border.subtle",
+              backgroundColor: "background.paper",
+            }}
           >
-            <IconButton
-              onClick={() =>
+            <ScanSelector
+              sessionRef={sessionRef}
+              setSelectedScans={setSelectedScanIds}
+            />
+
+            {/*
+              From: https://github.com/DiamondLightSource/xrpddatavis
+              Resize handle - drag or focus + arrow keys; hidden on narrow layouts via CSS below
+            */}
+            <Box
+              role="separator"
+              aria-orientation="vertical"
+              aria-label="Resize the plot list"
+              aria-valuemin={340}
+              aria-valuemax={720}
+              aria-valuenow={Math.round(sidebar.width)}
+              tabIndex={0}
+              onPointerDown={sidebar.onPointerDown}
+              onPointerMove={sidebar.onPointerMove}
+              onPointerUp={sidebar.onPointerUp}
+              onKeyDown={sidebar.onKeyDown}
+              sx={{
+                display: { xs: "none", md: "block" },
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                right: -4,
+                width: 8,
+                cursor: "col-resize",
+                touchAction: "none",
+                zIndex: 3,
+                "&:hover::after, &:focus-visible::after": {
+                  backgroundColor: "primary.main",
+                },
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: 3,
+                  width: 2,
+                  backgroundColor: sidebar.dragging
+                    ? "primary.main"
+                    : "transparent",
+                },
+              }}
+            />
+          </Box>
+        </ApolloProvider>
+
+        <Drawer
+          variant="temporary"
+          anchor="right"
+          open={showParamConfigDrawer}
+          onClose={() => setShowParamConfigDrawer(false)}
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
+          ModalProps={{ keepMounted: true }}
+        >
+          <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
+            <Suspense>
+              <ApolloProvider client={apolloClientWorkflows}>
+                <ProcessingView
+                  visit={selectedVisit}
+                  beamline={beamline}
+                  startTime={session.startTime}
+                  scanIds={selectedScanIds.map((x) => x.scanNumber)}
+                />
+              </ApolloProvider>
+            </Suspense>
+          </Box>
+        </Drawer>
+        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+          <ApolloProvider client={apolloClientWorkflows}>
+            <WorkflowsDataFetcher
+              visit={selectedVisit}
+              workflowsViewMode={workflowsViewMode}
+              scanData={selectedScanIds}
+            />
+          </ApolloProvider>
+        </Box>
+        <Box
+          sx={{
+            marginLeft: 1,
+          }}
+        >
+          <Stack direction="column">
+            <Tooltip title="Open parameter configuration">
+              <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+                <ChevronsLeft />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
                 workflowsViewMode === WorkflowsViewMode.List
-                  ? setWorkflowsViewMode(WorkflowsViewMode.Table)
-                  : setWorkflowsViewMode(WorkflowsViewMode.List)
+                  ? "Table view"
+                  : "List view"
               }
             >
-              {workflowsViewMode === WorkflowsViewMode.List ? (
-                <Table />
-              ) : (
-                <List />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Stack>
+              <IconButton
+                onClick={() =>
+                  workflowsViewMode === WorkflowsViewMode.List
+                    ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                    : setWorkflowsViewMode(WorkflowsViewMode.List)
+                }
+              >
+                {workflowsViewMode === WorkflowsViewMode.List ? (
+                  <Table />
+                ) : (
+                  <List />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Box>
       </Box>
     </Box>
   );

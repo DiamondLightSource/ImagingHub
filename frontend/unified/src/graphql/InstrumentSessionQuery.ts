@@ -36,6 +36,7 @@ export const INSTRUMENTSESSION_QUERY: TypedDocumentNode<
             title
           }
         }
+        totalCount
       }
     }
   }

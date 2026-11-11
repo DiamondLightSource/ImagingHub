@@ -1,84 +1,264 @@
-import { Typography, Box } from "@mui/material";
-import {
-  useMaterialReactTable,
-  type MRT_TableInstance,
-  createMRTColumnHelper,
-  type MRT_RowSelectionState,
-  MaterialReactTable,
-  type MRT_Row,
-  type MRT_SortingState,
-} from "material-react-table";
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client/react";
-
-import type { ScanNodeProcessed, PageInfo } from "../../types";
+import {
+  Box,
+  Checkbox,
+  Stack,
+  TableBody,
+  TableContainer,
+  Typography,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@mui/material";
+import { forwardRef, Fragment, useEffect, useRef, useState } from "react";
+import { TableVirtuoso, type TableComponents } from "react-virtuoso";
+import { Progress } from "@diamondlightsource/sci-react-ui";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
+import { PageInfo, ScanNodeProcessed } from "../../types";
 import { getProcessedScanNode } from "../../beamline.config";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
+import { formatDate } from "./ScanSelector";
 
-export function formatDate(date: Date | null) {
-  if (date) {
-    return date.toLocaleString(undefined, { timeZone: "UTC" });
-  }
-  return "No date";
+const FIRST_LINE = 28;
+const SELECTED_SHADOW =
+  "inset 3px 0 0 var(--ds-primary), inset 0 0 0 9999px var(--ds-overlay-selected)";
+
+const SortDirection = {
+  NEWEST: "newest",
+  OLDEST: "oldest",
+} as const;
+type SortDirection = (typeof SortDirection)[keyof typeof SortDirection];
+export { SortDirection };
+
+export interface SortOption {
+  value: SortDirection;
+  label: string;
 }
+export const SORT_OPTIONS = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest first" },
+] as const satisfies readonly SortOption[];
 
-// Derived from infinite scroll example:
-// https://www.material-react-table.com/docs/examples/infinite-scrolling
+type ListItemProps = {
+  data: ScanNodeProcessed;
+  isSelected: boolean;
+  onCheckboxSelect: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
+};
+export const ListItem = ({
+  data,
+  isSelected,
+  onCheckboxSelect,
+}: ListItemProps) => {
+  // const [isSelected, setIsSelected] = useState(false);
 
-const columnHelper = createMRTColumnHelper<ScanNodeProcessed>();
-const columns = [
-  columnHelper.accessor("scanNumber", {
-    header: "Scans",
-    size: 120,
-    filterVariant: "text",
-    Cell: ({ row }) => (
-      <Box>
-        <Typography variant="body2">{row.original.scanNumber}</Typography>
-        <Typography variant="caption" color="text.muted">
-          {formatDate(row.original.startTime)}
+  console.log(data.scanNumber, "isSelected", isSelected);
+  return (
+    <Box
+      component="li"
+      data-plot-id={data.scanNumber}
+      // onClick={() => {setIsSelected(!isSelected)}}
+      sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        flexShrink: 0,
+        gap: 0.5,
+        listStyle: "none",
+        overflow: "hidden",
+        cursor: "pointer",
+        px: 1,
+        pt: 0.5,
+        pb: 0.5,
+        borderBottom: 1,
+        borderColor: "border.subtle",
+        backgroundColor: "background.paper",
+        boxShadow: isSelected ? SELECTED_SHADOW : "none",
+        "&:hover": {
+          boxShadow: isSelected
+            ? SELECTED_SHADOW
+            : "inset 0 0 0 9999px var(--ds-overlay-hover)",
+        },
+      }}
+    >
+      <Checkbox
+        size="small"
+        sx={{ p: 0.5 }}
+        checked={isSelected}
+        onClick={(e) => {
+          e.stopPropagation();
+          onCheckboxSelect(e);
+        }}
+        // onChange={(e) => {setIsSelected(!isSelected)}}
+        inputProps={{ "aria-label": `Show ${data.scanNumber}` }}
+      />
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          sx={{ minHeight: FIRST_LINE }}
+        >
+          <Typography
+            variant="body2"
+            fontWeight={500}
+            noWrap
+            sx={{ minWidth: 0, flex: 1 }}
+          >
+            {data.scanNumber}
+          </Typography>
+        </Stack>
+        <Typography
+          variant="meta"
+          component="div"
+          noWrap
+          sx={{ color: "text.secondary", minHeight: "1.5em" }}
+        >
+          {formatDate(data.startTime)}
+        </Typography>
+        <Typography
+          variant="meta"
+          component="div"
+          noWrap
+          sx={{ color: "text.muted", minWidth: 0 }}
+        >
+          Sample name · XRF
         </Typography>
       </Box>
-    ),
-  }),
+    </Box>
+  );
+};
+
+const VirtuosoTableComponents: TableComponents<ScanNodeProcessed> = {
+  Scroller: forwardRef<HTMLDivElement>((props, ref) => (
+    <TableContainer
+      component={Paper}
+      sx={{ borderRadius: 0, borderWidth: 0 }}
+      {...props}
+      ref={ref}
+    />
+  )),
+  Table: (props) => (
+    <Table
+      {...props}
+      sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
+    />
+  ),
+  TableHead: forwardRef<HTMLTableSectionElement>((props, ref) => (
+    <TableHead {...props} ref={ref} />
+  )),
+  TableRow,
+  TableBody: forwardRef<HTMLTableSectionElement>((props, ref) => (
+    <TableBody {...props} ref={ref} />
+  )),
+};
+
+const columns = [
+  {
+    width: 100,
+    label: "Scan",
+    dataKey: "scan",
+  },
 ];
 
-type ScanSelectorTableProp = {
+// Generates dummy detailed scan data when using the legacy
+// scan selector
+const generateScanData = (scanId: number): ScanNodeProcessed => {
+  return {
+    __typename: "Dataset",
+    scanNumber: scanId,
+    dataSchema: "",
+    description: null,
+    id: scanId,
+    title: "Title",
+    beamline: null,
+    startTime: new Date(),
+    endTime: new Date(),
+    scanRequest: null,
+    data: {},
+  };
+};
+
+type FakeQueryReturn = {
+  data: ScanNodeProcessed[];
+  fetchMore: (n: number) => void;
+};
+const useFakeQuery = () => {
+  const [data, setData] = useState<ScanNodeProcessed[]>([]);
+
+  useEffect(() => {
+    fetchMore(10);
+  }, []);
+
+  const fetchMore = (n: number) => {
+    setData(
+      data.concat(
+        Array(n)
+          .fill(0)
+          .map((_, idx) => generateScanData(idx + data.length + 100000))
+      )
+    );
+  };
+
+  return { data, fetchMore };
+};
+
+export type RowSelectionState = { [key: number]: boolean };
+
+type ScanSelectorTableProps<T> = {
   sessionRef: string;
-  updateScanData: (scans: ScanNodeProcessed[]) => void;
+  onClick: (
+    event: React.MouseEvent<HTMLTableCellElement, MouseEvent>,
+    prev: RowSelectionState,
+    index: number,
+    row: T,
+    checkboxClick: boolean,
+    data: ScanNodeProcessed[]
+  ) => RowSelectionState;
+  rowSelection: RowSelectionState;
+  onRowSelectionChange: (v: RowSelectionState) => void;
+  setTotalCount: (v: number) => void;
+  sortDirection: SortDirection;
+  setLoadMore: (v: boolean) => void;
+  setTotalLoaded: (v: number) => void;
+  setSelectedScans: (v: ScanNodeProcessed[]) => void;
   filter?: DatasetFilterInput | null;
 };
-export function ScanSelectorTable({
+export const ScanSelectorTable = ({
   sessionRef,
-  updateScanData,
+  onClick,
+  rowSelection,
+  onRowSelectionChange,
+  setTotalCount,
+  sortDirection,
+  setLoadMore,
+  setTotalLoaded,
+  setSelectedScans,
   filter,
-}: ScanSelectorTableProp) {
-  const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
-
-  const FETCH_SIZE = 30;
-
+}: ScanSelectorTableProps<ScanNodeProcessed>) => {
   const descPage = useRef<PageInfo | null>(null);
   const ascPage = useRef<PageInfo | null>(null);
-  const sortingChanged = useRef(false);
-  const prevDesc = useRef(false);
 
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
-  const isDescSort = (x: MRT_SortingState) => {
-    let desc = true;
-    if (x.length > 0 && x[0].id == "scanNumber") {
-      desc = x[0].desc;
-    }
-    return desc;
+  const getSelectedScans = (
+    data: ScanNodeProcessed[],
+    rowSelection: RowSelectionState
+  ): ScanNodeProcessed[] => {
+    return Object.keys(rowSelection)
+      .filter((idx) => rowSelection[Number(idx)])
+      .map((idx) => data[Number(idx)]);
   };
+
+  const isDescSort = (v: SortDirection) => v === SortDirection.NEWEST;
+  const FETCH_SIZE = 30;
 
   const { data, loading, fetchMore, client } = useQuery(
     INSTRUMENTSESSION_QUERY,
     {
       variables: {
         reference: sessionRef,
-        first: isDescSort(sorting) ? FETCH_SIZE : null,
-        last: !isDescSort(sorting) ? FETCH_SIZE : null,
+        first: isDescSort(sortDirection) ? FETCH_SIZE : null,
+        last: !isDescSort(sortDirection) ? FETCH_SIZE : null,
         after: null,
         before: null,
         filter: filter,
@@ -87,174 +267,161 @@ export function ScanSelectorTable({
   );
 
   useEffect(() => {
-    if (isDescSort(sorting)) {
+    if (isDescSort(sortDirection)) {
+      console.log("assign descPage");
       descPage.current =
         data?.instrumentSessionByReference?.datasets.pageInfo ?? null;
     } else {
+      console.log("assign ascPage");
       ascPage.current =
         data?.instrumentSessionByReference?.datasets.pageInfo ?? null;
     }
-  }, [data, sorting]);
+  }, [data]);
 
-  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  useEffect(() => {
+    const pageData = isDescSort(sortDirection)
+      ? descPage.current
+      : ascPage.current;
+    client.resetStore();
+    fetchMore({
+      variables: {
+        reference: sessionRef,
+        first: isDescSort(sortDirection) ? FETCH_SIZE : null,
+        last: !isDescSort(sortDirection) ? FETCH_SIZE : null,
+        after: isDescSort(sortDirection) ? (pageData?.endCursor ?? null) : null,
+        before: !isDescSort(sortDirection)
+          ? (pageData?.startCursor ?? null)
+          : null,
+      },
+    });
+  }, [sortDirection]);
 
-  const fetchMoreOnBottomReached = useCallback(
-    (containerRefElement?: HTMLDivElement | null) => {
-      if (containerRefElement) {
-        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        //once the user has scrolled within 400px of the bottom of the table, fetch more data if we can
+  const processedNodes = data ? getProcessedScanNode(data) : [];
 
-        if (
-          scrollHeight - scrollTop - clientHeight < 400 &&
-          !loading &&
-          ((isDescSort(sorting) && descPage.current?.hasNextPage) ||
-            (!isDescSort(sorting) && ascPage.current?.hasPreviousPage))
-        ) {
-          fetchMore({
-            variables: {
-              reference: sessionRef,
-              first: isDescSort(sorting) ? FETCH_SIZE : null,
-              last: !isDescSort(sorting) ? FETCH_SIZE : null,
-              after: isDescSort(sorting)
-                ? (descPage.current?.endCursor ?? null)
-                : null,
-              before: !isDescSort(sorting)
-                ? (ascPage.current?.startCursor ?? null)
-                : null,
-            },
-          });
-        }
-      }
-    },
-    [loading, fetchMore, sessionRef, sorting]
-  );
-
-  let parsedNodes: ScanNodeProcessed[] = [];
-  if (data && data.instrumentSessionByReference) {
-    parsedNodes = getProcessedScanNode(data);
-  }
-
-  const scanNumbersSorted = parsedNodes.sort((a, b) => {
-    const coeff = isDescSort(sorting) ? 1 : -1;
+  const scanNumbersSorted = processedNodes.sort((a, b) => {
+    const coeff = isDescSort(sortDirection) ? 1 : -1;
     if (b.startTime && a.startTime) {
       return coeff * (b.startTime.getTime() - a.startTime.getTime());
     }
     return 0;
   });
 
-  const previousRow = useRef<MRT_Row<ScanNodeProcessed> | null>(null);
+  // const { data, fetchMore } = useFakeQuery();
 
-  const table: MRT_TableInstance<ScanNodeProcessed> = useMaterialReactTable({
-    columns: columns,
-    data: scanNumbersSorted,
-    enableKeyboardShortcuts: false,
-    enableColumnActions: false,
-    enableColumnFilters: true,
-    enablePagination: false,
-    manualSorting: true,
-    manualFiltering: true,
-    enableRowSelection: false,
-    enableMultiRowSelection: false,
-    enableBottomToolbar: false,
-    enableTopToolbar: false,
-    initialState: {
-      density: "compact",
-    },
+  // useEffect(() => {
+  //   fetchMore(FETCH_SIZE);
+  // }, []);
 
-    muiTableBodyRowProps: ({ row }) => ({
-      //implement row selection click events manually
-      onClick: (e) => {
-        setRowSelection((prev) => {
-          // Shift + click selection
-          // https://stackoverflow.com/a/56178061
-          const newState = { ...prev };
-
-          if (e.shiftKey && previousRow.current) {
-            if (previousRow.current.index < row.index) {
-              for (let i = previousRow.current.index; i <= row.index; i++) {
-                newState[i] = true;
-              }
-            } else {
-              for (let i = row.index; i <= previousRow.current.index; i++) {
-                newState[i] = true;
-              }
-            }
-            return newState;
-          } else if (e.ctrlKey) {
-            return {
-              ...prev,
-              [row.id]: !prev[row.id], // Enable multi-select if ctrl key is held down
-            };
-          } else {
-            previousRow.current = row;
-            return {
-              [row.id]: !prev[row.id],
-            };
-          }
-        });
-      },
-      selected: rowSelection[row.id],
-      sx: {
-        cursor: "pointer",
-      },
-    }),
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    state: {
-      rowSelection,
-      sorting,
-    },
-    enableRowVirtualization: true,
-    muiTableContainerProps: {
-      ref: tableContainerRef, //get access to the table container element
-      sx: {
-        maxHeight: "100%",
-      }, //give the table a max height
-      onScroll: (event: React.UIEvent<HTMLDivElement>) =>
-        fetchMoreOnBottomReached(event.target as HTMLDivElement), //add an event listener to the table container element
-    },
-  });
-
-  // useEffect to perform an action when the selection state changes:
-  // https://www.material-react-table.com/docs/guides/row-selection#read-row-selection-state-from-table-instance
-  useEffect(() => {
-    // Get session reference of selected row
-    const selectedIdx = Object.keys(table.getState().rowSelection);
-    // console.log("selected ", selectedIdx);
-
-    const selectedData = selectedIdx
-      .filter((x) => rowSelection[x])
-      .map((x) => table.getRow(x).original);
-    updateScanData(selectedData);
-
-    // `onScanSelect` should not be placed into dependency list as it causes an infinite loop
-  }, [table.getState().rowSelection]);
+  console.log("data", data);
 
   useEffect(() => {
-    const pageData = isDescSort(sorting) ? descPage.current : ascPage.current;
+    setLoadMore(loading && scanNumbersSorted.length > 0);
+  }, [loading]);
 
-    // Only fetch when the sort order has actually changed
-    if (prevDesc.current !== isDescSort(sorting)) {
-      client.resetStore();
-      fetchMore({
-        variables: {
-          reference: sessionRef,
-          first: isDescSort(sorting) ? FETCH_SIZE : null,
-          last: !isDescSort(sorting) ? FETCH_SIZE : null,
-          after: isDescSort(sorting) ? (pageData?.endCursor ?? null) : null,
-          before: !isDescSort(sorting) ? (pageData?.startCursor ?? null) : null,
-        },
-      });
-    }
-
-    sortingChanged.current = true;
-    prevDesc.current = isDescSort(sorting);
-  }, [sorting, client, fetchMore, sessionRef]);
-
-  // Clear row selection when session ref changes
   useEffect(() => {
-    setRowSelection({});
-  }, [sessionRef]);
+    setTotalCount(
+      data?.instrumentSessionByReference?.datasets?.totalCount ?? 0
+    );
+    setTotalLoaded(scanNumbersSorted.length);
+  }, [data]);
 
-  return <MaterialReactTable table={table} />;
-}
+  if (scanNumbersSorted.length === 0 && loading && sessionRef !== "") {
+    return (
+      <Stack
+        spacing={1}
+        justifyContent="center"
+        alignContent="center"
+        alignItems="center"
+        sx={{ p: 4, color: "text.secondary" }}
+      >
+        <Typography variant="body2">Loading...</Typography>
+        {/* <ProgressDelayed delay={1} fade /> */}
+        <Progress />
+      </Stack>
+    );
+  } else if (scanNumbersSorted.length === 0) {
+    return (
+      <Box sx={{ p: 4, textAlign: "center", color: "text.secondary" }}>
+        <Typography variant="body2">No data loaded.</Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <TableVirtuoso
+      data={scanNumbersSorted}
+      components={VirtuosoTableComponents}
+      atBottomThreshold={20}
+      itemContent={(index, row) => {
+        return (
+          <Fragment>
+            {columns.map((column) => (
+              <TableCell
+                key={column.dataKey}
+                padding="none"
+                sx={{
+                  borderBottom: "none",
+                }}
+                onClick={(e) => {
+                  const rowSelectionState = onClick(
+                    e,
+                    rowSelection,
+                    index,
+                    row,
+                    false,
+                    scanNumbersSorted
+                  );
+                  console.log("rowSelectionState", rowSelectionState);
+                  onRowSelectionChange(rowSelectionState);
+                  setSelectedScans(
+                    getSelectedScans(scanNumbersSorted, rowSelectionState)
+                  );
+                }}
+              >
+                <ListItem
+                  data={row}
+                  isSelected={rowSelection[index] ?? false}
+                  onCheckboxSelect={(e) => {
+                    const rowSelectionState = onClick(
+                      e,
+                      rowSelection,
+                      index,
+                      row,
+                      true,
+                      scanNumbersSorted
+                    );
+                    onRowSelectionChange(rowSelectionState);
+                    setSelectedScans(
+                      getSelectedScans(scanNumbersSorted, rowSelectionState)
+                    );
+                  }}
+                />
+              </TableCell>
+            ))}
+          </Fragment>
+        );
+      }}
+      endReached={() => {
+        if (
+          !loading &&
+          ((isDescSort(sortDirection) && descPage.current?.hasNextPage) ||
+            (!isDescSort(sortDirection) && ascPage.current?.hasPreviousPage))
+        ) {
+          fetchMore({
+            variables: {
+              reference: sessionRef,
+              first: isDescSort(sortDirection) ? FETCH_SIZE : null,
+              last: !isDescSort(sortDirection) ? FETCH_SIZE : null,
+              after: isDescSort(sortDirection)
+                ? (descPage.current?.endCursor ?? null)
+                : null,
+              before: !isDescSort(sortDirection)
+                ? (ascPage.current?.startCursor ?? null)
+                : null,
+            },
+          });
+        }
+      }}
+    />
+  );
+};
