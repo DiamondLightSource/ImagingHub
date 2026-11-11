@@ -138,9 +138,25 @@ const BEAMLINE_CONFIG: BeamlineConfig[] = [
     scanRequest: (v) => v.data?.scan_parameters?.scan_request,
     components: [
       {
-        title: "Sample name",
-        getter: (v) => v.data?.sample_information?.name,
-        formatter: FORMATTER.NONE,
+        groupTitle: "Experiment",
+        children: [
+          {
+            title: "Sample name",
+            getter: (v) => v.data?.sample_information?.name,
+            formatter: FORMATTER.NONE,
+          },
+          {
+            title: "Experiment type",
+            getter: (v) => {
+              const req = v?.scanRequest?.processingRequest?.request;
+              if (req) {
+                return Object.keys(req);
+              }
+              return null;
+            },
+            formatter: (v) => v.join(", "),
+          },
+        ],
       },
       {
         groupTitle: "Times",

@@ -44,9 +44,9 @@ const columns = [
 
 type ScanSelectorProp = {
   sessionRef: string;
-  onScanSelect: (scans: ScanNodeProcessed[]) => void;
+  updateScanData: (scans: ScanNodeProcessed[]) => void;
 };
-export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
+export function ScanSelector({ sessionRef, updateScanData }: ScanSelectorProp) {
   const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
 
   const FETCH_SIZE = 30;
@@ -218,7 +218,7 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
     const selectedData = selectedIdx
       .filter((x) => rowSelection[x])
       .map((x) => table.getRow(x).original);
-    onScanSelect(selectedData);
+    updateScanData(selectedData);
 
     // `onScanSelect` should not be placed into dependency list as it causes an infinite loop
   }, [table.getState().rowSelection]);
@@ -243,6 +243,11 @@ export function ScanSelector({ sessionRef, onScanSelect }: ScanSelectorProp) {
     sortingChanged.current = true;
     prevDesc.current = isDescSort(sorting);
   }, [sorting, client, fetchMore, sessionRef]);
+
+  // Clear row selection when session ref changes
+  useEffect(() => {
+    setRowSelection({});
+  }, [sessionRef]);
 
   return <MaterialReactTable table={table} />;
 }

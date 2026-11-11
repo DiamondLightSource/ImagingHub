@@ -2,16 +2,17 @@ import { Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { useState } from "react";
 import { ScanSelector } from "./ScanSelector";
 import { ScanSelector as ScanSelectorLegacy } from "./ScanSelectorLegacy";
+import { ScanNodeProcessed } from "../types";
 
 type ScanSelectorCombinedProps = {
   sessionRef: string;
-  scanIds: number[];
-  setScanIds: (v: number[]) => void;
+  scanData: ScanNodeProcessed[];
+  updateScanData: (v: ScanNodeProcessed[]) => void;
 };
 export const ScanSelectorCombined = ({
   sessionRef,
-  scanIds,
-  setScanIds,
+  scanData,
+  updateScanData,
 }: ScanSelectorCombinedProps) => {
   const [selectorType, setSelectorType] = useState("legacy");
 
@@ -35,13 +36,33 @@ export const ScanSelectorCombined = ({
       </ToggleButtonGroup>
 
       {selectorType === "new" ? (
-        <ScanSelector
-          onScanSelect={(v) => setScanIds(v.map((x) => x.scanNumber))}
-          sessionRef={sessionRef}
-        />
+        <ScanSelector updateScanData={updateScanData} sessionRef={sessionRef} />
       ) : (
-        <ScanSelectorLegacy scanIds={scanIds} setScanIds={setScanIds} />
+        <ScanSelectorLegacy
+          scanIds={scanData.map((x) => x.scanNumber)}
+          setScanIds={(v) => updateScanData(generateScanData(v))}
+        />
       )}
     </Stack>
   );
+};
+
+// Generates dummy detailed scan data when using the legacy
+// scan selector
+const generateScanData = (scanIds: number[]): ScanNodeProcessed[] => {
+  return scanIds.map((x) => {
+    return {
+      __typename: "Dataset",
+      scanNumber: x,
+      dataSchema: "",
+      description: null,
+      id: -1,
+      title: "Title",
+      beamline: null,
+      startTime: null,
+      endTime: null,
+      scanRequest: null,
+      data: {},
+    };
+  });
 };
