@@ -20,7 +20,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {useLegacySelector ? (
-        <Box p={2}>
+        <Box p={2} flex={1}>
           <ScanSelectorLegacy
             scanIds={selectedScans.map((v) => v.scanNumber)}
             setScanIds={(v) => setSelectedScans(generateScanData(v))}
