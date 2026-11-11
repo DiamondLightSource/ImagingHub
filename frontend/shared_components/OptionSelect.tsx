@@ -29,11 +29,16 @@ const OptionSelect: FC<Props> = ({ label, value, options, onChange }) => {
       <Stack direction="row" alignItems="center">
         <Select
           native
+          notched
           label={label}
           size="small"
           value={value}
           onChange={onChange}
+          sx={{ minWidth: "170px" }}
         >
+          <option value="" disabled>
+            Select an option
+          </option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
