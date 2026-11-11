@@ -18,7 +18,7 @@ import {
 } from "../../src/ApolloClient";
 import ProcessingView from "./components/ProcessingView/ProcessingView";
 import { useResizableWidth } from "./hooks/useResizableWidth";
-import { ScanSelector } from "./components/ScanSelector/ScanSelector";
+import { Sidebar } from "./components/Sidebar";
 
 const PARAM_CONFIG_DRAWER_WIDTH = 600;
 
@@ -92,9 +92,10 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
               backgroundColor: "background.paper",
             }}
           >
-            <ScanSelector
+            <Sidebar
               sessionRef={sessionRef}
               setSelectedScans={setSelectedScanIds}
+              selectedScans={selectedScanIds}
             />
 
             {/*

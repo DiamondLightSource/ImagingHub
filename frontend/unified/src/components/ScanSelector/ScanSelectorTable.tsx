@@ -12,7 +12,7 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { forwardRef, Fragment, useEffect, useRef, useState } from "react";
+import { forwardRef, Fragment, useEffect, useRef } from "react";
 import { TableVirtuoso, type TableComponents } from "react-virtuoso";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
@@ -162,48 +162,6 @@ const columns = [
   },
 ];
 
-// Generates dummy detailed scan data when using the legacy
-// scan selector
-const generateScanData = (scanId: number): ScanNodeProcessed => {
-  return {
-    __typename: "Dataset",
-    scanNumber: scanId,
-    dataSchema: "",
-    description: null,
-    id: scanId,
-    title: "Title",
-    beamline: null,
-    startTime: new Date(),
-    endTime: new Date(),
-    scanRequest: null,
-    data: {},
-  };
-};
-
-type FakeQueryReturn = {
-  data: ScanNodeProcessed[];
-  fetchMore: (n: number) => void;
-};
-const useFakeQuery = () => {
-  const [data, setData] = useState<ScanNodeProcessed[]>([]);
-
-  useEffect(() => {
-    fetchMore(10);
-  }, []);
-
-  const fetchMore = (n: number) => {
-    setData(
-      data.concat(
-        Array(n)
-          .fill(0)
-          .map((_, idx) => generateScanData(idx + data.length + 100000))
-      )
-    );
-  };
-
-  return { data, fetchMore };
-};
-
 export type RowSelectionState = { [key: number]: boolean };
 
 type ScanSelectorTableProps<T> = {
@@ -306,14 +264,6 @@ export const ScanSelectorTable = ({
     return 0;
   });
 
-  // const { data, fetchMore } = useFakeQuery();
-
-  // useEffect(() => {
-  //   fetchMore(FETCH_SIZE);
-  // }, []);
-
-  console.log("data", data);
-
   useEffect(() => {
     setLoadMore(loading && scanNumbersSorted.length > 0);
   }, [loading]);
@@ -335,7 +285,6 @@ export const ScanSelectorTable = ({
         sx={{ p: 4, color: "text.secondary" }}
       >
         <Typography variant="body2">Loading...</Typography>
-        {/* <ProgressDelayed delay={1} fade /> */}
         <Progress />
       </Stack>
     );

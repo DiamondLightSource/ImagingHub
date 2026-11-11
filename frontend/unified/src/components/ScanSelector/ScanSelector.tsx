@@ -16,7 +16,7 @@ import { useQuery } from "@apollo/client/react";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import { ScanDateRange, ScanNodeProcessed } from "../../types";
-import { getBeamlineConfig, getProcessedScanNode } from "../../beamline.config";
+import { getBeamlineConfig } from "../../beamline.config";
 
 export function formatDate(date: Date | null | undefined) {
   if (date) {

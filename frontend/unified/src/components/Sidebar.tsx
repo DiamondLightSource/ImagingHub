@@ -1,54 +1,74 @@
-import { Navbar } from "@diamondlightsource/sci-react-ui";
-import { Box, Typography, Stack } from "@mui/material";
-import { ScanSelectorCombined } from "./ScanSelector/ScanSelectorCombined";
+import { Box, Typography, Stack, Switch } from "@mui/material";
 import { ScanNodeProcessed } from "../types";
 import { ScanSelector } from "./ScanSelector/ScanSelector";
+import { ScanSelector as ScanSelectorLegacy } from "./ScanSelector/ScanSelectorLegacy";
+import { useState } from "react";
 
 type SidebarProps = {
-  scanData: ScanNodeProcessed[];
-  updateScanData: (_: ScanNodeProcessed[]) => void;
+  selectedScans: ScanNodeProcessed[];
+  setSelectedScans: (_: ScanNodeProcessed[]) => void;
   sessionRef: string;
-  sidebarWidth: number;
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  scanData,
-  updateScanData,
+  selectedScans,
+  setSelectedScans,
   sessionRef,
-  sidebarWidth,
 }: SidebarProps) => {
+  const [useLegacySelector, setUseLegacySelector] = useState<boolean>(false);
+
   return (
-    <ScanSelector sessionRef={sessionRef} />
-
-    // <Box
-    //   sx={{
-    //     display: "flex",
-    //     flexDirection: "column",
-    //     minHeight: 0,
-    //   }}
-    // >
-    //   <Navbar />
-    //   <Stack
-    //     spacing={2}
-    //     sx={{
-    //       display: "flex",
-    //       flexDirection: "column",
-    //       minHeight: 0,
-    //       padding: 2,
-    //     }}
-    //   >
-    //     <Typography variant="h5">Scan</Typography>
-
-    //     {/* Force the (new) scan selector to handle scrolling itself.
-    //     This is to ensure infinite scroll works correctly. */}
-    //     <Box sx={{ height: "100%", minHeight: 0 }}>
-    //       <ScanSelectorCombined
-    //         scanData={scanData}
-    //         updateScanData={updateScanData}
-    //         sessionRef={sessionRef}
-    //       />
-    //     </Box>
-    //   </Stack>
-    // </Box>
+    <>
+      {useLegacySelector ? (
+        <Box p={2}>
+          <ScanSelectorLegacy
+            scanIds={selectedScans.map((v) => v.scanNumber)}
+            setScanIds={(v) => setSelectedScans(generateScanData(v))}
+          />
+        </Box>
+      ) : (
+        <ScanSelector
+          sessionRef={sessionRef}
+          setSelectedScans={setSelectedScans}
+        />
+      )}
+      <Stack
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+        paddingBottom={1}
+        spacing={1}
+      >
+        <Typography variant="subtitle2" sx={{ color: "text.muted" }}>
+          Legacy scan selector
+        </Typography>
+        <Switch
+          size="small"
+          color="warning"
+          checked={useLegacySelector}
+          onChange={(_, checked) => setUseLegacySelector(checked)}
+        />
+      </Stack>
+    </>
   );
+};
+
+// Generates dummy detailed scan data when using the legacy
+// scan selector
+const generateScanData = (scanIds: number[]): ScanNodeProcessed[] => {
+  return scanIds.map((x) => {
+    return {
+      __typename: "Dataset",
+      scanNumber: x,
+      dataSchema: "",
+      description: null,
+      id: -1,
+      title: "Title",
+      beamline: null,
+      startTime: null,
+      endTime: null,
+      scanRequest: null,
+      data: {},
+    };
+  });
 };
