@@ -1,4 +1,5 @@
 import {
+  Card,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -36,52 +37,54 @@ export const StripeRemovalParameterConfiguration: React.FC<
   setParameters,
 }: StripeRemovalParameterConfigurationProps) => {
   return (
-    <FormGroup sx={{ marginBottom: 2 }}>
-      <FormControlLabel
-        label="Apply stripe removal"
-        control={
-          <Switch
-            checked={active}
-            onChange={(e) => setActive(e.target.checked)}
-            slotProps={{ input: { "aria-label": "controlled" } }}
-          />
-        }
-      />
-      {active && (
-        <Stack spacing={2} direction="row">
-          <TextField
-            variant="outlined"
-            size="small"
-            label="snr"
-            value={parameters.snr}
-            type="number"
-            onChange={(e) =>
-              setParameters({ ...parameters, snr: Number(e.target.value) })
-            }
-          />
-          <TextField
-            variant="outlined"
-            size="small"
-            label="la_size"
-            value={parameters.laSize}
-            type="number"
-            onChange={(e) =>
-              setParameters({ ...parameters, laSize: Number(e.target.value) })
-            }
-          />
-          <TextField
-            variant="outlined"
-            size="small"
-            label="sm_size"
-            value={parameters.smSize}
-            type="number"
-            onChange={(e) =>
-              setParameters({ ...parameters, smSize: Number(e.target.value) })
-            }
-          />
-        </Stack>
-      )}
-    </FormGroup>
+    <Card variant="outlined" sx={{ padding: 2 }}>
+      <FormGroup>
+        <FormControlLabel
+          label="Apply stripe removal"
+          control={
+            <Switch
+              checked={active}
+              onChange={(e) => setActive(e.target.checked)}
+              slotProps={{ input: { "aria-label": "controlled" } }}
+            />
+          }
+        />
+        {active && (
+          <Stack spacing={2} direction="row">
+            <TextField
+              variant="outlined"
+              size="small"
+              label="snr"
+              value={parameters.snr}
+              type="number"
+              onChange={(e) =>
+                setParameters({ ...parameters, snr: Number(e.target.value) })
+              }
+            />
+            <TextField
+              variant="outlined"
+              size="small"
+              label="la_size"
+              value={parameters.laSize}
+              type="number"
+              onChange={(e) =>
+                setParameters({ ...parameters, laSize: Number(e.target.value) })
+              }
+            />
+            <TextField
+              variant="outlined"
+              size="small"
+              label="sm_size"
+              value={parameters.smSize}
+              type="number"
+              onChange={(e) =>
+                setParameters({ ...parameters, smSize: Number(e.target.value) })
+              }
+            />
+          </Stack>
+        )}
+      </FormGroup>
+    </Card>
   );
 };
 
@@ -100,31 +103,33 @@ export const DistortionCorrectionParameterConfiguration: React.FC<
   DistortionCorrectionParameterConfigurationProps
 > = ({ active, setActive, parameters, setParameters }) => {
   return (
-    <FormGroup>
-      <FormControlLabel
-        label="Apply distortion correction"
-        control={
-          <Switch
-            checked={active}
-            onChange={(e) => setActive(e.target.checked)}
-            slotProps={{ input: { "aria-label": "controlled" } }}
-          />
-        }
-      />
-      {active && (
-        <Stack spacing={2} direction="row" marginBottom={2}>
-          <TextField
-            variant="outlined"
-            size="small"
-            label="Coefficients filepath"
-            value={parameters.coefficientsFilepath}
-            onChange={(e) =>
-              setParameters({ coefficientsFilepath: e.target.value })
-            }
-          />
-        </Stack>
-      )}
-    </FormGroup>
+    <Card variant="outlined" sx={{ padding: 2 }}>
+      <FormGroup>
+        <FormControlLabel
+          label="Apply distortion correction"
+          control={
+            <Switch
+              checked={active}
+              onChange={(e) => setActive(e.target.checked)}
+              slotProps={{ input: { "aria-label": "controlled" } }}
+            />
+          }
+        />
+        {active && (
+          <Stack spacing={2} direction="row">
+            <TextField
+              variant="outlined"
+              size="small"
+              label="Coefficients filepath"
+              value={parameters.coefficientsFilepath}
+              onChange={(e) =>
+                setParameters({ coefficientsFilepath: e.target.value })
+              }
+            />
+          </Stack>
+        )}
+      </FormGroup>
+    </Card>
   );
 };
 
@@ -239,7 +244,7 @@ export const CenteringParameterConfiguration: React.FC<
   CenteringParameterConfigurationProps
 > = ({ methodType, setMethodType, parameters, setParameters }) => {
   return (
-    <div style={{ marginBottom: 10 }}>
+    <Card variant="outlined" sx={{ padding: 2 }}>
       <Typography>Centering</Typography>
       <Stack
         direction="row"
@@ -287,7 +292,7 @@ export const CenteringParameterConfiguration: React.FC<
           setParameters={setParameters}
         />
       )}
-    </div>
+    </Card>
   );
 };
 
@@ -307,7 +312,7 @@ export const PaganinFilterParameterConfiguration: React.FC<
   PaganinFilterParameterConfigurationProps
 > = ({ parameters, setParameters }) => {
   return (
-    <div style={{ marginBottom: 10 }}>
+    <Card variant="outlined" sx={{ padding: 2 }}>
       <Typography gutterBottom>Paganin filter</Typography>
       <Stack spacing={2} direction="row">
         <TextField
@@ -317,7 +322,10 @@ export const PaganinFilterParameterConfiguration: React.FC<
           value={parameters.pixelSize}
           type="number"
           onChange={(e) =>
-            setParameters({ ...parameters, pixelSize: Number(e.target.value) })
+            setParameters({
+              ...parameters,
+              pixelSize: Number(e.target.value),
+            })
           }
         />
         <TextField
@@ -354,6 +362,6 @@ export const PaganinFilterParameterConfiguration: React.FC<
           }
         />
       </Stack>
-    </div>
+    </Card>
   );
 };
