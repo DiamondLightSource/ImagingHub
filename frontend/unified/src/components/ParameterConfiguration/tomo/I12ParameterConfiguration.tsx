@@ -216,24 +216,34 @@ export const I12ParameterConfiguration: React.FC<TemplateComponentProps> = ({
             />
           </>
         )}
-        <Card variant="outlined" sx={{ padding: 2 }}>
-          <Typography gutterBottom>Output</Typography>
-          <TextField
-            variant="outlined"
-            size="small"
-            value={outputFolder}
-            onChange={(e) => setOutputFolder(e.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ marginRight: 0 }}>
-                    <Typography>{visitDirpath}</Typography>
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-        </Card>
+      </Card>
+      <Card
+        variant="outlined"
+        sx={{
+          mb: 2,
+          p: 2,
+          border: "1px solid #89987880",
+          borderRadius: "4px",
+        }}
+      >
+        <Typography gutterBottom variant="h6" color="primary">
+          <strong>Output</strong>
+        </Typography>
+        <TextField
+          variant="outlined"
+          size="small"
+          value={outputFolder}
+          onChange={(e) => setOutputFolder(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start" sx={{ marginRight: 0 }}>
+                  <Typography>{visitDirpath}</Typography>
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
       </Card>
     </>
   );
