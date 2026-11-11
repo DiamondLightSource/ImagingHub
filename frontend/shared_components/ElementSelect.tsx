@@ -1,27 +1,26 @@
 import Stack from "@mui/material/Stack";
 
 import OptionPanel from "./OptionPanel";
-import { elementOptions, transitionOptions } from "../../data/xanes";
-import FieldLabel from "./../../../../shared_components/FieldLabel";
+import { elementOptions, transitionOptions } from "./data/xanes";
+import FieldLabel from "./FieldLabel";
 
-interface ElementSelectValue {
-  element: string;
-  transition: string;
-}
+import { iconSize } from "./data/ui";
 
-interface ElementSelectProps {
+import type { ElementPair } from "./types";
+
+type ElementSelectProps = {
   title?: string;
   info?: string;
-  value: ElementSelectValue;
-  onChange: (value: ElementSelectValue) => void;
-}
+  value: ElementPair;
+  onChange: (value: ElementPair) => void;
+};
 
-export default function ElementSelect({
+const ElementSelect = ({
   title,
   info,
   value,
   onChange,
-}: ElementSelectProps) {
+}: ElementSelectProps) => {
   return (
     <Stack spacing={0} sx={{ mt: "0px !important" }}>
       {title && <FieldLabel title={title} info={info} />}
@@ -41,4 +40,6 @@ export default function ElementSelect({
       </Stack>
     </Stack>
   );
-}
+};
+
+export default ElementSelect;

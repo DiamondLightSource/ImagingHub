@@ -8,11 +8,12 @@ import { PtyrexParameterConfiguration } from "../ptyrex/PtyrexParameterConfigura
 import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderContext";
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
+import { SparseXanesParameterConfiguration } from "../xanes/SparseXanesParameterConfiguration";
+import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
-import { ResourceForm } from "../../ResourceForm";
+import { XanesPointParameterConfiguration } from "../xanes/XanesPointParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
-import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -23,9 +24,7 @@ type TemplateComponentMapping = {
 export const getParamConfigComponent = (
   technique: Technique,
   template: string,
-  resourceDisplayList: object,
   setTemplateParameters: (_: object) => void,
-  setResourceParameters: (_: { nprocs: number; memory: string }) => void,
   visitDirPath: string
 ) => {
   const TEMPLATE_TO_COMPONENT_MAPPING: TemplateComponentMapping = {
@@ -45,25 +44,17 @@ export const getParamConfigComponent = (
     },
     [Technique.Ptycho]: {},
     [Technique.Ptypy]: {
-      "ptypy-i08-1-from-config": (
+      "ptypy-i08-1-nexus": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
           <PtypyI08ParameterConfiguration
             setParameters={setTemplateParameters}
           />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
-          />
         </Suspense>
       ),
-      "ptypy-p99-from-config": (
+      "ptypy-p99-nexus": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
           <PtypyP99ParameterConfiguration
             setParameters={setTemplateParameters}
-          />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
           />
         </Suspense>
       ),
@@ -75,10 +66,6 @@ export const getParamConfigComponent = (
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
-          />
         </Suspense>
       ),
     },
@@ -89,22 +76,13 @@ export const getParamConfigComponent = (
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
-          />
         </LoaderProvider>
       ),
       "httomo-fbp-180": (
         <LoaderProvider>
           <Fbp180ParameterConfiguration
             setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
-          />
-          <ResourceForm
-            resourceDisplayList={resourceDisplayList}
-            setResourceParameters={setResourceParameters}
           />
         </LoaderProvider>
       ),
@@ -112,7 +90,6 @@ export const getParamConfigComponent = (
         <LoaderProvider>
           <SyntheticDataParameterConfiguration
             setParameters={setTemplateParameters}
-            setResourceParameters={setResourceParameters}
             visitDirpath={visitDirPath}
           />
         </LoaderProvider>
@@ -120,11 +97,22 @@ export const getParamConfigComponent = (
     },
     [Technique.Xanes]: {
       xanes: (
-        <Suspense fallback={<p>Fetching workflow template...</p>}>
-          <XanesAutoprocessingParameterConfiguration
-            setParameters={setTemplateParameters}
-          />
-        </Suspense>
+        <XanesAutoprocessingParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xanes-sparse": (
+        <SparseXanesParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+      "xanes-point": (
+        <XanesPointParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
       ),
     },
     [Technique.Xrd]: {

@@ -1,25 +1,14 @@
-import {
-  Card,
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Card, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { TemplateComponentProps } from "../../../types";
 
 const PtypyP99ParameterConfiguration = ({
   setParameters,
-}: {
-  setParameters: (_: object) => void;
-  setResourceParameters: (_: object) => void;
-}) => {
+}: TemplateComponentProps) => {
   const [inPath, setInPath] = useState<string>(
     "processing/writenData/reconstruction_test_data"
   );
   const [outPath, setOutPath] = useState<string>("processing/workflows/ptypy");
-  const [nprocs, setNprocs] = useState<string>("1");
-  const [memory, setMemory] = useState<string>("20Gi");
-  const [useGpu, setUseGpu] = useState<boolean>(false);
 
   useEffect(() => {
     setParameters({
