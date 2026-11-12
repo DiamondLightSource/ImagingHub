@@ -312,7 +312,7 @@ export const ScanSelectorTable = ({
       data={scanNumbersSorted}
       components={VirtuosoTableComponents}
       atBottomThreshold={20}
-      itemContent={(index, row) => {
+      itemContent={(index: number, row: ScanNodeProcessed) => {
         return (
           <Fragment>
             {columns.map((column) => (
