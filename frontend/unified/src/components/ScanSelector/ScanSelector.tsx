@@ -28,9 +28,7 @@ function searchData(
 
   const startIdx = data.findIndex((x) => x.id === startId);
   let endIdx = startIdx;
-  console.log("startIdx", startIdx);
   while (data[endIdx].id !== endId) {
-    console.log("endIdx", endIdx);
     newSelectionState[data[endIdx].id] = true;
     endIdx++;
   }
@@ -55,8 +53,6 @@ export const ScanSelector = ({
   const [loadMore, setLoadMore] = useState(false);
 
   const [scanDateFilter, setScanDateFilter] = useState<ScanDateRange>({});
-
-  console.log("sessionRef", sessionRef);
 
   const { data } = useQuery(INSTRUMENTSESSION_QUERY, {
     variables: {
@@ -138,7 +134,6 @@ export const ScanSelector = ({
           setSelectedScans={setSelectedScans}
           onClick={(e, prev, idx, row, checkboxClick, data) => {
             if (e.shiftKey && previousRow.current != null) {
-              console.log("previousRow.current, idx", previousRow.current, idx);
               if (previousRow.current.idx < idx) {
                 // Go 'up' in index (i.e. top to bottom)
                 return searchData(data, previousRow.current.id, row.id, prev);

@@ -25,7 +25,6 @@ import {
   getProcessedData,
   SchemaConfig,
 } from "../../beamline.config";
-import { Rows } from "lucide-react";
 
 const FIRST_LINE = 28;
 const SELECTED_SHADOW =
@@ -70,10 +69,8 @@ export const ScanCard = ({
 
   return (
     <Box
-      // component="li"
       data-plot-id={title}
       onClick={(e) => {
-        console.log("checkboxSelect false");
         onRowClick(e, false);
       }}
       sx={{
@@ -106,7 +103,6 @@ export const ScanCard = ({
           e.stopPropagation();
           onRowClick(e, true);
         }}
-        // onChange={(e) => {setIsSelected(!isSelected)}}
         inputProps={{ "aria-label": `Show ${title}` }}
       />
       <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -218,7 +214,7 @@ export const ScanSelectorTable = ({
     data: ScanNodeProcessed[],
     rowSelection: RowSelectionState
   ): ScanNodeProcessed[] => {
-    return data.filter((x) => x.id in Object.keys(rowSelection));
+    return data.filter((x) => Object.keys(rowSelection).includes(`${x.id}`));
   };
 
   const isDescSort = (v: SortDirection) => v === SortDirection.NEWEST;

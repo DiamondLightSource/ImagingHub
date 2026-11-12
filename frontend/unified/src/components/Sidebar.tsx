@@ -3,7 +3,6 @@ import { ScanNodeProcessed, SelectedScans } from "../types";
 import { ScanSelector } from "./ScanSelector/ScanSelector";
 import { ScanSelector as ScanSelectorLegacy } from "./ScanSelector/ScanSelectorLegacy";
 import { useState } from "react";
-import { getFieldValue } from "../beamline.config";
 
 type SidebarProps = {
   selectedScans: SelectedScans;

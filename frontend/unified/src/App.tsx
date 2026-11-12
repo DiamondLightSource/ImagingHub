@@ -27,7 +27,7 @@ type AppProps = {
 };
 
 export const App: React.FC<AppProps> = ({ session }: AppProps) => {
-  const [selectedScanIds, setSelectedScanIds] = useState<SelectedScans>({
+  const [selectedScans, setSelectedScans] = useState<SelectedScans>({
     scans: [],
   });
 
@@ -54,7 +54,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
 
   // Clear selected scan IDs when session changes
   useEffect(() => {
-    setSelectedScanIds({ scans: [] });
+    setSelectedScans({ scans: [] });
   }, [sessionRef]);
 
   return (
@@ -94,8 +94,8 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           >
             <Sidebar
               sessionRef={sessionRef}
-              setSelectedScans={setSelectedScanIds}
-              selectedScans={selectedScanIds}
+              setSelectedScans={setSelectedScans}
+              selectedScans={selectedScans}
             />
 
             {/*
@@ -166,10 +166,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
                     visit={selectedVisit}
                     beamline={beamline}
                     startTime={session.startTime}
-                    scanIds={selectedScanIds.scans.map((x) => {
-                      console.log(x);
-                      return x.scanNumber;
-                    })}
+                    scanIds={selectedScans.scans.map((x) => x.scanNumber)}
                   />
                 </ApolloProvider>
               </Suspense>

@@ -196,7 +196,6 @@ export const ScanSelectorHeader = ({
               dateAdapter={AdapterDayjs}
               adapterLocale="en-gb"
             >
-              {/* <Paper> */}
               <Stack spacing={1} sx={{ p: 2 }}>
                 <Stack direction="row" spacing={1}>
                   <Stack>
@@ -255,7 +254,6 @@ export const ScanSelectorHeader = ({
                   </Button>
                 </Stack>
               </Stack>
-              {/* </Paper> */}
             </LocalizationProvider>
           </Menu>
         </div>
