@@ -15,27 +15,39 @@ import { Box } from "@mui/material";
 import { useQuery } from "@apollo/client/react";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
-import { ScanDateRange, ScanNodeProcessed } from "../../types";
+import { ScanDateRange, ScanNodeProcessed, SelectedScans } from "../../types";
 import { getBeamlineConfig } from "../../beamline.config";
 
-export function formatDate(date: Date | null | undefined) {
-  if (date) {
-    console.log("date", date);
-    return date.toLocaleString(undefined, { timeZone: "UTC" });
+function searchData(
+  data: ScanNodeProcessed[],
+  startId: number,
+  endId: number,
+  rowSelectionState: RowSelectionState
+): RowSelectionState {
+  const newSelectionState = { ...rowSelectionState };
+
+  const startIdx = data.findIndex((x) => x.id === startId);
+  let endIdx = startIdx;
+  console.log("startIdx", startIdx);
+  while (data[endIdx].id !== endId) {
+    console.log("endIdx", endIdx);
+    newSelectionState[data[endIdx].id] = true;
+    endIdx++;
   }
-  return "No date";
+  newSelectionState[data[endIdx].id] = true;
+  return newSelectionState;
 }
 
 type ScanSelectorProps = {
   sessionRef: string;
-  setSelectedScans: (v: ScanNodeProcessed[]) => void;
+  setSelectedScans: (v: SelectedScans) => void;
 };
 export const ScanSelector = ({
   sessionRef,
   setSelectedScans,
 }: ScanSelectorProps) => {
   const [selectedInf, setSelectedInf] = useState<RowSelectionState>({});
-  const previousRow = useRef<number | null>(null);
+  const previousRow = useRef<{ id: number; idx: number } | null>(null);
   const [totalCount, setTotalCount] = useState(0);
   const [sortDirection, setSortDirection] = useState<SortDirection>("newest");
   const [searchString, setSearchString] = useState<string | null>(null);
@@ -120,32 +132,37 @@ export const ScanSelector = ({
           filter={filter}
           setSelectedScans={setSelectedScans}
           onClick={(e, prev, idx, row, checkboxClick, data) => {
-            const newState = { ...prev };
-
             console.log("e.shiftKey ", e.shiftKey, previousRow.current, idx);
 
             if (e.shiftKey && previousRow.current != null) {
-              if (previousRow.current < idx) {
-                for (let i = previousRow.current; i <= idx; i++) {
-                  newState[i] = true;
-                }
-                // or the opposite
+              console.log("previousRow.current, idx", previousRow.current, idx);
+              if (previousRow.current.idx < idx) {
+                // Go 'up' in index (i.e. top to bottom)
+                return searchData(
+                  data,
+                  previousRow.current.id,
+                  row.id,
+                  prev
+                );
               } else {
-                for (let i = idx; i <= previousRow.current; i++) {
-                  newState[i] = true;
-                }
+                return searchData(
+                  data,
+                  row.id,
+                  previousRow.current.id,
+                  prev
+                );
               }
-              console.log("newState ", newState);
-              return newState;
+              // console.log("newState ", newState);
+              // return newState;
             } else if (e.ctrlKey || checkboxClick) {
               return {
                 ...prev,
-                [idx]: !prev[idx], // Enable multi-select if ctrl key is held down
+                [row.id]: !prev[row.id], // Enable multi-select if ctrl key is held down
               };
             } else {
-              previousRow.current = idx;
+              previousRow.current = { id: row.id, idx: idx };
               return {
-                [idx]: !prev[idx],
+                [row.id]: !prev[row.id],
               };
             }
           }}

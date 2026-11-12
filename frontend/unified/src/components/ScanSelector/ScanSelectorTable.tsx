@@ -16,7 +16,7 @@ import { forwardRef, Fragment, useEffect, useRef } from "react";
 import { TableVirtuoso, type TableComponents } from "react-virtuoso";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
-import { PageInfo, ScanNodeProcessed } from "../../types";
+import { PageInfo, ScanNodeProcessed, SelectedScans } from "../../types";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import {
   getBeamlineConfig,
@@ -25,6 +25,7 @@ import {
   getProcessedData,
   SchemaConfig,
 } from "../../beamline.config";
+import { Rows } from "lucide-react";
 
 const FIRST_LINE = 28;
 const SELECTED_SHADOW =
@@ -60,16 +61,11 @@ export const ListItem = ({
   isSelected,
   onCheckboxSelect,
 }: ListItemProps) => {
-  // const [isSelected, setIsSelected] = useState(false);
-
   const scanSelectorUi = config?.ui?.scanSelector;
   const title = getFieldString(config, data, scanSelectorUi?.title);
   const item1 = getFieldString(config, data, scanSelectorUi?.item1);
   const item2 = getFieldString(config, data, scanSelectorUi?.item2);
   const item3 = getFieldString(config, data, scanSelectorUi?.item3);
-
-  console.log("config", config);
-  console.log(scanSelectorUi?.title, "title", title);
 
   return (
     <Box
@@ -196,7 +192,7 @@ type ScanSelectorTableProps<T> = {
   sortDirection: SortDirection;
   setLoadMore: (v: boolean) => void;
   setTotalLoaded: (v: number) => void;
-  setSelectedScans: (v: ScanNodeProcessed[]) => void;
+  setSelectedScans: (v: SelectedScans) => void;
   filter?: DatasetFilterInput | null;
 };
 export const ScanSelectorTable = ({
@@ -218,9 +214,7 @@ export const ScanSelectorTable = ({
     data: ScanNodeProcessed[],
     rowSelection: RowSelectionState
   ): ScanNodeProcessed[] => {
-    return Object.keys(rowSelection)
-      .filter((idx) => rowSelection[Number(idx)])
-      .map((idx) => data[Number(idx)]);
+    return data.filter((x) => x.id in Object.keys(rowSelection));
   };
 
   const isDescSort = (v: SortDirection) => v === SortDirection.NEWEST;
@@ -242,11 +236,9 @@ export const ScanSelectorTable = ({
 
   useEffect(() => {
     if (isDescSort(sortDirection)) {
-      console.log("assign descPage");
       descPage.current =
         data?.instrumentSessionByReference?.datasets.pageInfo ?? null;
     } else {
-      console.log("assign ascPage");
       ascPage.current =
         data?.instrumentSessionByReference?.datasets.pageInfo ?? null;
     }
@@ -346,15 +338,19 @@ export const ScanSelectorTable = ({
                   );
                   console.log("rowSelectionState", rowSelectionState);
                   onRowSelectionChange(rowSelectionState);
-                  setSelectedScans(
-                    getSelectedScans(scanNumbersSorted, rowSelectionState)
-                  );
+                  setSelectedScans({
+                    config: config,
+                    scans: getSelectedScans(
+                      scanNumbersSorted,
+                      rowSelectionState
+                    ),
+                  });
                 }}
               >
                 <ListItem
                   data={row}
                   config={config}
-                  isSelected={rowSelection[index] ?? false}
+                  isSelected={rowSelection[row.id] ?? false}
                   onCheckboxSelect={(e) => {
                     const rowSelectionState = onClick(
                       e,
@@ -365,9 +361,13 @@ export const ScanSelectorTable = ({
                       scanNumbersSorted
                     );
                     onRowSelectionChange(rowSelectionState);
-                    setSelectedScans(
-                      getSelectedScans(scanNumbersSorted, rowSelectionState)
-                    );
+                    setSelectedScans({
+                      config: config,
+                      scans: getSelectedScans(
+                        scanNumbersSorted,
+                        rowSelectionState
+                      ),
+                    });
                   }}
                 />
               </TableCell>

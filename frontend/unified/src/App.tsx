@@ -11,6 +11,7 @@ import {
   WorkflowsViewMode,
   InstrumentSession,
   ScanNodeProcessed,
+  SelectedScans,
 } from "./types";
 import {
   apolloClientWorkflows,
@@ -27,9 +28,9 @@ type AppProps = {
 };
 
 export const App: React.FC<AppProps> = ({ session }: AppProps) => {
-  const [selectedScanIds, setSelectedScanIds] = useState<ScanNodeProcessed[]>(
-    []
-  );
+  const [selectedScanIds, setSelectedScanIds] = useState<SelectedScans>({
+    scans: [],
+  });
 
   const sidebar = useResizableWidth(440, 340, 720);
 
@@ -54,7 +55,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
 
   // Clear selected scan IDs when session changes
   useEffect(() => {
-    setSelectedScanIds([]);
+    setSelectedScanIds({ scans: [] });
   }, [sessionRef]);
 
   return (
@@ -158,7 +159,10 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
                   visit={selectedVisit}
                   beamline={beamline}
                   startTime={session.startTime}
-                  scanIds={selectedScanIds.map((x) => x.scanNumber)}
+                  scanIds={selectedScanIds.scans.map((x) => {
+                    console.log(x);
+                    return x.scanNumber;
+                  })}
                 />
               </ApolloProvider>
             </Suspense>
@@ -169,7 +173,6 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
             <WorkflowsDataFetcher
               visit={selectedVisit}
               workflowsViewMode={workflowsViewMode}
-              scanData={selectedScanIds}
             />
           </ApolloProvider>
         </Box>

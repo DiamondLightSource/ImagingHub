@@ -1,12 +1,13 @@
 import { Box, Typography, Stack, Switch } from "@mui/material";
-import { ScanNodeProcessed } from "../types";
+import { ScanNodeProcessed, SelectedScans } from "../types";
 import { ScanSelector } from "./ScanSelector/ScanSelector";
 import { ScanSelector as ScanSelectorLegacy } from "./ScanSelector/ScanSelectorLegacy";
 import { useState } from "react";
+import { getFieldValue } from "../beamline.config";
 
 type SidebarProps = {
-  selectedScans: ScanNodeProcessed[];
-  setSelectedScans: (_: ScanNodeProcessed[]) => void;
+  selectedScans: SelectedScans;
+  setSelectedScans: (_: SelectedScans) => void;
   sessionRef: string;
 };
 
@@ -22,8 +23,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {useLegacySelector ? (
         <Box p={2} flex={1}>
           <ScanSelectorLegacy
-            scanIds={selectedScans.map((v) => v.scanNumber)}
-            setScanIds={(v) => setSelectedScans(generateScanData(v))}
+            scanIds={selectedScans.scans.map((v) => v.scanNumber)}
+            setScanIds={(v) => setSelectedScans({ scans: generateScanData(v) })}
           />
         </Box>
       ) : (

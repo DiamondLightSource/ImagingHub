@@ -22,7 +22,6 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en-gb";
 import utc from "dayjs/plugin/utc";
 import { ScanDateRange } from "../../types";
-import { formatDate } from "./ScanSelector";
 
 dayjs.extend(utc);
 
@@ -30,6 +29,13 @@ const ALL_DATES_TEXT = "All dates";
 
 function dateToDayjs(date: Date | undefined | null): Dayjs {
   return dayjs(date);
+}
+
+function formatDate(date: Date | undefined | null) {
+  if (date) {
+    return date.toLocaleString(undefined, { timeZone: "UTC" });
+  }
+  return "No date";
 }
 
 type ScanSelectorHeaderProps = {
@@ -56,7 +62,6 @@ export const ScanSelectorHeader = ({
   dateRangeFilter,
   setDateRangeFilter,
 }: ScanSelectorHeaderProps) => {
-  console.log(startDate, endDate);
   const summaryRef = useRef<HTMLSpanElement>(null);
 
   const selected = Object.entries(rowSelection).filter(
@@ -73,8 +78,6 @@ export const ScanSelectorHeader = ({
     Date | null | undefined
   >(null);
   const [dateRangeText, setDateRangeText] = useState(ALL_DATES_TEXT);
-
-  console.log("selectedStartDate", selectedStartDate);
 
   useEffect(() => {
     if (!selectedStartDate || !selectedEndDate) {

@@ -81,11 +81,20 @@ export function getProcessedData(
     return v ? JSON.parse(v) : null;
   };
 
-  const processedScanNodes: ScanNodeProcessed[] = nodes.map((x) => {
+  const intermediateNodes = nodes.map((x) => {
     return {
       ...x,
       scanRequest: parseScanRequest(config.scanRequest(x)),
       beamline: data.instrumentSessionByReference?.instrument?.key ?? null,
+    };
+  });
+
+  const processedScanNodes: ScanNodeProcessed[] = intermediateNodes.map((x) => {
+    return {
+      ...x,
+      scanNumber: getFieldValue(config, x, "scanNumber"),
+      startTime: getFieldValue(config, x, "startTime"),
+      endTime: getFieldValue(config, x, "endTime"),
     };
   });
 

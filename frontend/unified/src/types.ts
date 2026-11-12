@@ -1,6 +1,7 @@
 import { ProcessingViewQuery } from "./graphql/__generated__/ProcessingViewQuery.generated";
 import { SessionQuery } from "./graphql/__generated__/SessionQuery.generated";
 import { InstrumentSessionQuery } from "./graphql/__generated__/InstrumentSessionQuery.generated";
+import { SchemaConfig } from "./beamline.config";
 
 const Technique = {
   Dpc: "Dpc",
@@ -144,10 +145,10 @@ export type ScanNodeRaw = Omit<Omit<NodeData, "data">, "scanNumber"> & {
 };
 
 export type ScanNodeProcessed = ScanNodeRaw & {
-  // scanNumber: number;
+  scanNumber: number;
   beamline: string | null;
-  // startTime: Date | null;
-  // endTime: Date | null;
+  startTime: Date | null;
+  endTime: Date | null;
   scanRequest: { [key: string]: any } | null;
 };
 
@@ -158,4 +159,9 @@ export type PageInfo = NonNullable<
 export type ScanDateRange = {
   start?: Date | null;
   end?: Date | null;
+};
+
+export type SelectedScans = {
+  config?: SchemaConfig | null;
+  scans: ScanNodeProcessed[];
 };
