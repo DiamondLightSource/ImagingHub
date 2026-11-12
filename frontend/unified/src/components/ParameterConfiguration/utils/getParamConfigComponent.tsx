@@ -14,6 +14,7 @@ import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutopro
 import { XanesPointParameterConfiguration } from "../xanes/XanesPointParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
+import { I12ParameterConfiguration } from "../tomo/I12ParameterConfiguration";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -89,6 +90,14 @@ export const getParamConfigComponent = (
       "httomo-workshop": (
         <LoaderProvider>
           <SyntheticDataParameterConfiguration
+            setParameters={setTemplateParameters}
+            visitDirpath={visitDirPath}
+          />
+        </LoaderProvider>
+      ),
+      "i12-tomo": (
+        <LoaderProvider>
+          <I12ParameterConfiguration
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
