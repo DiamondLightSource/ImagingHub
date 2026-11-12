@@ -8,6 +8,7 @@ import {
   AuthProvider,
 } from "@diamondlightsource/sci-react-ui";
 import { updateTokenStore } from "./token";
+import "@diamondlightsource/sci-react-ui/font-styles.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
