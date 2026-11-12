@@ -7,15 +7,15 @@ import FieldLabel from "./../../../../../shared_components/FieldLabel";
 import type { TemplateComponentProps } from "./../../../types";
 
 type CheckboxFieldProps = TemplateComponentProps & {
-  title: string;
-  info?: string;
+  label: string;
+  desc?: string;
   parameterName: string;
 };
 
 const CheckboxField = ({
   setParameters,
-  title,
-  info,
+  label,
+  desc,
   parameterName,
 }: CheckboxFieldProps) => {
   const [value, setValue] = useState<boolean>(false);
@@ -31,7 +31,7 @@ const CheckboxField = ({
   return (
     <Stack direction="row" alignItems="center">
       <Checkbox checked={value} onChange={handleChange} sx={{ p: 0.5 }} />
-      <FieldLabel title={title} info={info} />
+      <FieldLabel label={label} desc={desc} />
     </Stack>
   );
 };
