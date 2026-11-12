@@ -3,7 +3,7 @@
   This version adds support for infinite scroll and virtualisation
 */
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   ScanSelectorTable,
   type RowSelectionState,
@@ -46,9 +46,6 @@ export const ScanSelector = ({
 }: ScanSelectorProps) => {
   const [selectedInf, setSelectedInf] = useState<RowSelectionState>({});
   const previousRow = useRef<{ id: number; idx: number } | null>(null);
-  const [totalCount, setTotalCount] = useState<number | null>(null);
-  const [sessionStartTime, setSessionStartTime] = useState<string | null>(null);
-  const [sessionEndTime, setSessionEndTime] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("newest");
   const [searchString, setSearchString] = useState<string | null>(null);
   const [totalLoaded, setTotalLoaded] = useState(0);
@@ -56,37 +53,26 @@ export const ScanSelector = ({
 
   const [scanDateFilter, setScanDateFilter] = useState<ScanDateRange>({});
 
-  const { data } = useQuery(INSTRUMENTSESSION_QUERY, {
+  const { data, previousData } = useQuery(INSTRUMENTSESSION_QUERY, {
     variables: {
       reference: sessionRef,
       first: 1,
     },
     fetchPolicy: "no-cache",
-    skip:
-      totalCount !== null &&
-      sessionStartTime !== null &&
-      sessionEndTime !== null,
   });
 
-  // Persist the total count, session start/end times across renders
-  useEffect(() => {
-    setTotalCount(
-      data?.instrumentSessionByReference?.datasets?.totalCount ?? null
-    );
-    setSessionStartTime(
-      (data?.instrumentSessionByReference?.startTime ?? null) as string | null
-    );
-    setSessionEndTime(
-      (data?.instrumentSessionByReference?.endTime ?? null) as string | null
-    );
-  }, [data]);
-
-  // Reset the total count, session start/end times when the sessionRef changes
-  useEffect(() => {
-    setTotalCount(null);
-    setSessionStartTime(null);
-    setSessionEndTime(null);
-  }, [sessionRef]);
+  const totalCount =
+    data?.instrumentSessionByReference?.datasets?.totalCount ??
+    previousData?.instrumentSessionByReference?.datasets?.totalCount ??
+    null;
+  const sessionStartTime =
+    data?.instrumentSessionByReference?.startTime ??
+    data?.instrumentSessionByReference?.startTime ??
+    null;
+  const sessionEndTime =
+    data?.instrumentSessionByReference?.endTime ??
+    data?.instrumentSessionByReference?.endTime ??
+    null;
 
   const schema =
     data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema;
