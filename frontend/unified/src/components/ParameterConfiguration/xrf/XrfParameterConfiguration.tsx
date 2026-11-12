@@ -12,7 +12,6 @@ import NumberField from "./../base/NumberField";
 import OptionSelectField from "../base/OptionSelectField";
 import Section from "./../../../../../shared_components/Section";
 import TextField from "@mui/material/TextField";
-import VisitDirField from "./../base/VisitDirField";
 
 import { initialData } from "./../../../../../shared_components/data/xrfForm";
 import {
@@ -22,7 +21,7 @@ import {
 import type { TemplateComponentProps } from "./../../../types";
 
 export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
-  const { setParameters } = props;
+  const { setParameters, visitDirpath } = props;
   const [data, setData] = useState(initialData);
   const updateParams = (name: string, v: string) => {
     setData((prev) => ({ ...prev, [name]: v }));
@@ -136,10 +135,20 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
           options={reconsMethodOptions}
         />
       </Stack>
-      <VisitDirField
-        {...props}
-        label="Output folder"
-        parameterName="outputFolder"
+      <TextField
+        size="small"
+        label="Output Folder"
+        value={data.outputFolder}
+        onChange={(e) => updateParams("outputFolder", e.target.value)}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start" sx={{ mr: 0 }}>
+                {visitDirpath}processing/workflows/
+              </InputAdornment>
+            ),
+          },
+        }}
       />
     </LayoutCard>
   );
