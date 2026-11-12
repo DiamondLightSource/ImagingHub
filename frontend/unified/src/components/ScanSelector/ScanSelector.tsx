@@ -161,6 +161,7 @@ export const ScanSelector = ({
                 // Go 'up' in index (i.e. top to bottom)
                 return multiSelect(data, previousRow.current.id, row.id, prev);
               } else {
+                // Go 'down' in index (i.e. bottom to top)
                 return multiSelect(data, row.id, previousRow.current.id, prev);
               }
             } else if (e.ctrlKey || checkboxClick) {

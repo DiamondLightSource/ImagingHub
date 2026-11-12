@@ -21,9 +21,20 @@ export type BeamlineField<T> = {
 export type SchemaConfig = {
   ulimsSchema: string;
   version: string;
+
+  // Used to transform the scan_request JSON string into a
+  // Javascript object
   scanRequest: (v: ScanNodeRaw) => string | undefined | null;
+
+  // Used to filter scans by date
   startTimePath: string;
+
+  // Fields define what pieces of metadata can be retrieved
+  // from the data returned by the graph
   fields: { [key: string]: BeamlineField<any> };
+
+  // The UI section tells the relevant component which field
+  // to use. The strings *must* match the keys of the fields above
   ui: {
     scanSelector: {
       title: string;
