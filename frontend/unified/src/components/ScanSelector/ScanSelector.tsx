@@ -44,7 +44,7 @@ export const ScanSelector = ({
   sessionRef,
   setSelectedScans,
 }: ScanSelectorProps) => {
-  const [selectedInf, setSelectedInf] = useState<RowSelectionState>({});
+  const [selectedRows, setSelectedRows] = useState<RowSelectionState>({});
   const previousRow = useRef<{ id: number; idx: number } | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("newest");
   const [searchString, setSearchString] = useState<string | null>(null);
@@ -113,7 +113,7 @@ export const ScanSelector = ({
   return (
     <>
       <ScanSelectorHeader
-        rowSelection={selectedInf}
+        rowSelection={selectedRows}
         totalCount={totalCount}
         setSortDirection={setSortDirection}
         sortDirection={sortDirection}
@@ -163,8 +163,8 @@ export const ScanSelector = ({
               };
             }
           }}
-          rowSelection={selectedInf}
-          onRowSelectionChange={setSelectedInf}
+          rowSelection={selectedRows}
+          onRowSelectionChange={setSelectedRows}
         />
       </Box>
 
