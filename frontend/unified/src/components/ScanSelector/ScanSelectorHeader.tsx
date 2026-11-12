@@ -89,7 +89,11 @@ export const ScanSelectorHeader = ({
 
   return (
     <Stack>
-      <Stack spacing={1} direction="row" sx={{ px: 1, py: 0.5, flexShrink: 0 }}>
+      <Stack
+        spacing={1}
+        direction="row"
+        sx={{ px: 1, paddingTop: 1, paddingBottom: 0.5, flexShrink: 0 }}
+      >
         <TextField
           size="small"
           type="search"

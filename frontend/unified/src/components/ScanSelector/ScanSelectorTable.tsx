@@ -17,16 +17,14 @@ import { TableVirtuoso, type TableComponents } from "react-virtuoso";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 import { PageInfo, ScanNodeProcessed } from "../../types";
-import { getProcessedScanNode } from "../../beamline.config";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
-import { formatDate } from "./ScanSelector";
 import {
   getBeamlineConfig,
   getFieldString,
   getFieldValue,
   getProcessedData,
   SchemaConfig,
-} from "../../beamline.config2";
+} from "../../beamline.config";
 
 const FIRST_LINE = 28;
 const SELECTED_SHADOW =
@@ -138,7 +136,7 @@ export const ListItem = ({
           variant="meta"
           component="div"
           noWrap
-          sx={{ color: "text.muted", minWidth: 0 }}
+          sx={{ color: "text.secondary", minWidth: 0 }}
           overflow="none"
         >
           {item2} {item3 ? " · " + item3 : ""}
