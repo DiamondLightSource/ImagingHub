@@ -10,7 +10,7 @@ import {
   SortDirection,
 } from "./ScanSelectorTable";
 import { ScanSelectorHeader } from "./ScanSelectorHeader";
-import { InfScrollFooter } from "./ScanSelectorFooter";
+import { ScanSelectorFooter } from "./ScanSelectorFooter";
 import { Box } from "@mui/material";
 import { useQuery } from "@apollo/client/react";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
@@ -121,7 +121,12 @@ export const ScanSelector = ({
         setDateRangeFilter={setScanDateFilter}
       />
       <Box
-        sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
+        sx={{
+          flex: 1,
+          minHeight: 100,
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
         <ScanSelectorTable
           sessionRef={sessionRef}
@@ -132,29 +137,16 @@ export const ScanSelector = ({
           filter={filter}
           setSelectedScans={setSelectedScans}
           onClick={(e, prev, idx, row, checkboxClick, data) => {
-            console.log("e.shiftKey ", e.shiftKey, previousRow.current, idx);
-
             if (e.shiftKey && previousRow.current != null) {
               console.log("previousRow.current, idx", previousRow.current, idx);
               if (previousRow.current.idx < idx) {
                 // Go 'up' in index (i.e. top to bottom)
-                return searchData(
-                  data,
-                  previousRow.current.id,
-                  row.id,
-                  prev
-                );
+                return searchData(data, previousRow.current.id, row.id, prev);
               } else {
-                return searchData(
-                  data,
-                  row.id,
-                  previousRow.current.id,
-                  prev
-                );
+                return searchData(data, row.id, previousRow.current.id, prev);
               }
-              // console.log("newState ", newState);
-              // return newState;
             } else if (e.ctrlKey || checkboxClick) {
+              previousRow.current = { id: row.id, idx: idx };
               return {
                 ...prev,
                 [row.id]: !prev[row.id], // Enable multi-select if ctrl key is held down
@@ -171,7 +163,7 @@ export const ScanSelector = ({
         />
       </Box>
 
-      <InfScrollFooter
+      <ScanSelectorFooter
         totalCount={totalCount}
         totalLoaded={totalLoaded}
         loadMore={loadMore}

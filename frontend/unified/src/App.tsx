@@ -10,7 +10,6 @@ import {
   Beamline,
   WorkflowsViewMode,
   InstrumentSession,
-  ScanNodeProcessed,
   SelectedScans,
 } from "./types";
 import {
@@ -144,71 +143,80 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
           </Box>
         </ApolloProvider>
 
-        <Drawer
-          variant="temporary"
-          anchor="right"
-          open={showParamConfigDrawer}
-          onClose={() => setShowParamConfigDrawer(false)}
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
-          ModalProps={{ keepMounted: true }}
-        >
-          <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
-            <Suspense>
-              <ApolloProvider client={apolloClientWorkflows}>
-                <ProcessingView
-                  visit={selectedVisit}
-                  beamline={beamline}
-                  startTime={session.startTime}
-                  scanIds={selectedScanIds.scans.map((x) => {
-                    console.log(x);
-                    return x.scanNumber;
-                  })}
-                />
-              </ApolloProvider>
-            </Suspense>
-          </Box>
-        </Drawer>
-        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
-          <ApolloProvider client={apolloClientWorkflows}>
-            <WorkflowsDataFetcher
-              visit={selectedVisit}
-              workflowsViewMode={workflowsViewMode}
-            />
-          </ApolloProvider>
-        </Box>
         <Box
           sx={{
-            marginLeft: 1,
+            flex: { xs: "0 0 60vh", md: 1 },
+            height: { xs: "60vh", md: "auto" },
+            minHeight: 0,
+            display: "flex",
           }}
         >
-          <Stack direction="column">
-            <Tooltip title="Open parameter configuration">
-              <IconButton onClick={() => setShowParamConfigDrawer(true)}>
-                <ChevronsLeft />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={
-                workflowsViewMode === WorkflowsViewMode.List
-                  ? "Table view"
-                  : "List view"
-              }
-            >
-              <IconButton
-                onClick={() =>
+          <Drawer
+            variant="temporary"
+            anchor="right"
+            open={showParamConfigDrawer}
+            onClose={() => setShowParamConfigDrawer(false)}
+            sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
+            ModalProps={{ keepMounted: true }}
+          >
+            <Box padding={2} width={PARAM_CONFIG_DRAWER_WIDTH}>
+              <Suspense>
+                <ApolloProvider client={apolloClientWorkflows}>
+                  <ProcessingView
+                    visit={selectedVisit}
+                    beamline={beamline}
+                    startTime={session.startTime}
+                    scanIds={selectedScanIds.scans.map((x) => {
+                      console.log(x);
+                      return x.scanNumber;
+                    })}
+                  />
+                </ApolloProvider>
+              </Suspense>
+            </Box>
+          </Drawer>
+          <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+            <ApolloProvider client={apolloClientWorkflows}>
+              <WorkflowsDataFetcher
+                visit={selectedVisit}
+                workflowsViewMode={workflowsViewMode}
+              />
+            </ApolloProvider>
+          </Box>
+          <Box
+            sx={{
+              marginLeft: 1,
+            }}
+          >
+            <Stack direction="column">
+              <Tooltip title="Open parameter configuration">
+                <IconButton onClick={() => setShowParamConfigDrawer(true)}>
+                  <ChevronsLeft />
+                </IconButton>
+              </Tooltip>
+              <Tooltip
+                title={
                   workflowsViewMode === WorkflowsViewMode.List
-                    ? setWorkflowsViewMode(WorkflowsViewMode.Table)
-                    : setWorkflowsViewMode(WorkflowsViewMode.List)
+                    ? "Table view"
+                    : "List view"
                 }
               >
-                {workflowsViewMode === WorkflowsViewMode.List ? (
-                  <Table />
-                ) : (
-                  <List />
-                )}
-              </IconButton>
-            </Tooltip>
-          </Stack>
+                <IconButton
+                  onClick={() =>
+                    workflowsViewMode === WorkflowsViewMode.List
+                      ? setWorkflowsViewMode(WorkflowsViewMode.Table)
+                      : setWorkflowsViewMode(WorkflowsViewMode.List)
+                  }
+                >
+                  {workflowsViewMode === WorkflowsViewMode.List ? (
+                    <Table />
+                  ) : (
+                    <List />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Box>
         </Box>
       </Box>
     </Box>

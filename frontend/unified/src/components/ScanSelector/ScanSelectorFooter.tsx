@@ -1,15 +1,15 @@
 import { LinearProgress, Stack, Typography } from "@mui/material";
 
-type InfoScrollFooterProps = {
+type ScanSelectorFooterProps = {
   totalLoaded: number;
   totalCount: number;
   loadMore: boolean;
 };
-export const InfScrollFooter = ({
+export const ScanSelectorFooter = ({
   totalLoaded,
   totalCount,
   loadMore,
-}: InfoScrollFooterProps) => {
+}: ScanSelectorFooterProps) => {
   return (
     <>
       {loadMore && <LinearProgress sx={{ height: 3 }} />}

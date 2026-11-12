@@ -47,20 +47,21 @@ export const SORT_OPTIONS = [
   { value: "oldest", label: "Oldest first" },
 ] as const satisfies readonly SortOption[];
 
-type ListItemProps = {
+type ScanCardProps = {
   data: ScanNodeProcessed;
   config: SchemaConfig | null;
   isSelected: boolean;
-  onCheckboxSelect: (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  onRowClick: (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    checkboxEvent: boolean
   ) => void;
 };
-export const ListItem = ({
+export const ScanCard = ({
   data,
   config,
   isSelected,
-  onCheckboxSelect,
-}: ListItemProps) => {
+  onRowClick,
+}: ScanCardProps) => {
   const scanSelectorUi = config?.ui?.scanSelector;
   const title = getFieldString(config, data, scanSelectorUi?.title);
   const item1 = getFieldString(config, data, scanSelectorUi?.item1);
@@ -69,9 +70,12 @@ export const ListItem = ({
 
   return (
     <Box
-      component="li"
+      // component="li"
       data-plot-id={title}
-      // onClick={() => {setIsSelected(!isSelected)}}
+      onClick={(e) => {
+        console.log("checkboxSelect false");
+        onRowClick(e, false);
+      }}
       sx={{
         display: "flex",
         alignItems: "flex-start",
@@ -100,7 +104,7 @@ export const ListItem = ({
         checked={isSelected}
         onClick={(e) => {
           e.stopPropagation();
-          onCheckboxSelect(e);
+          onRowClick(e, true);
         }}
         // onChange={(e) => {setIsSelected(!isSelected)}}
         inputProps={{ "aria-label": `Show ${title}` }}
@@ -327,37 +331,18 @@ export const ScanSelectorTable = ({
                 sx={{
                   borderBottom: "none",
                 }}
-                onClick={(e) => {
-                  const rowSelectionState = onClick(
-                    e,
-                    rowSelection,
-                    index,
-                    row,
-                    false,
-                    scanNumbersSorted
-                  );
-                  console.log("rowSelectionState", rowSelectionState);
-                  onRowSelectionChange(rowSelectionState);
-                  setSelectedScans({
-                    config: config,
-                    scans: getSelectedScans(
-                      scanNumbersSorted,
-                      rowSelectionState
-                    ),
-                  });
-                }}
               >
-                <ListItem
+                <ScanCard
                   data={row}
                   config={config}
                   isSelected={rowSelection[row.id] ?? false}
-                  onCheckboxSelect={(e) => {
+                  onRowClick={(e, checkboxEvent) => {
                     const rowSelectionState = onClick(
                       e,
                       rowSelection,
                       index,
                       row,
-                      true,
+                      checkboxEvent,
                       scanNumbersSorted
                     );
                     onRowSelectionChange(rowSelectionState);
