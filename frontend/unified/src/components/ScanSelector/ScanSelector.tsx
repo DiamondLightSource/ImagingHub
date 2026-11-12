@@ -133,8 +133,10 @@ export const ScanSelector = ({
         sortDirection={sortDirection}
         searchString={searchString}
         setSearchString={setSearchString}
-        startDate={sessionStartTime ? new Date(sessionStartTime) : null}
-        endDate={sessionEndTime ? new Date(sessionEndTime) : null}
+        // Session start/end times don't come with a time zone
+        // Add 'Z' to set it to UTC
+        startDate={sessionStartTime ? new Date(sessionStartTime + "Z") : null}
+        endDate={sessionEndTime ? new Date(sessionEndTime + "Z") : null}
         dateRangeFilter={scanDateFilter}
         setDateRangeFilter={setScanDateFilter}
       />
@@ -148,7 +150,6 @@ export const ScanSelector = ({
       >
         <ScanSelectorTable
           sessionRef={sessionRef}
-          // setTotalCount={setTotalCount}
           sortDirection={sortDirection}
           setLoadMore={setLoadMore}
           setTotalLoaded={setTotalLoaded}
