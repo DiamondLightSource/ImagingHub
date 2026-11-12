@@ -3,7 +3,7 @@
   This version adds support for infinite scroll and virtualisation
 */
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ScanSelectorTable,
   type RowSelectionState,
@@ -18,7 +18,7 @@ import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import { ScanDateRange, ScanNodeProcessed, SelectedScans } from "../../types";
 import { getBeamlineConfig } from "../../beamline.config";
 
-function searchData(
+function multiSelect(
   data: ScanNodeProcessed[],
   startId: number,
   endId: number,
@@ -46,7 +46,9 @@ export const ScanSelector = ({
 }: ScanSelectorProps) => {
   const [selectedInf, setSelectedInf] = useState<RowSelectionState>({});
   const previousRow = useRef<{ id: number; idx: number } | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [sessionStartTime, setSessionStartTime] = useState<string | null>(null);
+  const [sessionEndTime, setSessionEndTime] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("newest");
   const [searchString, setSearchString] = useState<string | null>(null);
   const [totalLoaded, setTotalLoaded] = useState(0);
@@ -59,15 +61,35 @@ export const ScanSelector = ({
       reference: sessionRef,
       first: 1,
     },
+    fetchPolicy: "no-cache",
+    skip:
+      totalCount !== null &&
+      sessionStartTime !== null &&
+      sessionEndTime !== null,
   });
+
+  // Persist the total count, session start/end times across renders
+  useEffect(() => {
+    setTotalCount(
+      data?.instrumentSessionByReference?.datasets?.totalCount ?? null
+    );
+    setSessionStartTime(
+      (data?.instrumentSessionByReference?.startTime ?? null) as string | null
+    );
+    setSessionEndTime(
+      (data?.instrumentSessionByReference?.endTime ?? null) as string | null
+    );
+  }, [data]);
+
+  // Reset the total count, session start/end times when the sessionRef changes
+  useEffect(() => {
+    setTotalCount(null);
+    setSessionStartTime(null);
+    setSessionEndTime(null);
+  }, [sessionRef]);
 
   const schema =
     data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema;
-
-  const sessionStartTime = data?.instrumentSessionByReference?.startTime as
-    string | undefined;
-  const sessionEndTime = data?.instrumentSessionByReference?.endTime as
-    string | undefined;
 
   const beamlineConfig = schema ? getBeamlineConfig(schema) : null;
   const startTimePath = beamlineConfig?.startTimePath;
@@ -126,7 +148,7 @@ export const ScanSelector = ({
       >
         <ScanSelectorTable
           sessionRef={sessionRef}
-          setTotalCount={setTotalCount}
+          // setTotalCount={setTotalCount}
           sortDirection={sortDirection}
           setLoadMore={setLoadMore}
           setTotalLoaded={setTotalLoaded}
@@ -136,9 +158,9 @@ export const ScanSelector = ({
             if (e.shiftKey && previousRow.current != null) {
               if (previousRow.current.idx < idx) {
                 // Go 'up' in index (i.e. top to bottom)
-                return searchData(data, previousRow.current.id, row.id, prev);
+                return multiSelect(data, previousRow.current.id, row.id, prev);
               } else {
-                return searchData(data, row.id, previousRow.current.id, prev);
+                return multiSelect(data, row.id, previousRow.current.id, prev);
               }
             } else if (e.ctrlKey || checkboxClick) {
               previousRow.current = { id: row.id, idx: idx };

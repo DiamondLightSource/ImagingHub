@@ -188,7 +188,6 @@ type ScanSelectorTableProps<T> = {
   ) => RowSelectionState;
   rowSelection: RowSelectionState;
   onRowSelectionChange: (v: RowSelectionState) => void;
-  setTotalCount: (v: number) => void;
   sortDirection: SortDirection;
   setLoadMore: (v: boolean) => void;
   setTotalLoaded: (v: number) => void;
@@ -200,7 +199,6 @@ export const ScanSelectorTable = ({
   onClick,
   rowSelection,
   onRowSelectionChange,
-  setTotalCount,
   sortDirection,
   setLoadMore,
   setTotalLoaded,
@@ -285,9 +283,6 @@ export const ScanSelectorTable = ({
   }, [loading]);
 
   useEffect(() => {
-    setTotalCount(
-      data?.instrumentSessionByReference?.datasets?.totalCount ?? 0
-    );
     setTotalLoaded(scanNumbersSorted.length);
   }, [data]);
 

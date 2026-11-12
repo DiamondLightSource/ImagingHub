@@ -40,7 +40,7 @@ function formatDate(date: Date | undefined | null) {
 
 type ScanSelectorHeaderProps = {
   rowSelection: RowSelectionState;
-  totalCount: number;
+  totalCount: number | null;
   sortDirection: SortDirection;
   setSortDirection: (v: SortDirection) => void;
   searchString: string | null;
@@ -278,7 +278,7 @@ export const ScanSelectorHeader = ({
           ref={summaryRef}
           sx={{ flex: 1, minWidth: 0, color: "text.secondary" }}
         >
-          {`${selected.length} of ${totalCount}`} selected
+          {`${selected.length} of ${totalCount ?? "-"}`} selected
         </Typography>
         <TextField
           select

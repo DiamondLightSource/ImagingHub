@@ -2,7 +2,7 @@ import { LinearProgress, Stack, Typography } from "@mui/material";
 
 type ScanSelectorFooterProps = {
   totalLoaded: number;
-  totalCount: number;
+  totalCount: number | null;
   loadMore: boolean;
 };
 export const ScanSelectorFooter = ({
@@ -20,7 +20,7 @@ export const ScanSelectorFooter = ({
         sx={{ px: 1.5, py: 1, borderTop: 1, borderColor: "divider" }}
       >
         <Typography variant="meta" sx={{ color: "text.muted" }}>
-          {totalLoaded} of {totalCount} loaded
+          {totalLoaded} of {totalCount ?? "-"} loaded
         </Typography>
       </Stack>
     </>
