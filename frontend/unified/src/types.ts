@@ -135,18 +135,19 @@ type WorkflowsViewMode =
   (typeof WorkflowsViewMode)[keyof typeof WorkflowsViewMode];
 export { WorkflowsViewMode };
 
-export type ScanNodeRaw = Omit<
-  NonNullable<
-    InstrumentSessionQuery["instrumentSessionByReference"]
-  >["datasets"]["edges"][0]["node"],
-  "data"
-> & { data: { [key: string]: any } };
+type NodeData = NonNullable<
+  InstrumentSessionQuery["instrumentSessionByReference"]
+>["datasets"]["edges"][0]["node"];
+
+export type ScanNodeRaw = Omit<Omit<NodeData, "data">, "scanNumber"> & {
+  data: { [key: string]: any };
+};
 
 export type ScanNodeProcessed = ScanNodeRaw & {
-  scanNumber: number;
+  // scanNumber: number;
   beamline: string | null;
-  startTime: Date | null;
-  endTime: Date | null;
+  // startTime: Date | null;
+  // endTime: Date | null;
   scanRequest: { [key: string]: any } | null;
 };
 

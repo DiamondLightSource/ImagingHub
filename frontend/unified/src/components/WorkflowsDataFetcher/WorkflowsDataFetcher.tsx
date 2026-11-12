@@ -13,7 +13,7 @@ import { ChevronDown } from "lucide-react";
 import WorkflowDataViewer from "./WorkflowDataViewer";
 import { WorkflowsList } from "./WorkflowsList/WorkflowsList";
 import { ScanNodeProcessed, WorkflowsViewMode } from "../../types";
-import { MetadataDisplay } from "../MetadataDisplay";
+// import { MetadataDisplay } from "../MetadataDisplay";
 
 const WorkflowsDataFetcher = ({
   visit,
@@ -31,9 +31,9 @@ const WorkflowsDataFetcher = ({
       <Suspense>
         {workflowsViewMode === WorkflowsViewMode.Table ? (
           <Stack display="flex" direction="row">
-            <Box sx={{ p: 2 }} minWidth={250} maxWidth={250}>
+            {/* <Box sx={{ p: 2 }} minWidth={250} maxWidth={250}>
               <MetadataDisplay selectedScanData={scanData} />
-            </Box>
+            </Box> */}
 
             <Stack display="flex" flexGrow={1} direction="column">
               <Accordion defaultExpanded>
@@ -59,9 +59,9 @@ const WorkflowsDataFetcher = ({
         ) : (
           <Stack direction="row" spacing={1}>
             <Stack spacing={2}>
-              <Box sx={{ p: 2 }}>
+              {/* <Box sx={{ p: 2 }}>
                 <MetadataDisplay condensed selectedScanData={scanData} />
-              </Box>
+              </Box> */}
               <WorkflowsList
                 visit={visit}
                 selectedWorkflow={selectedWorkflow}

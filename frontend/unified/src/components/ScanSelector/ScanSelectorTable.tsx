@@ -20,6 +20,13 @@ import { PageInfo, ScanNodeProcessed } from "../../types";
 import { getProcessedScanNode } from "../../beamline.config";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import { formatDate } from "./ScanSelector";
+import {
+  getBeamlineConfig,
+  getFieldString,
+  getFieldValue,
+  getProcessedData,
+  SchemaConfig,
+} from "../../beamline.config2";
 
 const FIRST_LINE = 28;
 const SELECTED_SHADOW =
@@ -43,6 +50,7 @@ export const SORT_OPTIONS = [
 
 type ListItemProps = {
   data: ScanNodeProcessed;
+  config: SchemaConfig | null;
   isSelected: boolean;
   onCheckboxSelect: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -50,16 +58,25 @@ type ListItemProps = {
 };
 export const ListItem = ({
   data,
+  config,
   isSelected,
   onCheckboxSelect,
 }: ListItemProps) => {
   // const [isSelected, setIsSelected] = useState(false);
 
-  console.log(data.scanNumber, "isSelected", isSelected);
+  const scanSelectorUi = config?.ui?.scanSelector;
+  const title = getFieldString(config, data, scanSelectorUi?.title);
+  const item1 = getFieldString(config, data, scanSelectorUi?.item1);
+  const item2 = getFieldString(config, data, scanSelectorUi?.item2);
+  const item3 = getFieldString(config, data, scanSelectorUi?.item3);
+
+  console.log("config", config);
+  console.log(scanSelectorUi?.title, "title", title);
+
   return (
     <Box
       component="li"
-      data-plot-id={data.scanNumber}
+      data-plot-id={title}
       // onClick={() => {setIsSelected(!isSelected)}}
       sx={{
         display: "flex",
@@ -92,7 +109,7 @@ export const ListItem = ({
           onCheckboxSelect(e);
         }}
         // onChange={(e) => {setIsSelected(!isSelected)}}
-        inputProps={{ "aria-label": `Show ${data.scanNumber}` }}
+        inputProps={{ "aria-label": `Show ${title}` }}
       />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Stack
@@ -106,7 +123,7 @@ export const ListItem = ({
             noWrap
             sx={{ minWidth: 0, flex: 1 }}
           >
-            {data.scanNumber}
+            {title}
           </Typography>
         </Stack>
         <Typography
@@ -115,15 +132,16 @@ export const ListItem = ({
           noWrap
           sx={{ color: "text.secondary", minHeight: "1.5em" }}
         >
-          {formatDate(data.startTime)}
+          {item1}
         </Typography>
         <Typography
           variant="meta"
           component="div"
           noWrap
           sx={{ color: "text.muted", minWidth: 0 }}
+          overflow="none"
         >
-          Sample name · XRF
+          {item2} {item3 ? " · " + item3 : ""}
         </Typography>
       </Box>
     </Box>
@@ -254,12 +272,20 @@ export const ScanSelectorTable = ({
     });
   }, [sortDirection]);
 
-  const processedNodes = data ? getProcessedScanNode(data) : [];
+  const config = getBeamlineConfig(
+    data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema
+  );
+  const processedNodes = data ? getProcessedData(data) : [];
 
   const scanNumbersSorted = processedNodes.sort((a, b) => {
+    if (!config) {
+      return 0;
+    }
     const coeff = isDescSort(sortDirection) ? 1 : -1;
-    if (b.startTime && a.startTime) {
-      return coeff * (b.startTime.getTime() - a.startTime.getTime());
+    const aStart = getFieldValue(config, a, "startTime") as Date;
+    const bStart = getFieldValue(config, b, "startTime") as Date;
+    if (bStart && aStart) {
+      return coeff * (bStart.getTime() - aStart.getTime());
     }
     return 0;
   });
@@ -329,6 +355,7 @@ export const ScanSelectorTable = ({
               >
                 <ListItem
                   data={row}
+                  config={config}
                   isSelected={rowSelection[index] ?? false}
                   onCheckboxSelect={(e) => {
                     const rowSelectionState = onClick(

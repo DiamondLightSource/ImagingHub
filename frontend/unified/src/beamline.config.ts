@@ -6,6 +6,62 @@ const FORMATTER: { [key: string]: (v: any) => string } = {
   NONE: (v) => `${v}`,
 };
 
+class BeamlineConfig2 {
+  rawData: InstrumentSessionQuery;
+  ulimsSchema: string | undefined;
+  beamlineConfig: BeamlineConfig | null;
+
+  constructor(data: InstrumentSessionQuery) {
+    this.rawData = data;
+    this.ulimsSchema =
+      data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node
+        ?.dataSchema;
+    this.beamlineConfig = getBeamlineConfig(this.ulimsSchema);
+  }
+
+  getProcessedData(): ScanNodeProcessed[] {
+    if (!this.rawData || !this.beamlineConfig) {
+      return [];
+    }
+    const nodes = this.rawData.instrumentSessionByReference
+      ? (this.rawData.instrumentSessionByReference?.datasets.edges.map(
+          (x) => x.node
+        ) as ScanNodeRaw[])
+      : [];
+
+    // Regex to match scan number in Nexus file name
+    const regex = new RegExp("\\d{5,}");
+
+    const parseScanRequest = (
+      v: string | null | undefined
+    ): { [key: object]: any } | null => {
+      return v ? JSON.parse(v) : null;
+    };
+
+    const parsedScanNodes: ScanNodeParsed[] = nodes.map((x) => {
+      return {
+        ...x,
+        scanRequest: parseScanRequest(this.beamlineConfig?.scanRequest(x)),
+      };
+    });
+
+    const processedScanNodes: ScanNodeProcessed[] = parsedScanNodes.map((x) => {
+      return {
+        ...x,
+        scanNumber:
+          this.beamlineConfig?.fields["scanNumber"].getter(x) ??
+          Number(regex.exec(x.title)?.[0]),
+        beamline:
+          this.rawData?.instrumentSessionByReference?.instrument?.key ?? null,
+        startTime: fmtDate(this.beamlineConfig?.fields["startTime"].getter(x)),
+        endTime: fmtDate(this.beamlineConfig?.fields["endTime"].getter(x)),
+      };
+    });
+
+    return processedScanNodes;
+  }
+}
+
 export type MetadataContainer = {
   groupTitle: string;
   children: MetadataComponent<any>[];
@@ -18,15 +74,17 @@ export type MetadataComponent<T> = {
   formatter: (v: T) => string;
 };
 
-export type BeamlineConfig = {
-  ulimsSchema: string;
-  version: string;
-  startTime: (data: ScanNodeRaw) => string | undefined | null;
-  startTimePath: string | undefined | null;
-  endTime: (data: ScanNodeRaw) => string | undefined | null;
-  scanNumber: (data: ScanNodeRaw) => number | undefined | null;
-  scanRequest: (data: ScanNodeRaw) => string | undefined | null;
-  components: Array<MetadataComponent<any> | MetadataContainer>;
+const c = {
+  fields: {
+    startTime: {
+      getter: () => null,
+      formatter: () => "",
+    },
+    endTime: {
+      getter: () => null,
+      formatter: () => "",
+    },
+  },
 };
 
 export function isMetadataComponent<T>(
@@ -66,7 +124,10 @@ export function getProcessedScanNode(
   const processedScanNodes: ScanNodeProcessed[] = nodes.map((x) => {
     return {
       ...x,
-      scanNumber: schema.scanNumber(x) ?? Number(regex.exec(x.title)?.[0]),
+      scanNumber:
+        schema.fields["scanNumber"].getter(x) ??
+        Number(regex.exec(x.title)?.[0]),
+
       beamline: data?.instrumentSessionByReference?.instrument?.key ?? null,
       startTime: fmtDate(schema.startTime(x)),
       endTime: fmtDate(schema.endTime(x)),
@@ -78,7 +139,7 @@ export function getProcessedScanNode(
 }
 
 export function getBeamlineConfig(
-  schema: string | null
+  schema: string | null | undefined
 ): BeamlineConfig | null {
   if (schema) {
     const baseName = schema.split("/").slice(0, -1).join("/");
