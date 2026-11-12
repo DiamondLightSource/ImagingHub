@@ -20,8 +20,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en-gb";
+import utc from "dayjs/plugin/utc";
 import { ScanDateRange } from "../../types";
 import { formatDate } from "./ScanSelector";
+
+dayjs.extend(utc);
 
 const ALL_DATES_TEXT = "All dates";
 
@@ -65,16 +68,20 @@ export const ScanSelectorHeader = ({
   const dateMenuOpen = Boolean(anchorEl);
   const [selectedStartDate, setSelectedStartDate] = useState<
     Date | null | undefined
-  >(startDate);
+  >(null);
   const [selectedEndDate, setSelectedEndDate] = useState<
     Date | null | undefined
-  >(endDate);
+  >(null);
   const [dateRangeText, setDateRangeText] = useState(ALL_DATES_TEXT);
 
+  console.log("selectedStartDate", selectedStartDate);
+
   useEffect(() => {
-    setSelectedStartDate(startDate);
-    setSelectedEndDate(endDate);
-  }, [startDate, endDate]);
+    if (!selectedStartDate || !selectedEndDate) {
+      setSelectedStartDate(startDate);
+      setSelectedEndDate(endDate);
+    }
+  }, [startDate, endDate, selectedStartDate, selectedEndDate]);
 
   useEffect(() => {
     setInternalSearchString(searchString ?? "");
@@ -193,27 +200,29 @@ export const ScanSelectorHeader = ({
                     <Typography variant="body2">From:</Typography>
                     <DateTimePicker
                       value={dateToDayjs(selectedStartDate)}
-                      onChange={(v) => setSelectedStartDate(v?.toDate())}
+                      onChange={(v) => setSelectedStartDate(v?.utc().toDate())}
                       slotProps={{
                         textField: {
                           size: "small",
                         },
                       }}
+                      timezone="UTC"
                       minDateTime={dateToDayjs(startDate)}
-                      // maxDateTime={dateToDayjs(selectedEndDate)}
+                      maxDateTime={dateToDayjs(selectedEndDate)}
                     />
                   </Stack>
                   <Stack>
                     <Typography variant="body2">To:</Typography>
                     <DateTimePicker
                       value={dateToDayjs(selectedEndDate)}
-                      onChange={(v) => setSelectedEndDate(v?.toDate())}
+                      onChange={(v) => setSelectedEndDate(v?.utc().toDate())}
                       slotProps={{
                         textField: {
                           size: "small",
                         },
                       }}
-                      // minDateTime={dateToDayjs(selectedStartDate)}
+                      timezone="UTC"
+                      minDateTime={dateToDayjs(selectedStartDate)}
                       maxDateTime={dateToDayjs(endDate)}
                     />
                   </Stack>
