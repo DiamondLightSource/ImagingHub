@@ -31,7 +31,7 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
   return (
     <LayoutCard>
       <MultiScanField {...props} />
-      <CheckboxField {...props} title="Normalise" />
+      <CheckboxField {...props} label="Normalise" parameterName="normalise" />
       <Section title="Staging">
         <Stack
           direction="row"
@@ -45,7 +45,7 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
             {...props}
             label="Stage"
             parameterName="staging"
-            info="Use this option if data is on archive and has been re-staged to /dls/staging. Also change prefix to /dls/staging"
+            desc="Use this option if data is on archive and has been re-staged to /dls/staging. Also change prefix to /dls/staging"
           />
           <TextField
             size="small"
@@ -66,9 +66,9 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
         >
           <CheckboxField
             {...props}
-            title="Stack"
+            label="Stack"
             parameterName="stacking"
-            info="Set this option to False if the data has already been stacked, and provide the path to the stacked data."
+            desc="Set this option to False if the data has already been stacked, and provide the path to the stacked data."
           />
           <TextField
             size="small"

@@ -14,19 +14,19 @@ import FieldLabel from "./FieldLabel";
 import type { Option } from "./types";
 
 type Props = {
-  title?: string;
-  info?: string;
+  label?: string;
+  desc?: string;
   value: string;
   options: Option[];
   onChange: (event: MouseEvent<HTMLElement>, value: string | null) => void;
 };
 
-const OptionToggle = ({ title, info, value, options, onChange }: Props) => {
+const OptionToggle = ({ label, desc, value, options, onChange }: Props) => {
   const selected = options.find((o) => o.value === value);
 
   return (
     <Stack spacing={0} sx={{ mt: "0px !important" }}>
-      {title && <FieldLabel title={title} info={info} />}
+      {label && <FieldLabel label={label} desc={desc} />}
       <Stack direction="row" spacing={1} alignItems="center">
         <ToggleButtonGroup
           exclusive

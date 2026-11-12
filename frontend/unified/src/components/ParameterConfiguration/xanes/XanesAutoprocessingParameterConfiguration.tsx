@@ -26,7 +26,7 @@ export const XanesAutoprocessingParameterConfiguration = (
   return (
     <LayoutCard>
       <MultiScanField {...props} />
-      <CheckboxField {...props} title="Normalise" parameterName="normalise" />
+      <CheckboxField {...props} label="Normalise" parameterName="normalise" />
       <ElementField
         {...props}
         title="Edge Element"
@@ -40,8 +40,8 @@ export const XanesAutoprocessingParameterConfiguration = (
         parameterNames={["elementToAlign", "transitionToAlign"]}
       />
       <OptionToggle
-        title="Method"
-        info="The method to use for alignment"
+        label="Method"
+        desc="The method to use for alignment"
         value={data.method}
         options={methodOptions}
         onChange={(_, newValue) => {
