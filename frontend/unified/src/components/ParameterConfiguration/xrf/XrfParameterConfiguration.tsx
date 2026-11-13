@@ -29,30 +29,8 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
   };
   return (
     <LayoutCard>
-      <MultiScanField {...props} />
-      <CheckboxField {...props} label="Normalise" parameterName="normalise" />
-      <Section title="Staging">
-        <Stack
-          direction="row"
-          sx={{
-            justifyContent: "space-evenly",
-            alignItems: "center",
-          }}
-          spacing={2}
-        >
-          <CheckboxField
-            {...props}
-            label="Stage"
-            parameterName="staging"
-            desc="Use this option if data is on archive and has been re-staged to /dls/staging. Also change prefix to /dls/staging"
-          />
-          <TextField
-            size="small"
-            label="Staging prefix"
-            value={data.prefix}
-            onChange={(e) => updateParams("prefix", e.target.value)}
-          />
-        </Stack>
+      <Section title="Scans">
+        <MultiScanField {...props} />
       </Section>
       <Section title="Stacking">
         <Stack
