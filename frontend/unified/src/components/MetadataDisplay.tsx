@@ -132,13 +132,13 @@ export const MetadataDisplay = ({
       );
     } else if (scans.length > 1) {
       return (
-        <Box p={2}>
-          <DataCard
-            title={`${scans.length} scans selected`}
-            // value={{ value: `${scans.length} scans selected` }}
-            value={{ value: scans.map((x) => x.scanNumber).join(", ") }}
-            colour="none"
-          />
+        <Box alignItems="center" textAlign="center" mt={4} mb={3}>
+          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+            {`${scans.length} scans selected`}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.muted", mt: 0.5 }}>
+            Select one to view metadata.
+          </Typography>
         </Box>
       );
     }
