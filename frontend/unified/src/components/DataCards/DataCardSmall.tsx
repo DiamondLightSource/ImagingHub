@@ -13,7 +13,7 @@ export const DataCardSmall = (props: DataCardProps) => {
   return (
     <Paper
       sx={{
-        padding: 1.6,  // Changed for small DataCard variant
+        padding: 1.6, // Changed for small DataCard variant
         flexGrow: 1,
         background: palette.container,
         border: "1px solid",

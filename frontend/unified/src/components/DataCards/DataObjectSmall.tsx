@@ -5,7 +5,7 @@ import type { DataObjectProps, PairProps, SingleProps } from "./types";
 import type { DataColours } from "./palette";
 
 export const DataObject = (
-  props: DataObjectProps & { palette: DataColours },
+  props: DataObjectProps & { palette: DataColours }
 ) => {
   if (props.value) {
     return <SingleDataObject {...props} />;
