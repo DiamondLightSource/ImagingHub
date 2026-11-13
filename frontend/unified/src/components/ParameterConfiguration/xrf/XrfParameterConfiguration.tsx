@@ -10,6 +10,7 @@ import MultiEdgeField from "./../base/MultiEdgeField";
 import MultiScanField from "./../base/MultiScanField";
 import NumberField from "./../base/NumberField";
 import OptionSelectField from "../base/OptionSelectField";
+import Row from "./../../../../../shared_components/Row";
 import Section from "./../../../../../shared_components/Section";
 import TextField from "@mui/material/TextField";
 
@@ -33,14 +34,7 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
         <MultiScanField {...props} />
       </Section>
       <Section title="Stacking">
-        <Stack
-          direction="row"
-          sx={{
-            justifyContent: "space-evenly",
-            alignItems: "center",
-          }}
-          spacing={2}
-        >
+        <Row>
           <CheckboxField
             {...props}
             label="Stack"
@@ -53,66 +47,50 @@ export const XrfParameterConfiguration = (props: TemplateComponentProps) => {
             value={data.pathToStack}
             onChange={(e) => updateParams("pathToStack", e.target.value)}
           />
-        </Stack>
+        </Row>
       </Section>
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: "space-evenly",
-          alignItems: "flex-start",
-        }}
-        spacing={2}
-      >
-        <MultiEdgeField {...props} />
-        <ElementField
-          {...props}
-          title="Transition to Align"
-          info="Line group to be used for tracking"
-          parameterNames={["elementToAlign", "transitionToAlign"]}
-        />
-      </Stack>
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        }}
-        spacing={2}
-      >
-        <OptionSelectField
-          {...props}
-          label="Section for alignment"
-          parameterName={"alignmentSection"}
-          options={alignmentSectionOptions}
-        />
-        <NumberField
-          {...props}
-          parameterName="alignmentBand"
-          label="Band width for alignment"
-          info="The width of a vertical band of lines in each projections to be used for the initial alignment."
-        />
-      </Stack>
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        }}
-        spacing={2}
-      >
-        <NumberField
-          {...props}
-          parameterName="cor"
-          label="Centre of rotation"
-          info="Optional value for centre of rotation for the tomographic reconstruction, using Vo centering method if not provided."
-        />
-        <OptionSelectField
-          {...props}
-          label="Reconstruction method"
-          parameterName="reconsMethod"
-          options={reconsMethodOptions}
-        />
-      </Stack>
+      <Section title="Alignment">
+        <Row>
+          <MultiEdgeField {...props} />
+          <ElementField
+            {...props}
+            title="Transition to Align"
+            info="Line group to be used for tracking"
+            parameterNames={["elementToAlign", "transitionToAlign"]}
+          />
+        </Row>
+        <Row>
+          <OptionSelectField
+            {...props}
+            label="Section for alignment"
+            parameterName={"alignmentSection"}
+            options={alignmentSectionOptions}
+          />
+          <NumberField
+            {...props}
+            parameterName="alignmentBand"
+            label="Band width for alignment"
+            info="The width of a vertical band of lines in each projections to be used for the initial alignment."
+          />
+        </Row>
+        <CheckboxField {...props} label="Normalise" parameterName="normalise" />
+      </Section>
+      <Section title="Reconstruction">
+        <Row>
+          <NumberField
+            {...props}
+            parameterName="cor"
+            label="Centre of rotation"
+            info="Optional value for centre of rotation for the tomographic reconstruction, using Vo centering method if not provided."
+          />
+          <OptionSelectField
+            {...props}
+            label="Reconstruction method"
+            parameterName="reconsMethod"
+            options={reconsMethodOptions}
+          />
+        </Row>
+      </Section>
       <TextField
         size="small"
         label="Output Folder"
