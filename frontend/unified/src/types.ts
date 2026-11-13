@@ -1,6 +1,7 @@
 import { ProcessingViewQuery } from "./graphql/__generated__/ProcessingViewQuery.generated";
 import { SessionQuery } from "./graphql/__generated__/SessionQuery.generated";
 import { InstrumentSessionQuery } from "./graphql/__generated__/InstrumentSessionQuery.generated";
+import { SchemaConfig } from "./beamline.config";
 
 const Technique = {
   Dpc: "Dpc",
@@ -135,12 +136,13 @@ type WorkflowsViewMode =
   (typeof WorkflowsViewMode)[keyof typeof WorkflowsViewMode];
 export { WorkflowsViewMode };
 
-export type ScanNodeRaw = Omit<
-  NonNullable<
-    InstrumentSessionQuery["instrumentSessionByReference"]
-  >["datasets"]["edges"][0]["node"],
-  "data"
-> & { data: { [key: string]: any } };
+type NodeData = NonNullable<
+  InstrumentSessionQuery["instrumentSessionByReference"]
+>["datasets"]["edges"][0]["node"];
+
+export type ScanNodeRaw = Omit<Omit<NodeData, "data">, "scanNumber"> & {
+  data: { [key: string]: any };
+};
 
 export type ScanNodeProcessed = ScanNodeRaw & {
   scanNumber: number;
@@ -153,3 +155,13 @@ export type ScanNodeProcessed = ScanNodeRaw & {
 export type PageInfo = NonNullable<
   InstrumentSessionQuery["instrumentSessionByReference"]
 >["datasets"]["pageInfo"];
+
+export type ScanDateRange = {
+  start?: Date | null;
+  end?: Date | null;
+};
+
+export type SelectedScans = {
+  config?: SchemaConfig | null;
+  scans: ScanNodeProcessed[];
+};

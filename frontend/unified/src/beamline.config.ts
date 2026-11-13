@@ -1,81 +1,54 @@
-import type { InstrumentSessionQuery } from "./graphql/__generated__/InstrumentSessionQuery.generated";
-import type { ScanNodeProcessed, ScanNodeRaw } from "./types";
+import { InstrumentSessionQuery } from "./graphql/__generated__/InstrumentSessionQuery.generated";
+import { ScanNodeRaw, ScanNodeProcessed } from "./types";
 
 const FORMATTER: { [key: string]: (v: any) => string } = {
   DATETIME: (v) => new Date(v).toLocaleString(undefined, { timeZone: "UTC" }),
   NONE: (v) => `${v}`,
 };
 
-export type MetadataContainer = {
-  groupTitle: string;
-  children: MetadataComponent<any>[];
+const GETTER: { [key: string]: (v: any) => any | null } = {
+  DATE: (v) => {
+    return v ? new Date(v) : null;
+  },
 };
 
-export type MetadataComponent<T> = {
-  getter: (data: ScanNodeProcessed) => T | undefined | null;
-  group?: string;
+export type BeamlineField<T> = {
   title?: string;
+  getter: (data: ScanNodeProcessed) => T | undefined | null;
   formatter: (v: T) => string;
 };
 
-type BeamlineConfig = {
+export type SchemaConfig = {
   ulimsSchema: string;
   version: string;
-  startTime: (data: ScanNodeRaw) => string | undefined | null;
-  endTime: (data: ScanNodeRaw) => string | undefined | null;
-  scanNumber: (data: ScanNodeRaw) => number | undefined | null;
-  scanRequest: (data: ScanNodeRaw) => string | undefined | null;
-  components: Array<MetadataComponent<any> | MetadataContainer>;
-};
 
-export function isMetadataComponent<T>(
-  v: MetadataComponent<T> | MetadataContainer
-): v is MetadataComponent<T> {
-  return (v as MetadataComponent<T>).getter !== undefined;
-}
+  // Used to transform the scan_request JSON string into a
+  // Javascript object
+  scanRequest: (v: ScanNodeRaw) => string | undefined | null;
 
-const fmtDate: (x: string | null | undefined) => Date | null = (x) => {
-  return x ? new Date(x) : null;
-};
+  // Used to filter scans by date
+  startTimePath: string;
 
-export function getProcessedScanNode(
-  data: InstrumentSessionQuery
-): ScanNodeProcessed[] {
-  const nodes: ScanNodeRaw[] = data.instrumentSessionByReference
-    ? data.instrumentSessionByReference?.datasets.edges.map((x) => x.node)
-    : [];
+  // Fields define what pieces of metadata can be retrieved
+  // from the data returned by the graph
+  fields: { [key: string]: BeamlineField<any> };
 
-  const schema = getBeamlineConfig(nodes?.[0]?.dataSchema);
-  if (!schema) {
-    return [];
-  }
-
-  // Regex to match scan number in Nexus file name
-  const regex = new RegExp("\\d{5,}");
-
-  const parseScanRequest = (
-    v: string | null | undefined
-  ): { [key: object]: any } | null => {
-    return v ? JSON.parse(v) : null;
-  };
-
-  const processedScanNodes: ScanNodeProcessed[] = nodes.map((x) => {
-    return {
-      ...x,
-      scanNumber: schema.scanNumber(x) ?? Number(regex.exec(x.title)?.[0]),
-      beamline: data?.instrumentSessionByReference?.instrument?.key ?? null,
-      startTime: fmtDate(schema.startTime(x)),
-      endTime: fmtDate(schema.endTime(x)),
-      scanRequest: parseScanRequest(schema.scanRequest(x)),
+  // The UI section tells the relevant component which field
+  // to use. The strings *must* match the keys of the fields above
+  ui: {
+    scanSelector: {
+      title: string;
+      item1: string;
+      item2?: string;
+      item3?: string;
     };
-  });
-
-  return processedScanNodes;
-}
+    fullMetadata: string[];
+  };
+};
 
 export function getBeamlineConfig(
-  schema: string | null
-): BeamlineConfig | null {
+  schema: string | null | undefined
+): SchemaConfig | null {
   if (schema) {
     const baseName = schema.split("/").slice(0, -1).join("/");
     const versionNumber = schema.split("/").at(-1);
@@ -93,153 +66,214 @@ export function getBeamlineConfig(
   return null;
 }
 
-const BEAMLINE_CONFIG: BeamlineConfig[] = [
+export function getProcessedData(
+  data: InstrumentSessionQuery | null | undefined
+): ScanNodeProcessed[] {
+  if (!data) {
+    return [];
+  }
+
+  const config = getBeamlineConfig(
+    data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema
+  );
+  if (!config) {
+    return [];
+  }
+
+  const nodes = data.instrumentSessionByReference
+    ? (data.instrumentSessionByReference?.datasets.edges.map(
+        (x) => x.node
+      ) as ScanNodeRaw[])
+    : [];
+
+  const parseScanRequest = (
+    v: string | null | undefined
+  ): { [key: object]: any } | null => {
+    return v ? JSON.parse(v) : null;
+  };
+
+  const intermediateNodes = nodes.map((x) => {
+    return {
+      ...x,
+      scanRequest: parseScanRequest(config.scanRequest(x)),
+      beamline: data.instrumentSessionByReference?.instrument?.key ?? null,
+    };
+  });
+
+  const processedScanNodes: ScanNodeProcessed[] = intermediateNodes.map((x) => {
+    return {
+      ...x,
+      scanNumber: getFieldValue(config, x, "scanNumber"),
+      startTime: getFieldValue(config, x, "startTime"),
+      endTime: getFieldValue(config, x, "endTime"),
+    };
+  });
+
+  return processedScanNodes;
+}
+
+function getScanNumber(
+  data: ScanNodeProcessed,
+  nexusScanNumber?: string | null
+): number {
+  if (nexusScanNumber) {
+    return Number(nexusScanNumber);
+  }
+  // Regex to match scan number in Nexus file name
+  const regex = new RegExp("\\d{5,}");
+  return Number(regex.exec(data.title)?.[0]);
+}
+
+export function getFieldValue(
+  config: SchemaConfig,
+  data: ScanNodeProcessed,
+  field: string
+) {
+  const fieldConfig = config.fields[field];
+  return fieldConfig.getter(data);
+}
+export function getFieldString(
+  config: SchemaConfig | null,
+  data: ScanNodeProcessed,
+  field: string | null | undefined
+): string | null {
+  if (!config || !field) {
+    return null;
+  }
+  const fieldConfig = config.fields[field];
+  const value = fieldConfig.getter(data);
+  return fieldConfig.formatter(value);
+}
+
+const BEAMLINE_CONFIG: SchemaConfig[] = [
   {
-    // Provide schema version that this config is valid for
     ulimsSchema:
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/dummy_scan",
     version: "0.0.1",
-
-    // Functions to fetch commonly used pieces of data
-    startTime: (v) => v.data?.scan_parameters?.start_time,
-    endTime: (v) => v.data?.scan_parameters?.end_time,
-    scanNumber: (_) => null,
+    startTimePath: "$.scan_parameters.start_time",
     scanRequest: (_) => null,
-    components: [
-      {
-        groupTitle: "Times",
-        children: [
-          {
-            // Title of metadata component
-            title: "Start time",
-
-            // Function to fetch metadata from a `ScanNodeProcessed` object
-            getter: (v) => v?.startTime,
-
-            // Function to format the metadata value for display
-            formatter: FORMATTER.DATETIME,
-          },
-          {
-            title: "End time",
-            getter: (v) => v?.endTime,
-            formatter: FORMATTER.DATETIME,
-          },
-        ],
+    fields: {
+      scanNumber: {
+        title: "Scan number",
+        getter: (v) => getScanNumber(v),
+        formatter: FORMATTER.NONE,
       },
-    ],
+      startTime: {
+        title: "Start time",
+        getter: (v) => GETTER.DATE(v.data?.scan_parameters?.start_time),
+        formatter: FORMATTER.DATETIME,
+      },
+      endTime: {
+        title: "End time",
+        getter: (v) => GETTER.DATE(v.data?.scan_parameters?.end_time),
+        formatter: FORMATTER.DATETIME,
+      },
+    },
+    ui: {
+      scanSelector: {
+        title: "scanNumber",
+        item1: "startTime",
+      },
+      fullMetadata: ["startTime", "endTime"],
+    },
   },
   {
     ulimsSchema:
       "https://raw.githubusercontent.com/DiamondLightSource/ulims-json-schemas/main/schemas/data_catalogue/i14/mapping_scan",
     version: "1.0.0",
-    startTime: (v) => v.data?.scan_parameters?.start_time,
-    endTime: (v) => v.data?.scan_parameters?.end_time,
-    scanNumber: (v) => v.data?.scan_parameters?.scan_number,
     scanRequest: (v) => v.data?.scan_parameters?.scan_request,
-    components: [
-      {
-        groupTitle: "Experiment",
-        children: [
-          {
-            title: "Sample name",
-            getter: (v) => v.data?.sample_information?.name,
-            formatter: FORMATTER.NONE,
-          },
-          {
-            title: "Experiment type",
-            getter: (v) => {
-              const req = v?.scanRequest?.processingRequest?.request;
-              if (req) {
-                return Object.keys(req);
-              }
-              return null;
-            },
-            formatter: (v) => v.join(", "),
-          },
-        ],
+    startTimePath: "$.scan_parameters.start_time",
+    fields: {
+      scanNumber: {
+        title: "Scan number",
+        getter: (v) => getScanNumber(v, v.data?.scan_parameters?.scan_number),
+        formatter: FORMATTER.NONE,
       },
-      {
-        groupTitle: "Times",
-        children: [
-          {
-            title: "Start time",
-            getter: (v) => v?.startTime,
-            formatter: FORMATTER.DATETIME,
-          },
-          {
-            title: "End time",
-            getter: (v) => v?.endTime,
-            formatter: FORMATTER.DATETIME,
-          },
-        ],
+      startTime: {
+        title: "Start time",
+        getter: (v) => GETTER.DATE(v.data?.scan_parameters?.start_time),
+        formatter: FORMATTER.DATETIME,
       },
-      {
-        groupTitle: "Scan info",
-        children: [
-          {
-            title: "Sample rotation",
-            getter: (v) => v.data?.scan_parameters?.rotation,
-            formatter: (v) => `${v.toFixed(2)} deg`,
-          },
-          {
-            title: "Photon energy",
-            getter: (v) => v.data?.scan_parameters?.photon_energy,
-            formatter: (v) => `${v.toFixed(2)} keV`,
-          },
-          {
-            title: "Exposure time",
-            getter: (v) =>
-              v?.scanRequest?.detectors?.["BL14I-ML-SCAN-01"]?.exposureTime,
-            formatter: (v) => `${v} s`,
-          },
-        ],
+      endTime: {
+        title: "End time",
+        getter: (v) => GETTER.DATE(v.data?.scan_parameters?.end_time),
+        formatter: FORMATTER.DATETIME,
       },
-      {
-        groupTitle: "Scan region",
-        children: [
-          {
-            title: "Scan ROI",
-            getter: (v) =>
-              v?.scanRequest?.compoundModel?.regions?.[0]?.roi?.lengths,
-            formatter: (v) =>
-              v.map((x) => `${(x * 1e3).toFixed(2)} μm`).join(" x "),
-          },
-          {
-            title: "X Axis Step",
-            getter: (v) =>
-              v?.scanRequest?.compoundModel?.models?.[0]?.xAxisStep,
-            formatter: (v) => `${v * 1e6} nm`,
-          },
-          {
-            title: "Y Axis Step",
-            getter: (v) =>
-              v?.scanRequest?.compoundModel?.models?.[0]?.yAxisStep,
-            formatter: (v) => `${v * 1e6} nm`,
-          },
-        ],
+      sampleName: {
+        title: "Sample name",
+        getter: (v) => v.data?.sample_information?.name,
+        formatter: FORMATTER.NONE,
       },
-      {
-        groupTitle: "Slits",
-        children: [
-          {
-            title: "Slit Size X",
-            getter: (v) => v.data?.optical_parameters?.slit_size_x,
-            formatter: FORMATTER.NONE,
-          },
-          {
-            title: "Slit Size Y",
-            getter: (v) => v.data?.optical_parameters?.slit_size_y,
-            formatter: FORMATTER.NONE,
-          },
-        ],
+      experimentType: {
+        title: "Experiment type",
+        getter: (v) => {
+          const req = v?.scanRequest?.processingRequest?.request;
+          if (req) {
+            return Object.keys(req);
+          }
+          return null;
+        },
+        formatter: (v) => v.join(", "),
       },
-      {
+      sampleRotation: {
+        title: "Sample rotation",
+        getter: (v) => v.data?.scan_parameters?.rotation,
+        formatter: (v) => `${v.toFixed(2)} deg`,
+      },
+      photonEnergy: {
+        title: "Photon energy",
+        getter: (v) => v.data?.scan_parameters?.photon_energy,
+        formatter: (v) => `${v.toFixed(2)} keV`,
+      },
+      exposureTime: {
+        title: "Exposure time",
+        getter: (v) =>
+          v?.scanRequest?.detectors?.["BL14I-ML-SCAN-01"]?.exposureTime,
+        formatter: (v) => `${v} s`,
+      },
+      scanRoi: {
+        title: "Scan ROI",
+        getter: (v) =>
+          v?.scanRequest?.compoundModel?.regions?.[0]?.roi?.lengths,
+        formatter: (v) =>
+          v.map((x: number) => `${(x * 1e3).toFixed(2)} μm`).join(" x "),
+      },
+      xAxisStep: {
+        title: "X Axis Step",
+        getter: (v) => v?.scanRequest?.compoundModel?.models?.[0]?.xAxisStep,
+        formatter: (v) => `${v * 1e6} nm`,
+      },
+      yAxisStep: {
+        title: "Y Axis Step",
+        getter: (v) => v?.scanRequest?.compoundModel?.models?.[0]?.yAxisStep,
+        formatter: (v) => `${v * 1e6} nm`,
+      },
+      slitSizeX: {
+        title: "Slit Size X",
+        getter: (v) => v.data?.optical_parameters?.slit_size_x,
+        formatter: FORMATTER.NONE,
+      },
+      slitSizeY: {
+        title: "Slit Size Y",
+        getter: (v) => v.data?.optical_parameters?.slit_size_y,
+        formatter: FORMATTER.NONE,
+      },
+      elementList: {
         title: "Element list",
         getter: (v) =>
           v?.scanRequest?.processingRequest?.request?.["i14-xrf"]?.[0]
             ?.element_list,
         formatter: FORMATTER.NONE,
       },
-    ],
+    },
+    ui: {
+      scanSelector: {
+        title: "scanNumber",
+        item1: "startTime",
+        item2: "experimentType",
+        item3: "sampleName",
+      },
+      fullMetadata: ["startTime", "endTime"],
+    },
   },
 ];

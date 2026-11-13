@@ -8,7 +8,7 @@ export const INSTRUMENTSESSION_QUERY: TypedDocumentNode<
   InstrumentSessionQuery,
   InstrumentSessionQueryVariables
 > = gql(`
-  query InstrumentSessionQuery($reference: String!, $after: String, $before: String, $first: Int, $last: Int) {
+  query InstrumentSessionQuery($reference: String!, $after: String, $before: String, $first: Int, $last: Int, $filter: DatasetFilterInput) {
     instrumentSessionByReference(reference: $reference) {
       startTime
       endTime
@@ -18,7 +18,7 @@ export const INSTRUMENTSESSION_QUERY: TypedDocumentNode<
       proposal {
         title
       }
-      datasets(pagination: {first: $first, last: $last, after: $after, before: $before}) {
+      datasets(pagination: {first: $first, last: $last, after: $after, before: $before}, filter: $filter) {
         pageInfo {
           startCursor
           hasPreviousPage
@@ -36,6 +36,7 @@ export const INSTRUMENTSESSION_QUERY: TypedDocumentNode<
             title
           }
         }
+        totalCount
       }
     }
   }
