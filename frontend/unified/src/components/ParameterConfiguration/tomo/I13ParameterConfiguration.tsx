@@ -1,11 +1,15 @@
 import { useState } from "react";
 import {
   Stack,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { Centering180Parameters } from "./methodComponents";
+import {
+  Centering180ParameterConfiguration,
+  Centering180Parameters,
+} from "./methodComponents";
 
 const ScanType = {
   180: "180",
@@ -129,6 +133,94 @@ const I13180PipelineConfigurationComponent = () => {
       parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
     });
 
+  const displayPipelineParameterConfigurator = () => {
+    switch (pipelineParameterConfig.type) {
+      case "Auto":
+        return (
+          <Centering180ParameterConfiguration
+            parameters={pipelineParameterConfig.parameters}
+            setParameters={(params) =>
+              setPipelineParameterConfig({
+                type: CenteringMode.Auto,
+                parameters: params,
+              })
+            }
+          />
+        );
+      case "Sweep":
+        return (
+          <Stack direction="row" spacing={2}>
+            <TextField
+              variant="outlined"
+              size="small"
+              value={pipelineParameterConfig.parameters.start}
+              label="start"
+              type="number"
+              onChange={(e) =>
+                setPipelineParameterConfig({
+                  ...pipelineParameterConfig,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    start: Number(e.target.value),
+                  },
+                })
+              }
+            />
+            <TextField
+              variant="outlined"
+              size="small"
+              value={pipelineParameterConfig.parameters.stop}
+              label="stop"
+              type="number"
+              onChange={(e) =>
+                setPipelineParameterConfig({
+                  ...pipelineParameterConfig,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    stop: Number(e.target.value),
+                  },
+                })
+              }
+            />
+            <TextField
+              variant="outlined"
+              size="small"
+              value={pipelineParameterConfig.parameters.step}
+              label="step"
+              type="number"
+              onChange={(e) =>
+                setPipelineParameterConfig({
+                  ...pipelineParameterConfig,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    step: Number(e.target.value),
+                  },
+                })
+              }
+            />
+          </Stack>
+        );
+      case "Fixed":
+        return (
+          <TextField
+            variant="outlined"
+            size="small"
+            value={pipelineParameterConfig.parameters.cor}
+            label="centre of rotation"
+            type="number"
+            onChange={(e) =>
+              setPipelineParameterConfig({
+                ...pipelineParameterConfig,
+                parameters: {
+                  cor: Number(e.target.value),
+                },
+              })
+            }
+          />
+        );
+    }
+  };
+
   return (
     <>
       <Stack direction="row" spacing={2} display="flex" alignItems="center">
@@ -218,6 +310,7 @@ const I13180PipelineConfigurationComponent = () => {
           ))}
         </ToggleButtonGroup>
       </Stack>
+      {displayPipelineParameterConfigurator()}
     </>
   );
 };
