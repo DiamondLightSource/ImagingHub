@@ -212,7 +212,9 @@ export const ScanSelectorTable = ({
     data: ScanNodeProcessed[],
     rowSelection: RowSelectionState
   ): ScanNodeProcessed[] => {
-    return data.filter((x) => Object.keys(rowSelection).includes(`${x.id}`));
+    return data.filter(
+      (x) => Object.keys(rowSelection).includes(`${x.id}`) && rowSelection[x.id]
+    );
   };
 
   const isDescSort = (v: SortDirection) => v === SortDirection.NEWEST;
