@@ -1,3 +1,6 @@
+/*
+  From: https://github.com/DiamondLightSource/sci-react-ui
+*/
 import { Paper, useTheme } from "@mui/material";
 import { DataObject } from "./DataObjectSmall";
 import { createDiamondTheme } from "@diamondlightsource/sci-react-ui";

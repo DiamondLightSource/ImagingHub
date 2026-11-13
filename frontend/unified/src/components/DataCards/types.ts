@@ -1,3 +1,7 @@
+/*
+  From: https://github.com/DiamondLightSource/sci-react-ui
+*/
+
 import type { LucideIcon } from "lucide-react";
 
 export type DecoratedValue = {

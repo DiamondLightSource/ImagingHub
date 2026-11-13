@@ -1,3 +1,7 @@
+/*
+  From: https://github.com/DiamondLightSource/sci-react-ui
+*/
+
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { DataItem } from "./DataItemSmall";
 import type { ReactNode } from "react";
