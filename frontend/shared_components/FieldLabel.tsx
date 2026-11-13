@@ -8,16 +8,16 @@ import { Info } from "lucide-react";
 import { iconSize } from "./data/ui";
 
 type FieldLabelProps = {
-  title: string;
-  info?: string;
+  label: string;
+  desc?: string;
 };
 
-const FieldLabel = ({ title, info }: FieldLabelProps) => {
+const FieldLabel = ({ label, desc }: FieldLabelProps) => {
   return (
     <Stack direction="row" alignItems="center">
-      <FormLabel>{title}</FormLabel>
-      {info && (
-        <Tooltip title={info}>
+      <FormLabel>{label}</FormLabel>
+      {desc && (
+        <Tooltip title={desc}>
           <IconButton aria-label="Information" size="small">
             <Info size={iconSize} />
           </IconButton>

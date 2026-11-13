@@ -12,6 +12,7 @@ import { SparseXanesParameterConfiguration } from "../xanes/SparseXanesParameter
 import { SyntheticDataParameterConfiguration } from "../tomo/SyntheticDataParameterConfiguration";
 import { XanesAutoprocessingParameterConfiguration } from "../xanes/XanesAutoprocessingParameterConfiguration";
 import { XanesPointParameterConfiguration } from "../xanes/XanesPointParameterConfiguration";
+import { XrfParameterConfiguration } from "../xrf/XrfParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 import { I12ParameterConfiguration } from "../tomo/I12ParameterConfiguration";
@@ -133,6 +134,14 @@ export const getParamConfigComponent = (
       ),
       "xrd2d-batch": (
         <Xrd2dParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
+      ),
+    },
+    [Technique.Xrf]: {
+      "xrf-tomography": (
+        <XrfParameterConfiguration
           setParameters={setTemplateParameters}
           visitDirpath={visitDirPath}
         />

@@ -108,7 +108,7 @@ export const WorkflowForm: FC = () => {
         <form onSubmit={handleSubmit}>
           <Stack direction="column" spacing={2}>
             <OptionToggle
-              title="Technique"
+              label="Technique"
               value={data.technique}
               options={techniqueOptions}
               onChange={handleToggleChange}
@@ -194,8 +194,8 @@ export const WorkflowForm: FC = () => {
             {"xanes" === data.template && (
               <>
                 <OptionToggle
-                  title="Method"
-                  info="The method to use for alignment"
+                  label="Method"
+                  desc="The method to use for alignment"
                   value={data.method}
                   options={methodOptions}
                   onChange={(_, newValue) => {
