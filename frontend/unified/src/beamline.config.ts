@@ -1,9 +1,10 @@
 import { InstrumentSessionQuery } from "./graphql/__generated__/InstrumentSessionQuery.generated";
-import { ScanNodeRaw, ScanNodeProcessed } from "./types";
+import { ScanNodeRaw, ScanNodeProcessed, DataCardVariant } from "./types";
 
-const FORMATTER: { [key: string]: (v: any) => string } = {
-  DATETIME: (v) => new Date(v).toLocaleString(undefined, { timeZone: "UTC" }),
-  NONE: (v) => `${v}`,
+const FORMATTER: { [key: string]: (v: any) => string | null } = {
+  DATETIME: (v) =>
+    v ? new Date(v).toLocaleString(undefined, { timeZone: "UTC" }) : null,
+  NONE: (v) => (v ? `${v}` : null),
 };
 
 const GETTER: { [key: string]: (v: any) => any | null } = {
@@ -13,10 +14,23 @@ const GETTER: { [key: string]: (v: any) => any | null } = {
 };
 
 export type BeamlineField<T> = {
-  title?: string;
+  title: string;
   getter: (data: ScanNodeProcessed) => T | undefined | null;
-  formatter: (v: T) => string;
+  formatter: (v: T) => string | null;
 };
+
+type MetadataPair = {
+  title: string;
+  variant: DataCardVariant;
+  label1?: string;
+  label2?: string;
+  value1: string;
+  value2: string;
+  size?: number;
+};
+export function isMetadataPair(v: MetadataPair | string): v is MetadataPair {
+  return (v as MetadataPair).title != undefined;
+}
 
 export type SchemaConfig = {
   ulimsSchema: string;
@@ -42,7 +56,7 @@ export type SchemaConfig = {
       item2?: string;
       item3?: string;
     };
-    fullMetadata: string[];
+    fullMetadata: (string | MetadataPair)[];
   };
 };
 
@@ -142,7 +156,7 @@ export function getFieldString(
   }
   const fieldConfig = config.fields[field];
   const value = fieldConfig.getter(data);
-  return fieldConfig.formatter(value);
+  return value ? fieldConfig.formatter(value) : null;
 }
 
 const BEAMLINE_CONFIG: SchemaConfig[] = [
@@ -174,7 +188,16 @@ const BEAMLINE_CONFIG: SchemaConfig[] = [
         title: "scanNumber",
         item1: "startTime",
       },
-      fullMetadata: ["startTime", "endTime"],
+      fullMetadata: [
+        {
+          title: "Scan times",
+          variant: "STACKED",
+          value1: "startTime",
+          label1: "Start",
+          value2: "endTime",
+          label2: "End",
+        },
+      ],
     },
   },
   {
@@ -273,7 +296,40 @@ const BEAMLINE_CONFIG: SchemaConfig[] = [
         item2: "experimentType",
         item3: "sampleName",
       },
-      fullMetadata: ["startTime", "endTime"],
+      fullMetadata: [
+        {
+          title: "Scan times",
+          variant: "STACKED",
+          value1: "startTime",
+          label1: "Start",
+          value2: "endTime",
+          label2: "End",
+        },
+        "sampleName",
+        "experimentType",
+        {
+          title: "Scan step",
+          variant: "PAIRED",
+          value1: "xAxisStep",
+          label1: "X",
+          value2: "yAxisStep",
+          label2: "Y",
+        },
+        {
+          title: "Slit size",
+          variant: "PAIRED",
+          value1: "slitSizeX",
+          label1: "X",
+          value2: "slitSizeY",
+          label2: "Y",
+        },
+
+        "sampleRotation",
+        "photonEnergy",
+        "exposureTime",
+        "scanRoi",
+        "elementList",
+      ],
     },
   },
 ];
