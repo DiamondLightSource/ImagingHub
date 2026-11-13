@@ -9,6 +9,8 @@ import {
 import {
   Centering180ParameterConfiguration,
   Centering180Parameters,
+  ParameterSweepConfiguration,
+  SweepParameters,
 } from "./methodComponents";
 
 const ScanType = {
@@ -100,12 +102,6 @@ type I13180PipelineParameters =
   | I13180SweepPipelineParameterConfig
   | I13180FixedPipelineParameterConfig;
 
-type SweepParameters = {
-  start: number;
-  stop: number;
-  step: number;
-};
-
 const DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES = {
   smin: -50,
   smax: 50,
@@ -149,56 +145,15 @@ const I13180PipelineConfigurationComponent = () => {
         );
       case "Sweep":
         return (
-          <Stack direction="row" spacing={2}>
-            <TextField
-              variant="outlined"
-              size="small"
-              value={pipelineParameterConfig.parameters.start}
-              label="start"
-              type="number"
-              onChange={(e) =>
-                setPipelineParameterConfig({
-                  ...pipelineParameterConfig,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    start: Number(e.target.value),
-                  },
-                })
-              }
-            />
-            <TextField
-              variant="outlined"
-              size="small"
-              value={pipelineParameterConfig.parameters.stop}
-              label="stop"
-              type="number"
-              onChange={(e) =>
-                setPipelineParameterConfig({
-                  ...pipelineParameterConfig,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    stop: Number(e.target.value),
-                  },
-                })
-              }
-            />
-            <TextField
-              variant="outlined"
-              size="small"
-              value={pipelineParameterConfig.parameters.step}
-              label="step"
-              type="number"
-              onChange={(e) =>
-                setPipelineParameterConfig({
-                  ...pipelineParameterConfig,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    step: Number(e.target.value),
-                  },
-                })
-              }
-            />
-          </Stack>
+          <ParameterSweepConfiguration
+            parameters={pipelineParameterConfig.parameters}
+            setParameters={(params) =>
+              setPipelineParameterConfig({
+                ...pipelineParameterConfig,
+                parameters: params,
+              })
+            }
+          />
         );
       case "Fixed":
         return (

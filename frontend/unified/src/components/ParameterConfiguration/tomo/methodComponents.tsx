@@ -365,3 +365,53 @@ export const PaganinFilterParameterConfiguration: React.FC<
     </Card>
   );
 };
+
+export type SweepParameters = {
+  start: number;
+  stop: number;
+  step: number;
+};
+
+type ParameterSweepConfigurationProps = {
+  parameters: SweepParameters;
+  setParameters: (_: SweepParameters) => void;
+};
+
+export const ParameterSweepConfiguration: React.FC<
+  ParameterSweepConfigurationProps
+> = ({ parameters, setParameters }) => {
+  return (
+    <Stack direction="row" spacing={2}>
+      <TextField
+        variant="outlined"
+        size="small"
+        value={parameters.start}
+        label="start"
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, start: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        value={parameters.stop}
+        label="stop"
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, stop: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        value={parameters.step}
+        label="step"
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, step: Number(e.target.value) })
+        }
+      />
+    </Stack>
+  );
+};
