@@ -31,17 +31,19 @@ const WorkflowsTable = ({
     cursor,
   };
 
-  const { data } = useQuery(WORKFLOWSTABLE_QUERY, {
+  const { data, previousData } = useQuery(WORKFLOWSTABLE_QUERY, {
     variables: queryVariables,
     pollInterval: 5000,
     fetchPolicy: "cache-and-network",
   });
 
+  const workflows = data?.workflows ?? previousData?.workflows;
+
   return (
     <Suspense>
-      {data && (
+      {workflows && (
         <TableContent
-          queryData={data.workflows}
+          queryData={workflows}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           selectedLimit={selectedLimit}
