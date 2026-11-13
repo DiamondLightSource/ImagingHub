@@ -5,6 +5,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { Centering180Parameters } from "./methodComponents";
 
 const ScanType = {
   180: "180",
@@ -75,15 +76,58 @@ export const I13ParameterConfiguration = () => {
   );
 };
 
+type I13180AutoPipelineParameterConfig = {
+  type: typeof CenteringMode.Auto;
+  parameters: Centering180Parameters;
+};
+
+type I13180SweepPipelineParameterConfig = {
+  type: typeof CenteringMode.Sweep;
+  parameters: SweepParameters;
+};
+
+type I13180FixedPipelineParameterConfig = {
+  type: typeof CenteringMode.Fixed;
+  parameters: { cor: number };
+};
+
+type I13180PipelineParameters =
+  | I13180AutoPipelineParameterConfig
+  | I13180SweepPipelineParameterConfig
+  | I13180FixedPipelineParameterConfig;
+
+type SweepParameters = {
+  start: number;
+  stop: number;
+  step: number;
+};
+
+const DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES = {
+  smin: -50,
+  smax: 50,
+};
+
+const DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES = {
+  start: 1180,
+  stop: 1380,
+  step: 2.0,
+};
+
+const DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES = {
+  cor: 1280,
+};
+
 const I13180PipelineConfigurationComponent = () => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
   const [pipelineType, setPipelineType] = useState<PipelineType>(
     PipelineType.Absorption
   );
-  const [centeringMode, setCenteringMode] = useState<CenteringMode>(
-    CenteringMode.Auto
-  );
+  const [pipelineParameterConfig, setPipelineParameterConfig] =
+    useState<I13180PipelineParameters>({
+      type: CenteringMode.Auto,
+      parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+    });
 
   return (
     <>
@@ -143,7 +187,7 @@ const I13180PipelineConfigurationComponent = () => {
         <Typography>Centering</Typography>
         <ToggleButtonGroup
           exclusive
-          value={centeringMode}
+          value={pipelineParameterConfig.type}
           aria-label="i13-centering-mode-toggle"
           onChange={(
             _: React.MouseEvent<HTMLElement>,
@@ -151,11 +195,20 @@ const I13180PipelineConfigurationComponent = () => {
           ) => {
             if (newValue) {
               if (newValue === "Auto") {
-                setCenteringMode(CenteringMode.Auto);
+                setPipelineParameterConfig({
+                  type: CenteringMode.Auto,
+                  parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                });
               } else if (newValue === "Sweep") {
-                setCenteringMode(CenteringMode.Sweep);
+                setPipelineParameterConfig({
+                  type: CenteringMode.Sweep,
+                  parameters: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
+                });
               } else {
-                setCenteringMode(CenteringMode.Fixed);
+                setPipelineParameterConfig({
+                  type: CenteringMode.Fixed,
+                  parameters: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                });
               }
             }
           }}
