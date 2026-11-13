@@ -116,15 +116,14 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
         Jobs
       </Typography>
       <Stack direction="column">
-        {data &&
-          data.nodes.map((workflow) => [
-            <WorkflowEntryWrapper
-              key={workflow.name}
-              queryData={workflow}
-              selectedWorkflow={selectedWorkflow}
-              setSelectedWorkflow={setSelectedWorkflow}
-            />,
-          ])}
+        {data?.nodes.map((workflow) => (
+          <WorkflowEntryWrapper
+            key={workflow.name}
+            queryData={workflow}
+            selectedWorkflow={selectedWorkflow}
+            setSelectedWorkflow={setSelectedWorkflow}
+          />
+        ))}
       </Stack>
       <TablePagination
         sx={{ borderBottom: "none" }}

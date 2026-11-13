@@ -80,7 +80,6 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
         variant="temporary"
         anchor="right"
         open={showParamConfigDrawer}
-        onOpen={() => setShowParamConfigDrawer(true)}
         onClose={() => setShowParamConfigDrawer(false)}
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         ModalProps={{ keepMounted: true }}

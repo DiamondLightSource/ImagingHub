@@ -34,18 +34,20 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
     cursor,
   };
 
-  const { data } = useQuery(WORKFLOWSTABLE_QUERY, {
+  const { data, previousData } = useQuery(WORKFLOWSTABLE_QUERY, {
     variables: queryVariables,
     pollInterval: 5000,
     fetchPolicy: "cache-and-network",
   });
 
+  const workflows = data?.workflows ?? previousData?.workflows;
+
   return (
     <Box>
       <Suspense>
-        {data && (
+        {workflows && (
           <WorkflowsListContents
-            queryData={data.workflows}
+            queryData={workflows}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             selectedLimit={selectedLimit}
