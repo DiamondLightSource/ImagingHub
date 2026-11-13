@@ -1,4 +1,4 @@
-import { DataCard } from "@diamondlightsource/sci-react-ui";
+// import { DataCard } from "@diamondlightsource/sci-react-ui";
 import {
   Grid,
   Box,
@@ -10,6 +10,7 @@ import {
 import { getFieldString, isMetadataPair } from "../beamline.config";
 import { DataCardVariant, SelectedScans } from "../types";
 import { ChevronDown } from "lucide-react";
+import { DataCardSmall as DataCard } from "./DataCards/DataCardSmall";
 
 type MetadataDisplayProps = {
   selectedScans: SelectedScans;
@@ -40,7 +41,7 @@ export const MetadataDisplay = ({
                   lg: Math.max(maxColumns - 1, 1),
                   md: Math.max(maxColumns - 2, 1),
                   sm: Math.max(maxColumns - 3, 1),
-                  xs: Math.max(maxColumns - 3, 1),
+                  xs: Math.max(maxColumns - 4, 1),
                 }}
               >
                 {config?.ui.fullMetadata.map((x) => {
@@ -67,7 +68,7 @@ export const MetadataDisplay = ({
                                 value: value2,
                                 label: label2,
                               }}
-                              colour="neutral"
+                              colour="none"
                             />
                           </Grid>
                         );
@@ -86,7 +87,7 @@ export const MetadataDisplay = ({
                                 label: label2,
                               }}
                               subvalue={{ value: "" }}
-                              colour="neutral"
+                              colour="none"
                             />
                           </Grid>
                         );
@@ -104,7 +105,7 @@ export const MetadataDisplay = ({
                                 value: value2,
                                 label: label2,
                               }}
-                              colour="neutral"
+                              colour="none"
                             />
                           </Grid>
                         );
@@ -118,7 +119,7 @@ export const MetadataDisplay = ({
                         <DataCard
                           title={title}
                           value={{ value: value }}
-                          colour="neutral"
+                          colour="none"
                         />
                       </Grid>
                     );
@@ -136,7 +137,7 @@ export const MetadataDisplay = ({
             title={`${scans.length} scans selected`}
             // value={{ value: `${scans.length} scans selected` }}
             value={{ value: scans.map((x) => x.scanNumber).join(", ") }}
-            colour="neutral"
+            colour="none"
           />
         </Box>
       );

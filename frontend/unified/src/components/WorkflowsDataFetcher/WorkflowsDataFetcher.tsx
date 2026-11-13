@@ -31,7 +31,7 @@ const WorkflowsDataFetcher = ({
         {workflowsViewMode === WorkflowsViewMode.Table ? (
           <Stack display="flex" direction="row">
             <Stack display="flex" flexGrow={1} direction="column">
-              <MetadataDisplay selectedScans={selectedScans} />
+              <MetadataDisplay selectedScans={selectedScans} maxColumns={5} />
               <Accordion defaultExpanded>
                 <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
                   <Typography variant="h5">Jobs</Typography>
@@ -62,7 +62,7 @@ const WorkflowsDataFetcher = ({
               />
             </Stack>
             <Stack flexGrow={2}>
-              <MetadataDisplay selectedScans={selectedScans} maxColumns={3} />
+              <MetadataDisplay selectedScans={selectedScans} maxColumns={4} />
               {selectedWorkflow && (
                 <WorkflowDataViewer
                   visit={visit}
