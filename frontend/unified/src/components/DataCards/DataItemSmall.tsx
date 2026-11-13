@@ -1,3 +1,6 @@
+/*
+  From: https://github.com/DiamondLightSource/sci-react-ui
+*/
 import { Box, Typography } from "@mui/material";
 import type { DecoratedValue } from "./types";
 import type { DataColours } from "./palette";

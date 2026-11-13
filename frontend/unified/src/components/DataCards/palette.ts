@@ -1,3 +1,7 @@
+/*
+  From: https://github.com/DiamondLightSource/sci-react-ui
+*/
+
 import type { Theme } from "@mui/material";
 
 /** Represents intent or severity */
