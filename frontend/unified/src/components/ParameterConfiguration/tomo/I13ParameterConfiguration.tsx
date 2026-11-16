@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Stack,
   TextField,
@@ -42,6 +42,7 @@ type CenteringMode = (typeof CenteringMode)[keyof typeof CenteringMode];
 
 export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
   visitDirpath,
+  setParameters,
 }) => {
   const [scanType, setScanType] = useState<ScanType>(ScanType[180]);
   const [outputFolder, setOutputFolder] = useState<string>("");
@@ -53,6 +54,7 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
           visitDirpath={visitDirpath}
           outputFolder={outputFolder}
           setOutputFolder={setOutputFolder}
+          setParameters={setParameters}
         />
       );
     } else {
@@ -162,11 +164,12 @@ type I13180PipelineConfigurationComponentProps = {
   visitDirpath: string;
   outputFolder: string;
   setOutputFolder: string;
+  setParameters: (_: object) => void;
 };
 
 const I13180PipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps
-> = ({ visitDirpath, outputFolder, setOutputFolder }) => {
+> = ({ visitDirpath, outputFolder, setOutputFolder, setParameters }) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
   const [pipelineType, setPipelineType] = useState<PipelineType>(
@@ -341,6 +344,16 @@ const I13180PipelineConfigurationComponent: React.FC<
 
     return pipeline;
   };
+
+  useEffect(() => {
+    const date = new Date();
+    const httomoOutdirName = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}_output`;
+    setParameters({
+      config: generatePipeline(),
+      output: visitDirpath + outputFolder,
+      "httomo-outdir-name": httomoOutdirName,
+    });
+  }, [magnification, pipelineType, pipelineParameterConfig, outputFolder]);
 
   const displayPipelineParameterConfigurator = () => {
     switch (pipelineParameterConfig.type) {
