@@ -21,6 +21,8 @@ import { useResizableWidth } from "./hooks/useResizableWidth";
 import { Sidebar } from "./components/Sidebar";
 
 const PARAM_CONFIG_DRAWER_WIDTH = 600;
+const SIDEBAR_MIN_WIDTH = 340;
+const SIDEBAR_MAX_WIDTH = 720;
 
 type AppProps = {
   session: InstrumentSession;
@@ -31,7 +33,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
     scans: [],
   });
 
-  const sidebar = useResizableWidth(440, 340, 720);
+  const sidebar = useResizableWidth(440, SIDEBAR_MIN_WIDTH, SIDEBAR_MAX_WIDTH);
 
   const [showParamConfigDrawer, setShowParamConfigDrawer] =
     useState<boolean>(false);
@@ -106,8 +108,8 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
               role="separator"
               aria-orientation="vertical"
               aria-label="Resize the plot list"
-              aria-valuemin={340}
-              aria-valuemax={720}
+              aria-valuemin={SIDEBAR_MIN_WIDTH}
+              aria-valuemax={SIDEBAR_MAX_WIDTH}
               aria-valuenow={Math.round(sidebar.width)}
               tabIndex={0}
               onPointerDown={sidebar.onPointerDown}

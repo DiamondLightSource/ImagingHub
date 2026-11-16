@@ -18,7 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
 import utc from "dayjs/plugin/utc";
 import { ScanDateRange } from "../../types";
@@ -26,10 +26,6 @@ import { ScanDateRange } from "../../types";
 dayjs.extend(utc);
 
 const ALL_DATES_TEXT = "All dates";
-
-function dateToDayjs(date: Date | undefined | null): Dayjs {
-  return dayjs(date);
-}
 
 function formatDate(date: Date | undefined | null) {
   if (date) {
@@ -201,7 +197,7 @@ export const ScanSelectorHeader = ({
                   <Stack>
                     <Typography variant="body2">From:</Typography>
                     <DateTimePicker
-                      value={dateToDayjs(selectedStartDate)}
+                      value={dayjs(selectedStartDate)}
                       onChange={(v) => setSelectedStartDate(v?.utc().toDate())}
                       slotProps={{
                         textField: {
@@ -209,14 +205,14 @@ export const ScanSelectorHeader = ({
                         },
                       }}
                       timezone="UTC"
-                      minDateTime={dateToDayjs(startDate)}
-                      maxDateTime={dateToDayjs(selectedEndDate)}
+                      minDateTime={dayjs(startDate)}
+                      maxDateTime={dayjs(selectedEndDate)}
                     />
                   </Stack>
                   <Stack>
                     <Typography variant="body2">To:</Typography>
                     <DateTimePicker
-                      value={dateToDayjs(selectedEndDate)}
+                      value={dayjs(selectedEndDate)}
                       onChange={(v) => setSelectedEndDate(v?.utc().toDate())}
                       slotProps={{
                         textField: {
@@ -224,8 +220,8 @@ export const ScanSelectorHeader = ({
                         },
                       }}
                       timezone="UTC"
-                      minDateTime={dateToDayjs(selectedStartDate)}
-                      maxDateTime={dateToDayjs(endDate)}
+                      minDateTime={dayjs(selectedStartDate)}
+                      maxDateTime={dayjs(endDate)}
                     />
                   </Stack>
                 </Stack>
