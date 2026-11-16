@@ -9,16 +9,18 @@ interface LiveTableRowProps {
   workflowName: string;
   visit: Visit;
   onNullSubscriptionData: () => void;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 }
 
 const LiveTableRow = ({
   workflowName,
   visit,
   onNullSubscriptionData,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: LiveTableRowProps) => {
   const [queryData, setQueryData] = useState<BaseTableRowFragment | null>(null);
   apolloClientWorkflows
@@ -49,8 +51,9 @@ const LiveTableRow = ({
   return queryData ? (
     <BaseTableRow
       queryData={queryData}
-      selectedWorkflow={selectedWorkflow}
-      setSelectedWorkflow={setSelectedWorkflow}
+      selectedWorkflowId={selectedWorkflowId}
+      setSelectedWorkflowId={setSelectedWorkflowId}
+      setSelectedWorkflowName={setSelectedWorkflowName}
     />
   ) : null;
 };
