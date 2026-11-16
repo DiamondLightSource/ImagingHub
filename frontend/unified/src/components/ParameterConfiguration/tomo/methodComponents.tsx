@@ -3,6 +3,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -452,5 +453,34 @@ export const LoaderParameterConfiguration: React.FC<
         }
       />
     </Stack>
+  );
+};
+
+type OutputFolderConfigurationProps = {
+  visitDirpath: string;
+  outputFolder: string;
+  setOutputFolder: (_: string) => void;
+};
+
+export const OutputFolderConfiguration: React.FC<
+  OutputFolderConfigurationProps
+> = ({ visitDirpath, outputFolder, setOutputFolder }) => {
+  return (
+    <TextField
+      variant="outlined"
+      size="small"
+      label="Output folder"
+      value={outputFolder}
+      onChange={(e) => setOutputFolder(e.target.value)}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start" sx={{ marginRight: 0 }}>
+              <Typography>{visitDirpath}</Typography>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
   );
 };

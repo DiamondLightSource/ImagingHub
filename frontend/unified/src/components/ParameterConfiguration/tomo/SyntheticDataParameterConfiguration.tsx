@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import {
   LoaderParameterConfiguration,
   MinimalLoaderPreviewParameters,
+  OutputFolderConfiguration,
 } from "./methodComponents";
 
 export const SyntheticDataParameterConfiguration: React.FC<
@@ -275,21 +276,10 @@ export const SyntheticDataParameterConfiguration: React.FC<
             />
           )}
         </FormGroup>
-        <TextField
-          variant="outlined"
-          size="small"
-          label="Output folder"
-          value={outputFolder}
-          onChange={(e) => setOutputFolder(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start" sx={{ marginRight: 0 }}>
-                  <Typography>{visitDirpath}</Typography>
-                </InputAdornment>
-              ),
-            },
-          }}
+        <OutputFolderConfiguration
+          visitDirpath={visitDirpath}
+          outputFolder={outputFolder}
+          setOutputFolder={setOutputFolder}
         />
       </Card>
     </>
