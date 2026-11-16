@@ -415,3 +415,42 @@ export const ParameterSweepConfiguration: React.FC<
     </Stack>
   );
 };
+
+export type MinimalLoaderPreviewParameters = {
+  start: number;
+  stop: number;
+};
+
+type LoaderParameterConfigurationProps = {
+  parameters: MinimalLoaderPreviewParameters;
+  setParameters: (_: MinimalLoaderPreviewParameters) => void;
+};
+
+export const LoaderParameterConfiguration: React.FC<
+  LoaderParameterConfigurationProps
+> = ({ parameters, setParameters }: LoaderParameterConfigurationProps) => {
+  return (
+    <Stack spacing={2} direction="row">
+      <TextField
+        variant="outlined"
+        size="small"
+        label="start"
+        value={parameters.start}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, start: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        label="stop"
+        value={parameters.stop}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, stop: Number(e.target.value) })
+        }
+      />
+    </Stack>
+  );
+};

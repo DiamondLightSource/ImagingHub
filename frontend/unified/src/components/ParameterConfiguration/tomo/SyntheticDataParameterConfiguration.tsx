@@ -15,6 +15,10 @@ import {
 } from "@mui/material";
 import { TemplateComponentProps } from "../../../types";
 import { useEffect, useState } from "react";
+import {
+  LoaderParameterConfiguration,
+  MinimalLoaderPreviewParameters,
+} from "./methodComponents";
 
 export const SyntheticDataParameterConfiguration: React.FC<
   TemplateComponentProps
@@ -381,44 +385,5 @@ const RemoveOutlierParameterConfiguration: React.FC<
         ))}
       </Select>
     </FormControl>
-  );
-};
-
-type MinimalLoaderPreviewParameters = {
-  start: number;
-  stop: number;
-};
-
-type LoaderParameterConfigurationProps = {
-  parameters: MinimalLoaderPreviewParameters;
-  setParameters: (_: MinimalLoaderPreviewParameters) => void;
-};
-
-const LoaderParameterConfiguration: React.FC<
-  LoaderParameterConfigurationProps
-> = ({ parameters, setParameters }: LoaderParameterConfigurationProps) => {
-  return (
-    <Stack spacing={2} direction="row">
-      <TextField
-        variant="outlined"
-        size="small"
-        label="start"
-        value={parameters.start}
-        type="number"
-        onChange={(e) =>
-          setParameters({ ...parameters, start: Number(e.target.value) })
-        }
-      />
-      <TextField
-        variant="outlined"
-        size="small"
-        label="stop"
-        value={parameters.stop}
-        type="number"
-        onChange={(e) =>
-          setParameters({ ...parameters, stop: Number(e.target.value) })
-        }
-      />
-    </Stack>
   );
 };
