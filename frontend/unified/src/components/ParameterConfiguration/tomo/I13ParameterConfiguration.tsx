@@ -88,7 +88,9 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
           }}
         >
           {Object.keys(ScanType).map((val) => (
-            <ToggleButton value={val}>{val}</ToggleButton>
+            <ToggleButton key={val} value={val}>
+              {val}
+            </ToggleButton>
           ))}
         </ToggleButtonGroup>
       </Stack>
@@ -445,7 +447,7 @@ const I13180PipelineConfigurationComponent: React.FC<
           }}
         >
           {Magnification.map((mag) => (
-            <ToggleButton value={mag}>{`x${mag}`}</ToggleButton>
+            <ToggleButton key={mag} value={mag}>{`x${mag}`}</ToggleButton>
           ))}
         </ToggleButtonGroup>
       </Stack>
@@ -469,7 +471,9 @@ const I13180PipelineConfigurationComponent: React.FC<
           }}
         >
           {Object.keys(PipelineType).map((val) => (
-            <ToggleButton value={val}>{val}</ToggleButton>
+            <ToggleButton key={val} value={val}>
+              {val}
+            </ToggleButton>
           ))}
         </ToggleButtonGroup>
       </Stack>
@@ -504,7 +508,9 @@ const I13180PipelineConfigurationComponent: React.FC<
           }}
         >
           {Object.keys(CenteringMode).map((val) => (
-            <ToggleButton value={val}>{val}</ToggleButton>
+            <ToggleButton key={val} value={val}>
+              {val}
+            </ToggleButton>
           ))}
         </ToggleButtonGroup>
       </Stack>
