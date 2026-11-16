@@ -11,8 +11,8 @@ export const WORKFLOWDATAVIEWER_QUERY: TypedDocumentNode<
   WorkflowDataViewerQuery,
   WorkflowDataViewerQueryVariables
 > = gql`
-  query WorkflowDataViewerQuery($visit: VisitInput!, $name: String!) {
-    workflow(visit: $visit, name: $name) {
+  query WorkflowDataViewerQuery($id: ID!) {
+    workflowById(id: $id) {
       name
       id
       ...LogStreamerFragment
