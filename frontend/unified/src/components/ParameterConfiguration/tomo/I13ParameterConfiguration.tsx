@@ -12,6 +12,7 @@ import {
   ParameterSweepConfiguration,
   SweepParameters,
 } from "./methodComponents";
+import { TemplateComponentProps } from "../../../types";
 
 const ScanType = {
   180: "180",
@@ -36,12 +37,16 @@ const CenteringMode = {
 } as const;
 type CenteringMode = (typeof CenteringMode)[keyof typeof CenteringMode];
 
-export const I13ParameterConfiguration = () => {
+export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
+  visitDirpath,
+}) => {
   const [scanType, setScanType] = useState<ScanType>(ScanType[180]);
 
   const displayScanTypeConfigurationComponent = () => {
     if (scanType === ScanType[180]) {
-      return <I13180PipelineConfigurationComponent />;
+      return (
+        <I13180PipelineConfigurationComponent visitDirpath={visitDirpath} />
+      );
     } else {
       return <p>Not implemented</p>;
     }
@@ -117,7 +122,35 @@ const DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES = {
   cor: 1280,
 };
 
-const I13180PipelineConfigurationComponent = () => {
+const generateDistortionCorrectionCoefficientsFilepath = (
+  visitDirpath: string,
+  magnification: (typeof Magnification)[number]
+) => {
+  let posString: string;
+  switch (magnification) {
+    case 1.25:
+      posString = "Pos1_125x";
+      break;
+    case 2:
+      posString = "Pos2_2x";
+      break;
+    case 4:
+      posString = "Pos4_4x";
+      break;
+    case 10:
+      posString = "Pos5_10x";
+  }
+
+  return `${visitDirpath}processing/distortion_corrections/results_4thOrder/${posString}/coefficients_bwfw.txt`;
+};
+
+type I13180PipelineConfigurationComponentProps = {
+  visitDirpath: string;
+};
+
+const I13180PipelineConfigurationComponent: React.FC<
+  I13180PipelineConfigurationComponentProps
+> = ({ visitDirpath }) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
   const [pipelineType, setPipelineType] = useState<PipelineType>(
@@ -128,6 +161,164 @@ const I13180PipelineConfigurationComponent = () => {
       type: CenteringMode.Auto,
       parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
     });
+
+  const generatePipeline = () => {
+    const pipeline = [
+      {
+        method: "standard_tomo",
+        module_path: "httomo.data.hdf.loaders",
+        parameters: {
+          data_path: "auto",
+          image_key_path: "auto",
+          rotation_angles: "auto",
+          preview: null,
+          darks: null,
+          flats: null,
+          continuous_scan_subset: null,
+        },
+      },
+      {
+        method: "remove_outlier",
+        module_path: "httomolibgpu.misc.corr",
+        parameters: {
+          kernel_size: 3,
+          dif: 1000,
+        },
+      },
+      {
+        method: "dark_flat_field_correction",
+        module_path: "httomolibgpu.prep.normalize",
+        parameters: {
+          flats_multiplier: 1,
+          darks_multiplier: 1,
+          upper_bound: null,
+          lower_bound: null,
+        },
+      },
+      {
+        method: "distortion_correction_proj_discorpy",
+        module_path: "httomolibgpu.prep.alignment",
+        parameters: {
+          metadata_path: generateDistortionCorrectionCoefficientsFilepath(
+            visitDirpath,
+            magnification
+          ),
+          order: 3,
+          mode: "constant",
+        },
+      },
+    ];
+
+    if (pipelineParameterConfig.type === CenteringMode.Auto) {
+      pipeline.push({
+        method: "find_center_vo",
+        module_path: "httomolibgpu.recon.rotation",
+        parameters: {
+          ind: null,
+          average_radius: 0,
+          cor_initialisation_value: null,
+          smin: pipelineParameterConfig.parameters.smin,
+          smax: pipelineParameterConfig.parameters.smax,
+          srad: 6,
+          step: 0.5,
+          ratio: 0.5,
+          drop: 20,
+        },
+
+        id: "centering",
+        side_outputs: {
+          cor: "centre_of_rotation",
+        },
+      });
+    }
+
+    pipeline.push(
+      {
+        method: "remove_stripe_based_sorting",
+        module_path: "httomolibgpu.prep.stripe",
+        parameters: {
+          size: 11,
+          dim: 1,
+        },
+      },
+      {
+        method: "minus_log",
+        module_path: "httomolibgpu.prep.normalize",
+        parameters: {},
+      }
+    );
+
+    // TODO: handle paganin pipeline type case
+
+    const generateReconMethod = (cor: number | string | SweepParameters) => {
+      return {
+        method: "FBP3d_tomobar",
+        module_path: "httomolibgpu.recon.algorithm",
+        parameters: {
+          center: cor,
+          detector_pad: false,
+          filter_freq_cutoff: 0.35,
+          recon_size: null,
+          recon_mask_radius: 0.95,
+        },
+        save_result: false,
+      };
+    };
+
+    if (pipelineParameterConfig.type === CenteringMode.Auto) {
+      pipeline.push(
+        generateReconMethod("${{centering.side_outputs.centre_of_rotation}}")
+      );
+    } else if (pipelineParameterConfig.type === CenteringMode.Sweep) {
+      pipeline.push(
+        generateReconMethod({
+          start: pipelineParameterConfig.parameters.start,
+          stop: pipelineParameterConfig.parameters.stop,
+          step: pipelineParameterConfig.parameters.step,
+        })
+      );
+    } else {
+      pipeline.push(
+        generateReconMethod(pipelineParameterConfig.parameters.cor)
+      );
+    }
+
+    if (pipelineParameterConfig.type !== CenteringMode.Sweep) {
+      pipeline.push(
+        {
+          method: "calculate_stats",
+          module_path: "httomo.methods",
+          parameters: {},
+          id: "statistics",
+          side_outputs: {
+            glob_stats: "glob_stats",
+          },
+        },
+        {
+          method: "rescale_to_int",
+          module_path: "httomolib.misc.rescale",
+          parameters: {
+            perc_range_min: 1,
+            perc_range_max: 99,
+            bits: 16,
+            glob_stats: "${{statistics.side_outputs.glob_stats}}",
+          },
+        },
+        {
+          method: "save_to_images",
+          module_path: "httomolib.misc.images",
+          parameters: {
+            subfolder_name: "images",
+            axis: "auto",
+            file_format: "tif",
+            asynchronous: true,
+          },
+        }
+      );
+    }
+
+    return pipeline;
+  };
 
   const displayPipelineParameterConfigurator = () => {
     switch (pipelineParameterConfig.type) {
