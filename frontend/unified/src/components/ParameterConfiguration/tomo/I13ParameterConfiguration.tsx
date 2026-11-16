@@ -11,6 +11,7 @@ import {
   Centering180Parameters,
   LoaderParameterConfiguration,
   MinimalLoaderPreviewParameters,
+  OutputFolderConfiguration,
   ParameterSweepConfiguration,
   SweepParameters,
 } from "./methodComponents";
@@ -43,11 +44,16 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
   visitDirpath,
 }) => {
   const [scanType, setScanType] = useState<ScanType>(ScanType[180]);
+  const [outputFolder, setOutputFolder] = useState<string>("");
 
   const displayScanTypeConfigurationComponent = () => {
     if (scanType === ScanType[180]) {
       return (
-        <I13180PipelineConfigurationComponent visitDirpath={visitDirpath} />
+        <I13180PipelineConfigurationComponent
+          visitDirpath={visitDirpath}
+          outputFolder={outputFolder}
+          setOutputFolder={setOutputFolder}
+        />
       );
     } else {
       return <p>Not implemented</p>;
@@ -154,11 +160,13 @@ const generateDistortionCorrectionCoefficientsFilepath = (
 
 type I13180PipelineConfigurationComponentProps = {
   visitDirpath: string;
+  outputFolder: string;
+  setOutputFolder: string;
 };
 
 const I13180PipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps
-> = ({ visitDirpath }) => {
+> = ({ visitDirpath, outputFolder, setOutputFolder }) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
   const [pipelineType, setPipelineType] = useState<PipelineType>(
@@ -488,6 +496,11 @@ const I13180PipelineConfigurationComponent: React.FC<
         </ToggleButtonGroup>
       </Stack>
       {displayPipelineParameterConfigurator()}
+      <OutputFolderConfiguration
+        visitDirpath={visitDirpath}
+        outputFolder={outputFolder}
+        setOutputFolder={setOutputFolder}
+      />
     </>
   );
 };
