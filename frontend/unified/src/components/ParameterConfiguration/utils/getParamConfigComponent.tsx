@@ -5,6 +5,7 @@ import { MibParameterConfiguration } from "../mib/MibParameterConfiguration";
 import PtypyI08ParameterConfiguration from "../ptypy/PtypyI08ParameterConfiguration";
 import PtypyP99ParameterConfiguration from "../ptypy/PtypyP99ParameterConfiguration";
 import { PtyrexParameterConfiguration } from "../ptyrex/PtyrexParameterConfiguration";
+import { PtyrexEditParameterConfiguration } from "../ptyrex/PtyrexEditParameterConfiguration.tsx";
 import { LoaderProvider } from "../../../../../tomography/src/contexts/LoaderContext";
 import { CorSweepParameterConfiguration } from "../tomo/TomoParameterConfiguration";
 import { Fbp180ParameterConfiguration } from "../tomo/Fbp180ParameterConfiguration";
@@ -64,6 +65,14 @@ export const getParamConfigComponent = (
       "ptyrex-submission": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
           <PtyrexParameterConfiguration
+            setParameters={setTemplateParameters}
+            visitDirpath={visitDirPath}
+          />
+        </Suspense>
+      ),
+      "ptyrex-edit-submission": (
+        <Suspense fallback={<p>Fetching workflow template...</p>}>
+          <PtyrexEditParameterConfiguration
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
