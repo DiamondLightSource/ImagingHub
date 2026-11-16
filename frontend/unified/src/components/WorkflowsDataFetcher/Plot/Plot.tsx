@@ -7,8 +7,7 @@ import { decode } from "fast-png";
 import { proxyService } from "../../../../../tomography/src/api/services";
 import { DataPlotter } from "./DataPlotter";
 import { DataLoadingProgress } from "./DataLoadingProgress";
-import { Visit } from "@diamondlightsource/sci-react-ui";
-import { ArtifactSelectorFragmentFragment } from "./__generated__/ArtifactSelector.generated";
+import { ArtifactSelectorFragment } from "../../../graphql/WorkflowDataFetcher/__generated__/ArtifactSelectorFragment.generated";
 
 const imageIterator = (
   height: number,
@@ -31,15 +30,10 @@ const imageIterator = (
 
 type PlotProps = {
   workflowName: string | null;
-  visit: Visit;
-  queryData: ArtifactSelectorFragmentFragment;
+  queryData: ArtifactSelectorFragment;
 };
 
-export const Plot: React.FC<PlotProps> = ({
-  workflowName,
-  visit,
-  queryData,
-}) => {
+export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [artifactData, setArtifactData] = useState<NDT[] | null>(null);
   const [loadingImageIndex, setLoadingImageIndex] = useState<number | null>(
