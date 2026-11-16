@@ -9,6 +9,8 @@ import {
 import {
   Centering180ParameterConfiguration,
   Centering180Parameters,
+  LoaderParameterConfiguration,
+  MinimalLoaderPreviewParameters,
   ParameterSweepConfiguration,
   SweepParameters,
 } from "./methodComponents";
@@ -94,7 +96,7 @@ type I13180AutoPipelineParameterConfig = {
 
 type I13180SweepPipelineParameterConfig = {
   type: typeof CenteringMode.Sweep;
-  parameters: SweepParameters;
+  parameters: { loader: MinimalLoaderPreviewParameters; cor: SweepParameters };
 };
 
 type I13180FixedPipelineParameterConfig = {
@@ -113,9 +115,15 @@ const DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES = {
 };
 
 const DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES = {
-  start: 1180,
-  stop: 1380,
-  step: 2.0,
+  loader: {
+    start: 589,
+    stop: 599,
+  },
+  cor: {
+    start: 1180,
+    stop: 1380,
+    step: 2.0,
+  },
 };
 
 const DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES = {
@@ -209,6 +217,12 @@ const I13180PipelineConfigurationComponent: React.FC<
       },
     ];
 
+    if (pipelineParameterConfig.type === CenteringMode.Sweep) {
+      pipeline[0]["parameters"]["preview"] = {
+        detector_y: pipelineParameterConfig.parameters.loader,
+      };
+    }
+
     if (pipelineParameterConfig.type === CenteringMode.Auto) {
       pipeline.push({
         method: "find_center_vo",
@@ -272,9 +286,9 @@ const I13180PipelineConfigurationComponent: React.FC<
     } else if (pipelineParameterConfig.type === CenteringMode.Sweep) {
       pipeline.push(
         generateReconMethod({
-          start: pipelineParameterConfig.parameters.start,
-          stop: pipelineParameterConfig.parameters.stop,
-          step: pipelineParameterConfig.parameters.step,
+          start: pipelineParameterConfig.parameters.cor.start,
+          stop: pipelineParameterConfig.parameters.cor.stop,
+          step: pipelineParameterConfig.parameters.cor.step,
         })
       );
     } else {
@@ -336,15 +350,32 @@ const I13180PipelineConfigurationComponent: React.FC<
         );
       case "Sweep":
         return (
-          <ParameterSweepConfiguration
-            parameters={pipelineParameterConfig.parameters}
-            setParameters={(params) =>
-              setPipelineParameterConfig({
-                ...pipelineParameterConfig,
-                parameters: params,
-              })
-            }
-          />
+          <>
+            <LoaderParameterConfiguration
+              parameters={pipelineParameterConfig.parameters.loader}
+              setParameters={(params) => {
+                setPipelineParameterConfig({
+                  ...pipelineParameterConfig,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    loader: params,
+                  },
+                });
+              }}
+            />
+            <ParameterSweepConfiguration
+              parameters={pipelineParameterConfig.parameters.cor}
+              setParameters={(params) =>
+                setPipelineParameterConfig({
+                  ...pipelineParameterConfig,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    cor: params,
+                  },
+                })
+              }
+            />
+          </>
         );
       case "Fixed":
         return (
