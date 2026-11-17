@@ -113,6 +113,11 @@ type PaganinFilterSweepParameters = Omit<
   ratioDeltaBeta: SweepParameters;
 };
 
+type I13180PipelineParameterConfig = {
+  pipelineType: PipelineType;
+  config: I13180PaganinPipelineParameterConfig | I13180PipelineParameterConfig;
+};
+
 type I13180PaganinPipelineParameterConfig =
   | {
       paganinMode: typeof PaganinMode.Fixed;
