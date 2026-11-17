@@ -51,7 +51,7 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
   const displayScanTypeConfigurationComponent = () => {
     if (scanType === ScanType[180]) {
       return (
-        <I13180AbsorptionPipelineConfigurationComponent
+        <I13180PipelineConfigurationComponent
           visitDirpath={visitDirpath}
           outputFolder={outputFolder}
           setOutputFolder={setOutputFolder}
@@ -97,6 +97,89 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
       </Stack>
       {displayScanTypeConfigurationComponent()}
     </Stack>
+  );
+};
+
+type I13180PipelineConfigurationComponentProps = {
+  visitDirpath: string;
+  outputFolder: string;
+  setOutputFolder: string;
+  setParameters: (_: object) => void;
+};
+
+const I13180PipelineConfigurationComponent: React.FC<
+  I13180PipelineConfigurationComponentProps
+> = ({ visitDirpath, outputFolder, setOutputFolder, setParameters }) => {
+  const [magnification, setMagnification] =
+    useState<(typeof Magnification)[number]>(1.25);
+  const [pipelineType, setPipelineType] = useState<PipelineType>(
+    PipelineType.Absorption
+  );
+
+  return (
+    <>
+      <Stack direction="row" spacing={2} display="flex" alignItems="center">
+        <Typography>Magnification</Typography>
+        <ToggleButtonGroup
+          exclusive
+          value={magnification}
+          aria-label="i13-magnification-toggle"
+          onChange={(
+            _: React.MouseEvent<HTMLElement>,
+            newValue: number | null
+          ) => {
+            if (newValue) {
+              if (newValue === 1.25) {
+                setMagnification(1.25);
+              } else if (newValue === 2) {
+                setMagnification(2);
+              } else if (newValue === 4) {
+                setMagnification(4);
+              } else {
+                setMagnification(10);
+              }
+            }
+          }}
+        >
+          {Magnification.map((mag) => (
+            <ToggleButton key={mag} value={mag}>{`x${mag}`}</ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Stack>
+      <Stack direction="row" spacing={2} display="flex" alignItems="center">
+        <Typography>Pipeline type</Typography>
+        <ToggleButtonGroup
+          exclusive
+          value={pipelineType}
+          aria-label="i13-pipeline-type-toggle"
+          onChange={(
+            _: React.MouseEvent<HTMLElement>,
+            newValue: string | null
+          ) => {
+            if (newValue) {
+              if (newValue === "Absorption") {
+                setPipelineType(PipelineType.Absorption);
+              } else {
+                setPipelineType(PipelineType.Paganin);
+              }
+            }
+          }}
+        >
+          {Object.keys(PipelineType).map((val) => (
+            <ToggleButton key={val} value={val}>
+              {val}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Stack>
+      <I13180AbsorptionPipelineConfigurationComponent
+        magnification={magnification}
+        visitDirpath={visitDirpath}
+        outputFolder={outputFolder}
+        setOutputFolder={setOutputFolder}
+        setParameters={setParameters}
+      />
+    </>
   );
 };
 
@@ -213,6 +296,7 @@ const generateDistortionCorrectionCoefficientsFilepath = (
 };
 
 type I13180AbsorptionPipelineConfigurationComponentProps = {
+  magnification: typeof Magnification;
   visitDirpath: string;
   outputFolder: string;
   setOutputFolder: string;
@@ -221,12 +305,13 @@ type I13180AbsorptionPipelineConfigurationComponentProps = {
 
 const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   I13180AbsorptionPipelineConfigurationComponentProps
-> = ({ visitDirpath, outputFolder, setOutputFolder, setParameters }) => {
-  const [magnification, setMagnification] =
-    useState<(typeof Magnification)[number]>(1.25);
-  const [pipelineType, setPipelineType] = useState<PipelineType>(
-    PipelineType.Absorption
-  );
+> = ({
+  magnification,
+  visitDirpath,
+  outputFolder,
+  setOutputFolder,
+  setParameters,
+}) => {
   const [pipelineParameterConfig, setPipelineParameterConfig] =
     useState<I13180AbsorptionPipelineParameterConfig>({
       centeringMode: CenteringMode.Auto,
@@ -405,7 +490,7 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
       output: visitDirpath + outputFolder,
       "httomo-outdir-name": httomoOutdirName,
     });
-  }, [magnification, pipelineType, pipelineParameterConfig, outputFolder]);
+  }, [magnification, pipelineParameterConfig, outputFolder]);
 
   const displayPipelineParameterConfigurator = () => {
     switch (pipelineParameterConfig.centeringMode) {
@@ -474,95 +559,43 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   return (
     <>
       <Stack direction="row" spacing={2} display="flex" alignItems="center">
-        <Typography>Magnification</Typography>
-        <ToggleButtonGroup
-          exclusive
-          value={magnification}
-          aria-label="i13-magnification-toggle"
-          onChange={(
-            _: React.MouseEvent<HTMLElement>,
-            newValue: number | null
-          ) => {
-            if (newValue) {
-              if (newValue === 1.25) {
-                setMagnification(1.25);
-              } else if (newValue === 2) {
-                setMagnification(2);
-              } else if (newValue === 4) {
-                setMagnification(4);
-              } else {
-                setMagnification(10);
+        <Stack direction="row" spacing={2} display="flex" alignItems="center">
+          <Typography>Centering</Typography>
+          <ToggleButtonGroup
+            exclusive
+            value={pipelineParameterConfig.centeringMode}
+            aria-label="i13-centering-mode-toggle"
+            onChange={(
+              _: React.MouseEvent<HTMLElement>,
+              newValue: string | null
+            ) => {
+              if (newValue) {
+                if (newValue === "Auto") {
+                  setPipelineParameterConfig({
+                    centeringMode: CenteringMode.Auto,
+                    parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                  });
+                } else if (newValue === "Sweep") {
+                  setPipelineParameterConfig({
+                    centeringMode: CenteringMode.Sweep,
+                    parameters: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
+                  });
+                } else {
+                  setPipelineParameterConfig({
+                    centeringMode: CenteringMode.Fixed,
+                    parameters: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                  });
+                }
               }
-            }
-          }}
-        >
-          {Magnification.map((mag) => (
-            <ToggleButton key={mag} value={mag}>{`x${mag}`}</ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </Stack>
-      <Stack direction="row" spacing={2} display="flex" alignItems="center">
-        <Typography>Pipeline type</Typography>
-        <ToggleButtonGroup
-          exclusive
-          value={pipelineType}
-          aria-label="i13-pipeline-type-toggle"
-          onChange={(
-            _: React.MouseEvent<HTMLElement>,
-            newValue: string | null
-          ) => {
-            if (newValue) {
-              if (newValue === "Absorption") {
-                setPipelineType(PipelineType.Absorption);
-              } else {
-                setPipelineType(PipelineType.Paganin);
-              }
-            }
-          }}
-        >
-          {Object.keys(PipelineType).map((val) => (
-            <ToggleButton key={val} value={val}>
-              {val}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </Stack>
-      <Stack direction="row" spacing={2} display="flex" alignItems="center">
-        <Typography>Centering</Typography>
-        <ToggleButtonGroup
-          exclusive
-          value={pipelineParameterConfig.centeringMode}
-          aria-label="i13-centering-mode-toggle"
-          onChange={(
-            _: React.MouseEvent<HTMLElement>,
-            newValue: string | null
-          ) => {
-            if (newValue) {
-              if (newValue === "Auto") {
-                setPipelineParameterConfig({
-                  centeringMode: CenteringMode.Auto,
-                  parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-                });
-              } else if (newValue === "Sweep") {
-                setPipelineParameterConfig({
-                  centeringMode: CenteringMode.Sweep,
-                  parameters: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
-                });
-              } else {
-                setPipelineParameterConfig({
-                  centeringMode: CenteringMode.Fixed,
-                  parameters: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
-                });
-              }
-            }
-          }}
-        >
-          {Object.keys(CenteringMode).map((val) => (
-            <ToggleButton key={val} value={val}>
-              {val}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
+            }}
+          >
+            {Object.keys(CenteringMode).map((val) => (
+              <ToggleButton key={val} value={val}>
+                {val}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Stack>
       </Stack>
       {displayPipelineParameterConfigurator()}
       <OutputFolderConfiguration
