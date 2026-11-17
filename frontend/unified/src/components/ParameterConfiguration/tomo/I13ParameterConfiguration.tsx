@@ -12,6 +12,7 @@ import {
   LoaderParameterConfiguration,
   MinimalLoaderPreviewParameters,
   OutputFolderConfiguration,
+  PaganinFilterParameters,
   ParameterSweepConfiguration,
   SweepParameters,
 } from "./methodComponents";
@@ -98,6 +99,53 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
     </Stack>
   );
 };
+
+const PaganinMode = {
+  Sweep: "Sweep",
+  Fixed: "Fixed",
+} as const;
+type PaganinMode = (typeof PaganinMode)[keyof typeof PaganinMode];
+
+type PaganinFilterSweepParameters = Omit<
+  PaganinFilterParameters,
+  "ratioDeltaBeta"
+> & {
+  ratioDeltaBeta: SweepParameters;
+};
+
+type I13180PaganinPipelineParameterConfig =
+  | {
+      paganinMode: typeof PaganinMode.Fixed;
+      centeringMode: typeof CenteringMode.Auto;
+      parameters: {
+        paganin: PaganinFilterParameters;
+        centering: Centering180Parameters;
+      };
+    }
+  | {
+      paganinMode: typeof PaganinMode.Sweep;
+      centeringMode: typeof CenteringMode.Auto;
+      parameters: {
+        paganin: PaganinFilterSweepParameters;
+        centering: Centering180Parameters;
+      };
+    }
+  | {
+      paganinMode: typeof PaganinMode.Fixed;
+      centeringMode: typeof CenteringMode.Fixed;
+      parameters: {
+        paganin: PaganinFilterParameters;
+        centering: { center: number };
+      };
+    }
+  | {
+      paganinMode: typeof PaganinMode.Sweep;
+      centeringMode: typeof CenteringMode.Fixed;
+      parameters: {
+        paganin: PaganinFilterSweepParameters;
+        centering: { center: number };
+      };
+    };
 
 type I13180AutoPipelineParameterConfig = {
   type: typeof CenteringMode.Auto;
