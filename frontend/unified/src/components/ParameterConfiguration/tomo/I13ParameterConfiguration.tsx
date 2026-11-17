@@ -295,13 +295,10 @@ const generateDistortionCorrectionCoefficientsFilepath = (
   return `${visitDirpath}processing/distortion_corrections/results_4thOrder/${posString}/coefficients_bwfw.txt`;
 };
 
-type I13180AbsorptionPipelineConfigurationComponentProps = {
-  magnification: typeof Magnification;
-  visitDirpath: string;
-  outputFolder: string;
-  setOutputFolder: string;
-  setParameters: (_: object) => void;
-};
+type I13180AbsorptionPipelineConfigurationComponentProps =
+  I13180PipelineConfigurationComponentProps & {
+    magnification: typeof Magnification;
+  };
 
 const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   I13180AbsorptionPipelineConfigurationComponentProps
