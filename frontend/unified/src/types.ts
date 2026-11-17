@@ -165,3 +165,11 @@ export type SelectedScans = {
   config?: SchemaConfig | null;
   scans: ScanNodeProcessed[];
 };
+
+const DataCardVariant = {
+  STANDARD: "STANDARD",
+  STACKED: "STACKED",
+  PAIRED: "PAIRED",
+} as const;
+type DataCardVariant = (typeof DataCardVariant)[keyof typeof DataCardVariant];
+export { DataCardVariant };

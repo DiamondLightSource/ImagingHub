@@ -129,7 +129,7 @@ export const ScanSelector = ({
       <Box
         sx={{
           flex: 1,
-          minHeight: 100,
+          minHeight: 170,
           display: "flex",
           flexDirection: "column",
         }}
