@@ -148,17 +148,17 @@ type I13180PaganinPipelineParameterConfig =
     };
 
 type I13180AutoPipelineParameterConfig = {
-  type: typeof CenteringMode.Auto;
+  centeringMode: typeof CenteringMode.Auto;
   parameters: Centering180Parameters;
 };
 
 type I13180SweepPipelineParameterConfig = {
-  type: typeof CenteringMode.Sweep;
+  centeringMode: typeof CenteringMode.Sweep;
   parameters: { loader: MinimalLoaderPreviewParameters; cor: SweepParameters };
 };
 
 type I13180FixedPipelineParameterConfig = {
-  type: typeof CenteringMode.Fixed;
+  centeringMode: typeof CenteringMode.Fixed;
   parameters: { cor: number };
 };
 
@@ -227,7 +227,7 @@ const I13180PipelineConfigurationComponent: React.FC<
   );
   const [pipelineParameterConfig, setPipelineParameterConfig] =
     useState<I13180AbsorptionPipelineParameterConfig>({
-      type: CenteringMode.Auto,
+      centeringMode: CenteringMode.Auto,
       parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
     });
 
@@ -278,13 +278,13 @@ const I13180PipelineConfigurationComponent: React.FC<
       },
     ];
 
-    if (pipelineParameterConfig.type === CenteringMode.Sweep) {
+    if (pipelineParameterConfig.centeringMode === CenteringMode.Sweep) {
       pipeline[0]["parameters"]["preview"] = {
         detector_y: pipelineParameterConfig.parameters.loader,
       };
     }
 
-    if (pipelineParameterConfig.type === CenteringMode.Auto) {
+    if (pipelineParameterConfig.centeringMode === CenteringMode.Auto) {
       pipeline.push({
         method: "find_center_vo",
         module_path: "httomolibgpu.recon.rotation",
@@ -340,7 +340,7 @@ const I13180PipelineConfigurationComponent: React.FC<
       };
     };
 
-    if (pipelineParameterConfig.type === CenteringMode.Auto) {
+    if (pipelineParameterConfig.centeringMode === CenteringMode.Auto) {
       pipeline.push(
         generateReconMethod("${{centering.side_outputs.centre_of_rotation}}")
       );
@@ -358,7 +358,7 @@ const I13180PipelineConfigurationComponent: React.FC<
       );
     }
 
-    if (pipelineParameterConfig.type !== CenteringMode.Sweep) {
+    if (pipelineParameterConfig.centeringMode !== CenteringMode.Sweep) {
       pipeline.push(
         {
           method: "calculate_stats",
@@ -406,14 +406,14 @@ const I13180PipelineConfigurationComponent: React.FC<
   }, [magnification, pipelineType, pipelineParameterConfig, outputFolder]);
 
   const displayPipelineParameterConfigurator = () => {
-    switch (pipelineParameterConfig.type) {
+    switch (pipelineParameterConfig.centeringMode) {
       case "Auto":
         return (
           <Centering180ParameterConfiguration
             parameters={pipelineParameterConfig.parameters}
             setParameters={(params) =>
               setPipelineParameterConfig({
-                type: CenteringMode.Auto,
+                centeringMode: CenteringMode.Auto,
                 parameters: params,
               })
             }
@@ -529,7 +529,7 @@ const I13180PipelineConfigurationComponent: React.FC<
         <Typography>Centering</Typography>
         <ToggleButtonGroup
           exclusive
-          value={pipelineParameterConfig.type}
+          value={pipelineParameterConfig.centeringMode}
           aria-label="i13-centering-mode-toggle"
           onChange={(
             _: React.MouseEvent<HTMLElement>,
@@ -538,17 +538,17 @@ const I13180PipelineConfigurationComponent: React.FC<
             if (newValue) {
               if (newValue === "Auto") {
                 setPipelineParameterConfig({
-                  type: CenteringMode.Auto,
+                  centeringMode: CenteringMode.Auto,
                   parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
                 });
               } else if (newValue === "Sweep") {
                 setPipelineParameterConfig({
-                  type: CenteringMode.Sweep,
+                  centeringMode: CenteringMode.Sweep,
                   parameters: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
                 });
               } else {
                 setPipelineParameterConfig({
-                  type: CenteringMode.Fixed,
+                  centeringMode: CenteringMode.Fixed,
                   parameters: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
                 });
               }
