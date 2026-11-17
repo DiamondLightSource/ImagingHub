@@ -15,9 +15,11 @@ import { WorkflowsViewMode } from "../../types";
 
 const WorkflowsDataFetcher = ({
   visit,
+  scanNumber,
   workflowsViewMode,
 }: {
   visit: Visit;
+  scanNumber: number | null;
   workflowsViewMode: WorkflowsViewMode;
 }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
@@ -35,6 +37,7 @@ const WorkflowsDataFetcher = ({
                 <AccordionDetails>
                   <JobsTable
                     visit={visit}
+                    scanNumber={scanNumber}
                     selectedWorkflow={selectedWorkflow}
                     setSelectedWorkflow={setSelectedWorkflow}
                   />
@@ -53,6 +56,7 @@ const WorkflowsDataFetcher = ({
             <Stack spacing={2}>
               <WorkflowsList
                 visit={visit}
+                scanNumber={scanNumber}
                 selectedWorkflow={selectedWorkflow}
                 setSelectedWorkflow={setSelectedWorkflow}
               />

@@ -9,8 +9,13 @@ export const WORKFLOWSTABLE_QUERY: TypedDocumentNode<
   WorkflowsTableQuery,
   WorkflowsTableQueryVariables
 > = gql`
-  query WorkflowsTableQuery($visit: VisitInput!, $limit: Int, $cursor: String) {
-    workflows(visit: $visit, limit: $limit, cursor: $cursor) {
+  query WorkflowsTableQuery(
+    $visit: VisitInput!
+    $limit: Int
+    $cursor: String
+    $filter: WorkflowFilter
+  ) {
+    workflows(visit: $visit, limit: $limit, cursor: $cursor, filter: $filter) {
       ...TableContentFragment @unmask
     }
   }

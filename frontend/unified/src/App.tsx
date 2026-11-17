@@ -178,6 +178,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
             <ApolloProvider client={apolloClientWorkflows}>
               <WorkflowsDataFetcher
                 visit={selectedVisit}
+                scanNumber={selectedScans.scans[0]?.scanNumber ?? null}
                 workflowsViewMode={workflowsViewMode}
               />
             </ApolloProvider>

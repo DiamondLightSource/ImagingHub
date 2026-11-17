@@ -6,15 +6,18 @@ import { WORKFLOWSTABLE_QUERY } from "../../../graphql/WorkflowDataFetcher/Workf
 import { useQuery } from "@apollo/client/react";
 import { WorkflowsListContents } from "./WorkflowsListContents";
 import { useServerSidePagination } from "../useServerSidePagination";
+import { WorkflowFilter } from "../../../../../src/__generated__/types";
 
 type WorkflowsListProps = {
   visit: Visit;
+  scanNumber: number | null;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
 };
 
 export const WorkflowsList: React.FC<WorkflowsListProps> = ({
   visit,
+  scanNumber,
   selectedWorkflow,
   setSelectedWorkflow,
 }: WorkflowsListProps) => {
@@ -32,6 +35,11 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
     visit,
     limit: selectedLimit,
     cursor,
+    filter: scanNumber
+      ? ({
+          parameters: { parameterName: "scanId", value: String(scanNumber) },
+        } as WorkflowFilter)
+      : null,
   };
 
   const { data, previousData } = useQuery(WORKFLOWSTABLE_QUERY, {
