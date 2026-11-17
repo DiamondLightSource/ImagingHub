@@ -147,25 +147,22 @@ type I13180PaganinPipelineParameterConfig =
       };
     };
 
-type I13180AutoPipelineParameterConfig = {
-  centeringMode: typeof CenteringMode.Auto;
-  parameters: Centering180Parameters;
-};
-
-type I13180SweepPipelineParameterConfig = {
-  centeringMode: typeof CenteringMode.Sweep;
-  parameters: { loader: MinimalLoaderPreviewParameters; cor: SweepParameters };
-};
-
-type I13180FixedPipelineParameterConfig = {
-  centeringMode: typeof CenteringMode.Fixed;
-  parameters: { cor: number };
-};
-
 type I13180AbsorptionPipelineParameterConfig =
-  | I13180AutoPipelineParameterConfig
-  | I13180SweepPipelineParameterConfig
-  | I13180FixedPipelineParameterConfig;
+  | {
+      centeringMode: typeof CenteringMode.Auto;
+      parameters: Centering180Parameters;
+    }
+  | {
+      centeringMode: typeof CenteringMode.Sweep;
+      parameters: {
+        loader: MinimalLoaderPreviewParameters;
+        cor: SweepParameters;
+      };
+    }
+  | {
+      centeringMode: typeof CenteringMode.Fixed;
+      parameters: { cor: number };
+    };
 
 const DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES = {
   smin: -50,
