@@ -55,7 +55,15 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
           visitDirpath={visitDirpath}
           outputFolder={outputFolder}
           setOutputFolder={setOutputFolder}
-          setParameters={setParameters}
+          setParameters={(pipelineParams) => {
+            const date = new Date();
+            const httomoOutdirName = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}_output`;
+            setParameters({
+              ...pipelineParams,
+              output: visitDirpath + outputFolder,
+              "httomo-outdir-name": httomoOutdirName,
+            });
+          }}
         />
       );
     } else {
@@ -96,20 +104,23 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
         </ToggleButtonGroup>
       </Stack>
       {displayScanTypeConfigurationComponent()}
+      <OutputFolderConfiguration
+        visitDirpath={visitDirpath}
+        outputFolder={outputFolder}
+        setOutputFolder={setOutputFolder}
+      />
     </Stack>
   );
 };
 
 type I13180PipelineConfigurationComponentProps = {
   visitDirpath: string;
-  outputFolder: string;
-  setOutputFolder: string;
   setParameters: (_: object) => void;
 };
 
 const I13180PipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps
-> = ({ visitDirpath, outputFolder, setOutputFolder, setParameters }) => {
+> = ({ visitDirpath, setParameters }) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
   const [pipelineType, setPipelineType] = useState<PipelineType>(
@@ -175,8 +186,6 @@ const I13180PipelineConfigurationComponent: React.FC<
       <I13180AbsorptionPipelineConfigurationComponent
         magnification={magnification}
         visitDirpath={visitDirpath}
-        outputFolder={outputFolder}
-        setOutputFolder={setOutputFolder}
         setParameters={setParameters}
       />
     </>
@@ -302,13 +311,7 @@ type I13180AbsorptionPipelineConfigurationComponentProps =
 
 const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   I13180AbsorptionPipelineConfigurationComponentProps
-> = ({
-  magnification,
-  visitDirpath,
-  outputFolder,
-  setOutputFolder,
-  setParameters,
-}) => {
+> = ({ magnification, visitDirpath, setParameters }) => {
   const [pipelineParameterConfig, setPipelineParameterConfig] =
     useState<I13180AbsorptionPipelineParameterConfig>({
       centeringMode: CenteringMode.Auto,
@@ -480,14 +483,10 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   };
 
   useEffect(() => {
-    const date = new Date();
-    const httomoOutdirName = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}_output`;
     setParameters({
       config: generatePipeline(),
-      output: visitDirpath + outputFolder,
-      "httomo-outdir-name": httomoOutdirName,
     });
-  }, [magnification, pipelineParameterConfig, outputFolder]);
+  }, [magnification, pipelineParameterConfig]);
 
   const displayPipelineParameterConfigurator = () => {
     switch (pipelineParameterConfig.centeringMode) {
@@ -595,11 +594,6 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
         </Stack>
       </Stack>
       {displayPipelineParameterConfigurator()}
-      <OutputFolderConfiguration
-        visitDirpath={visitDirpath}
-        outputFolder={outputFolder}
-        setOutputFolder={setOutputFolder}
-      />
     </>
   );
 };
