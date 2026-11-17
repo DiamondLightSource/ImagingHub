@@ -51,7 +51,7 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
   const displayScanTypeConfigurationComponent = () => {
     if (scanType === ScanType[180]) {
       return (
-        <I13180PipelineConfigurationComponent
+        <I13180AbsorptionPipelineConfigurationComponent
           visitDirpath={visitDirpath}
           outputFolder={outputFolder}
           setOutputFolder={setOutputFolder}
@@ -212,15 +212,15 @@ const generateDistortionCorrectionCoefficientsFilepath = (
   return `${visitDirpath}processing/distortion_corrections/results_4thOrder/${posString}/coefficients_bwfw.txt`;
 };
 
-type I13180PipelineConfigurationComponentProps = {
+type I13180AbsorptionPipelineConfigurationComponentProps = {
   visitDirpath: string;
   outputFolder: string;
   setOutputFolder: string;
   setParameters: (_: object) => void;
 };
 
-const I13180PipelineConfigurationComponent: React.FC<
-  I13180PipelineConfigurationComponentProps
+const I13180AbsorptionPipelineConfigurationComponent: React.FC<
+  I13180AbsorptionPipelineConfigurationComponentProps
 > = ({ visitDirpath, outputFolder, setOutputFolder, setParameters }) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
