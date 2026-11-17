@@ -54,6 +54,7 @@ const WorkflowsDataFetcher = ({
             <Stack spacing={2}>
               <WorkflowsList
                 visit={visit}
+                scanNumber={scanData[0]?.scanNumber ?? null}
                 selectedWorkflow={selectedWorkflow}
                 setSelectedWorkflow={setSelectedWorkflow}
               />
