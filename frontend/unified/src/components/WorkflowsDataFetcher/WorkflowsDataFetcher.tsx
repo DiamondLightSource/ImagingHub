@@ -35,6 +35,7 @@ const WorkflowsDataFetcher = ({
                 <AccordionDetails>
                   <JobsTable
                     visit={visit}
+                    scanNumber={scanData[0]?.scanNumber ?? null}
                     selectedWorkflow={selectedWorkflow}
                     setSelectedWorkflow={setSelectedWorkflow}
                   />

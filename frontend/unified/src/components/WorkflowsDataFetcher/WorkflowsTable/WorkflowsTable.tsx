@@ -5,15 +5,18 @@ import { useQuery } from "@apollo/client/react";
 import { WORKFLOWSTABLE_QUERY } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/WorkflowsTableQuery";
 import { WorkflowsTableQueryVariables } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/WorkflowsTableQuery.generated";
 import { useServerSidePagination } from "../useServerSidePagination";
+import { WorkflowFilter } from "../../../../../src/__generated__/types";
 
 const WorkflowsTable = ({
   visit,
   setSelectedWorkflow,
   selectedWorkflow,
+  scanNumber,
 }: {
   visit: Visit;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
+  scanNumber: number | null;
 }) => {
   const {
     cursor,
@@ -29,6 +32,11 @@ const WorkflowsTable = ({
     visit,
     limit: selectedLimit,
     cursor,
+    filter: scanNumber
+      ? ({
+          parameters: { parameterName: "scanId", value: String(scanNumber) },
+        } as WorkflowFilter)
+      : null,
   };
 
   const { data, previousData } = useQuery(WORKFLOWSTABLE_QUERY, {
