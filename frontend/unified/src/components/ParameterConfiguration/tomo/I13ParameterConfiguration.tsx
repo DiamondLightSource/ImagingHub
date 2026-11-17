@@ -162,7 +162,7 @@ type I13180FixedPipelineParameterConfig = {
   parameters: { cor: number };
 };
 
-type I13180PipelineParameters =
+type I13180AbsorptionPipelineParameterConfig =
   | I13180AutoPipelineParameterConfig
   | I13180SweepPipelineParameterConfig
   | I13180FixedPipelineParameterConfig;
@@ -226,7 +226,7 @@ const I13180PipelineConfigurationComponent: React.FC<
     PipelineType.Absorption
   );
   const [pipelineParameterConfig, setPipelineParameterConfig] =
-    useState<I13180PipelineParameters>({
+    useState<I13180AbsorptionPipelineParameterConfig>({
       type: CenteringMode.Auto,
       parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
     });
