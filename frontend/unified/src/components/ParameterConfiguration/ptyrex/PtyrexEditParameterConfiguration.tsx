@@ -173,7 +173,7 @@ export const PtyrexEditParameterConfiguration = ({
           min={8}
         />
       </Box>
-      <Stack direction="row" spacing={1} alignItems="centre">
+      <Stack direction="row" spacing={1} alignItems="center">
         <Typography>Load a Probe from a Previous Reconstruction</Typography>
         <Checkbox checked={loadProbe} onChange={handleCheckBoxProbe} />
       </Stack>
