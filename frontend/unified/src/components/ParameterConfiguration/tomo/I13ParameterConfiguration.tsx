@@ -261,12 +261,12 @@ type I13180AbsorptionPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Sweep;
       parameters: {
         loader: MinimalLoaderPreviewParameters;
-        cor: SweepParameters;
+        center: SweepParameters;
       };
     }
   | {
       centeringMode: typeof CenteringMode.Fixed;
-      parameters: { cor: number };
+      parameters: { center: number };
     };
 
 const DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES = {
@@ -279,7 +279,7 @@ const DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES = {
     start: 589,
     stop: 599,
   },
-  cor: {
+  center: {
     start: 1180,
     stop: 1380,
     step: 2.0,
@@ -287,7 +287,7 @@ const DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES = {
 };
 
 const DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES = {
-  cor: 1280,
+  center: 1280,
 };
 
 const generateDistortionCorrectionCoefficientsFilepath = (
@@ -420,12 +420,12 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
 
     // TODO: handle paganin pipeline type case
 
-    const generateReconMethod = (cor: number | string | SweepParameters) => {
+    const generateReconMethod = (center: number | string | SweepParameters) => {
       return {
         method: "FBP3d_tomobar",
         module_path: "httomolibgpu.recon.algorithm",
         parameters: {
-          center: cor,
+          center: center,
           detector_pad: false,
           filter_freq_cutoff: 0.35,
           recon_size: null,
@@ -442,14 +442,14 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
     } else if (pipelineParameterConfig.type === CenteringMode.Sweep) {
       pipeline.push(
         generateReconMethod({
-          start: pipelineParameterConfig.parameters.cor.start,
-          stop: pipelineParameterConfig.parameters.cor.stop,
-          step: pipelineParameterConfig.parameters.cor.step,
+          start: pipelineParameterConfig.parameters.center.start,
+          stop: pipelineParameterConfig.parameters.center.stop,
+          step: pipelineParameterConfig.parameters.center.step,
         })
       );
     } else {
       pipeline.push(
-        generateReconMethod(pipelineParameterConfig.parameters.cor)
+        generateReconMethod(pipelineParameterConfig.parameters.center)
       );
     }
 
@@ -526,13 +526,13 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
               }}
             />
             <ParameterSweepConfiguration
-              parameters={pipelineParameterConfig.parameters.cor}
+              parameters={pipelineParameterConfig.parameters.center}
               setParameters={(params) =>
                 setPipelineParameterConfig({
                   ...pipelineParameterConfig,
                   parameters: {
                     ...pipelineParameterConfig.parameters,
-                    cor: params,
+                    center: params,
                   },
                 })
               }
@@ -544,14 +544,14 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
           <TextField
             variant="outlined"
             size="small"
-            value={pipelineParameterConfig.parameters.cor}
+            value={pipelineParameterConfig.parameters.center}
             label="centre of rotation"
             type="number"
             onChange={(e) =>
               setPipelineParameterConfig({
                 ...pipelineParameterConfig,
                 parameters: {
-                  cor: Number(e.target.value),
+                  center: Number(e.target.value),
                 },
               })
             }
@@ -717,9 +717,7 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
                   paganinMode: pipelineParameterConfig.paganinMode,
                   parameters: {
                     ...pipelineParameterConfig.parameters,
-                    recon: {
-                      center: 500,
-                    },
+                    recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
                   },
                 });
               }
