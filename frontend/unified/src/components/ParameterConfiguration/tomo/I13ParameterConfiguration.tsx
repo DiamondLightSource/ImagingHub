@@ -183,11 +183,19 @@ const I13180PipelineConfigurationComponent: React.FC<
           ))}
         </ToggleButtonGroup>
       </Stack>
-      <I13180AbsorptionPipelineConfigurationComponent
-        magnification={magnification}
-        visitDirpath={visitDirpath}
-        setParameters={setParameters}
-      />
+      {pipelineType === PipelineType.Absorption ? (
+        <I13180AbsorptionPipelineConfigurationComponent
+          magnification={magnification}
+          visitDirpath={visitDirpath}
+          setParameters={setParameters}
+        />
+      ) : (
+        <I13180PaganinPipelineConfigurationComponent
+          magnification={magnification}
+          visitDirpath={visitDirpath}
+          setParameters={setParameters}
+        />
+      )}
     </>
   );
 };
@@ -594,6 +602,139 @@ const I13180AbsorptionPipelineConfigurationComponent: React.FC<
         </Stack>
       </Stack>
       {displayPipelineParameterConfigurator()}
+    </>
+  );
+};
+
+const getDefaultPaganin180FixedParameterValues = (
+  magnification: (typeof Magnification)[number]
+) => {
+  return {
+    ratioDeltaBeta: 100,
+    pixelSize: 3.25 / magnification,
+    distance: 0.1,
+    energy: 27.0,
+  };
+};
+
+const getDefaultPaganin180SweepParameterValues = (
+  magnification: (typeof Magnification)[number]
+) => {
+  return {
+    ratioDeltaBeta: {
+      start: 1,
+      stop: 1000,
+      step: 10,
+    },
+    pixelSize: 3.25 / magnification,
+    distance: 0.1,
+    energy: 27.0,
+  };
+};
+
+const I13180PaganinPipelineConfigurationComponent: React.FC<
+  I13180AbsorptionPipelineConfigurationComponentProps
+> = ({ magnification }) => {
+  const [pipelineParameterConfig, setPipelineParameterConfig] =
+    useState<I13180PaganinPipelineParameterConfig>({
+      centeringMode: CenteringMode.Auto,
+      paganinMode: PaganinMode.Fixed,
+      parameters: {
+        centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+        paganin: getDefaultPaganin180FixedParameterValues(magnification),
+      },
+    });
+
+  return (
+    <>
+      <Stack direction="row" spacing={2} display="flex" alignItems="center">
+        <Stack direction="row" spacing={2} display="flex" alignItems="center">
+          <Typography>Paganin filter</Typography>
+          <ToggleButtonGroup
+            exclusive
+            value={pipelineParameterConfig.paganinMode}
+            aria-label="i13-180-paganin-centering-mode-toggle"
+            onChange={(
+              _: React.MouseEvent<HTMLElement>,
+              newValue: string | null
+            ) => {
+              if (newValue) {
+                if (newValue === "Fixed") {
+                  setPipelineParameterConfig({
+                    centeringMode: pipelineParameterConfig.centeringMode,
+                    paganinMode: PaganinMode.Fixed,
+                    parameters: {
+                      ...pipelineParameterConfig.parameters,
+                      paganin:
+                        getDefaultPaganin180FixedParameterValues(magnification),
+                    },
+                  });
+                } else {
+                  setPipelineParameterConfig({
+                    centeringMode: pipelineParameterConfig.centeringMode,
+                    paganinMode: PaganinMode.Sweep,
+                    parameters: {
+                      ...pipelineParameterConfig.parameters,
+                      paganin:
+                        getDefaultPaganin180SweepParameterValues(magnification),
+                    },
+                  });
+                }
+              }
+            }}
+          >
+            {Object.keys(PaganinMode).map((val) => (
+              <ToggleButton key={val} value={val}>
+                {val}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Stack>
+      </Stack>
+      <Stack direction="row" spacing={2} display="flex" alignItems="center">
+        <Typography>Centering</Typography>
+        <ToggleButtonGroup
+          exclusive
+          value={pipelineParameterConfig.centeringMode}
+          aria-label="i13-180-paganin-centering-mode-toggle"
+          onChange={(
+            _: React.MouseEvent<HTMLElement>,
+            newValue: string | null
+          ) => {
+            if (newValue) {
+              if (newValue === "Auto") {
+                setPipelineParameterConfig({
+                  centeringMode: CenteringMode.Auto,
+                  paganinMode: pipelineParameterConfig.paganinMode,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                  },
+                });
+              } else {
+                setPipelineParameterConfig({
+                  centeringMode: CenteringMode.Fixed,
+                  paganinMode: pipelineParameterConfig.paganinMode,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    recon: {
+                      center: 500,
+                    },
+                  },
+                });
+              }
+            }
+          }}
+        >
+          {Object.keys(CenteringMode)
+            .filter((mode) => mode !== CenteringMode.Sweep)
+            .map((val) => (
+              <ToggleButton key={val} value={val}>
+                {val}
+              </ToggleButton>
+            ))}
+        </ToggleButtonGroup>
+      </Stack>
     </>
   );
 };
