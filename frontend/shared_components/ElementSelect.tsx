@@ -23,7 +23,7 @@ const ElementSelect = ({
 }: ElementSelectProps) => {
   return (
     <Stack spacing={0} sx={{ mt: "0px !important" }}>
-      {title && <FieldLabel title={title} info={info} />}
+      {title && <FieldLabel label={title} desc={info} />}
       <Stack direction="row" spacing={1} alignItems="center">
         <OptionPanel
           useGrid

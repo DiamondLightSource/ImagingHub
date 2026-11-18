@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-
+import CheckboxField from "./../base/CheckboxField";
 import ElementField from "./../base/ElementField";
 import LayoutCard from "./../base/LayoutCard";
 import MultiScanField from "./../base/MultiScanField";
@@ -28,22 +26,7 @@ export const XanesAutoprocessingParameterConfiguration = (
   return (
     <LayoutCard>
       <MultiScanField {...props} />
-      <FormControlLabel
-        label="Normalise"
-        control={
-          <Checkbox
-            checked={Boolean(data.normalise)}
-            onChange={(e) => {
-              setData((prev) => ({ ...prev, normalise: e.target.checked }));
-              setParameters((prev) => ({
-                ...prev,
-                normalise: e.target.checked,
-              }));
-            }}
-            sx={{ p: 0.5 }}
-          />
-        }
-      />
+      <CheckboxField {...props} label="Normalise" parameterName="normalise" />
       <ElementField
         {...props}
         title="Edge Element"
@@ -57,8 +40,8 @@ export const XanesAutoprocessingParameterConfiguration = (
         parameterNames={["elementToAlign", "transitionToAlign"]}
       />
       <OptionToggle
-        title="Method"
-        info="The method to use for alignment"
+        label="Method"
+        desc="The method to use for alignment"
         value={data.method}
         options={methodOptions}
         onChange={(_, newValue) => {
