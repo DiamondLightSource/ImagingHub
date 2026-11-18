@@ -9,22 +9,23 @@ import { WORKFLOWDATAVIEWER_QUERY } from "../../graphql/WorkflowDataFetcher/Work
 
 const WorkflowDataViewer = ({
   visit,
-  selectedWorkflow,
+  selectedWorkflowId,
+  selectedWorkflowName,
 }: {
   visit: Visit;
-  selectedWorkflow: string;
+  selectedWorkflowId: string;
+  selectedWorkflowName: string;
 }) => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { data, error } = useSuspenseQuery(WORKFLOWDATAVIEWER_QUERY, {
     variables: {
-      visit: visit,
-      name: selectedWorkflow,
+      id: selectedWorkflowId,
     },
   });
 
   if (!data) return <>No data</>;
   if (error) return <>Error: {error.message}</>;
-  if (!data.workflow) return <>No workflow data</>;
+  if (!data.workflowById) return <>No workflow data</>;
 
   return (
     <Box flexGrow={2}>
@@ -38,19 +39,18 @@ const WorkflowDataViewer = ({
       </Tabs>
       <>
         <TabContent index={1} selectedIndex={tabIndex}>
-          <InspectLogMeta queryData={data.workflow} />
+          <InspectLogMeta queryData={data.workflowById} />
           <LogStreamer
             visit={visit}
-            selectedWorkflow={selectedWorkflow}
-            queryData={data.workflow}
+            selectedWorkflowName={selectedWorkflowName}
+            queryData={data.workflowById}
           />
         </TabContent>
 
         <TabContent index={0} selectedIndex={tabIndex}>
           <Plot
-            workflowName={selectedWorkflow}
-            visit={visit}
-            queryData={data.workflow}
+            workflowName={selectedWorkflowName}
+            queryData={data.workflowById}
           />
         </TabContent>
       </>

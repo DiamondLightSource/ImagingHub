@@ -12,15 +12,18 @@ import {
 } from "@mui/material";
 import { WorkflowEntryWrapper } from "./WorkflowEntryWrapper";
 import { useEffect } from "react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 type WorkflowsListContentsProps = {
   queryData: TableContentFragment;
+  visit: Visit;
   currentPage: number;
   setCurrentPage: (newPage: number) => void;
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
   updatePageInfo: (hasNextPage: boolean, endCursor: string | null) => void;
   onPageChange: (
     page: number,
@@ -39,12 +42,14 @@ interface TablePaginationActionProps {
 
 export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   queryData,
+  visit,
   currentPage,
   setCurrentPage,
   selectedLimit,
   setSelectedLimit,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
   updatePageInfo,
   onPageChange,
 }: WorkflowsListContentsProps) => {
@@ -120,8 +125,10 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
           <WorkflowEntryWrapper
             key={workflow.name}
             queryData={workflow}
-            selectedWorkflow={selectedWorkflow}
-            setSelectedWorkflow={setSelectedWorkflow}
+            visit={visit}
+            selectedWorkflowId={selectedWorkflowId}
+            setSelectedWorkflowId={setSelectedWorkflowId}
+            setSelectedWorkflowName={setSelectedWorkflowName}
           />
         ))}
       </Stack>

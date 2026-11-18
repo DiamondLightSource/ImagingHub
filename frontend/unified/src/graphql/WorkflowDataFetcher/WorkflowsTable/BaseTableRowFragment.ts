@@ -4,6 +4,7 @@ import { BaseTableRowFragment } from "./__generated__/BaseTableRowFragment.gener
 export const BASETABLEROW_FRAGMENT: TypedDocumentNode<BaseTableRowFragment> = gql`
   fragment BaseTableRowFragment on Workflow {
     name
+    id
     parameters
     status {
       __typename

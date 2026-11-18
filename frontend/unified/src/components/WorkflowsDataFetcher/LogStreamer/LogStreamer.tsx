@@ -18,11 +18,11 @@ import LogStreamContent from "./LogStreamContent";
 
 const LogStreamer = ({
   visit,
-  selectedWorkflow,
+  selectedWorkflowName,
   queryData,
 }: {
   visit: Visit;
-  selectedWorkflow: string;
+  selectedWorkflowName: string;
   queryData: LogStreamerFragment;
 }) => {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -70,9 +70,9 @@ const LogStreamer = ({
 
       <LogStreamContent
         visit={visit}
-        workflowName={selectedWorkflow}
+        workflowName={selectedWorkflowName}
         taskId={selectedTaskId}
-        key={`${selectedWorkflow}-${selectedTaskId}`}
+        key={`${selectedWorkflowName}-${selectedTaskId}`}
       />
     </Stack>
   );

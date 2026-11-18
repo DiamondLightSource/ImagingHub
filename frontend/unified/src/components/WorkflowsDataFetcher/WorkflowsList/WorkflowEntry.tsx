@@ -5,13 +5,15 @@ import { getWorkflowStatusIcon } from "../WorkflowsTable/StatusIcons";
 type WorkflowEntryProps = {
   workflow: TableContentFragment["nodes"][0];
   isSelected: boolean;
-  setSelectedWorkflow: (_: string | null) => void;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 };
 
 export const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
   workflow,
   isSelected,
-  setSelectedWorkflow,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: WorkflowEntryProps) => {
   const createTimeInfoString = () => {
     if (workflow.status?.__typename === "WorkflowRunningStatus") {
@@ -36,11 +38,15 @@ export const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
 
   return (
     <div
-      onClick={() =>
-        isSelected
-          ? setSelectedWorkflow(null)
-          : setSelectedWorkflow(workflow.name)
-      }
+      onClick={() => {
+        if (isSelected) {
+          setSelectedWorkflowId(null);
+          setSelectedWorkflowName(null);
+        } else {
+          setSelectedWorkflowId(workflow.id);
+          setSelectedWorkflowName(workflow.name);
+        }
+      }}
     >
       <Box
         className={

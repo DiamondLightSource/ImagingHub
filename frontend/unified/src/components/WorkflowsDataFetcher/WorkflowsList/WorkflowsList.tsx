@@ -9,14 +9,16 @@ import { useServerSidePagination } from "../useServerSidePagination";
 
 type WorkflowsListProps = {
   visit: Visit;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 };
 
 export const WorkflowsList: React.FC<WorkflowsListProps> = ({
   visit,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: WorkflowsListProps) => {
   const {
     cursor,
@@ -48,12 +50,14 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
         {workflows && (
           <WorkflowsListContents
             queryData={workflows}
+            visit={visit}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             selectedLimit={selectedLimit}
             setSelectedLimit={changeLimit}
-            setSelectedWorkflow={setSelectedWorkflow}
-            selectedWorkflow={selectedWorkflow}
+            selectedWorkflowId={selectedWorkflowId}
+            setSelectedWorkflowId={setSelectedWorkflowId}
+            setSelectedWorkflowName={setSelectedWorkflowName}
             updatePageInfo={updatePageInfo}
             onPageChange={goToPage}
           />
