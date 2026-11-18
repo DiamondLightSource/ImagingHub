@@ -8,12 +8,14 @@ import { useServerSidePagination } from "../useServerSidePagination";
 
 const WorkflowsTable = ({
   visit,
-  setSelectedWorkflow,
-  selectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: {
   visit: Visit;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 }) => {
   const {
     cursor,
@@ -44,12 +46,14 @@ const WorkflowsTable = ({
       {workflows && (
         <TableContent
           queryData={workflows}
+          visit={visit}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           selectedLimit={selectedLimit}
           setSelectedLimit={changeLimit}
-          setSelectedWorkflow={setSelectedWorkflow}
-          selectedWorkflow={selectedWorkflow}
+          selectedWorkflowId={selectedWorkflowId}
+          setSelectedWorkflowId={setSelectedWorkflowId}
+          setSelectedWorkflowName={setSelectedWorkflowName}
           updatePageInfo={updatePageInfo}
           onPageChange={goToPage}
         />

@@ -5,17 +5,22 @@ import { TABLEROWWRAPPER_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/W
 import { finishedStatuses } from "../WorkflowsTable/utils/utils";
 import { WorkflowEntry } from "./WorkflowEntry";
 import { LiveWorkflowEntry } from "./LiveWorkflowEntry";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 type WorkflowEntryWrapperProps = {
   queryData: TableRowWrapperFragment;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  visit: Visit;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 };
 
 export const WorkflowEntryWrapper = ({
   queryData,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  visit,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: WorkflowEntryWrapperProps) => {
   const [isNull, setIsNull] = useState<boolean>(false);
   const { complete, data } = useFragment({
@@ -41,16 +46,18 @@ export const WorkflowEntryWrapper = ({
   return finished || isNull ? (
     <WorkflowEntry
       workflow={data}
-      isSelected={selectedWorkflow === queryData.name}
-      setSelectedWorkflow={setSelectedWorkflow}
+      isSelected={selectedWorkflowId === queryData.id}
+      setSelectedWorkflowId={setSelectedWorkflowId}
+      setSelectedWorkflowName={setSelectedWorkflowName}
     />
   ) : (
     <LiveWorkflowEntry
-      visit={data.visit}
+      visit={visit}
       workflowName={data.name}
       onNullSubscriptionData={onNullSubscriptionData}
-      selectedWorkflow={selectedWorkflow}
-      setSelectedWorkflow={setSelectedWorkflow}
+      selectedWorkflowId={selectedWorkflowId}
+      setSelectedWorkflowId={setSelectedWorkflowId}
+      setSelectedWorkflowName={setSelectedWorkflowName}
     />
   );
 };
