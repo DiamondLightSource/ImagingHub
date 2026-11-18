@@ -30,7 +30,7 @@ export const PtyrexEditParameterConfiguration = ({
   const [probePath, setProbePath] = useState<string>("");
   const [loadProbe, setLoadProbe] = useState<boolean>(false);
   const [outpath, setOutpath] = useState<string>("");
-  const [adanceMode, setAdanceMode] = useState<boolean>(false);
+  const [advanceMode, setAdvanceMode] = useState<boolean>(false);
 
   useEffect(() => {
     setParameters({
@@ -97,7 +97,7 @@ export const PtyrexEditParameterConfiguration = ({
   };
 
   const handleAdvanceMode = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAdanceMode(event.target.checked);
+    setAdvanceMode(event.target.checked);
   };
   const handleCheckBoxProbe = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoadProbe(event.target.checked);
@@ -173,8 +173,8 @@ export const PtyrexEditParameterConfiguration = ({
           min={8}
         />
       </Box>
-      <Stack direction="row" spacing={1}>
-        <Typography>Load a Probe from a Prevoius Reconstruction</Typography>
+      <Stack direction="row" spacing={1} alignItems="centre">
+        <Typography>Load a Probe from a Previous Reconstruction</Typography>
         <Checkbox checked={loadProbe} onChange={handleCheckBoxProbe} />
       </Stack>
       <TextField
@@ -182,7 +182,6 @@ export const PtyrexEditParameterConfiguration = ({
         label="Path to previous reconstruction, used to initialise the probe"
         value={probePath}
         onChange={(e) => setProbePath(e.target.value)}
-        type="number"
       />
     </Stack>
   );
@@ -268,11 +267,11 @@ export const PtyrexEditParameterConfiguration = ({
           </Box>
           <FormControlLabel
             control={
-              <Switch checked={adanceMode} onChange={handleAdvanceMode} />
+              <Switch checked={advanceMode} onChange={handleAdvanceMode} />
             }
             label="Advanced Settings"
           />
-          {adanceMode && AdvancedModeSettings}
+          {advanceMode && AdvancedModeSettings}
         </Stack>
       </Card>
     </>
