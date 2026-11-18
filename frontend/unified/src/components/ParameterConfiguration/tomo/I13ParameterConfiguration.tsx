@@ -691,6 +691,93 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
           </ToggleButtonGroup>
         </Stack>
       </Stack>
+      <Stack spacing={2} direction="row">
+        <TextField
+          variant="outlined"
+          size="small"
+          label="distance"
+          value={pipelineParameterConfig.parameters.paganin.distance}
+          type="number"
+          onChange={(e) =>
+            setPipelineParameterConfig({
+              centeringMode: pipelineParameterConfig.centeringMode,
+              paganinMode: pipelineParameterConfig.paganinMode,
+              parameters: {
+                ...pipelineParameterConfig.parameters,
+                paganin: {
+                  ...pipelineParameterConfig.parameters.paganin,
+                  distance: Number(e.target.value),
+                },
+              },
+            })
+          }
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          label="energy"
+          value={pipelineParameterConfig.parameters.paganin.energy}
+          type="number"
+          onChange={(e) =>
+            setPipelineParameterConfig({
+              centeringMode: pipelineParameterConfig.centeringMode,
+              paganinMode: pipelineParameterConfig.paganinMode,
+              parameters: {
+                ...pipelineParameterConfig.parameters,
+                paganin: {
+                  ...pipelineParameterConfig.parameters.paganin,
+                  energy: Number(e.target.value),
+                },
+              },
+            })
+          }
+        />
+        {pipelineParameterConfig.paganinMode === PaganinMode.Fixed && (
+          <TextField
+            variant="outlined"
+            size="small"
+            label="ratio_delta_beta"
+            value={pipelineParameterConfig.parameters.paganin.ratioDeltaBeta}
+            type="number"
+            onChange={(e) =>
+              setPipelineParameterConfig({
+                centeringMode: pipelineParameterConfig.centeringMode,
+                paganinMode: pipelineParameterConfig.paganinMode,
+                parameters: {
+                  ...pipelineParameterConfig.parameters,
+                  paganin: {
+                    ...pipelineParameterConfig.parameters.paganin,
+                    ratioDeltaBeta: Number(e.target.value),
+                  },
+                },
+              })
+            }
+          />
+        )}
+      </Stack>
+      {pipelineParameterConfig.paganinMode === PaganinMode.Sweep && (
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography>ratio_delta_beta</Typography>
+          <ParameterSweepConfiguration
+            parameters={
+              pipelineParameterConfig.parameters.paganin.ratioDeltaBeta
+            }
+            setParameters={(sweepParams) => {
+              setPipelineParameterConfig({
+                centeringMode: pipelineParameterConfig.centeringMode,
+                paganinMode: PaganinMode.Sweep,
+                parameters: {
+                  ...pipelineParameterConfig.parameters,
+                  paganin: {
+                    ...pipelineParameterConfig.parameters.paganin,
+                    ratioDeltaBeta: sweepParams,
+                  },
+                },
+              });
+            }}
+          />
+        </Stack>
+      )}
       <Stack direction="row" spacing={2} display="flex" alignItems="center">
         <Typography>Centering</Typography>
         <ToggleButtonGroup
