@@ -6,7 +6,7 @@ export function useServerSidePagination(initialLimit = 5) {
   const [cursorHistory, setCursorHistory] = useState<{
     [page: number]: string | null;
   }>({ 1: null });
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedLimit, setSelectedLimit] = useState(initialLimit);
 
