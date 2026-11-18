@@ -231,6 +231,7 @@ type I13180PaganinPipelineParameterConfig =
       paganinMode: typeof PaganinMode.Sweep;
       centeringMode: typeof CenteringMode.Auto;
       parameters: {
+        loader: MinimalLoaderPreviewParameters;
         paganin: PaganinFilterSweepParameters;
         centering: Centering180Parameters;
       };
@@ -247,6 +248,7 @@ type I13180PaganinPipelineParameterConfig =
       paganinMode: typeof PaganinMode.Sweep;
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
+        loader: MinimalLoaderPreviewParameters;
         paganin: PaganinFilterSweepParameters;
         recon: { center: number };
       };
@@ -675,6 +677,8 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
                     paganinMode: PaganinMode.Sweep,
                     parameters: {
                       ...pipelineParameterConfig.parameters,
+                      // TODO: deduplicate this information that is hardcoded elsewhere
+                      loader: { start: 589, stop: 599 },
                       paganin:
                         getDefaultPaganin180SweepParameterValues(magnification),
                     },
@@ -692,27 +696,44 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
         </Stack>
       </Stack>
       {pipelineParameterConfig.paganinMode === PaganinMode.Sweep && (
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography>ratio_delta_beta</Typography>
-          <ParameterSweepConfiguration
-            parameters={
-              pipelineParameterConfig.parameters.paganin.ratioDeltaBeta
-            }
-            setParameters={(sweepParams) => {
-              setPipelineParameterConfig({
-                centeringMode: pipelineParameterConfig.centeringMode,
-                paganinMode: PaganinMode.Sweep,
-                parameters: {
-                  ...pipelineParameterConfig.parameters,
-                  paganin: {
-                    ...pipelineParameterConfig.parameters.paganin,
-                    ratioDeltaBeta: sweepParams,
+        <>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography>Loader / detector Y</Typography>
+            <LoaderParameterConfiguration
+              parameters={pipelineParameterConfig.parameters.loader}
+              setParameters={(params) => {
+                setPipelineParameterConfig({
+                  ...pipelineParameterConfig,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    loader: params,
                   },
-                },
-              });
-            }}
-          />
-        </Stack>
+                });
+              }}
+            />
+          </Stack>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography>ratio_delta_beta</Typography>
+            <ParameterSweepConfiguration
+              parameters={
+                pipelineParameterConfig.parameters.paganin.ratioDeltaBeta
+              }
+              setParameters={(sweepParams) => {
+                setPipelineParameterConfig({
+                  centeringMode: pipelineParameterConfig.centeringMode,
+                  paganinMode: PaganinMode.Sweep,
+                  parameters: {
+                    ...pipelineParameterConfig.parameters,
+                    paganin: {
+                      ...pipelineParameterConfig.parameters.paganin,
+                      ratioDeltaBeta: sweepParams,
+                    },
+                  },
+                });
+              }}
+            />
+          </Stack>
+        </>
       )}
       {pipelineParameterConfig.paganinMode === PaganinMode.Fixed && (
         <TextField
