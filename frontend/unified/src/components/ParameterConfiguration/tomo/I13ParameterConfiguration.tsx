@@ -820,6 +820,43 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
             ))}
         </ToggleButtonGroup>
       </Stack>
+      {pipelineParameterConfig.centeringMode === CenteringMode.Auto && (
+        <Centering180ParameterConfiguration
+          parameters={pipelineParameterConfig.parameters.centering}
+          setParameters={(params) =>
+            setPipelineParameterConfig({
+              centeringMode: CenteringMode.Auto,
+              paganinMode: pipelineParameterConfig.paganinMode,
+              parameters: {
+                ...pipelineParameterConfig.parameters,
+                centering: params,
+              },
+            })
+          }
+        />
+      )}
+
+      {pipelineParameterConfig.centeringMode === CenteringMode.Fixed && (
+        <TextField
+          variant="outlined"
+          size="small"
+          value={pipelineParameterConfig.parameters.recon.center}
+          label="centre of rotation"
+          type="number"
+          onChange={(e) =>
+            setPipelineParameterConfig({
+              paganinMode: pipelineParameterConfig.paganinMode,
+              centeringMode: CenteringMode.Fixed,
+              parameters: {
+                ...pipelineParameterConfig.parameters,
+                recon: {
+                  center: Number(e.target.value),
+                },
+              },
+            })
+          }
+        />
+      )}
     </>
   );
 };
