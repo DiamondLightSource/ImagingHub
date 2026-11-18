@@ -9,7 +9,6 @@ import ListPagination from "./ListPagination";
 type WorkflowsListContentsProps = {
   queryData: TableContentFragment;
   currentPage: number;
-  setCurrentPage: (newPage: number) => void;
   totalPages: number;
   selectedWorkflow: string | null;
   setSelectedWorkflow: (_: string | null) => void;
@@ -24,7 +23,6 @@ type WorkflowsListContentsProps = {
 export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   queryData,
   currentPage,
-  setCurrentPage,
   totalPages,
   selectedWorkflow,
   setSelectedWorkflow,

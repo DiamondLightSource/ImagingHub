@@ -21,7 +21,6 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
   const {
     cursor,
     currentPage,
-    setCurrentPage,
     totalPages,
     selectedLimit,
     goToPage,
@@ -49,7 +48,6 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
           <WorkflowsListContents
             queryData={workflows}
             currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
             totalPages={totalPages}
             setSelectedWorkflow={setSelectedWorkflow}
             selectedWorkflow={selectedWorkflow}
