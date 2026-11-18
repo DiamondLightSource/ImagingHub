@@ -232,7 +232,7 @@ type I13180PaganinPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
         paganin: PaganinFilterParameters;
-        centering: { center: number };
+        recon: { center: number };
       };
     }
   | {
@@ -240,7 +240,7 @@ type I13180PaganinPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
         paganin: PaganinFilterSweepParameters;
-        centering: { center: number };
+        recon: { center: number };
       };
     };
 
