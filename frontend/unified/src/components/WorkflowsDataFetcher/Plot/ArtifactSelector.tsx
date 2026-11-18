@@ -18,7 +18,7 @@ type ArtifactSelectorProps = {
   queryData: ArtifactSelectorFragment;
 };
 
-const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff"];
+const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff", "image/png"];
 
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   setArtifact,
