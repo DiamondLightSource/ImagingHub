@@ -732,28 +732,6 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
             })
           }
         />
-        {pipelineParameterConfig.paganinMode === PaganinMode.Fixed && (
-          <TextField
-            variant="outlined"
-            size="small"
-            label="ratio_delta_beta"
-            value={pipelineParameterConfig.parameters.paganin.ratioDeltaBeta}
-            type="number"
-            onChange={(e) =>
-              setPipelineParameterConfig({
-                centeringMode: pipelineParameterConfig.centeringMode,
-                paganinMode: pipelineParameterConfig.paganinMode,
-                parameters: {
-                  ...pipelineParameterConfig.parameters,
-                  paganin: {
-                    ...pipelineParameterConfig.parameters.paganin,
-                    ratioDeltaBeta: Number(e.target.value),
-                  },
-                },
-              })
-            }
-          />
-        )}
       </Stack>
       {pipelineParameterConfig.paganinMode === PaganinMode.Sweep && (
         <Stack direction="row" spacing={2} alignItems="center">
@@ -777,6 +755,28 @@ const I13180PaganinPipelineConfigurationComponent: React.FC<
             }}
           />
         </Stack>
+      )}
+      {pipelineParameterConfig.paganinMode === PaganinMode.Fixed && (
+        <TextField
+          variant="outlined"
+          size="small"
+          label="ratio_delta_beta"
+          value={pipelineParameterConfig.parameters.paganin.ratioDeltaBeta}
+          type="number"
+          onChange={(e) =>
+            setPipelineParameterConfig({
+              centeringMode: pipelineParameterConfig.centeringMode,
+              paganinMode: pipelineParameterConfig.paganinMode,
+              parameters: {
+                ...pipelineParameterConfig.parameters,
+                paganin: {
+                  ...pipelineParameterConfig.parameters.paganin,
+                  ratioDeltaBeta: Number(e.target.value),
+                },
+              },
+            })
+          }
+        />
       )}
       <Stack direction="row" spacing={2} display="flex" alignItems="center">
         <Typography>Centering</Typography>
