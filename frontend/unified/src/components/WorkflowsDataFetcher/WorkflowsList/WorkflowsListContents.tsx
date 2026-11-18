@@ -1,10 +1,9 @@
 import { useFragment } from "@apollo/client/react";
 import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
 import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import { Box, Pagination, Paper, Stack, Typography } from "@mui/material";
 import { WorkflowEntryWrapper } from "./WorkflowEntryWrapper";
 import { useEffect } from "react";
-import ListPagination from "./ListPagination";
 
 type WorkflowsListContentsProps = {
   queryData: TableContentFragment;
@@ -64,10 +63,15 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
         ))}
       </Stack>
       <Box display="inline-flex" width="100%" justifyContent="center">
-        <ListPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(_, page) =>
+            onPageChange(page, pageInfo?.endCursor, pageInfo?.hasNextPage)
+          }
+          showFirstButton
+          siblingCount={1}
+          boundaryCount={0}
         />
       </Box>
     </Paper>
