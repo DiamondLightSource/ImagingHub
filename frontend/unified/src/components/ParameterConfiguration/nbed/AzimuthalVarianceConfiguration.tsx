@@ -20,11 +20,11 @@ export const AzimuthalVarianceConfiguration = ({
   const [timeStamp, setTimeStamp] = useState<string>("");
   const [calibPath, setCalibPath] = useState<string>("");
   const [maskPath, setMaskPath] = useState<string>("");
-  const [cropQ, setCropQ] = useState<string>("0");
-  const [binning, setBinning] = useState<string>("1");
-  const [hotPixelThrshold, setHotPixelThrshold] = useState<string>("0.1");
-  const [braggDiskMin, setBraggDiskMin] = useState<string>("0.25");
-  const [azimuthalBins, setAzimuthalBins] = useState<string>("360");
+  const [cropQ, setCropQ] = useState<number>(0);
+  const [binning, setBinning] = useState<number>(1);
+  const [hotPixelThrshold, setHotPixelThrshold] = useState<number>(0.1);
+  const [braggDiskMin, setBraggDiskMin] = useState<number>(0.25);
+  const [azimuthalBins, setAzimuthalBins] = useState<number>(360);
 
   const [methodsIndex, setMethodsIndex] = useState(0);
   const originMethods = ["bragg", "com"];
@@ -129,31 +129,31 @@ export const AzimuthalVarianceConfiguration = ({
           <TextField
             label={"Diffraction crop half width in pixels (0 = no crop)"}
             value={cropQ}
-            onChange={(e) => setCropQ(e.target.value)}
+            onChange={(e) => setCropQ(Number(e.target.value))}
             type="number"
           />
           <TextField
             label={"Real space binning"}
             value={binning}
-            onChange={(e) => setBinning(e.target.value)}
+            onChange={(e) => setBinning(Number(e.target.value))}
             type="number"
           />
           <TextField
             label={"Hot pixel thresholding value"}
             value={hotPixelThrshold}
-            onChange={(e) => setHotPixelThrshold(e.target.value)}
+            onChange={(e) => setHotPixelThrshold(Number(e.target.value))}
             type="number"
           />
           <TextField
             label={"Bragg disk minimum absolute intensity"}
             value={braggDiskMin}
-            onChange={(e) => setBraggDiskMin(e.target.value)}
+            onChange={(e) => setBraggDiskMin(Number(e.target.value))}
             type="number"
           />
           <TextField
             label={"Number of azimuthal bins"}
             value={azimuthalBins}
-            onChange={(e) => setAzimuthalBins(e.target.value)}
+            onChange={(e) => setAzimuthalBins(Number(e.target.value))}
             type="number"
           />
         </Stack>
