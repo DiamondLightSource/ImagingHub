@@ -1,9 +1,5 @@
 import React, { FC } from "react";
-import {
-  Card,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Card, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TemplateComponentProps } from "../../../types";
 

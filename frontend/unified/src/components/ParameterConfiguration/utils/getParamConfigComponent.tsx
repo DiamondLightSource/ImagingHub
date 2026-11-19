@@ -2,9 +2,9 @@ import { ReactElement, Suspense } from "react";
 import { Technique } from "../../../types";
 import { DpcParameterConfiguration } from "../dpc/DpcParameterConfiguration";
 import { MibParameterConfiguration } from "../mib/MibParameterConfiguration";
-import { MibCompleteParameterConfiguration } from  "../mib/MibCompleteParameterConfiguration.tsx"
-import { VirtualImageConfiguration } from "../mib/VirtualImageParameterConfiguration"
-import { AzimuthalVarianceConfiguration } from "../nbed/AzimuthalVarianceConfiguration"
+import { MibCompleteParameterConfiguration } from "../mib/MibCompleteParameterConfiguration.tsx";
+import { VirtualImageConfiguration } from "../mib/VirtualImageParameterConfiguration";
+import { AzimuthalVarianceConfiguration } from "../nbed/AzimuthalVarianceConfiguration";
 import PtypyI08ParameterConfiguration from "../ptypy/PtypyI08ParameterConfiguration";
 import PtypyP99ParameterConfiguration from "../ptypy/PtypyP99ParameterConfiguration";
 import { PtyrexParameterConfiguration } from "../ptyrex/PtyrexParameterConfiguration";
@@ -44,21 +44,22 @@ export const getParamConfigComponent = (
     },
     [Technique.Nbed]: {
       "nbed-azimuthal-variance": (
-        <AzimuthalVarianceConfiguration setParameters={setTemplateParameters}/>
-      )
+        <AzimuthalVarianceConfiguration setParameters={setTemplateParameters} />
+      ),
     },
     [Technique.E02]: {
       "e02-virtual-image-auto": (
-        <VirtualImageConfiguration setParameters={setTemplateParameters}/>
-      )
-      
+        <VirtualImageConfiguration setParameters={setTemplateParameters} />
+      ),
     },
     [Technique.Mib]: {
       "mib-sample": (
         <MibParameterConfiguration setParameters={setTemplateParameters} />
       ),
       "mib-visit": (
-        <MibCompleteParameterConfiguration setParameters={setTemplateParameters} />
+        <MibCompleteParameterConfiguration
+          setParameters={setTemplateParameters}
+        />
       ),
     },
     [Technique.Ptycho]: {},
