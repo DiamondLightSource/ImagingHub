@@ -5,6 +5,7 @@ import { SchemaConfig } from "./beamline.config";
 
 const Technique = {
   Dpc: "Dpc",
+  E02: "E02",
   Nbed: "Nbed",
   Mib: "Mib",
   Ptycho: "Ptycho",
@@ -59,6 +60,7 @@ export const BEAMLINE_TECHNIQUES_SUBSET = {
     Technique.Nbed,
     Technique.Ptyrex,
     Technique.Mib,
+    Technique.E02,
   ],
   [Beamline.E01]: [Technique.Dpc, Technique.Nbed, Technique.Ptyrex],
   [Beamline["P99 TEST"]]: [Technique.Ptypy],

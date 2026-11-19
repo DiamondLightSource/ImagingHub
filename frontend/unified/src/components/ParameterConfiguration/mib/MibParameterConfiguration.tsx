@@ -10,7 +10,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TemplateComponentProps } from "../../types";
+import { TemplateComponentProps } from "../../../types";
 
 export const MibParameterConfiguration = ({
   setParameters,
