@@ -164,8 +164,6 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
       }
     );
 
-    // TODO: handle paganin pipeline type case
-
     const generateReconMethod = (center: number | string | SweepParameters) => {
       return {
         method: "FBP3d_tomobar",
