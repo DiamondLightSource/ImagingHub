@@ -12,7 +12,7 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { forwardRef, Fragment, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { TableVirtuoso, type TableComponents } from "react-virtuoso";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
@@ -166,20 +166,12 @@ const VirtuosoTableComponents: TableComponents<ScanNodeProcessed> = {
   )),
 };
 
-const columns = [
-  {
-    width: 100,
-    label: "Scan",
-    dataKey: "scan",
-  },
-];
-
 export type RowSelectionState = { [key: number]: boolean };
 
 type ScanSelectorTableProps<T> = {
   sessionRef: string;
   onClick: (
-    event: React.MouseEvent<HTMLTableCellElement, MouseEvent>,
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
     prev: RowSelectionState,
     index: number,
     row: T,
@@ -316,41 +308,34 @@ export const ScanSelectorTable = ({
       atBottomThreshold={20}
       itemContent={(index: number, row: ScanNodeProcessed) => {
         return (
-          <Fragment>
-            {columns.map((column) => (
-              <TableCell
-                key={column.dataKey}
-                padding="none"
-                sx={{
-                  borderBottom: "none",
-                }}
-              >
-                <ScanCard
-                  data={row}
-                  config={config}
-                  isSelected={rowSelection[row.id] ?? false}
-                  onRowClick={(e, checkboxEvent) => {
-                    const rowSelectionState = onClick(
-                      e,
-                      rowSelection,
-                      index,
-                      row,
-                      checkboxEvent,
-                      scanNumbersSorted
-                    );
-                    onRowSelectionChange(rowSelectionState);
-                    setSelectedScans({
-                      config: config,
-                      scans: getSelectedScans(
-                        scanNumbersSorted,
-                        rowSelectionState
-                      ),
-                    });
-                  }}
-                />
-              </TableCell>
-            ))}
-          </Fragment>
+          <TableCell
+            key="scans"
+            padding="none"
+            sx={{
+              borderBottom: "none",
+            }}
+          >
+            <ScanCard
+              data={row}
+              config={config}
+              isSelected={rowSelection[row.id] ?? false}
+              onRowClick={(e, checkboxEvent) => {
+                const rowSelectionState = onClick(
+                  e,
+                  rowSelection,
+                  index,
+                  row,
+                  checkboxEvent,
+                  scanNumbersSorted
+                );
+                onRowSelectionChange(rowSelectionState);
+                setSelectedScans({
+                  config: config,
+                  scans: getSelectedScans(scanNumbersSorted, rowSelectionState),
+                });
+              }}
+            />
+          </TableCell>
         );
       }}
       endReached={() => {

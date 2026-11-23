@@ -24,7 +24,6 @@ const WorkflowsDataFetcher = ({
   selectedScans: SelectedScans;
 }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
-  console.log("selectedScans", selectedScans);
   return (
     <>
       <Suspense>
