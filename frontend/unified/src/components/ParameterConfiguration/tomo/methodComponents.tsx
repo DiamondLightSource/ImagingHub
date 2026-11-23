@@ -484,3 +484,53 @@ export const OutputFolderConfiguration: React.FC<
     />
   );
 };
+
+const sino360To180SideParameterValues = ["left", "right"] as const;
+
+export type Sino360To180Parameters = {
+  side: (typeof sino360To180SideParameterValues)[number];
+  overlap: number;
+};
+
+type Sino360To180ParameterConfigurationProps = {
+  parameters: Sino360To180Parameters;
+  setParameters: (_: Sino360To180Parameters) => void;
+};
+
+export const Sino360To180ParameterConfiguration: React.FC<
+  Sino360To180ParameterConfigurationProps
+> = ({ parameters, setParameters }) => {
+  return (
+    <Stack spacing={2} direction="row">
+      <FormControl>
+        <InputLabel id="sino-360-to-180-side-select-label">Side</InputLabel>
+        <Select
+          size="small"
+          labelId="sino-360-to-180-side-select-label"
+          id="sino-360-to-180-side-select"
+          value={parameters.side}
+          label="Side"
+          onChange={(e: SelectChangeEvent) =>
+            setParameters({ ...parameters, side: e.target.value })
+          }
+        >
+          {centering360SideParameterValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <TextField
+        variant="outlined"
+        size="small"
+        label="overlap"
+        value={parameters.overlap}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, overlap: Number(e.target.value) })
+        }
+      />
+    </Stack>
+  );
+};
