@@ -183,7 +183,7 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
       pipeline.push(
         generateReconMethod("${{centering.side_outputs.centre_of_rotation}}")
       );
-    } else if (pipelineParameterConfig.type === CenteringMode.Sweep) {
+    } else if (pipelineParameterConfig.centeringMode === CenteringMode.Sweep) {
       pipeline.push(
         generateReconMethod({
           start: pipelineParameterConfig.parameters.center.start,
