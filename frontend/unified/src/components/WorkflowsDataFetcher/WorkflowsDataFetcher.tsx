@@ -1,5 +1,4 @@
 import { Suspense, useState } from "react";
-import JobsTable from "./WorkflowsTable/WorkflowsTable";
 import { Visit } from "@diamondlightsource/sci-react-ui";
 import {
   Accordion,
@@ -13,6 +12,7 @@ import WorkflowDataViewer from "./WorkflowDataViewer";
 import { WorkflowsList } from "./WorkflowsList/WorkflowsList";
 import { SelectedScans, WorkflowsViewMode } from "../../types";
 import { MetadataDisplay } from "../MetadataDisplay";
+import WorkflowsTable from "./WorkflowsTable/WorkflowsTable";
 
 const WorkflowsDataFetcher = ({
   visit,
@@ -23,7 +23,13 @@ const WorkflowsDataFetcher = ({
   workflowsViewMode: WorkflowsViewMode;
   selectedScans: SelectedScans;
 }) => {
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
+  const [selectedWorkflowName, setSelectedWorkflowName] = useState<
+    string | null
+  >(null);
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(
+    null
+  );
+
   return (
     <>
       <Suspense>
@@ -36,17 +42,19 @@ const WorkflowsDataFetcher = ({
                   <Typography variant="h5">Jobs</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <JobsTable
+                  <WorkflowsTable
                     visit={visit}
-                    selectedWorkflow={selectedWorkflow}
-                    setSelectedWorkflow={setSelectedWorkflow}
+                    selectedWorkflowId={selectedWorkflowId}
+                    setSelectedWorkflowId={setSelectedWorkflowId}
+                    setSelectedWorkflowName={setSelectedWorkflowName}
                   />
                 </AccordionDetails>
               </Accordion>
-              {selectedWorkflow && (
+              {selectedWorkflowId && selectedWorkflowName && (
                 <WorkflowDataViewer
                   visit={visit}
-                  selectedWorkflow={selectedWorkflow}
+                  selectedWorkflowName={selectedWorkflowName}
+                  selectedWorkflowId={selectedWorkflowId}
                 />
               )}
             </Stack>
@@ -56,16 +64,18 @@ const WorkflowsDataFetcher = ({
             <Stack spacing={2}>
               <WorkflowsList
                 visit={visit}
-                selectedWorkflow={selectedWorkflow}
-                setSelectedWorkflow={setSelectedWorkflow}
+                selectedWorkflowId={selectedWorkflowId}
+                setSelectedWorkflowId={setSelectedWorkflowId}
+                setSelectedWorkflowName={setSelectedWorkflowName}
               />
             </Stack>
             <Stack flexGrow={2}>
               <MetadataDisplay selectedScans={selectedScans} maxColumns={4} />
-              {selectedWorkflow && (
+              {selectedWorkflowId && selectedWorkflowName && (
                 <WorkflowDataViewer
                   visit={visit}
-                  selectedWorkflow={selectedWorkflow}
+                  selectedWorkflowId={selectedWorkflowId}
+                  selectedWorkflowName={selectedWorkflowName}
                 />
               )}
             </Stack>

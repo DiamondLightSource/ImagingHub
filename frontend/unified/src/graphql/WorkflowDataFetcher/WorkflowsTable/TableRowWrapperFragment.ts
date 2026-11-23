@@ -23,12 +23,8 @@ export const TABLEROWWRAPPER_FRAGMENT: TypedDocumentNode<TableRowWrapperFragment
         endTime
       }
     }
-    visit {
-      proposalCode
-      proposalNumber
-      number
-    }
     name
+    id
   }
   ${BASETABLEROW_FRAGMENT}
 `;

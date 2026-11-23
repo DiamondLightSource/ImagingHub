@@ -17,15 +17,18 @@ import TableRowWrapper from "./TableRowWrapper";
 import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/TableContentFragment";
 import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
 import { getWorkflowStatusIcon } from "./StatusIcons";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 interface TableContentProps {
   queryData: TableContentFragment;
+  visit: Visit;
   currentPage: number;
   setCurrentPage: (newPage: number) => void;
   selectedLimit: number;
   setSelectedLimit: (newLimit: number) => void;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
   updatePageInfo: (hasNextPage: boolean, endCursor: string | null) => void;
   onPageChange: (
     page: number,
@@ -50,12 +53,14 @@ const EmptyTableRow = () => {
 
 const TableContent = ({
   queryData,
+  visit,
   currentPage,
   setCurrentPage,
   selectedLimit,
   setSelectedLimit,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
   updatePageInfo,
   onPageChange,
 }: TableContentProps) => {
@@ -143,8 +148,10 @@ const TableContent = ({
               <TableRowWrapper
                 key={workflow.name}
                 queryData={workflow}
-                selectedWorkflow={selectedWorkflow}
-                setSelectedWorkflow={setSelectedWorkflow}
+                visit={visit}
+                selectedWorkflowId={selectedWorkflowId}
+                setSelectedWorkflowId={setSelectedWorkflowId}
+                setSelectedWorkflowName={setSelectedWorkflowName}
               />
             ))}
             {Array(emptyRows).fill(<EmptyTableRow />)}

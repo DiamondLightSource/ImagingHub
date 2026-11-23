@@ -2,7 +2,6 @@ import { Box, TableCell, Typography } from "@mui/material";
 import { Eye } from "lucide-react";
 import { useFragment } from "@apollo/client/react";
 import { getWorkflowStatusIcon } from "./StatusIcons";
-import { DeepPartial } from "@apollo/client/utilities";
 import { WorkflowsTableRow } from "./WorkflowsTableRow";
 import { BASETABLEROW_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/BaseTableRowFragment";
 import { TableRowWrapperFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableRowWrapperFragment.generated";
@@ -10,12 +9,14 @@ import { BaseTableRowFragment } from "../../../graphql/WorkflowDataFetcher/Workf
 
 const BaseTableRow = ({
   queryData,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: {
-  queryData: TableRowWrapperFragment | DeepPartial<TableRowWrapperFragment>;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  queryData: TableRowWrapperFragment;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 }) => {
   const { data } = useFragment<BaseTableRowFragment>({
     fragment: BASETABLEROW_FRAGMENT,
@@ -26,20 +27,22 @@ const BaseTableRow = ({
   return (
     <WorkflowsTableRow
       hover
-      key={data.name}
+      key={data.id}
       onClick={(_: React.MouseEvent<unknown>) => {
-        if (selectedWorkflow === data.name) {
-          setSelectedWorkflow(null);
+        if (selectedWorkflowId === data.id) {
+          setSelectedWorkflowId(null);
+          setSelectedWorkflowName(null);
           return;
         }
-        setSelectedWorkflow(data.name ?? null);
+        setSelectedWorkflowName(data.name ?? null);
+        setSelectedWorkflowId(data.id ?? null);
       }}
-      selected={data.name === selectedWorkflow}
+      selected={data.id === selectedWorkflowId}
       className="WorkflowsTableRow"
     >
       <TableCell>
         <Eye
-          visibility={data.name === selectedWorkflow ? "visible" : "hidden"}
+          visibility={data.id === selectedWorkflowId ? "visible" : "hidden"}
         />
       </TableCell>
       <TableCell>
@@ -48,7 +51,7 @@ const BaseTableRow = ({
             gridRow={1}
             gridColumn={1}
             fontWeight="bold"
-            visibility={data.name === selectedWorkflow ? "visible" : "hidden"}
+            visibility={data.id === selectedWorkflowId ? "visible" : "hidden"}
           >
             {data.name}
           </Typography>
@@ -56,7 +59,7 @@ const BaseTableRow = ({
             gridRow={1}
             gridColumn={1}
             fontWeight="normal"
-            visibility={data.name === selectedWorkflow ? "hidden" : "visible"}
+            visibility={data.id === selectedWorkflowId ? "hidden" : "visible"}
           >
             {data.name}
           </Typography>

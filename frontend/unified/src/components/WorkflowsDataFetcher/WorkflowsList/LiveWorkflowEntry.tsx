@@ -9,16 +9,18 @@ type LiveWorkflowEntryProps = {
   workflowName: string;
   visit: Visit;
   onNullSubscriptionData: () => void;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
 };
 
 export const LiveWorkflowEntry = ({
   workflowName,
   visit,
   onNullSubscriptionData,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
 }: LiveWorkflowEntryProps) => {
   const [queryData, setQueryData] = useState<BaseTableRowFragment | null>(null);
   apolloClientWorkflows
@@ -49,8 +51,9 @@ export const LiveWorkflowEntry = ({
   return queryData ? (
     <WorkflowEntry
       workflow={queryData}
-      isSelected={selectedWorkflow === queryData.name}
-      setSelectedWorkflow={setSelectedWorkflow}
+      isSelected={selectedWorkflowId === queryData.id}
+      setSelectedWorkflowId={setSelectedWorkflowId}
+      setSelectedWorkflowName={setSelectedWorkflowName}
     />
   ) : null;
 };
