@@ -23,7 +23,7 @@ import {
 import {
   DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
   DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
-  I13180AbsorptionPipelineConfigurationComponentProps,
+  I13180PipelineConfigurationComponentProps,
 } from "./I13180ParameterConfiguration";
 
 type I13180PaganinPipelineParameterConfig =
@@ -89,7 +89,9 @@ const getDefaultPaganin180SweepParameterValues = (
 };
 
 export const I13180PaganinPipelineConfigurationComponent: React.FC<
-  I13180AbsorptionPipelineConfigurationComponentProps
+  I13180PipelineConfigurationComponentProps & {
+    magnification: typeof Magnification;
+  }
 > = ({ magnification }) => {
   const [pipelineParameterConfig, setPipelineParameterConfig] =
     useState<I13180PaganinPipelineParameterConfig>({

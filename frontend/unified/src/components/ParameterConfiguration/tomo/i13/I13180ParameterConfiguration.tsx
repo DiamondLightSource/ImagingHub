@@ -30,15 +30,10 @@ export const DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES = {
   },
 };
 
-type I13180PipelineConfigurationComponentProps = {
+export type I13180PipelineConfigurationComponentProps = {
   visitDirpath: string;
   setParameters: (_: object) => void;
 };
-
-export type I13180AbsorptionPipelineConfigurationComponentProps =
-  I13180PipelineConfigurationComponentProps & {
-    magnification: typeof Magnification;
-  };
 
 export const I13180PipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps
