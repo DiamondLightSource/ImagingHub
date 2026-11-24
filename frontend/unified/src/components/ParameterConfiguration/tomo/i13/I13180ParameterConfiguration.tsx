@@ -158,9 +158,7 @@ export const I13180PipelineConfigurationComponent: React.FC<
                 let params;
                 if (
                   pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .centeringMode === CenteringMode.Auto &&
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .paganinMode === PaganinMode.Fixed
+                    .centeringMode === CenteringMode.Auto
                 ) {
                   params = {
                     paganin:
@@ -169,59 +167,14 @@ export const I13180PipelineConfigurationComponent: React.FC<
                   };
                 } else if (
                   pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .centeringMode === CenteringMode.Auto &&
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .paganinMode === PaganinMode.Sweep
+                    .centeringMode === CenteringMode.Fixed
                 ) {
                   params = {
                     loader: DEFAULT_LOADER_PREVIEW,
-                    paganin:
-                      getDefaultPaganin180SweepParameterValues(magnification),
-                    centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-                  };
-                } else if (
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .centeringMode === CenteringMode.Fixed &&
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .paganinMode === PaganinMode.Fixed
-                ) {
-                  params = {
                     paganin:
                       getDefaultPaganin180FixedParameterValues(magnification),
                     recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
                   };
-                } else if (
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .centeringMode === CenteringMode.Fixed &&
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .paganinMode === PaganinMode.Sweep
-                ) {
-                  params = {
-                    loader: DEFAULT_LOADER_PREVIEW,
-                    paganin:
-                      getDefaultPaganin180SweepParameterValues(magnification),
-                    recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
-                  };
-                }
-                switch (
-                  pipelineParameterConfig.pipelineConfig.degreesConfig
-                    .centeringMode
-                ) {
-                  case "Auto":
-                    params = {
-                      loader: DEFAULT_LOADER_PREVIEW,
-                      center: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-                    };
-                    break;
-                  case "Sweep":
-                    params = {
-                      loader: DEFAULT_LOADER_PREVIEW,
-                      center: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
-                    };
-                    break;
-                  case "Fixed":
-                    params = DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES;
-                    break;
                 }
                 setPipelineParameterConfig({
                   pipelineType: PipelineType.Paganin,
