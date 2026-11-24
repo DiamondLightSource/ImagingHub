@@ -185,7 +185,7 @@ type Centering360ParameterConfigurationProps = {
   setParameters: (_: Centering360Parameters) => void;
 };
 
-const Centering360ParameterConfiguration: React.FC<
+export const Centering360ParameterConfiguration: React.FC<
   Centering360ParameterConfigurationProps
 > = ({ parameters, setParameters }) => {
   return (

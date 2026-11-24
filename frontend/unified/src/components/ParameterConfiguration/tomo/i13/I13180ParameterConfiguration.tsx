@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Magnification, PipelineType } from "./types";
+import {
+  CenteringMode,
+  Magnification,
+  PaganinMode,
+  PipelineType,
+} from "./types";
 import {
   Stack,
   ToggleButton,
@@ -11,10 +16,18 @@ import {
   I13180AbsorptionPipelineConfigurationComponent,
 } from "./I13180AbsorptionParameterConfiguration";
 import {
+  getDefaultPaganin180FixedParameterValues,
+  getDefaultPaganin180SweepParameterValues,
   I13180360PaganinPipelineParameterConfig,
   I13180PaganinPipelineConfigurationComponent,
 } from "./I13180PaganinParameterConfiguration";
 import { CenteringMethodType } from "../methodComponents";
+
+const DEFAULT_LOADER_PREVIEW = {
+  start: 589,
+  stop: 599,
+  step: 2,
+};
 
 export const DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES = {
   center: 1280,
@@ -64,9 +77,6 @@ export const I13180PipelineConfigurationComponent: React.FC<
 }) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
-  const [pipelineType, setPipelineType] = useState<PipelineType>(
-    PipelineType.Absorption
-  );
 
   return (
     <>
@@ -102,7 +112,7 @@ export const I13180PipelineConfigurationComponent: React.FC<
         <Typography>Pipeline type</Typography>
         <ToggleButtonGroup
           exclusive
-          value={pipelineType}
+          value={pipelineParameterConfig.pipelineType}
           aria-label="i13-pipeline-type-toggle"
           onChange={(
             _: React.MouseEvent<HTMLElement>,
@@ -110,9 +120,123 @@ export const I13180PipelineConfigurationComponent: React.FC<
           ) => {
             if (newValue) {
               if (newValue === "Absorption") {
-                setPipelineType(PipelineType.Absorption);
+                let params;
+                switch (
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .centeringMode
+                ) {
+                  case "Auto":
+                    params = {
+                      loader: DEFAULT_LOADER_PREVIEW,
+                      center: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                    };
+                    break;
+                  case "Sweep":
+                    params = {
+                      loader: DEFAULT_LOADER_PREVIEW,
+                      center: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
+                    };
+                    break;
+                  case "Fixed":
+                    params = DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES;
+                    break;
+                }
+                setPipelineParameterConfig({
+                  pipelineType: PipelineType.Absorption,
+                  pipelineConfig: {
+                    degreesType:
+                      pipelineParameterConfig.pipelineConfig.degreesType,
+                    degreesConfig: {
+                      centeringMode:
+                        pipelineParameterConfig.pipelineConfig.degreesConfig
+                          .centeringMode,
+                      parameters: params,
+                    },
+                  },
+                });
               } else {
-                setPipelineType(PipelineType.Paganin);
+                let params;
+                if (
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .centeringMode === CenteringMode.Auto &&
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .paganinMode === PaganinMode.Fixed
+                ) {
+                  params = {
+                    paganin:
+                      getDefaultPaganin180FixedParameterValues(magnification),
+                    centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                  };
+                } else if (
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .centeringMode === CenteringMode.Auto &&
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .paganinMode === PaganinMode.Sweep
+                ) {
+                  params = {
+                    loader: DEFAULT_LOADER_PREVIEW,
+                    paganin:
+                      getDefaultPaganin180SweepParameterValues(magnification),
+                    centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                  };
+                } else if (
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .centeringMode === CenteringMode.Fixed &&
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .paganinMode === PaganinMode.Fixed
+                ) {
+                  params = {
+                    paganin:
+                      getDefaultPaganin180FixedParameterValues(magnification),
+                    recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                  };
+                } else if (
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .centeringMode === CenteringMode.Fixed &&
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .paganinMode === PaganinMode.Sweep
+                ) {
+                  params = {
+                    loader: DEFAULT_LOADER_PREVIEW,
+                    paganin:
+                      getDefaultPaganin180SweepParameterValues(magnification),
+                    recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                  };
+                }
+                switch (
+                  pipelineParameterConfig.pipelineConfig.degreesConfig
+                    .centeringMode
+                ) {
+                  case "Auto":
+                    params = {
+                      loader: DEFAULT_LOADER_PREVIEW,
+                      center: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                    };
+                    break;
+                  case "Sweep":
+                    params = {
+                      loader: DEFAULT_LOADER_PREVIEW,
+                      center: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
+                    };
+                    break;
+                  case "Fixed":
+                    params = DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES;
+                    break;
+                }
+                setPipelineParameterConfig({
+                  pipelineType: PipelineType.Paganin,
+                  pipelineConfig: {
+                    degreesType:
+                      pipelineParameterConfig.pipelineConfig.degreesType,
+                    degreesConfig: {
+                      centeringMode:
+                        pipelineParameterConfig.pipelineConfig.degreesConfig
+                          .centeringMode,
+                      paganinMode: PaganinMode.Fixed,
+                      parameters: params,
+                    },
+                  },
+                });
               }
             }
           }}

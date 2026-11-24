@@ -9,11 +9,13 @@ import {
 import {
   Centering180ParameterConfiguration,
   Centering180Parameters,
+  Centering360Parameters,
   CenteringMethodType,
   LoaderParameterConfiguration,
   MinimalLoaderPreviewParameters,
   PaganinFilterParameters,
   ParameterSweepConfiguration,
+  Sino360To180Parameters,
 } from "../methodComponents";
 import {
   CenteringMode,
@@ -63,7 +65,7 @@ type I13180PaganinPipelineParameterConfig =
       };
     };
 
-const getDefaultPaganin180FixedParameterValues = (
+export const getDefaultPaganin180FixedParameterValues = (
   magnification: (typeof Magnification)[number]
 ) => {
   return {
@@ -74,7 +76,7 @@ const getDefaultPaganin180FixedParameterValues = (
   };
 };
 
-const getDefaultPaganin180SweepParameterValues = (
+export const getDefaultPaganin180SweepParameterValues = (
   magnification: (typeof Magnification)[number]
 ) => {
   return {
@@ -89,17 +91,52 @@ const getDefaultPaganin180SweepParameterValues = (
   };
 };
 
-// TODO: fill this out
-type I13360PaganinPipelineParameterConfig = {};
+type I13360PaganinPipelineParameterConfig =
+  | {
+      paganinMode: typeof PaganinMode.Fixed;
+      centeringMode: typeof CenteringMode.Auto;
+      parameters: {
+        centering: Centering360Parameters;
+        paganin: PaganinFilterParameters;
+      };
+    }
+  | {
+      paganinMode: typeof PaganinMode.Sweep;
+      centeringMode: typeof CenteringMode.Auto;
+      parameters: {
+        loader: MinimalLoaderPreviewParameters;
+        centering: Centering360Parameters;
+        paganin: PaganinFilterSweepParameters;
+      };
+    }
+  | {
+      paganinMode: typeof PaganinMode.Fixed;
+      centeringMode: typeof CenteringMode.Fixed;
+      parameters: {
+        paganin: PaganinFilterParameters;
+        stitching: Sino360To180Parameters;
+        recon: { center: number };
+      };
+    }
+  | {
+      paganinMode: typeof PaganinMode.Sweep;
+      centeringMode: typeof CenteringMode.Fixed;
+      parameters: {
+        loader: MinimalLoaderPreviewParameters;
+        paganin: PaganinFilterSweepParameters;
+        stitching: Sino360To180Parameters;
+        recon: { center: number };
+      };
+    };
 
 export type I13180360PaganinPipelineParameterConfig =
   | {
       degreesType: (typeof CenteringMethodType)[180];
-      config: I13180PaganinPipelineParameterConfig;
+      degreesConfig: I13180PaganinPipelineParameterConfig;
     }
   | {
       degreesType: (typeof CenteringMethodType)[360];
-      config: I13360PaganinPipelineParameterConfig;
+      degreesConfig: I13360PaganinPipelineParameterConfig;
     };
 
 export const I13180PaganinPipelineConfigurationComponent: React.FC<
