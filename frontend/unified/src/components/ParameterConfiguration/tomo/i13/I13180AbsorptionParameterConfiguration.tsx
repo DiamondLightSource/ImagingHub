@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Stack,
   TextField,
@@ -82,30 +82,23 @@ type I13360AbsorptionPipelineParameterConfig =
       parameters: { stitching: Sino360To180Parameters; center: number };
     };
 
-type I13180360AbsorptionPipelineParameterConfig =
+export type I13180360AbsorptionPipelineParameterConfig =
   | {
       degreesType: (typeof CenteringMethodType)[180];
-      config: I13180AbsorptionPipelineParameterConfig;
+      degreesConfig: I13180AbsorptionPipelineParameterConfig;
     }
   | {
       degreesType: (typeof CenteringMethodType)[360];
-      config: I13360AbsorptionPipelineParameterConfig;
+      degreesConfig: I13360AbsorptionPipelineParameterConfig;
     };
 
 export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps & {
     magnification: typeof Magnification;
+    config: I13180360AbsorptionPipelineParameterConfig;
+    setConfig: (_: I13180360AbsorptionPipelineParameterConfig) => void;
   }
-> = ({ magnification, visitDirpath, setParameters }) => {
-  const [pipelineParameterConfig, setPipelineParameterConfig] =
-    useState<I13180360AbsorptionPipelineParameterConfig>({
-      degreesType: CenteringMethodType[180],
-      config: {
-        centeringMode: CenteringMode.Auto,
-        parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-      },
-    });
-
+> = ({ magnification, config, setConfig, visitDirpath, setParameters }) => {
   const generatePipeline = () => {
     const pipeline = [
       {
@@ -153,14 +146,14 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
       },
     ];
 
-    if (pipelineParameterConfig.config.centeringMode === CenteringMode.Sweep) {
+    if (config.degreesConfig.centeringMode === CenteringMode.Sweep) {
       pipeline[0]["parameters"]["preview"] = {
-        detector_y: pipelineParameterConfig.config.parameters.loader,
+        detector_y: config.degreesConfig.parameters.loader,
       };
     }
 
-    if (pipelineParameterConfig.degreesType === CenteringMethodType[180]) {
-      if (pipelineParameterConfig.config.centeringMode === CenteringMode.Auto) {
+    if (config.degreesType === CenteringMethodType[180]) {
+      if (config.degreesConfig.centeringMode === CenteringMode.Auto) {
         pipeline.push({
           method: "find_center_vo",
           module_path: "httomolibgpu.recon.rotation",
@@ -168,8 +161,8 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
             ind: null,
             average_radius: 0,
             cor_initialisation_value: null,
-            smin: pipelineParameterConfig.config.parameters.smin,
-            smax: pipelineParameterConfig.config.parameters.smax,
+            smin: config.degreesConfig.parameters.smin,
+            smax: config.degreesConfig.parameters.smax,
             srad: 6,
             step: 0.5,
             ratio: 0.5,
@@ -217,34 +210,30 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
       };
     };
 
-    if (pipelineParameterConfig.degreesType === CenteringMethodType[180]) {
-      if (pipelineParameterConfig.config.centeringMode === CenteringMode.Auto) {
+    if (config.degreesType === CenteringMethodType[180]) {
+      if (config.degreesConfig.centeringMode === CenteringMode.Auto) {
         pipeline.push(
           generateReconMethod("${{centering.side_outputs.centre_of_rotation}}")
         );
-      } else if (
-        pipelineParameterConfig.config.centeringMode === CenteringMode.Sweep
-      ) {
+      } else if (config.degreesConfig.centeringMode === CenteringMode.Sweep) {
         pipeline.push(
           generateReconMethod({
-            start: pipelineParameterConfig.config.parameters.center.start,
-            stop: pipelineParameterConfig.config.parameters.center.stop,
-            step: pipelineParameterConfig.config.parameters.center.step,
+            start: config.degreesConfig.parameters.center.start,
+            stop: config.degreesConfig.parameters.center.stop,
+            step: config.degreesConfig.parameters.center.step,
           })
         );
       } else {
         pipeline.push(
-          generateReconMethod(pipelineParameterConfig.config.parameters.center)
+          generateReconMethod(config.degreesConfig.parameters.center)
         );
       }
     } else {
       // TODO: handle 360 case
     }
 
-    if (pipelineParameterConfig.degreesType === CenteringMethodType[180]) {
-      if (
-        pipelineParameterConfig.config.centeringMode !== CenteringMode.Sweep
-      ) {
+    if (config.degreesType === CenteringMethodType[180]) {
+      if (config.degreesConfig.centeringMode !== CenteringMode.Sweep) {
         pipeline.push(
           {
             method: "calculate_stats",
@@ -285,53 +274,57 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   };
 
   useEffect(() => {
-    setParameters({
-      config: generatePipeline(),
-    });
-  }, [magnification, pipelineParameterConfig]);
+    setParameters(generatePipeline());
+  }, [magnification, config]);
 
   const display180Configurator = (
-    config: I13180AbsorptionPipelineParameterConfig
+    degreesConfig: I13180AbsorptionPipelineParameterConfig
   ) => {
-    switch (config.centeringMode) {
+    switch (degreesConfig.centeringMode) {
       case "Auto":
         return (
           <Centering180ParameterConfiguration
-            parameters={config.parameters}
-            setParameters={(params) =>
-              setPipelineParameterConfig({
-                ...pipelineParameterConfig,
-                config: {
-                  ...config,
+            parameters={degreesConfig.parameters}
+            setParameters={(params) => {
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  centeringMode: CenteringMode.Auto,
                   parameters: params,
                 },
-              })
-            }
+              });
+            }}
           />
         );
       case "Sweep":
         return (
           <>
             <LoaderParameterConfiguration
-              parameters={config.parameters.loader}
+              parameters={degreesConfig.parameters.loader}
               setParameters={(params) => {
-                setPipelineParameterConfig({
-                  ...pipelineParameterConfig,
-                  parameters: {
-                    ...config.parameters,
-                    loader: params,
+                setConfig({
+                  degreesType: CenteringMethodType[180],
+                  degreesConfig: {
+                    centeringMode: CenteringMode.Sweep,
+                    parameters: {
+                      ...degreesConfig.parameters,
+                      loader: params,
+                    },
                   },
                 });
               }}
             />
             <ParameterSweepConfiguration
-              parameters={config.parameters.center}
+              parameters={degreesConfig.parameters.center}
               setParameters={(params) =>
-                setPipelineParameterConfig({
-                  ...pipelineParameterConfig,
-                  parameters: {
-                    ...config.parameters,
-                    center: params,
+                setConfig({
+                  degreesType: CenteringMethodType[180],
+                  degreesConfig: {
+                    centeringMode: CenteringMode.Sweep,
+                    parameters: {
+                      ...degreesConfig.parameters,
+                      center: params,
+                    },
                   },
                 })
               }
@@ -343,14 +336,17 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
           <TextField
             variant="outlined"
             size="small"
-            value={config.parameters.center}
+            value={degreesConfig.parameters.center}
             label="centre of rotation"
             type="number"
             onChange={(e) =>
-              setPipelineParameterConfig({
-                ...pipelineParameterConfig,
-                parameters: {
-                  center: Number(e.target.value),
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  centeringMode: CenteringMode.Fixed,
+                  parameters: {
+                    center: Number(e.target.value),
+                  },
                 },
               })
             }
@@ -360,9 +356,9 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
   };
 
   const displayPipelineParameterConfigurator = () => {
-    switch (pipelineParameterConfig.degreesType) {
+    switch (config.degreesType) {
       case CenteringMethodType[180]:
-        return display180Configurator(pipelineParameterConfig.config);
+        return display180Configurator(config.degreesConfig);
       case CenteringMethodType[360]:
       // TODO
     }
@@ -375,7 +371,7 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
           <Typography>Centering</Typography>
           <ToggleButtonGroup
             exclusive
-            value={pipelineParameterConfig.config.centeringMode}
+            value={config.degreesConfig.centeringMode}
             aria-label="i13-centering-mode-toggle"
             onChange={(
               _: React.MouseEvent<HTMLElement>,
@@ -383,25 +379,25 @@ export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
             ) => {
               if (newValue) {
                 if (newValue === "Auto") {
-                  setPipelineParameterConfig({
+                  setConfig({
                     degreesType: CenteringMethodType[180],
-                    config: {
+                    degreesConfig: {
                       centeringMode: CenteringMode.Auto,
                       parameters: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
                     },
                   });
                 } else if (newValue === "Sweep") {
-                  setPipelineParameterConfig({
+                  setConfig({
                     degreesType: CenteringMethodType[180],
-                    config: {
+                    degreesConfig: {
                       centeringMode: CenteringMode.Sweep,
                       parameters: DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
                     },
                   });
                 } else {
-                  setPipelineParameterConfig({
+                  setConfig({
                     degreesType: CenteringMethodType[180],
-                    config: {
+                    degreesConfig: {
                       centeringMode: CenteringMode.Fixed,
                       parameters: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
                     },

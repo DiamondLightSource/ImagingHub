@@ -9,6 +9,7 @@ import {
 import {
   Centering180ParameterConfiguration,
   Centering180Parameters,
+  CenteringMethodType,
   LoaderParameterConfiguration,
   MinimalLoaderPreviewParameters,
   PaganinFilterParameters,
@@ -87,6 +88,19 @@ const getDefaultPaganin180SweepParameterValues = (
     energy: 27.0,
   };
 };
+
+// TODO: fill this out
+type I13360PaganinPipelineParameterConfig = {};
+
+export type I13180360PaganinPipelineParameterConfig =
+  | {
+      degreesType: (typeof CenteringMethodType)[180];
+      config: I13180PaganinPipelineParameterConfig;
+    }
+  | {
+      degreesType: (typeof CenteringMethodType)[360];
+      config: I13360PaganinPipelineParameterConfig;
+    };
 
 export const I13180PaganinPipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps & {

@@ -6,8 +6,15 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { I13180AbsorptionPipelineConfigurationComponent } from "./I13180AbsorptionParameterConfiguration";
-import { I13180PaganinPipelineConfigurationComponent } from "./I13180PaganinParameterConfiguration";
+import {
+  I13180360AbsorptionPipelineParameterConfig,
+  I13180AbsorptionPipelineConfigurationComponent,
+} from "./I13180AbsorptionParameterConfiguration";
+import {
+  I13180360PaganinPipelineParameterConfig,
+  I13180PaganinPipelineConfigurationComponent,
+} from "./I13180PaganinParameterConfiguration";
+import { CenteringMethodType } from "../methodComponents";
 
 export const DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES = {
   center: 1280,
@@ -30,14 +37,31 @@ export const DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES = {
   },
 };
 
+export type I13180360PipelineParameterConfig =
+  | {
+      pipelineType: (typeof PipelineType)["Absorption"];
+      pipelineConfig: I13180360AbsorptionPipelineParameterConfig;
+    }
+  | {
+      pipelineType: (typeof PipelineType)["Paganin"];
+      pipelineConfig: I13180360PaganinPipelineParameterConfig;
+    };
+
 export type I13180PipelineConfigurationComponentProps = {
   visitDirpath: string;
   setParameters: (_: object) => void;
+  pipelineParameterConfig: I13180360PipelineParameterConfig;
+  setPipelineParameterConfig: (_: I13180360PipelineParameterConfig) => void;
 };
 
 export const I13180PipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps
-> = ({ visitDirpath, setParameters }) => {
+> = ({
+  visitDirpath,
+  pipelineParameterConfig,
+  setPipelineParameterConfig,
+  setParameters,
+}) => {
   const [magnification, setMagnification] =
     useState<(typeof Magnification)[number]>(1.25);
   const [pipelineType, setPipelineType] = useState<PipelineType>(
@@ -100,9 +124,16 @@ export const I13180PipelineConfigurationComponent: React.FC<
           ))}
         </ToggleButtonGroup>
       </Stack>
-      {pipelineType === PipelineType.Absorption ? (
+      {pipelineParameterConfig.pipelineType === PipelineType.Absorption ? (
         <I13180AbsorptionPipelineConfigurationComponent
           magnification={magnification}
+          config={pipelineParameterConfig.pipelineConfig}
+          setConfig={(degreesConfig) => {
+            setPipelineParameterConfig({
+              pipelineType: PipelineType.Absorption,
+              pipelineConfig: degreesConfig,
+            });
+          }}
           visitDirpath={visitDirpath}
           setParameters={setParameters}
         />
