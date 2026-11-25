@@ -141,6 +141,9 @@ export const ScanCard = ({
   );
 };
 
+// Use react-virtuoso for virtualisation
+// This improves performance when dealing with large numbers of scans,
+// and makes infinite scroll easy
 const VirtuosoTableComponents: TableComponents<ScanNodeProcessed> = {
   Scroller: forwardRef<HTMLDivElement>((props, ref) => (
     <TableContainer
@@ -203,7 +206,7 @@ type ScanSelectorTableProps<T> = {
  * @param {(v: boolean) => void} props.setLoadMore - Set whether more data is currently being loaded
  * @param {(v: number) => void} props.setTotalLoaded - Set the total number of scans loaded
  * @param {(v: SelectedScans) => void} props.setSelectedScans - Callback for when the selected scans has changed
- * @param {DatasetFilterInput | null} props.filter - Graph query filter to use
+ * @param {DatasetFilterInput | null} props.filter - Filter to use with the graph query
  * @returns {React.JSX.Element} - Scan selector table componenet
  */
 export const ScanSelectorTable = ({
@@ -230,7 +233,7 @@ export const ScanSelectorTable = ({
   };
 
   const isDescSort = (v: SortDirection) => v === SortDirection.NEWEST;
-  const FETCH_SIZE = 30;
+  const FETCH_SIZE = 30; // Max. fetch size from graph is 50. Choice of 30 is arbitrary
 
   const { data, loading, fetchMore, client } = useQuery(
     INSTRUMENTSESSION_QUERY,
