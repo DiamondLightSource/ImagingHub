@@ -9,6 +9,11 @@ import { ScanNodeRaw, ScanNodeProcessed, DataCardVariant } from "./types";
  *    2. How to format each bit of data from the graph
  *    3. Where to display each bit of data in our UI
  *
+ * Adding support for a new schema
+ *  1. Create a new entry under BEAMLINE_CONFIG
+ *    - See the existing entries for how this is done
+ *  2. That's it! The rest of the UI doesn't need to know about the change.
+ *
  * Data flow:
  *  1. Get `InstrumentSessionQuery` result from Apollo
  *  2. Transform into an array of `ScanNodeProcessed` objects by `getProcessedData()`.
