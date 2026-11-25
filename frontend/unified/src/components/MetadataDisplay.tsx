@@ -1,4 +1,3 @@
-// import { DataCard } from "@diamondlightsource/sci-react-ui";
 import {
   Grid,
   Box,
@@ -57,7 +56,7 @@ export const MetadataDisplay = ({
                     switch (x.variant) {
                       case DataCardVariant.STANDARD: {
                         return (
-                          <Grid size={1}>
+                          <Grid key={title} size={1}>
                             <DataCard
                               title={title}
                               value={{
@@ -75,7 +74,7 @@ export const MetadataDisplay = ({
                       }
                       case DataCardVariant.PAIRED: {
                         return (
-                          <Grid size={1}>
+                          <Grid key={title} size={1}>
                             <DataCard
                               title={title}
                               value1={{
@@ -94,7 +93,7 @@ export const MetadataDisplay = ({
                       }
                       case DataCardVariant.STACKED: {
                         return (
-                          <Grid size={1}>
+                          <Grid key={title} size={1}>
                             <DataCard
                               title={title}
                               value1={{
@@ -115,7 +114,7 @@ export const MetadataDisplay = ({
                     const title = config.fields[x].title;
                     const value = getFieldString(config, scanData, x) ?? "-";
                     return (
-                      <Grid size={1}>
+                      <Grid key={title} size={1}>
                         <DataCard
                           title={title}
                           value={{ value: value }}
