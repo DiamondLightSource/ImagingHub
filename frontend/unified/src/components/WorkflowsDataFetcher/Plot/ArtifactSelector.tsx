@@ -69,7 +69,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   const artifactsList = generateArtifactList();
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
       <InputLabel>Artifact</InputLabel>
       {data.status?.__typename !== "WorkflowPendingStatus" ? (
         <Select
