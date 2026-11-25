@@ -126,10 +126,7 @@ export const I13180PipelineConfigurationComponent: React.FC<
                     .centeringMode
                 ) {
                   case "Auto":
-                    params = {
-                      loader: DEFAULT_LOADER_PREVIEW,
-                      center: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-                    };
+                    params = DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES;
                     break;
                   case "Sweep":
                     params = {
