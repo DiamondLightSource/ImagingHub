@@ -22,8 +22,8 @@ import {
   DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
   DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
   DEFAULT_CENTERING_180_SWEEP_PARAMETER_VALUES,
-  I13180PipelineConfigurationComponentProps,
-} from "./I13180ParameterConfiguration";
+  I13180360PipelineConfigurationComponentProps,
+} from "./I13180360ParameterConfiguration";
 import { generateDistortionCorrectionCoefficientsFilepath } from "./utils";
 
 type I13180AbsorptionPipelineParameterConfig =
@@ -71,8 +71,8 @@ export type I13180360AbsorptionPipelineParameterConfig =
       degreesConfig: I13360AbsorptionPipelineParameterConfig;
     };
 
-export const I13180AbsorptionPipelineConfigurationComponent: React.FC<
-  I13180PipelineConfigurationComponentProps & {
+export const I13180360AbsorptionPipelineConfigurationComponent: React.FC<
+  I13180360PipelineConfigurationComponentProps & {
     magnification: typeof Magnification;
     config: I13180360AbsorptionPipelineParameterConfig;
     setConfig: (_: I13180360AbsorptionPipelineParameterConfig) => void;

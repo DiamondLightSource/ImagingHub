@@ -13,14 +13,14 @@ import {
 } from "@mui/material";
 import {
   I13180360AbsorptionPipelineParameterConfig,
-  I13180AbsorptionPipelineConfigurationComponent,
-} from "./I13180AbsorptionParameterConfiguration";
+  I13180360AbsorptionPipelineConfigurationComponent,
+} from "./I13180360AbsorptionParameterConfiguration";
 import {
   getDefaultPaganin180FixedParameterValues,
   getDefaultPaganin180SweepParameterValues,
   I13180360PaganinPipelineParameterConfig,
-  I13180PaganinPipelineConfigurationComponent,
-} from "./I13180PaganinParameterConfiguration";
+  I13180360PaganinPipelineConfigurationComponent,
+} from "./I13180360PaganinParameterConfiguration";
 import { CenteringMethodType } from "../methodComponents";
 
 const DEFAULT_LOADER_PREVIEW = {
@@ -60,15 +60,15 @@ export type I13180360PipelineParameterConfig =
       pipelineConfig: I13180360PaganinPipelineParameterConfig;
     };
 
-export type I13180PipelineConfigurationComponentProps = {
+export type I13180360PipelineConfigurationComponentProps = {
   visitDirpath: string;
   setParameters: (_: object) => void;
   pipelineParameterConfig: I13180360PipelineParameterConfig;
   setPipelineParameterConfig: (_: I13180360PipelineParameterConfig) => void;
 };
 
-export const I13180PipelineConfigurationComponent: React.FC<
-  I13180PipelineConfigurationComponentProps
+export const I13180360PipelineConfigurationComponent: React.FC<
+  I13180360PipelineConfigurationComponentProps
 > = ({
   visitDirpath,
   pipelineParameterConfig,
@@ -199,7 +199,7 @@ export const I13180PipelineConfigurationComponent: React.FC<
         </ToggleButtonGroup>
       </Stack>
       {pipelineParameterConfig.pipelineType === PipelineType.Absorption ? (
-        <I13180AbsorptionPipelineConfigurationComponent
+        <I13180360AbsorptionPipelineConfigurationComponent
           magnification={magnification}
           config={pipelineParameterConfig.pipelineConfig}
           setConfig={(degreesConfig) => {
@@ -212,7 +212,7 @@ export const I13180PipelineConfigurationComponent: React.FC<
           setParameters={setParameters}
         />
       ) : (
-        <I13180PaganinPipelineConfigurationComponent
+        <I13180360PaganinPipelineConfigurationComponent
           magnification={magnification}
           config={pipelineParameterConfig.pipelineConfig}
           setConfig={(degreesConfig) => {

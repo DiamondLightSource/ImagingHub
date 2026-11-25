@@ -14,8 +14,8 @@ import { CenteringMode, PipelineType, ScanType } from "./types";
 import {
   DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
   I13180360PipelineParameterConfig,
-  I13180PipelineConfigurationComponent,
-} from "./I13180ParameterConfiguration";
+  I13180360PipelineConfigurationComponent,
+} from "./I13180360ParameterConfiguration";
 
 type I13PipelineParameterConfig =
   | {
@@ -50,7 +50,7 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
   const displayScanTypeConfigurationComponent = () => {
     if (scanType === ScanType[180]) {
       return (
-        <I13180PipelineConfigurationComponent
+        <I13180360PipelineConfigurationComponent
           visitDirpath={visitDirpath}
           outputFolder={outputFolder}
           setOutputFolder={setOutputFolder}

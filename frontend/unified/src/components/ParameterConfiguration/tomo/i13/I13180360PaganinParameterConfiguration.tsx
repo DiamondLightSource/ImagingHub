@@ -26,8 +26,8 @@ import {
 import {
   DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
   DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
-  I13180PipelineConfigurationComponentProps,
-} from "./I13180ParameterConfiguration";
+  I13180360PipelineConfigurationComponentProps,
+} from "./I13180360ParameterConfiguration";
 import { generateDistortionCorrectionCoefficientsFilepath } from "./utils";
 
 type I13180PaganinPipelineParameterConfig =
@@ -140,8 +140,8 @@ export type I13180360PaganinPipelineParameterConfig =
       degreesConfig: I13360PaganinPipelineParameterConfig;
     };
 
-export const I13180PaganinPipelineConfigurationComponent: React.FC<
-  I13180PipelineConfigurationComponentProps & {
+export const I13180360PaganinPipelineConfigurationComponent: React.FC<
+  I13180360PipelineConfigurationComponentProps & {
     magnification: typeof Magnification;
     config: I13180360PaganinPipelineParameterConfig;
     setConfig: (_: I13180360PaganinPipelineParameterConfig) => void;
