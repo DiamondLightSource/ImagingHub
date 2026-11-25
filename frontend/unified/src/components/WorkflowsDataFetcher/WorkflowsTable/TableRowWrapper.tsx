@@ -54,6 +54,7 @@ const TableRowWrapper = ({
 
   return finished || isNull ? (
     <BaseTableRow
+      visit={visit}
       queryData={data}
       selectedWorkflowId={selectedWorkflowId}
       setSelectedWorkflowId={setSelectedWorkflowId}
