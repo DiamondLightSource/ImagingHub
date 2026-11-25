@@ -13,7 +13,12 @@ import { ScanNodeRaw, ScanNodeProcessed, DataCardVariant } from "./types";
  *  1. Get `InstrumentSessionQuery` result from Apollo
  *  2. Transform into an array of `ScanNodeProcessed` objects by `getProcessedData()`.
  *     One element in the array corresponds to one scan.
- *     - Why is this necessary?
+ *      - `InstrumentSessionQuery.datasets.edges.node` contains data for each scan
+ *        - `getProcessedData()` takes this data out and adds some extra fields
+ *      - `InstrumentSessionQuery.datasets.edges.node.data` contains the metadata acquired by the Ingest Service
+ *        - The structure of this is given by the ULIMS JSON schema
+ *
+ *      - Why is the transformation necessary?
  *        1. Many beamlines have a `scanRequest` field, which is a large JSON string.
  *           This string needs to be converted to an object so we can retrieve values
  *           from it.
@@ -21,22 +26,35 @@ import { ScanNodeRaw, ScanNodeProcessed, DataCardVariant } from "./types";
  *           just showing metadata. The `ScanNodeProcessed` object makes these values
  *           easily accessible.
  *  3. The UI determines what bits of data (i.e. fields) to display where using the
- *     corresponding entry in the BEAMLINE_CONFIG array
- *  4. Values for a particular scan are retrieved using the `getFieldValue()` and
- *     `getFieldString()` functions
+ *     corresponding entry in the BEAMLINE_CONFIG array (e.g. see `MetadataDisplay.tsx` for an example).
+ *      - Scan selector:
+ *        - Has pre-defined slots for data to go
+ *        - The config defines what field should go in which slot
+ *      - Full metadata display:
+ *        - Config defines the order of fields displayed, and whether they should be displayed in a pair
+ *  4. Values for a particular scan are retrieved using the `getFieldValue()` and `getFieldString()` functions
+ *     (e.g. see `MetadataDisplay.tsx` for an example).
  */
 
 /**
  * Type to describe how to display a pair of values in the UI
  */
 type MetadataPair = {
+  // Main title of DataCard
   title: string;
+
+  // Variant of DataCard to use
+  // (see sci-react-ui docs for what each variant looks like)
   variant: DataCardVariant;
+
+  // Optional override for value labels
+  // If not given, the label will be the field's title
   label1?: string;
   label2?: string;
+
+  // Fields to display
   value1: string;
   value2: string;
-  size?: number;
 };
 
 /**
@@ -160,6 +178,7 @@ export function getProcessedData(
     return [];
   }
 
+  // Fetch the corresponding schema
   const config = getSchemaConfig(
     data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema
   );
@@ -167,18 +186,21 @@ export function getProcessedData(
     return [];
   }
 
+  // Fetch data nodes
   const nodes = data.instrumentSessionByReference
     ? (data.instrumentSessionByReference?.datasets.edges.map(
         (x) => x.node
       ) as ScanNodeRaw[])
     : [];
 
+  // Function to turn scanRequest string into JSON object
   const parseScanRequest = (
     v: string | null | undefined
   ): { [key: object]: any } | null => {
     return v ? JSON.parse(v) : null;
   };
 
+  // Add the parsed scanRequest and beamline
   const intermediateNodes = nodes.map((x) => {
     return {
       ...x,
@@ -187,13 +209,16 @@ export function getProcessedData(
     };
   });
 
+  // Add the scanNumber, startTime, and endTime
   const processedScanNodes: ScanNodeProcessed[] = intermediateNodes.map((x) => {
     return {
       ...x,
-      // We get type errors here as `x` is a ScanNodeRaw object, but getFieldValue
-      // expects a ScanNodeProcessed object
-      // This is ok as getters for `scanNumber`, `startTime`, and `endTime` should
-      // work for both ScanNodeRaw and ScanNodeProcessed objects
+      // We get type errors here as getFieldValue expects `x` to be a ScanNodeProcessed object
+      // This is ok as:
+      //  1. The bits missing from a ScanNodeProcessed object are the `scanNumber`, `startTime`,
+      //     and `endTime` fields themselves
+      //  2. The getters for `scanNumber`, `startTime`, and `endTime` should work if these
+      //     fields are missing
       scanNumber: getFieldValue(config, x as ScanNodeProcessed, "scanNumber"),
       startTime: getFieldValue(config, x as ScanNodeProcessed, "startTime"),
       endTime: getFieldValue(config, x as ScanNodeProcessed, "endTime"),
