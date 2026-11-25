@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Stack,
   TextField,
@@ -27,6 +28,7 @@ import {
   DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
   I13180PipelineConfigurationComponentProps,
 } from "./I13180ParameterConfiguration";
+import { generateDistortionCorrectionCoefficientsFilepath } from "./utils";
 
 type I13180PaganinPipelineParameterConfig =
   | {
@@ -144,7 +146,193 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
     config: I13180360PaganinPipelineParameterConfig;
     setConfig: (_: I13180360PaganinPipelineParameterConfig) => void;
   }
-> = ({ magnification, config, setConfig }) => {
+> = ({ magnification, config, setConfig, visitDirpath, setParameters }) => {
+  const generatePipeline = () => {
+    const pipeline = [
+      {
+        method: "standard_tomo",
+        module_path: "httomo.data.hdf.loaders",
+        parameters: {
+          data_path: "auto",
+          image_key_path: "auto",
+          rotation_angles: "auto",
+          preview: null,
+          darks: null,
+          flats: null,
+          continuous_scan_subset: null,
+        },
+      },
+      {
+        method: "remove_outlier",
+        module_path: "httomolibgpu.misc.corr",
+        parameters: {
+          kernel_size: 3,
+          dif: 1000,
+        },
+      },
+      {
+        method: "dark_flat_field_correction",
+        module_path: "httomolibgpu.prep.normalize",
+        parameters: {
+          flats_multiplier: 1,
+          darks_multiplier: 1,
+          upper_bound: null,
+          lower_bound: null,
+        },
+      },
+      {
+        method: "distortion_correction_proj_discorpy",
+        module_path: "httomolibgpu.prep.alignment",
+        parameters: {
+          metadata_path: generateDistortionCorrectionCoefficientsFilepath(
+            visitDirpath,
+            magnification
+          ),
+          order: 3,
+          mode: "constant",
+        },
+      },
+    ];
+
+    if (config.degreesConfig.paganinMode === PaganinMode.Sweep) {
+      pipeline[0]["parameters"]["preview"] = {
+        detector_y: config.degreesConfig.parameters.loader,
+      };
+    }
+
+    if (config.degreesType === CenteringMethodType[180]) {
+      if (config.degreesConfig.centeringMode === CenteringMode.Auto) {
+        pipeline.push({
+          method: "find_center_vo",
+          module_path: "httomolibgpu.recon.rotation",
+          parameters: {
+            ind: null,
+            average_radius: 0,
+            cor_initialisation_value: null,
+            smin: config.degreesConfig.parameters.centering.smin,
+            smax: config.degreesConfig.parameters.centering.smax,
+            srad: 6,
+            step: 0.5,
+            ratio: 0.5,
+            drop: 20,
+          },
+
+          id: "centering",
+          side_outputs: {
+            cor: "centre_of_rotation",
+          },
+        });
+      }
+    } else {
+      // TODO: handle 360 case
+    }
+
+    pipeline.push(
+      {
+        method: "remove_stripe_based_sorting",
+        module_path: "httomolibgpu.prep.stripe",
+        parameters: {
+          size: 11,
+          dim: 1,
+        },
+      },
+      {
+        method: "paganin_filter",
+        module_path: "httomolibgpu.prep.phase",
+        parameters: {
+          ratio_delta_beta:
+            config.degreesConfig.parameters.paganin.ratioDeltaBeta,
+          pixel_size: config.degreesConfig.parameters.paganin.pixelSize,
+          distance: config.degreesConfig.parameters.paganin.distance,
+          energy: config.degreesConfig.parameters.paganin.energy,
+          calculate_padding_value_method: "next_power_of_2",
+          pad_x_y: null,
+        },
+      }
+    );
+
+    const generateReconMethod = (center: number | string | SweepParameters) => {
+      return {
+        method: "FBP3d_tomobar",
+        module_path: "httomolibgpu.recon.algorithm",
+        parameters: {
+          center: center,
+          detector_pad: false,
+          filter_freq_cutoff: 0.35,
+          recon_size: null,
+          recon_mask_radius: 0.95,
+        },
+        save_result: false,
+      };
+    };
+
+    if (config.degreesType === CenteringMethodType[180]) {
+      if (config.degreesConfig.centeringMode === CenteringMode.Auto) {
+        pipeline.push(
+          generateReconMethod("${{centering.side_outputs.centre_of_rotation}}")
+        );
+      } else if (config.degreesConfig.centeringMode === CenteringMode.Sweep) {
+        pipeline.push(
+          generateReconMethod({
+            start: config.degreesConfig.parameters.center.start,
+            stop: config.degreesConfig.parameters.center.stop,
+            step: config.degreesConfig.parameters.center.step,
+          })
+        );
+      } else {
+        pipeline.push(
+          generateReconMethod(config.degreesConfig.parameters.center)
+        );
+      }
+    } else {
+      // TODO: handle 360 case
+    }
+
+    if (config.degreesType === CenteringMethodType[180]) {
+      if (config.degreesConfig.paganinMode !== PaganinMode.Sweep) {
+        pipeline.push(
+          {
+            method: "calculate_stats",
+            module_path: "httomo.methods",
+            parameters: {},
+            id: "statistics",
+            side_outputs: {
+              glob_stats: "glob_stats",
+            },
+          },
+          {
+            method: "rescale_to_int",
+            module_path: "httomolib.misc.rescale",
+            parameters: {
+              perc_range_min: 1,
+              perc_range_max: 99,
+              bits: 16,
+              glob_stats: "${{statistics.side_outputs.glob_stats}}",
+            },
+          },
+          {
+            method: "save_to_images",
+            module_path: "httomolib.misc.images",
+            parameters: {
+              subfolder_name: "images",
+              axis: "auto",
+              file_format: "tif",
+              asynchronous: true,
+            },
+          }
+        );
+      }
+    } else {
+      // TODO: handle 360 case
+    }
+
+    return pipeline;
+  };
+
+  useEffect(() => {
+    setParameters(generatePipeline());
+  }, [magnification, config]);
+
   return (
     <>
       <Stack direction="row" spacing={2} display="flex" alignItems="center">
