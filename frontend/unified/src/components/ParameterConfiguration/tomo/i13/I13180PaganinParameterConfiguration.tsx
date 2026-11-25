@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Stack,
   TextField,
@@ -142,18 +141,10 @@ export type I13180360PaganinPipelineParameterConfig =
 export const I13180PaganinPipelineConfigurationComponent: React.FC<
   I13180PipelineConfigurationComponentProps & {
     magnification: typeof Magnification;
+    config: I13180360PaganinPipelineParameterConfig;
+    setConfig: (_: I13180360PaganinPipelineParameterConfig) => void;
   }
-> = ({ magnification }) => {
-  const [pipelineParameterConfig, setPipelineParameterConfig] =
-    useState<I13180PaganinPipelineParameterConfig>({
-      centeringMode: CenteringMode.Auto,
-      paganinMode: PaganinMode.Fixed,
-      parameters: {
-        centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-        paganin: getDefaultPaganin180FixedParameterValues(magnification),
-      },
-    });
-
+> = ({ magnification, config, setConfig }) => {
   return (
     <>
       <Stack direction="row" spacing={2} display="flex" alignItems="center">
@@ -161,7 +152,7 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
           <Typography>Paganin filter</Typography>
           <ToggleButtonGroup
             exclusive
-            value={pipelineParameterConfig.paganinMode}
+            value={config.degreesConfig.paganinMode}
             aria-label="i13-180-paganin-centering-mode-toggle"
             onChange={(
               _: React.MouseEvent<HTMLElement>,
@@ -169,25 +160,35 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
             ) => {
               if (newValue) {
                 if (newValue === "Fixed") {
-                  setPipelineParameterConfig({
-                    centeringMode: pipelineParameterConfig.centeringMode,
-                    paganinMode: PaganinMode.Fixed,
-                    parameters: {
-                      ...pipelineParameterConfig.parameters,
-                      paganin:
-                        getDefaultPaganin180FixedParameterValues(magnification),
+                  setConfig({
+                    degreesType: CenteringMethodType[180],
+                    degreesConfig: {
+                      centeringMode: config.degreesConfig.centeringMode,
+                      paganinMode: PaganinMode.Fixed,
+                      parameters: {
+                        ...config.degreesConfig.parameters,
+                        paganin:
+                          getDefaultPaganin180FixedParameterValues(
+                            magnification
+                          ),
+                      },
                     },
                   });
                 } else {
-                  setPipelineParameterConfig({
-                    centeringMode: pipelineParameterConfig.centeringMode,
-                    paganinMode: PaganinMode.Sweep,
-                    parameters: {
-                      ...pipelineParameterConfig.parameters,
-                      // TODO: deduplicate this information that is hardcoded elsewhere
-                      loader: { start: 589, stop: 599 },
-                      paganin:
-                        getDefaultPaganin180SweepParameterValues(magnification),
+                  setConfig({
+                    degreesType: CenteringMethodType[180],
+                    degreesConfig: {
+                      centeringMode: config.degreesConfig.centeringMode,
+                      paganinMode: PaganinMode.Sweep,
+                      parameters: {
+                        ...config.degreesConfig.parameters,
+                        // TODO: deduplicate this information that is hardcoded elsewhere
+                        loader: { start: 589, stop: 599 },
+                        paganin:
+                          getDefaultPaganin180SweepParameterValues(
+                            magnification
+                          ),
+                      },
                     },
                   });
                 }
@@ -202,18 +203,22 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
           </ToggleButtonGroup>
         </Stack>
       </Stack>
-      {pipelineParameterConfig.paganinMode === PaganinMode.Sweep && (
+      {config.degreesConfig.paganinMode === PaganinMode.Sweep && (
         <>
           <Stack direction="row" spacing={2} alignItems="center">
             <Typography>Loader / detector Y</Typography>
             <LoaderParameterConfiguration
-              parameters={pipelineParameterConfig.parameters.loader}
+              parameters={config.degreesConfig.parameters.loader}
               setParameters={(params) => {
-                setPipelineParameterConfig({
-                  ...pipelineParameterConfig,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    loader: params,
+                setConfig({
+                  degreesType: CenteringMethodType[180],
+                  degreesConfig: {
+                    centeringMode: config.degreesConfig.centeringMode,
+                    paganinMode: PaganinMode.Sweep,
+                    parameters: {
+                      ...config.degreesConfig.parameters,
+                      loader: params,
+                    },
                   },
                 });
               }}
@@ -223,17 +228,20 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
             <Typography>ratio_delta_beta</Typography>
             <ParameterSweepConfiguration
               parameters={
-                pipelineParameterConfig.parameters.paganin.ratioDeltaBeta
+                config.degreesConfig.parameters.paganin.ratioDeltaBeta
               }
               setParameters={(sweepParams) => {
-                setPipelineParameterConfig({
-                  centeringMode: pipelineParameterConfig.centeringMode,
-                  paganinMode: PaganinMode.Sweep,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    paganin: {
-                      ...pipelineParameterConfig.parameters.paganin,
-                      ratioDeltaBeta: sweepParams,
+                setConfig({
+                  degreesType: CenteringMethodType[180],
+                  degreesConfig: {
+                    centeringMode: config.degreesConfig.centeringMode,
+                    paganinMode: PaganinMode.Sweep,
+                    parameters: {
+                      ...config.degreesConfig.parameters,
+                      paganin: {
+                        ...config.degreesConfig.parameters.paganin,
+                        ratioDeltaBeta: sweepParams,
+                      },
                     },
                   },
                 });
@@ -242,22 +250,25 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
           </Stack>
         </>
       )}
-      {pipelineParameterConfig.paganinMode === PaganinMode.Fixed && (
+      {config.degreesConfig.paganinMode === PaganinMode.Fixed && (
         <TextField
           variant="outlined"
           size="small"
           label="ratio_delta_beta"
-          value={pipelineParameterConfig.parameters.paganin.ratioDeltaBeta}
+          value={config.degreesConfig.parameters.paganin.ratioDeltaBeta}
           type="number"
           onChange={(e) =>
-            setPipelineParameterConfig({
-              centeringMode: pipelineParameterConfig.centeringMode,
-              paganinMode: pipelineParameterConfig.paganinMode,
-              parameters: {
-                ...pipelineParameterConfig.parameters,
-                paganin: {
-                  ...pipelineParameterConfig.parameters.paganin,
-                  ratioDeltaBeta: Number(e.target.value),
+            setConfig({
+              degreesType: CenteringMethodType[180],
+              degreesConfig: {
+                centeringMode: config.degreesConfig.centeringMode,
+                paganinMode: PaganinMode.Fixed,
+                parameters: {
+                  ...config.degreesConfig.parameters,
+                  paganin: {
+                    ...config.degreesConfig.parameters.paganin,
+                    ratioDeltaBeta: Number(e.target.value),
+                  },
                 },
               },
             })
@@ -269,17 +280,20 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
           variant="outlined"
           size="small"
           label="distance"
-          value={pipelineParameterConfig.parameters.paganin.distance}
+          value={config.degreesConfig.parameters.paganin.distance}
           type="number"
           onChange={(e) =>
-            setPipelineParameterConfig({
-              centeringMode: pipelineParameterConfig.centeringMode,
-              paganinMode: pipelineParameterConfig.paganinMode,
-              parameters: {
-                ...pipelineParameterConfig.parameters,
-                paganin: {
-                  ...pipelineParameterConfig.parameters.paganin,
-                  distance: Number(e.target.value),
+            setConfig({
+              degreesType: CenteringMethodType[180],
+              degreesConfig: {
+                centeringMode: config.degreesConfig.centeringMode,
+                paganinMode: config.degreesConfig.paganinMode,
+                parameters: {
+                  ...config.degreesConfig.parameters,
+                  paganin: {
+                    ...config.degreesConfig.parameters.paganin,
+                    distance: Number(e.target.value),
+                  },
                 },
               },
             })
@@ -289,17 +303,20 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
           variant="outlined"
           size="small"
           label="energy"
-          value={pipelineParameterConfig.parameters.paganin.energy}
+          value={config.degreesConfig.parameters.paganin.energy}
           type="number"
           onChange={(e) =>
-            setPipelineParameterConfig({
-              centeringMode: pipelineParameterConfig.centeringMode,
-              paganinMode: pipelineParameterConfig.paganinMode,
-              parameters: {
-                ...pipelineParameterConfig.parameters,
-                paganin: {
-                  ...pipelineParameterConfig.parameters.paganin,
-                  energy: Number(e.target.value),
+            setConfig({
+              degreesType: CenteringMethodType[180],
+              degreesConfig: {
+                centeringMode: config.degreesConfig.centeringMode,
+                paganinMode: config.degreesConfig.paganinMode,
+                parameters: {
+                  ...config.degreesConfig.parameters,
+                  paganin: {
+                    ...config.degreesConfig.parameters.paganin,
+                    energy: Number(e.target.value),
+                  },
                 },
               },
             })
@@ -310,7 +327,7 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
         <Typography>Centering</Typography>
         <ToggleButtonGroup
           exclusive
-          value={pipelineParameterConfig.centeringMode}
+          value={config.degreesConfig.centeringMode}
           aria-label="i13-180-paganin-centering-mode-toggle"
           onChange={(
             _: React.MouseEvent<HTMLElement>,
@@ -318,21 +335,27 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
           ) => {
             if (newValue) {
               if (newValue === "Auto") {
-                setPipelineParameterConfig({
-                  centeringMode: CenteringMode.Auto,
-                  paganinMode: pipelineParameterConfig.paganinMode,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                setConfig({
+                  degreesType: CenteringMethodType[180],
+                  degreesConfig: {
+                    centeringMode: CenteringMode.Auto,
+                    paganinMode: config.degreesConfig.paganinMode,
+                    parameters: {
+                      ...config.degreesConfig.parameters,
+                      centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                    },
                   },
                 });
               } else {
-                setPipelineParameterConfig({
-                  centeringMode: CenteringMode.Fixed,
-                  paganinMode: pipelineParameterConfig.paganinMode,
-                  parameters: {
-                    ...pipelineParameterConfig.parameters,
-                    recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                setConfig({
+                  degreesType: CenteringMethodType[180],
+                  degreesConfig: {
+                    centeringMode: CenteringMode.Fixed,
+                    paganinMode: config.degreesConfig.paganinMode,
+                    parameters: {
+                      ...config.degreesConfig.parameters,
+                      recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                    },
                   },
                 });
               }
@@ -348,37 +371,43 @@ export const I13180PaganinPipelineConfigurationComponent: React.FC<
             ))}
         </ToggleButtonGroup>
       </Stack>
-      {pipelineParameterConfig.centeringMode === CenteringMode.Auto && (
+      {config.degreesConfig.centeringMode === CenteringMode.Auto && (
         <Centering180ParameterConfiguration
-          parameters={pipelineParameterConfig.parameters.centering}
+          parameters={config.degreesConfig.parameters.centering}
           setParameters={(params) =>
-            setPipelineParameterConfig({
-              centeringMode: CenteringMode.Auto,
-              paganinMode: pipelineParameterConfig.paganinMode,
-              parameters: {
-                ...pipelineParameterConfig.parameters,
-                centering: params,
+            setConfig({
+              degreesType: CenteringMethodType[180],
+              degreesConfig: {
+                centeringMode: CenteringMode.Auto,
+                paganinMode: config.degreesConfig.paganinMode,
+                parameters: {
+                  ...config.degreesConfig.parameters,
+                  centering: params,
+                },
               },
             })
           }
         />
       )}
 
-      {pipelineParameterConfig.centeringMode === CenteringMode.Fixed && (
+      {config.degreesConfig.centeringMode === CenteringMode.Fixed && (
         <TextField
           variant="outlined"
           size="small"
-          value={pipelineParameterConfig.parameters.recon.center}
+          value={config.degreesConfig.parameters.recon.center}
           label="centre of rotation"
           type="number"
           onChange={(e) =>
-            setPipelineParameterConfig({
-              paganinMode: pipelineParameterConfig.paganinMode,
-              centeringMode: CenteringMode.Fixed,
-              parameters: {
-                ...pipelineParameterConfig.parameters,
-                recon: {
-                  center: Number(e.target.value),
+            setConfig({
+              degreesType: CenteringMethodType[180],
+              degreesConfig: {
+                paganinMode: config.degreesConfig.paganinMode,
+                centeringMode: CenteringMode.Fixed,
+                parameters: {
+                  ...config.degreesConfig.parameters,
+                  recon: {
+                    center: Number(e.target.value),
+                  },
                 },
               },
             })

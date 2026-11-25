@@ -217,6 +217,13 @@ export const I13180PipelineConfigurationComponent: React.FC<
       ) : (
         <I13180PaganinPipelineConfigurationComponent
           magnification={magnification}
+          config={pipelineParameterConfig.pipelineConfig}
+          setConfig={(degreesConfig) => {
+            setPipelineParameterConfig({
+              pipelineType: PipelineType.Paganin,
+              pipelineConfig: degreesConfig,
+            });
+          }}
           visitDirpath={visitDirpath}
           setParameters={setParameters}
         />
