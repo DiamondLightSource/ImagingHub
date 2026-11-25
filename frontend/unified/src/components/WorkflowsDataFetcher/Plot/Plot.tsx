@@ -28,7 +28,7 @@ const imageIterator = (
 };
 
 type PlotProps = {
-  workflowName: string | null;
+  workflowName: string;
   queryData: ArtifactSelectorFragment;
 };
 
@@ -93,23 +93,8 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
     }
   }, [artifact]);
 
-  const displayArtifactSelectorOrNoWorkflowSelected = () => {
-    if (workflowName === null) {
-      return <p>No workflow selected</p>;
-    }
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <ArtifactSelector
-          key={workflowName}
-          setArtifact={setArtifact}
-          queryData={queryData}
-        />
-      </Suspense>
-    );
-  };
-
   const displayDataPlotterOrLoadingProgress = () => {
-    if (workflowName !== null && artifact !== null) {
+    if (artifact !== null) {
       if (
         artifactData !== null &&
         artifactData.length >= 1 &&
@@ -138,7 +123,13 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
 
   return (
     <>
-      {displayArtifactSelectorOrNoWorkflowSelected()}
+      <Suspense fallback={<div>Loading...</div>}>
+        <ArtifactSelector
+          key={workflowName}
+          setArtifact={setArtifact}
+          queryData={queryData}
+        />
+      </Suspense>
       {displayDataPlotterOrLoadingProgress()}
     </>
   );
