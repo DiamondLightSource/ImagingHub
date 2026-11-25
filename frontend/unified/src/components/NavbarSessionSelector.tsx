@@ -68,7 +68,7 @@ export const NavbarSessionSelector: React.FC<NavbarSessionSelectorProps> = ({
   useEffect(() => {
     if (data) {
       if (data.instrumentSessionByReference) {
-        const beamlineName = data.instrumentSessionByReference.instrument.name;
+        const beamlineName = data.instrumentSessionByReference.instrument.key;
         if (Object.keys(Beamline).includes(beamlineName)) {
           setBeamline(beamlineName);
           setAppStatus({

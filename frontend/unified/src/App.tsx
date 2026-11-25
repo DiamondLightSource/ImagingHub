@@ -52,7 +52,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
 
   const sessionRef = `${selectedVisit.proposalCode}${selectedVisit.proposalNumber}-${selectedVisit.number}`;
 
-  const beamline = Beamline[session.instrument.name as keyof typeof Beamline];
+  const beamline = Beamline[session.instrument.key as keyof typeof Beamline];
 
   // Clear selected scan IDs when session changes
   useEffect(() => {
