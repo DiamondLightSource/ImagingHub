@@ -10,15 +10,18 @@ import {
 import { ChevronDown } from "lucide-react";
 import WorkflowDataViewer from "./WorkflowDataViewer";
 import { WorkflowsList } from "./WorkflowsList/WorkflowsList";
-import { WorkflowsViewMode } from "../../types";
+import { SelectedScans, WorkflowsViewMode } from "../../types";
+import { MetadataDisplay } from "../MetadataDisplay";
 import WorkflowsTable from "./WorkflowsTable/WorkflowsTable";
 
 const WorkflowsDataFetcher = ({
   visit,
   workflowsViewMode,
+  selectedScans,
 }: {
   visit: Visit;
   workflowsViewMode: WorkflowsViewMode;
+  selectedScans: SelectedScans;
 }) => {
   const [selectedWorkflowName, setSelectedWorkflowName] = useState<
     string | null
@@ -33,6 +36,7 @@ const WorkflowsDataFetcher = ({
         {workflowsViewMode === WorkflowsViewMode.Table ? (
           <Stack display="flex" direction="row">
             <Stack display="flex" flexGrow={1} direction="column">
+              <MetadataDisplay selectedScans={selectedScans} maxColumns={5} />
               <Accordion defaultExpanded>
                 <AccordionSummary id="jobs" expandIcon={<ChevronDown />}>
                   <Typography variant="h5">Jobs</Typography>
@@ -65,13 +69,16 @@ const WorkflowsDataFetcher = ({
                 setSelectedWorkflowName={setSelectedWorkflowName}
               />
             </Stack>
-            {selectedWorkflowId && selectedWorkflowName && (
-              <WorkflowDataViewer
-                visit={visit}
-                selectedWorkflowId={selectedWorkflowId}
-                selectedWorkflowName={selectedWorkflowName}
-              />
-            )}
+            <Stack flexGrow={2}>
+              <MetadataDisplay selectedScans={selectedScans} maxColumns={4} />
+              {selectedWorkflowId && selectedWorkflowName && (
+                <WorkflowDataViewer
+                  visit={visit}
+                  selectedWorkflowId={selectedWorkflowId}
+                  selectedWorkflowName={selectedWorkflowName}
+                />
+              )}
+            </Stack>
           </Stack>
         )}
       </Suspense>

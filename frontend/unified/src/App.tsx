@@ -179,6 +179,7 @@ export const App: React.FC<AppProps> = ({ session }: AppProps) => {
               <WorkflowsDataFetcher
                 visit={selectedVisit}
                 workflowsViewMode={workflowsViewMode}
+                selectedScans={selectedScans}
               />
             </ApolloProvider>
           </Box>
