@@ -59,8 +59,10 @@ type MetadataPair = {
 
 /**
  * Type guard to check if a {MetadataPair | string} object is a MetadataPair
- * @param v - MetadataPair | string value
- * @returns true if MetadataPair, false otherwise
+ *
+ * @export
+ * @param {(MetadataPair | string)} v - {MetadataPair | string} value
+ * @returns {v is MetadataPair} true if MetadataPair, false otherwise
  */
 export function isMetadataPair(v: MetadataPair | string): v is MetadataPair {
   return (v as MetadataPair).title != undefined;
@@ -72,6 +74,8 @@ export function isMetadataPair(v: MetadataPair | string): v is MetadataPair {
  * e.g. take a date in string format and return a Date object that we can do further computation on
  *
  * These functions should return `null` if the value does not exist
+ *
+ * @type {({ [key: string]: (v: any) => any | null })}
  */
 const GETTER: { [key: string]: (v: any) => any | null } = {
   DATE: (v) => {
@@ -85,6 +89,8 @@ const GETTER: { [key: string]: (v: any) => any | null } = {
  * getter function), and output a string for display in a UI
  *
  * If the input value is null, then the output value should also be null
+ *
+ * @type {({ [key: string]: (v: any) => string | null })}
  */
 const FORMATTER: { [key: string]: (v: any) => string | null } = {
   DATETIME: (v) =>
@@ -143,8 +149,10 @@ export type SchemaConfig = {
 
 /**
  * Fetches the schema configuration corresponding to the given schema URL
- * @param schema - URL of schema (usually points to ULIMS JSON schema repo)
- * @returns Corresponding SchemaConfig if found, null otherwise
+ *
+ * @export
+ * @param {(string | null | undefined)} schema - URL of schema (usually points to ULIMS JSON schema repo)
+ * @returns {(SchemaConfig | null)} Corresponding SchemaConfig if found, null otherwise
  */
 export function getSchemaConfig(
   schema: string | null | undefined
@@ -168,8 +176,10 @@ export function getSchemaConfig(
 
 /**
  * Processes raw InstrumentSessionQuery data and returns parsed ScanNodeProcessed data.
- * @param data - Raw InstrumentSessionQuery data from Apollo
- * @returns Array of parsed ScanNodeProcessed objects
+ *
+ * @export
+ * @param {(InstrumentSessionQuery | null | undefined)} data - Raw InstrumentSessionQuery data from Apollo
+ * @returns {ScanNodeProcessed[]} Array of parsed ScanNodeProcessed objects
  */
 export function getProcessedData(
   data: InstrumentSessionQuery | null | undefined
@@ -231,9 +241,10 @@ export function getProcessedData(
 /**
  * Helper function to fetch the scan number. If `nexusScanNumber` is not provided, then
  * it will attempt to extract the scan number from the Nexus file name using a Regex
- * @param data - A single ScanNodeProcessed object whose scan number we'd like to retrieve
- * @param nexusScanNumber - Scan number retrieved from within the Nexus file
- * @returns The scan number
+ *
+ * @param {ScanNodeProcessed} data - A single ScanNodeProcessed object whose scan number we'd like to retrieve
+ * @param {?(string | null)} [nexusScanNumber] - Scan number retrieved from within the Nexus file
+ * @returns {number} The scan number
  */
 function getScanNumber(
   data: ScanNodeProcessed,
@@ -249,9 +260,11 @@ function getScanNumber(
 
 /**
  * Helper function to fetch a field value
- * @param config Config corresponding the current session
- * @param data Parsed ScanNodeProcessed object that we'd like to retrieve data from
- * @param field Name of the field to retrieve from data
+ *
+ * @export
+ * @param {SchemaConfig} config - Config corresponding the current session
+ * @param {ScanNodeProcessed} data - Parsed ScanNodeProcessed object that we'd like to retrieve data from
+ * @param {string} field - Name of the field to retrieve from data
  * @returns The value of the given field
  */
 export function getFieldValue(
@@ -266,10 +279,12 @@ export function getFieldValue(
 /**
  * Helper function to fetch a field string. Will fetch the value, then run the
  * value through its formatter to get a UI-friendly string
- * @param config Config corresponding to the current session
- * @param data Parsed ScanNodeProcessed object that we'd like to retrieve data from
- * @param field The value of the given field
- * @returns The formatted value of the given field
+ *
+ * @export
+ * @param {(SchemaConfig | null)} config - Config corresponding to the current session
+ * @param {ScanNodeProcessed} data - Parsed ScanNodeProcessed object that we'd like to retrieve data from
+ * @param {(string | null | undefined)} field - The value of the given field
+ * @returns {(string | null)} - The formatted value of the given field
  */
 export function getFieldString(
   config: SchemaConfig | null,
