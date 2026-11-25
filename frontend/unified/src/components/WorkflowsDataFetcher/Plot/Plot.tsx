@@ -1,6 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
 import { ArtifactSelector, Artifact } from "./ArtifactSelector";
-import { Switch } from "@mui/material";
 import { NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
 import { decode } from "fast-png";
@@ -40,7 +39,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
     null
   );
   const [totalImages, setTotalImages] = useState<number | null>(null);
-  const [isPlottingEnabled, setIsPlottingEnabled] = useState<boolean>(false);
 
   // TODO: straightforward way to have the plot component toggle keep its value when the
   // selected workflow changes, but the artifact data is reset to avoid potentially
@@ -96,25 +94,22 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
   }, [artifact]);
 
   const displayArtifactSelectorOrNoWorkflowSelected = () => {
-    if (isPlottingEnabled) {
-      if (workflowName === null) {
-        return <p>No workflow selected</p>;
-      }
-      return (
-        <Suspense fallback={<div>Loading...</div>}>
-          <ArtifactSelector
-            key={workflowName}
-            setArtifact={setArtifact}
-            isPlottingEnabled={isPlottingEnabled}
-            queryData={queryData}
-          />
-        </Suspense>
-      );
+    if (workflowName === null) {
+      return <p>No workflow selected</p>;
     }
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ArtifactSelector
+          key={workflowName}
+          setArtifact={setArtifact}
+          queryData={queryData}
+        />
+      </Suspense>
+    );
   };
 
   const displayDataPlotterOrLoadingProgress = () => {
-    if (isPlottingEnabled && workflowName !== null && artifact !== null) {
+    if (workflowName !== null && artifact !== null) {
       if (
         artifactData !== null &&
         artifactData.length >= 1 &&
@@ -143,12 +138,6 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
 
   return (
     <>
-      <Switch
-        size="small"
-        checked={isPlottingEnabled}
-        onChange={() => setIsPlottingEnabled(!isPlottingEnabled)}
-        slotProps={{ input: { "aria-label": "controlled" } }}
-      />
       {displayArtifactSelectorOrNoWorkflowSelected()}
       {displayDataPlotterOrLoadingProgress()}
     </>
