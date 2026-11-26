@@ -1,6 +1,8 @@
-import { Box, TableCell, Typography } from "@mui/material";
-import { Eye } from "lucide-react";
+import { Box, IconButton, TableCell, Tooltip, Typography } from "@mui/material";
+import { Eye, Link2 } from "lucide-react";
 import { useFragment } from "@apollo/client/react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
+
 import { getWorkflowStatusIcon } from "./StatusIcons";
 import { WorkflowsTableRow } from "./WorkflowsTableRow";
 import { BASETABLEROW_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/BaseTableRowFragment";
@@ -8,11 +10,13 @@ import { TableRowWrapperFragment } from "../../../graphql/WorkflowDataFetcher/Wo
 import { BaseTableRowFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/BaseTableRowFragment.generated";
 
 const BaseTableRow = ({
+  visit,
   queryData,
   selectedWorkflowId,
   setSelectedWorkflowId,
   setSelectedWorkflowName,
 }: {
+  visit: Visit;
   queryData: TableRowWrapperFragment;
   selectedWorkflowId: string | null;
   setSelectedWorkflowId: (_: string | null) => void;
@@ -23,6 +27,12 @@ const BaseTableRow = ({
     fragmentName: "BaseTableRowFragment",
     from: queryData,
   });
+  const urlBase = import.meta.env.VITE_WORKFLOWS_GRAPHQL_HTTP_ENDPOINT.replace(
+    "/graphql",
+    ""
+  );
+  const currentVisit = `${visit.proposalCode}${visit.proposalNumber}-${visit.number}`;
+  const workflowURL = `${urlBase}/workflows/${currentVisit}/${data.id}`;
 
   return (
     <WorkflowsTableRow
@@ -70,7 +80,17 @@ const BaseTableRow = ({
         {getWorkflowStatusIcon(data.status?.__typename ?? "Unknown")}
       </TableCell>
       <TableCell></TableCell>
-      <TableCell></TableCell>
+      <TableCell>
+        <Tooltip title="Link to workflow">
+          <IconButton
+            aria-label="Link to workflow"
+            href={workflowURL}
+            target="_blank" // Open in tab
+          >
+            <Link2 />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
     </WorkflowsTableRow>
   );
 };
