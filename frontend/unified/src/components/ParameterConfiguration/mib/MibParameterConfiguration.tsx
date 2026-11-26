@@ -10,16 +10,16 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TemplateComponentProps } from "../../types";
+import { TemplateComponentProps } from "../../../types";
 
 export const MibParameterConfiguration = ({
   setParameters,
 }: TemplateComponentProps) => {
   const [sample, setSample] = useState<string>("");
-  const [sigBinning, setSigBinning] = useState<string>("4");
-  const [navBinning, setNavBinning] = useState<string>("4");
-  const [dimX, setDimX] = useState<string>("256");
-  const [dimY, setDimY] = useState<string>("256");
+  const [sigBinning, setSigBinning] = useState<number>(4);
+  const [navBinning, setNavBinning] = useState<number>(4);
+  const [dimX, setDimX] = useState<number>(256);
+  const [dimY, setDimY] = useState<number>(256);
 
   const [mibIndex, setmibIndex] = useState(0);
   const mibMethods = ["Auto", "None", "Fly-back", "By known shape"];
@@ -106,14 +106,14 @@ export const MibParameterConfiguration = ({
             value={sigBinning}
             type="number"
             size="small"
-            onChange={(e) => setSigBinning(e.target.value)}
+            onChange={(e) => setSigBinning(Number(e.target.value))}
           />
           <TextField
             label="Navigation Binning factor (scan)"
             value={navBinning}
             type="number"
             size="small"
-            onChange={(e) => setNavBinning(e.target.value)}
+            onChange={(e) => setNavBinning(Number(e.target.value))}
           />
           {roxColComponent ? (
             <>
@@ -122,14 +122,14 @@ export const MibParameterConfiguration = ({
                 value={dimX}
                 type="number"
                 size="small"
-                onChange={(e) => setDimX(e.target.value)}
+                onChange={(e) => setDimX(Number(e.target.value))}
               />
               <TextField
                 label="Dimension in y (col)"
                 value={dimY}
                 type="number"
                 size="small"
-                onChange={(e) => setDimY(e.target.value)}
+                onChange={(e) => setDimY(Number(e.target.value))}
               />
             </>
           ) : (
