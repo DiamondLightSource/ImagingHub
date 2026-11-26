@@ -108,8 +108,10 @@ const InspectLogMeta = ({
         onClick={async () => {
           if (logUrl) {
             openInNewTab(logUrl);
-            const resp = await fetch(logUrl);
-            console.log("response to fetching log is: ", resp);
+            fetch(logUrl)
+              .then((resp) => resp.blob())
+              .then((blob) => blob.text())
+              .then((contents) => console.log(contents));
           }
         }}
       >
