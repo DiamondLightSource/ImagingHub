@@ -23,11 +23,7 @@ import {
 
 export const SyntheticDataParameterConfiguration: React.FC<
   TemplateComponentProps
-> = ({
-  setParameters,
-  setResourceParameters,
-  visitDirpath,
-}: TemplateComponentProps) => {
+> = ({ setParameters, visitDirpath }: TemplateComponentProps) => {
   const [loaderPreview, setLoaderPreview] =
     useState<MinimalLoaderPreviewParameters>({
       start: 100,
@@ -184,10 +180,6 @@ export const SyntheticDataParameterConfiguration: React.FC<
       config: generatePipeline(),
       output: visitDirpath + outputFolder,
       "httomo-outdir-name": httomoOutdirName,
-    });
-    setResourceParameters({
-      nprocs: 4,
-      memory: "20Gi",
     });
   }, [
     loaderPreview,
