@@ -2,7 +2,7 @@ import { Visit, visitToText } from "@diamondlightsource/sci-react-ui";
 import { Beamline, ResourceParameters } from "../../../types";
 
 const DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS = {
-  [Beamline.DIAD]: "nexus",
+  [Beamline.K11]: "nexus",
   [Beamline["I08-1"]]: "nexus",
   [Beamline.I12]: "rawdata",
   [Beamline["I13-1"]]: "raw",
@@ -20,7 +20,7 @@ export const determineBeamlineRawDataFilepath = (
       beamline as keyof typeof DLS_FILESYSTEM_BEAMLINE_RAW_DATA_DIR_MAPPINGS
     ];
   const scanFilename =
-    beamline === Beamline.DIAD ? `k11-${scanId}` : `${scanId}`;
+    beamline === Beamline.K11 ? `k11-${scanId}` : `${scanId}`;
   return `${visitDirpath}${rawDataDirname}/${scanFilename}.nxs`;
 };
 

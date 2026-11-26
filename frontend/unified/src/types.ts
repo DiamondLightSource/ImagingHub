@@ -23,7 +23,7 @@ export { Technique };
  * filesystem
  */
 const Beamline = {
-  DIAD: "k11",
+  K11: "k11",
   E01: "e01",
   E02: "e02",
   "I08-1": "i08-1",
@@ -37,7 +37,7 @@ type Beamline = (typeof Beamline)[keyof typeof Beamline];
 export { Beamline };
 
 export const BEAMLINE_TECHNIQUES_SUBSET = {
-  [Beamline.DIAD]: [Technique.Httomo],
+  [Beamline.K11]: [Technique.Httomo],
   [Beamline.I12]: [Technique.Httomo],
   [Beamline["I08-1"]]: [Technique.Ptycho, Technique.Ptypy],
   [Beamline["I13-1"]]: [
@@ -65,7 +65,7 @@ export const BEAMLINE_TECHNIQUES_SUBSET = {
 };
 
 export const BEAMLINES_DEFAULT_TECHNIQUE = {
-  [Beamline.DIAD]: Technique.Httomo,
+  [Beamline.K11]: Technique.Httomo,
   [Beamline.E02]: Technique.Mib,
   [Beamline.E01]: Technique.Ptyrex,
   [Beamline.I12]: Technique.Httomo,
