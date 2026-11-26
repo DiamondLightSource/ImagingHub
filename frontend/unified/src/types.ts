@@ -7,7 +7,6 @@ const Technique = {
   Dpc: "Dpc",
   Nbed: "Nbed",
   Mib: "Mib",
-  Ptycho: "Ptycho",
   Ptyrex: "Ptyrex",
   Ptypy: "Ptypy",
   Httomo: "Httomo",
@@ -39,7 +38,7 @@ export { Beamline };
 export const BEAMLINE_TECHNIQUES_SUBSET = {
   [Beamline.K11]: [Technique.Httomo],
   [Beamline.I12]: [Technique.Httomo],
-  [Beamline["I08-1"]]: [Technique.Ptycho, Technique.Ptypy],
+  [Beamline["I08-1"]]: [Technique.Ptypy],
   [Beamline["I13-1"]]: [
     Technique.Dpc,
     Technique.Ptyrex,
@@ -47,7 +46,7 @@ export const BEAMLINE_TECHNIQUES_SUBSET = {
     Technique.Xanes,
     Technique.Xrd,
   ],
-  [Beamline["I13"]]: [Technique.Ptycho, Technique.Httomo],
+  [Beamline["I13"]]: [Technique.Httomo],
   [Beamline.I14]: [
     Technique.Dpc,
     Technique.Xanes,
@@ -69,8 +68,8 @@ export const BEAMLINES_DEFAULT_TECHNIQUE = {
   [Beamline.E02]: Technique.Mib,
   [Beamline.E01]: Technique.Ptyrex,
   [Beamline.I12]: Technique.Httomo,
-  [Beamline["I08-1"]]: Technique.Ptycho,
-  [Beamline["I13-1"]]: Technique.Ptycho,
+  [Beamline["I08-1"]]: Technique.Ptypy,
+  [Beamline["I13-1"]]: Technique.Ptyrex,
   [Beamline["I13"]]: Technique.Httomo,
   [Beamline.I14]: Technique.Dpc,
   [Beamline["P99 TEST"]]: Technique.Ptypy,
