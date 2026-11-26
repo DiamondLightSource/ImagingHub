@@ -46,7 +46,6 @@ export const getParamConfigComponent = (
         <MibParameterConfiguration setParameters={setTemplateParameters} />
       ),
     },
-    [Technique.Ptycho]: {},
     [Technique.Ptypy]: {
       "ptypy-i08-1-nexus": (
         <Suspense fallback={<p>Fetching workflow template...</p>}>
