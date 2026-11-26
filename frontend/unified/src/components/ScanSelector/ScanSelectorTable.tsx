@@ -19,7 +19,7 @@ import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 import { PageInfo, ScanNodeProcessed, SelectedScans } from "../../types";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import {
-  getBeamlineConfig,
+  getSchemaConfig,
   getFieldString,
   getFieldValue,
   getProcessedData,
@@ -254,7 +254,7 @@ export const ScanSelectorTable = ({
     });
   }, [sortDirection]);
 
-  const config = getBeamlineConfig(
+  const config = getSchemaConfig(
     data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema
   );
   const processedNodes = data ? getProcessedData(data) : [];

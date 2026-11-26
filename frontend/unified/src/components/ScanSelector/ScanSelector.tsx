@@ -16,7 +16,7 @@ import { useQuery } from "@apollo/client/react";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import { ScanDateRange, ScanNodeProcessed, SelectedScans } from "../../types";
-import { getBeamlineConfig } from "../../beamline.config";
+import { getSchemaConfig } from "../../beamline.config";
 
 function multiSelect(
   data: ScanNodeProcessed[],
@@ -77,7 +77,7 @@ export const ScanSelector = ({
   const schema =
     data?.instrumentSessionByReference?.datasets?.edges?.[0]?.node?.dataSchema;
 
-  const beamlineConfig = schema ? getBeamlineConfig(schema) : null;
+  const beamlineConfig = schema ? getSchemaConfig(schema) : null;
   const startTimePath = beamlineConfig?.startTimePath;
 
   const filter: DatasetFilterInput | undefined =

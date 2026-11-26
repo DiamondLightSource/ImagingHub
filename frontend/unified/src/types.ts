@@ -147,6 +147,7 @@ type NodeData = NonNullable<
 >["datasets"]["edges"][0]["node"];
 
 export type ScanNodeRaw = Omit<Omit<NodeData, "data">, "scanNumber"> & {
+  // Data is the main scan data returned by the graph
   data: { [key: string]: any };
 };
 
@@ -155,6 +156,8 @@ export type ScanNodeProcessed = ScanNodeRaw & {
   beamline: string | null;
   startTime: Date | null;
   endTime: Date | null;
+
+  // Pull out the parsed scanRequest into the top level
   scanRequest: { [key: string]: any } | null;
 };
 
