@@ -15,11 +15,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setSelectedScans,
   sessionRef,
 }: SidebarProps) => {
-  const [useLegacySelector, setUseLegacySelector] = useState<boolean>(false);
+  const [useNewSelector, setUseNewSelector] = useState<boolean>(false);
 
   return (
     <>
-      {useLegacySelector ? (
+      {!useNewSelector ? (
         <Box p={2} flex={1}>
           <ScanSelectorLegacy
             scanIds={selectedScans.scans.map((v) => v.scanNumber)}
@@ -40,13 +40,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         spacing={1}
       >
         <Typography variant="subtitle2" sx={{ color: "text.muted" }}>
-          Legacy scan selector
+          New scan selector
         </Typography>
         <Switch
           size="small"
-          color="warning"
-          checked={useLegacySelector}
-          onChange={(_, checked) => setUseLegacySelector(checked)}
+          color="primary"
+          checked={useNewSelector}
+          onChange={(_, checked) => setUseNewSelector(checked)}
         />
       </Stack>
     </>
