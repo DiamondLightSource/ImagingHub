@@ -9,12 +9,7 @@ import {
   Menu,
 } from "@mui/material";
 import { ChevronDown, X } from "lucide-react";
-import {
-  SORT_OPTIONS,
-  SortDirection,
-  type RowSelectionState,
-} from "./ScanSelectorTable";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -22,12 +17,19 @@ import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
 import utc from "dayjs/plugin/utc";
 import { ScanDateRange } from "../../types";
+import { RowSelectionState, SortDirection, SORT_OPTIONS } from "./types";
 
 dayjs.extend(utc);
 
 const ALL_DATES_TEXT = "All dates";
 
-function formatDate(date: Date | undefined | null) {
+/**
+ * Format a JS Date object to UTC string
+ *
+ * @param {(Date | undefined | null)} date - Date object
+ * @returns {string} - String representation of Date object
+ */
+function formatDate(date: Date | undefined | null): string {
   if (date) {
     return date.toLocaleString(undefined, { timeZone: "UTC" });
   }
@@ -46,6 +48,23 @@ type ScanSelectorHeaderProps = {
   dateRangeFilter: ScanDateRange;
   setDateRangeFilter: (v: ScanDateRange) => void;
 };
+
+/**
+ * Scan selector header. Has scan number search, date filers, and selected row count
+ *
+ * @param {ScanSelectorHeaderProps} props Scan selector header props
+ * @param {RowSelectionState} props.rowSelection - Current row selection
+ * @param {number} props.totalCount - Total number of rows available
+ * @param {(v: SortDirection) => void} props.setSortDirection - Callback for when sort direction changes
+ * @param {SortDirection} props.sortDirection - Current sort direction
+ * @param {(v: string) => void} props.setSearchString - Callback for when scan number search string changes
+ * @param {string} props.searchString - Current scan number search string
+ * @param {Date | null} props.startDate - Session start date
+ * @param {Date | null} props.endDate - Session end date
+ * @param {ScanDateRange} props.dateRangeFilter - Current date range for filter
+ * @param {(v: ScanDateRange) => void} props.setDateRangeFilter - Callback for when date range on filter changes
+ * @returns {React.JSX.Element} - Scan selector header component
+ */
 export const ScanSelectorHeader = ({
   rowSelection,
   totalCount,
@@ -57,7 +76,7 @@ export const ScanSelectorHeader = ({
   endDate,
   dateRangeFilter,
   setDateRangeFilter,
-}: ScanSelectorHeaderProps) => {
+}: ScanSelectorHeaderProps): React.JSX.Element => {
   const summaryRef = useRef<HTMLSpanElement>(null);
 
   const selected = Object.entries(rowSelection).filter(

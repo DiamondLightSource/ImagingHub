@@ -3,12 +3,8 @@
   This version adds support for infinite scroll and virtualisation
 */
 
-import { useRef, useState } from "react";
-import {
-  ScanSelectorTable,
-  type RowSelectionState,
-  SortDirection,
-} from "./ScanSelectorTable";
+import React, { useRef, useState } from "react";
+import { ScanSelectorTable } from "./ScanSelectorTable";
 import { ScanSelectorHeader } from "./ScanSelectorHeader";
 import { ScanSelectorFooter } from "./ScanSelectorFooter";
 import { Box } from "@mui/material";
@@ -17,7 +13,17 @@ import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
 import { DatasetFilterInput } from "../../../../src/__generated__/types";
 import { ScanDateRange, ScanNodeProcessed, SelectedScans } from "../../types";
 import { getBeamlineConfig } from "../../beamline.config";
+import { RowSelectionState, SortDirection } from "./types";
 
+/**
+ * Helper function to select all rows between two IDs
+ *
+ * @param {ScanNodeProcessed[]} data - Data loaded into the scan selector
+ * @param {number} startId - ID of the row with the *lowest* index
+ * @param {number} endId - ID of the row with the *highest* index
+ * @param {RowSelectionState} rowSelectionState - Current row selection state
+ * @returns {RowSelectionState} - New row selection state
+ */
 function multiSelect(
   data: ScanNodeProcessed[],
   startId: number,
@@ -40,10 +46,19 @@ type ScanSelectorProps = {
   sessionRef: string;
   setSelectedScans: (v: SelectedScans) => void;
 };
+
+/**
+ * Scan selector component
+ *
+ * @param {ScanSelectorProps} props - ScanSelector props
+ * @param {string} props.sessionRef - Session reference of current session
+ * @param {(v: SelectedScans) => void} props.setSelectedScans - Callback that gets called when the selected scans is changed
+ * @returns {React.JSX.Element} Component
+ */
 export const ScanSelector = ({
   sessionRef,
   setSelectedScans,
-}: ScanSelectorProps) => {
+}: ScanSelectorProps): React.JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<RowSelectionState>({});
   const previousRow = useRef<{ id: number; idx: number } | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("newest");

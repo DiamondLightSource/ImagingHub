@@ -12,7 +12,7 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { forwardRef, useEffect, useRef } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { TableVirtuoso, type TableComponents } from "react-virtuoso";
 import { Progress } from "@diamondlightsource/sci-react-ui";
 import { INSTRUMENTSESSION_QUERY } from "../../graphql/InstrumentSessionQuery";
@@ -25,26 +25,11 @@ import {
   getProcessedData,
   SchemaConfig,
 } from "../../beamline.config";
+import { SortDirection, RowSelectionState } from "./types";
 
 const FIRST_LINE = 28;
 const SELECTED_SHADOW =
   "inset 3px 0 0 var(--ds-primary), inset 0 0 0 9999px var(--ds-overlay-selected)";
-
-const SortDirection = {
-  NEWEST: "newest",
-  OLDEST: "oldest",
-} as const;
-type SortDirection = (typeof SortDirection)[keyof typeof SortDirection];
-export { SortDirection };
-
-export interface SortOption {
-  value: SortDirection;
-  label: string;
-}
-export const SORT_OPTIONS = [
-  { value: "newest", label: "Newest first" },
-  { value: "oldest", label: "Oldest first" },
-] as const satisfies readonly SortOption[];
 
 type ScanCardProps = {
   data: ScanNodeProcessed;
@@ -55,12 +40,26 @@ type ScanCardProps = {
     checkboxEvent: boolean
   ) => void;
 };
+
+/**
+ * Card component for scan selector. A selectable component that displays information about a single scan
+ *
+ * @param {ScanCardProps} props - ScanCard props
+ * @param {ScanNodeProcessed} props.data - Data for a single scan
+ * @param {SchemaConfig | null} props.config - Schema config for this scan
+ * @param {boolean} props.isSelected - Is the current card selected?
+ * @param {(
+ *  e: React.MouseEvent<HTMLElement, MouseEvent>,
+ *  checkboxEvent: boolean
+ * ) => void} props.onRowClick - Callback for when the card/checkbox is clicked
+ * @returns {React.JSX.Element} ScanCard component
+ */
 export const ScanCard = ({
   data,
   config,
   isSelected,
   onRowClick,
-}: ScanCardProps) => {
+}: ScanCardProps): React.JSX.Element => {
   const scanSelectorUi = config?.ui?.scanSelector;
   const title = getFieldString(config, data, scanSelectorUi?.title);
   const item1 = getFieldString(config, data, scanSelectorUi?.item1);
@@ -142,6 +141,9 @@ export const ScanCard = ({
   );
 };
 
+// Use react-virtuoso for virtualisation
+// This improves performance when dealing with large numbers of scans,
+// and makes infinite scroll easy
 const VirtuosoTableComponents: TableComponents<ScanNodeProcessed> = {
   Scroller: forwardRef<HTMLDivElement>((props, ref) => (
     <TableContainer
@@ -166,8 +168,6 @@ const VirtuosoTableComponents: TableComponents<ScanNodeProcessed> = {
   )),
 };
 
-export type RowSelectionState = { [key: number]: boolean };
-
 type ScanSelectorTableProps<T> = {
   sessionRef: string;
   onClick: (
@@ -186,6 +186,29 @@ type ScanSelectorTableProps<T> = {
   setSelectedScans: (v: SelectedScans) => void;
   filter?: DatasetFilterInput | null;
 };
+
+/**
+ * Scan selector table. Displays all scans for a session in a list.
+ *
+ * @param {ScanSelectorTableProps<ScanNodeProcessed>} props - Scan selector table props
+ * @param {string} props.sessionRef - Session reference for the current session
+ * @param {(
+ *  event: React.MouseEvent<HTMLElement, MouseEvent>,   Click event
+ *  prev: RowSelectionState,                            Current row selection state
+ *  index: number,                                      Index of currently selected row
+ *  row: ScanNodeProcessed,                             Data corresponding to the row selected
+ *  checkboxClick: boolean,                             True if MouseEvent event was triggered by the checkbox
+ *  data: ScanNodeProcessed[]                           All data loaded into the table
+ * ) => RowSelectionState} param0.onClick - Callback for when a row is clicked.
+ * @param {RowSelectionState} props.rowSelection - Current row selection state
+ * @param {(v: RowSelectionState) => void} props.onRowSelectionChange - Callback for when the row selection state is changed
+ * @param {SortDirection} props.sortDirection - Current sort direction
+ * @param {(v: boolean) => void} props.setLoadMore - Set whether more data is currently being loaded
+ * @param {(v: number) => void} props.setTotalLoaded - Set the total number of scans loaded
+ * @param {(v: SelectedScans) => void} props.setSelectedScans - Callback for when the selected scans has changed
+ * @param {DatasetFilterInput | null} props.filter - Filter to use with the graph query
+ * @returns {React.JSX.Element} - Scan selector table componenet
+ */
 export const ScanSelectorTable = ({
   sessionRef,
   onClick,
@@ -196,7 +219,7 @@ export const ScanSelectorTable = ({
   setTotalLoaded,
   setSelectedScans,
   filter,
-}: ScanSelectorTableProps<ScanNodeProcessed>) => {
+}: ScanSelectorTableProps<ScanNodeProcessed>): React.JSX.Element => {
   const descPage = useRef<PageInfo | null>(null);
   const ascPage = useRef<PageInfo | null>(null);
 
@@ -210,7 +233,7 @@ export const ScanSelectorTable = ({
   };
 
   const isDescSort = (v: SortDirection) => v === SortDirection.NEWEST;
-  const FETCH_SIZE = 30;
+  const FETCH_SIZE = 30; // Max. fetch size from graph is 50. Choice of 30 is arbitrary
 
   const { data, loading, fetchMore, client } = useQuery(
     INSTRUMENTSESSION_QUERY,
