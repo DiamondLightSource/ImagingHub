@@ -106,7 +106,7 @@ export const getParamConfigComponent = (
           />
         </LoaderProvider>
       ),
-      "i12-tomo": (
+      "i12-httomo": (
         <LoaderProvider>
           <I12ParameterConfiguration
             setParameters={setTemplateParameters}
@@ -114,7 +114,7 @@ export const getParamConfigComponent = (
           />
         </LoaderProvider>
       ),
-      "i13-tomo": (
+      "i13-httomo": (
         <I13ParameterConfiguration
           setParameters={setTemplateParameters}
           visitDirpath={visitDirPath}
