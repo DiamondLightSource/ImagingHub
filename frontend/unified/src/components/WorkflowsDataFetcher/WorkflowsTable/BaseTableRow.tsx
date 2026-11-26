@@ -27,8 +27,12 @@ const BaseTableRow = ({
     fragmentName: "BaseTableRowFragment",
     from: queryData,
   });
-	const currentVisit = `${visit.proposalCode}${visit.proposalNumber}-${visit.number}`;
-	const workflowURL = `https://workflows.diamond.ac.uk/workflows/${currentVisit}/${data.id}`;
+  const urlBase = import.meta.env.VITE_WORKFLOWS_GRAPHQL_HTTP_ENDPOINT.replace(
+    "/graphql",
+    ""
+  );
+  const currentVisit = `${visit.proposalCode}${visit.proposalNumber}-${visit.number}`;
+  const workflowURL = `${urlBase}/workflows/${currentVisit}/${data.id}`;
 
   return (
     <WorkflowsTableRow
