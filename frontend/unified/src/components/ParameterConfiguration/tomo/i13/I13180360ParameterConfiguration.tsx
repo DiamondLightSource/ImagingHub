@@ -17,11 +17,9 @@ import {
 } from "./I13180360AbsorptionParameterConfiguration";
 import {
   getDefaultPaganin180FixedParameterValues,
-  getDefaultPaganin180SweepParameterValues,
   I13180360PaganinPipelineParameterConfig,
   I13180360PaganinPipelineConfigurationComponent,
 } from "./I13180360PaganinParameterConfiguration";
-import { CenteringMethodType } from "../methodComponents";
 
 const DEFAULT_LOADER_PREVIEW = {
   start: 589,
