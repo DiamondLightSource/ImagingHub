@@ -23,10 +23,9 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
   const {
     cursor,
     currentPage,
-    setCurrentPage,
+    totalPages,
     selectedLimit,
     goToPage,
-    changeLimit,
     updatePageInfo,
   } = useServerSidePagination();
 
@@ -52,12 +51,10 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
             queryData={workflows}
             visit={visit}
             currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            selectedLimit={selectedLimit}
-            setSelectedLimit={changeLimit}
-            selectedWorkflowId={selectedWorkflowId}
-            setSelectedWorkflowId={setSelectedWorkflowId}
+            totalPages={totalPages}
             setSelectedWorkflowName={setSelectedWorkflowName}
+            setSelectedWorkflowId={setSelectedWorkflowId}
+            selectedWorkflowId={selectedWorkflowId}
             updatePageInfo={updatePageInfo}
             onPageChange={goToPage}
           />

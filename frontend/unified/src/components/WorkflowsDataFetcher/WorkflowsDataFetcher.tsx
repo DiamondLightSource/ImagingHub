@@ -61,14 +61,12 @@ const WorkflowsDataFetcher = ({
           </Stack>
         ) : (
           <Stack direction="row" spacing={1}>
-            <Stack spacing={2}>
-              <WorkflowsList
-                visit={visit}
-                selectedWorkflowId={selectedWorkflowId}
-                setSelectedWorkflowId={setSelectedWorkflowId}
-                setSelectedWorkflowName={setSelectedWorkflowName}
-              />
-            </Stack>
+            <WorkflowsList
+              visit={visit}
+              selectedWorkflowId={selectedWorkflowId}
+              setSelectedWorkflowId={setSelectedWorkflowId}
+              setSelectedWorkflowName={setSelectedWorkflowName}
+            />
             <Stack flexGrow={2}>
               <MetadataDisplay selectedScans={selectedScans} maxColumns={4} />
               {selectedWorkflowId && selectedWorkflowName && (
