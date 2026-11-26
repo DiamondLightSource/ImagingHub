@@ -10,7 +10,7 @@ type DataPlotterProps = {
   loadingIndex: number | null;
 };
 
-const EXPAND_PLOT_HEIGHT_STYLING = { display: "grid", height: "75vh" };
+const EXPAND_PLOT_HEIGHT_STYLING = { display: "grid", height: "70vh" };
 
 export const DataPlotter: React.FC<DataPlotterProps> = ({
   artifact,
