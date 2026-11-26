@@ -3,6 +3,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -143,7 +144,7 @@ type Centering180ParameterConfigurationProps = {
   setParameters: (_: Centering180Parameters) => void;
 };
 
-const Centering180ParameterConfiguration: React.FC<
+export const Centering180ParameterConfiguration: React.FC<
   Centering180ParameterConfigurationProps
 > = ({ parameters, setParameters }) => {
   return (
@@ -184,7 +185,7 @@ type Centering360ParameterConfigurationProps = {
   setParameters: (_: Centering360Parameters) => void;
 };
 
-const Centering360ParameterConfiguration: React.FC<
+export const Centering360ParameterConfiguration: React.FC<
   Centering360ParameterConfigurationProps
 > = ({ parameters, setParameters }) => {
   return (
@@ -363,5 +364,173 @@ export const PaganinFilterParameterConfiguration: React.FC<
         />
       </Stack>
     </Card>
+  );
+};
+
+export type SweepParameters = {
+  start: number;
+  stop: number;
+  step: number;
+};
+
+type ParameterSweepConfigurationProps = {
+  parameters: SweepParameters;
+  setParameters: (_: SweepParameters) => void;
+};
+
+export const ParameterSweepConfiguration: React.FC<
+  ParameterSweepConfigurationProps
+> = ({ parameters, setParameters }) => {
+  return (
+    <Stack direction="row" spacing={2}>
+      <TextField
+        variant="outlined"
+        size="small"
+        value={parameters.start}
+        label="start"
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, start: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        value={parameters.stop}
+        label="stop"
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, stop: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        value={parameters.step}
+        label="step"
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, step: Number(e.target.value) })
+        }
+      />
+    </Stack>
+  );
+};
+
+export type MinimalLoaderPreviewParameters = {
+  start: number;
+  stop: number;
+};
+
+type LoaderParameterConfigurationProps = {
+  parameters: MinimalLoaderPreviewParameters;
+  setParameters: (_: MinimalLoaderPreviewParameters) => void;
+};
+
+export const LoaderParameterConfiguration: React.FC<
+  LoaderParameterConfigurationProps
+> = ({ parameters, setParameters }: LoaderParameterConfigurationProps) => {
+  return (
+    <Stack spacing={2} direction="row">
+      <TextField
+        variant="outlined"
+        size="small"
+        label="start"
+        value={parameters.start}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, start: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        label="stop"
+        value={parameters.stop}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, stop: Number(e.target.value) })
+        }
+      />
+    </Stack>
+  );
+};
+
+type OutputFolderConfigurationProps = {
+  visitDirpath: string;
+  outputFolder: string;
+  setOutputFolder: (_: string) => void;
+};
+
+export const OutputFolderConfiguration: React.FC<
+  OutputFolderConfigurationProps
+> = ({ visitDirpath, outputFolder, setOutputFolder }) => {
+  return (
+    <TextField
+      variant="outlined"
+      size="small"
+      label="Output folder"
+      value={outputFolder}
+      onChange={(e) => setOutputFolder(e.target.value)}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start" sx={{ marginRight: 0 }}>
+              <Typography>{visitDirpath}</Typography>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  );
+};
+
+const sino360To180SideParameterValues = ["left", "right"] as const;
+
+export type Sino360To180Parameters = {
+  side: (typeof sino360To180SideParameterValues)[number];
+  overlap: number;
+};
+
+type Sino360To180ParameterConfigurationProps = {
+  parameters: Sino360To180Parameters;
+  setParameters: (_: Sino360To180Parameters) => void;
+};
+
+export const Sino360To180ParameterConfiguration: React.FC<
+  Sino360To180ParameterConfigurationProps
+> = ({ parameters, setParameters }) => {
+  return (
+    <Stack spacing={2} direction="row">
+      <FormControl>
+        <InputLabel id="sino-360-to-180-side-select-label">Side</InputLabel>
+        <Select
+          size="small"
+          labelId="sino-360-to-180-side-select-label"
+          id="sino-360-to-180-side-select"
+          value={parameters.side}
+          label="Side"
+          onChange={(e: SelectChangeEvent) =>
+            setParameters({ ...parameters, side: e.target.value })
+          }
+        >
+          {centering360SideParameterValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <TextField
+        variant="outlined"
+        size="small"
+        label="overlap"
+        value={parameters.overlap}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, overlap: Number(e.target.value) })
+        }
+      />
+    </Stack>
   );
 };

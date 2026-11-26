@@ -15,6 +15,11 @@ import {
 } from "@mui/material";
 import { TemplateComponentProps } from "../../../types";
 import { useEffect, useState } from "react";
+import {
+  LoaderParameterConfiguration,
+  MinimalLoaderPreviewParameters,
+  OutputFolderConfiguration,
+} from "./methodComponents";
 
 export const SyntheticDataParameterConfiguration: React.FC<
   TemplateComponentProps
@@ -271,21 +276,10 @@ export const SyntheticDataParameterConfiguration: React.FC<
             />
           )}
         </FormGroup>
-        <TextField
-          variant="outlined"
-          size="small"
-          label="Output folder"
-          value={outputFolder}
-          onChange={(e) => setOutputFolder(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start" sx={{ marginRight: 0 }}>
-                  <Typography>{visitDirpath}</Typography>
-                </InputAdornment>
-              ),
-            },
-          }}
+        <OutputFolderConfiguration
+          visitDirpath={visitDirpath}
+          outputFolder={outputFolder}
+          setOutputFolder={setOutputFolder}
         />
       </Card>
     </>
@@ -381,44 +375,5 @@ const RemoveOutlierParameterConfiguration: React.FC<
         ))}
       </Select>
     </FormControl>
-  );
-};
-
-type MinimalLoaderPreviewParameters = {
-  start: number;
-  stop: number;
-};
-
-type LoaderParameterConfigurationProps = {
-  parameters: MinimalLoaderPreviewParameters;
-  setParameters: (_: MinimalLoaderPreviewParameters) => void;
-};
-
-const LoaderParameterConfiguration: React.FC<
-  LoaderParameterConfigurationProps
-> = ({ parameters, setParameters }: LoaderParameterConfigurationProps) => {
-  return (
-    <Stack spacing={2} direction="row">
-      <TextField
-        variant="outlined"
-        size="small"
-        label="start"
-        value={parameters.start}
-        type="number"
-        onChange={(e) =>
-          setParameters({ ...parameters, start: Number(e.target.value) })
-        }
-      />
-      <TextField
-        variant="outlined"
-        size="small"
-        label="stop"
-        value={parameters.stop}
-        type="number"
-        onChange={(e) =>
-          setParameters({ ...parameters, stop: Number(e.target.value) })
-        }
-      />
-    </Stack>
   );
 };

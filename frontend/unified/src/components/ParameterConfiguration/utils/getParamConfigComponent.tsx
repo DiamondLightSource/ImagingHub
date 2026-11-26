@@ -17,6 +17,7 @@ import { XrfParameterConfiguration } from "../xrf/XrfParameterConfiguration";
 import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration";
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 import { I12ParameterConfiguration } from "../tomo/I12ParameterConfiguration";
+import { I13ParameterConfiguration } from "../tomo/i13/I13ParameterConfiguration";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -112,6 +113,12 @@ export const getParamConfigComponent = (
             visitDirpath={visitDirPath}
           />
         </LoaderProvider>
+      ),
+      "i13-tomo": (
+        <I13ParameterConfiguration
+          setParameters={setTemplateParameters}
+          visitDirpath={visitDirPath}
+        />
       ),
     },
     [Technique.Xanes]: {

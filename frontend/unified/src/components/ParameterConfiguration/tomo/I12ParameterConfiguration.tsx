@@ -10,6 +10,7 @@ import {
   CenteringParameterConfiguration,
   DistortionCorrectionParameterConfiguration,
   DistortionCorrectionParameters,
+  OutputFolderConfiguration,
   PaganinFilterParameterConfiguration,
   PaganinFilterParameters,
   StripeRemovalParameterConfiguration,
@@ -229,20 +230,10 @@ export const I12ParameterConfiguration: React.FC<TemplateComponentProps> = ({
         <Typography gutterBottom variant="h6" color="primary">
           <strong>Output</strong>
         </Typography>
-        <TextField
-          variant="outlined"
-          size="small"
-          value={outputFolder}
-          onChange={(e) => setOutputFolder(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start" sx={{ marginRight: 0 }}>
-                  <Typography>{visitDirpath}</Typography>
-                </InputAdornment>
-              ),
-            },
-          }}
+        <OutputFolderConfiguration
+          visitDirpath={visitDirpath}
+          outputFolder={outputFolder}
+          setOutputFolder={setOutputFolder}
         />
       </Card>
     </>
