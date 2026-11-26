@@ -14,7 +14,6 @@ type TaskNameAndArtifactTuple = [taskName: string, artifacts: Artifact[]];
 
 type ArtifactSelectorProps = {
   setArtifact: (_: Artifact | null) => void;
-  isPlottingEnabled: boolean;
   queryData: ArtifactSelectorFragment;
 };
 
@@ -22,7 +21,6 @@ const IMAGE_ARTIFACT_MIME_TYPES = ["image/jpeg", "image/tiff"];
 
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
   setArtifact,
-  isPlottingEnabled,
   queryData,
 }: ArtifactSelectorProps) => {
   const [selectedArtifact, setSelectedArtifact] = useState<string>("");
@@ -68,13 +66,15 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
     }
   };
 
+  const artifactsList = generateArtifactList();
+
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
       <InputLabel>Artifact</InputLabel>
       {data.status?.__typename !== "WorkflowPendingStatus" ? (
         <Select
+          disabled={artifactsList.length === 0}
           label="Artifact"
-          disabled={!isPlottingEnabled}
           onChange={(_, value) => {
             if (value === null || value === undefined) {
               throw Error(
@@ -85,7 +85,7 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({
             setArtifact(value.props["data-artifact"]);
           }}
           value={selectedArtifact}
-          children={generateArtifactList()}
+          children={artifactsList}
         />
       ) : (
         <p>No artifacts for pending workflow</p>
