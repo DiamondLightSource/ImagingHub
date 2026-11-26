@@ -36,7 +36,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
 }: ParameterConfigurationProps) => {
   const { data, error } = useSuspenseQuery(PARAMETERCONFIGURATION_QUERY);
   const templateList = data.workflowTemplates.nodes.filter((t) =>
-    t.name.startsWith(technique.toLowerCase())
+    t.name.includes(technique.toLowerCase())
   );
 
   const [template, setTemplate] = useState<string | null>(
