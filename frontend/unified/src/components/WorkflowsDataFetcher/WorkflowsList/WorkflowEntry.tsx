@@ -1,8 +1,19 @@
-import { alpha, Box, CircularProgress, Stack, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  CircularProgress,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { Link2 } from "lucide-react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 import { TableContentFragment } from "../../../graphql/WorkflowDataFetcher/WorkflowsTable/__generated__/TableContentFragment.generated";
 import { getWorkflowStatusIcon } from "../WorkflowsTable/StatusIcons";
 
 type WorkflowEntryProps = {
+  visit: Visit;
   workflow: TableContentFragment["nodes"][0];
   isSelected: boolean;
   setSelectedWorkflowId: (_: string | null) => void;
@@ -10,6 +21,7 @@ type WorkflowEntryProps = {
 };
 
 export const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
+  visit,
   workflow,
   isSelected,
   setSelectedWorkflowId,
@@ -35,6 +47,13 @@ export const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
       return `${Math.floor(mins)}m ${Math.floor(seconds)}s`;
     }
   };
+
+  const urlBase = import.meta.env.VITE_WORKFLOWS_GRAPHQL_HTTP_ENDPOINT.replace(
+    "/graphql",
+    ""
+  );
+  const currentVisit = `${visit.proposalCode}${visit.proposalNumber}-${visit.number}`;
+  const workflowURL = `${urlBase}/workflows/${currentVisit}/${workflow.id}`;
 
   return (
     <div
@@ -89,7 +108,21 @@ export const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
           {workflow.status?.__typename === "WorkflowRunningStatus" && (
             <CircularProgress variant="indeterminate" size={10} />
           )}
-          <Typography variant="subtitle2">{createTimeInfoString()}</Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Tooltip title="Link to workflow">
+              <IconButton
+                size="small"
+                aria-label="Link to workflow"
+                href={workflowURL}
+                target="_blank"
+              >
+                <Link2 />
+              </IconButton>
+            </Tooltip>
+            <Typography variant="subtitle2">
+              {createTimeInfoString()}
+            </Typography>
+          </Stack>
         </Stack>
       </Box>
     </div>

@@ -45,6 +45,7 @@ export const WorkflowEntryWrapper = ({
 
   return finished || isNull ? (
     <WorkflowEntry
+      visit={visit}
       workflow={data}
       isSelected={selectedWorkflowId === queryData.id}
       setSelectedWorkflowId={setSelectedWorkflowId}
