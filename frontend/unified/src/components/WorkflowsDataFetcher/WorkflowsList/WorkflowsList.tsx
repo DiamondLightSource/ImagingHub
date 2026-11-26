@@ -52,8 +52,9 @@ export const WorkflowsList: React.FC<WorkflowsListProps> = ({
             visit={visit}
             currentPage={currentPage}
             totalPages={totalPages}
-            setSelectedWorkflow={setSelectedWorkflow}
-            selectedWorkflow={selectedWorkflow}
+            setSelectedWorkflowName={setSelectedWorkflowName}
+            setSelectedWorkflowId={setSelectedWorkflowId}
+            selectedWorkflowId={selectedWorkflowId}
             updatePageInfo={updatePageInfo}
             onPageChange={goToPage}
           />

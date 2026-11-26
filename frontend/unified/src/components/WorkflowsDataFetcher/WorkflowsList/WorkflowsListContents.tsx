@@ -4,14 +4,16 @@ import { TABLECONTENT_FRAGMENT } from "../../../graphql/WorkflowDataFetcher/Work
 import { Box, Pagination, Paper, Stack, Typography } from "@mui/material";
 import { WorkflowEntryWrapper } from "./WorkflowEntryWrapper";
 import { useEffect } from "react";
+import { Visit } from "@diamondlightsource/sci-react-ui";
 
 type WorkflowsListContentsProps = {
   queryData: TableContentFragment;
   visit: Visit;
   currentPage: number;
   totalPages: number;
-  selectedWorkflow: string | null;
-  setSelectedWorkflow: (_: string | null) => void;
+  selectedWorkflowId: string | null;
+  setSelectedWorkflowId: (_: string | null) => void;
+  setSelectedWorkflowName: (_: string | null) => void;
   updatePageInfo: (hasNextPage: boolean, endCursor: string | null) => void;
   onPageChange: (
     page: number,
@@ -25,8 +27,9 @@ export const WorkflowsListContents: React.FC<WorkflowsListContentsProps> = ({
   visit,
   currentPage,
   totalPages,
-  selectedWorkflow,
-  setSelectedWorkflow,
+  selectedWorkflowId,
+  setSelectedWorkflowId,
+  setSelectedWorkflowName,
   updatePageInfo,
   onPageChange,
 }: WorkflowsListContentsProps) => {
