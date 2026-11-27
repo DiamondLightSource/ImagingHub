@@ -140,7 +140,6 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
             template={template}
             setTemplate={setTemplate}
           />
-          <Typography variant="h6">Options</Typography>
           {parameterConfigurationComponent ?? (
             <p>No available component for {template} template</p>
           )}

@@ -34,7 +34,7 @@ const TemplateSelector = ({
   })();
 
   return (
-    <FormControl>
+    <FormControl sx={{ marginBottom: 2 }}>
       <InputLabel id="template-selector-label">Template</InputLabel>
       <Stack direction="row" spacing={1}>
         <Select
