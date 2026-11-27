@@ -1,4 +1,7 @@
-import { PaganinFilterParameters, SweepParameters } from "../methodComponents";
+import {
+  I13PaganinFilterParameters,
+  SweepParameters,
+} from "../methodComponents";
 
 const ScanType = {
   180: "180",
@@ -33,8 +36,8 @@ const PaganinMode = {
 type PaganinMode = (typeof PaganinMode)[keyof typeof PaganinMode];
 export { PaganinMode };
 
-export type PaganinFilterSweepParameters = Omit<
-  PaganinFilterParameters,
+export type I13PaganinFilterSweepParameters = Omit<
+  I13PaganinFilterParameters,
   "ratioDeltaBeta"
 > & {
   ratioDeltaBeta: SweepParameters;

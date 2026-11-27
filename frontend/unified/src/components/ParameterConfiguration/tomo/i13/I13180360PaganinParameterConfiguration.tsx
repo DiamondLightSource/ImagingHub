@@ -11,6 +11,7 @@ import {
   Centering180Parameters,
   Centering360Parameters,
   CenteringMethodType,
+  I13PaganinFilterParameters,
   LoaderParameterConfiguration,
   MinimalLoaderPreviewParameters,
   PaganinFilterParameters,
@@ -20,7 +21,7 @@ import {
 import {
   CenteringMode,
   Magnification,
-  PaganinFilterSweepParameters,
+  I13PaganinFilterSweepParameters,
   PaganinMode,
 } from "./types";
 import {
@@ -35,7 +36,7 @@ type I13180PaganinPipelineParameterConfig =
       paganinMode: typeof PaganinMode.Fixed;
       centeringMode: typeof CenteringMode.Auto;
       parameters: {
-        paganin: PaganinFilterParameters;
+        paganin: I13PaganinFilterParameters;
         centering: Centering180Parameters;
       };
     }
@@ -44,7 +45,7 @@ type I13180PaganinPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Auto;
       parameters: {
         loader: MinimalLoaderPreviewParameters;
-        paganin: PaganinFilterSweepParameters;
+        paganin: I13PaganinFilterParameters;
         centering: Centering180Parameters;
       };
     }
@@ -52,7 +53,7 @@ type I13180PaganinPipelineParameterConfig =
       paganinMode: typeof PaganinMode.Fixed;
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
-        paganin: PaganinFilterParameters;
+        paganin: I13PaganinFilterParameters;
         recon: { center: number };
       };
     }
@@ -61,35 +62,25 @@ type I13180PaganinPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
         loader: MinimalLoaderPreviewParameters;
-        paganin: PaganinFilterSweepParameters;
+        paganin: I13PaganinFilterParameters;
         recon: { center: number };
       };
     };
 
-export const getDefaultPaganin180FixedParameterValues = (
-  magnification: (typeof Magnification)[number]
-) => {
-  return {
-    ratioDeltaBeta: 100,
-    pixelSize: 3.25 / magnification,
-    distance: 0.1,
-    energy: 27.0,
-  };
+export const DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES = {
+  ratioDeltaBeta: 100,
+  distance: 0.1,
+  energy: 27.0,
 };
 
-export const getDefaultPaganin180SweepParameterValues = (
-  magnification: (typeof Magnification)[number]
-) => {
-  return {
-    ratioDeltaBeta: {
-      start: 1,
-      stop: 1000,
-      step: 10,
-    },
-    pixelSize: 3.25 / magnification,
-    distance: 0.1,
-    energy: 27.0,
-  };
+export const DEFAULT_PAGANIN_180_SWEEP_PARAMETER_VALUES = {
+  ratioDeltaBeta: {
+    start: 1,
+    stop: 1000,
+    step: 10,
+  },
+  distance: 0.1,
+  energy: 27.0,
 };
 
 type I13360PaganinPipelineParameterConfig =
@@ -98,7 +89,7 @@ type I13360PaganinPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Auto;
       parameters: {
         centering: Centering360Parameters;
-        paganin: PaganinFilterParameters;
+        paganin: I13PaganinFilterParameters;
       };
     }
   | {
@@ -107,14 +98,14 @@ type I13360PaganinPipelineParameterConfig =
       parameters: {
         loader: MinimalLoaderPreviewParameters;
         centering: Centering360Parameters;
-        paganin: PaganinFilterSweepParameters;
+        paganin: I13PaganinFilterSweepParameters;
       };
     }
   | {
       paganinMode: typeof PaganinMode.Fixed;
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
-        paganin: PaganinFilterParameters;
+        paganin: I13PaganinFilterParameters;
         stitching: Sino360To180Parameters;
         recon: { center: number };
       };
@@ -124,7 +115,7 @@ type I13360PaganinPipelineParameterConfig =
       centeringMode: typeof CenteringMode.Fixed;
       parameters: {
         loader: MinimalLoaderPreviewParameters;
-        paganin: PaganinFilterSweepParameters;
+        paganin: I13PaganinFilterSweepParameters;
         stitching: Sino360To180Parameters;
         recon: { center: number };
       };
@@ -242,7 +233,7 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
         parameters: {
           ratio_delta_beta:
             config.degreesConfig.parameters.paganin.ratioDeltaBeta,
-          pixel_size: config.degreesConfig.parameters.paganin.pixelSize,
+          pixel_size: 3.25 / magnification,
           distance: config.degreesConfig.parameters.paganin.distance,
           energy: config.degreesConfig.parameters.paganin.energy,
           calculate_padding_value_method: "next_power_of_2",
@@ -355,10 +346,7 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
                       paganinMode: PaganinMode.Fixed,
                       parameters: {
                         ...config.degreesConfig.parameters,
-                        paganin:
-                          getDefaultPaganin180FixedParameterValues(
-                            magnification
-                          ),
+                        paganin: DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
                       },
                     },
                   });
@@ -372,10 +360,7 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
                         ...config.degreesConfig.parameters,
                         // TODO: deduplicate this information that is hardcoded elsewhere
                         loader: { start: 589, stop: 599 },
-                        paganin:
-                          getDefaultPaganin180SweepParameterValues(
-                            magnification
-                          ),
+                        paganin: DEFAULT_PAGANIN_180_SWEEP_PARAMETER_VALUES,
                       },
                     },
                   });

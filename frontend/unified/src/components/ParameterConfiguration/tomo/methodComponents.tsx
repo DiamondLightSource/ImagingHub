@@ -297,11 +297,14 @@ export const CenteringParameterConfiguration: React.FC<
   );
 };
 
-export type PaganinFilterParameters = {
-  pixelSize: number;
+export type I13PaganinFilterParameters = {
   distance: number;
   energy: number;
   ratioDeltaBeta: number;
+};
+
+export type PaganinFilterParameters = I13PaganinFilterParameters & {
+  pixelSize: number;
 };
 
 type PaganinFilterParameterConfigurationProps = {
