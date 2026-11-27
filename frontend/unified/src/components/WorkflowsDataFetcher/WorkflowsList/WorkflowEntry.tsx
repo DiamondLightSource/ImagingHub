@@ -115,6 +115,7 @@ export const WorkflowEntry: React.FC<WorkflowEntryProps> = ({
                 aria-label="Link to workflow"
                 href={workflowURL}
                 target="_blank"
+                onClick={(e) => e.stopPropagation()}
               >
                 <Link2 />
               </IconButton>
