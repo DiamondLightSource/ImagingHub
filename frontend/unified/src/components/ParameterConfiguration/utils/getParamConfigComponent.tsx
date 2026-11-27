@@ -18,6 +18,7 @@ import { Xrd1dParameterConfiguration } from "../xrd/Xrd1dParameterConfiguration"
 import { Xrd2dParameterConfiguration } from "../xrd/Xrd2dParameterConfiguration";
 import { I12ParameterConfiguration } from "../tomo/I12ParameterConfiguration";
 import { I13ParameterConfiguration } from "../tomo/i13/I13ParameterConfiguration";
+import { K11ParameterConfiguration } from "../tomo/K11ParameterConfiguration.tsx";
 
 type TemplateComponentMapping = {
   [technique in Technique]: {
@@ -100,6 +101,14 @@ export const getParamConfigComponent = (
       "httomo-workshop": (
         <LoaderProvider>
           <SyntheticDataParameterConfiguration
+            setParameters={setTemplateParameters}
+            visitDirpath={visitDirPath}
+          />
+        </LoaderProvider>
+      ),
+      "httomo-k11": (
+        <LoaderProvider>
+          <K11ParameterConfiguration
             setParameters={setTemplateParameters}
             visitDirpath={visitDirPath}
           />
