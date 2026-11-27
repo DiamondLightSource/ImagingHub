@@ -86,6 +86,7 @@ const BaseTableRow = ({
             aria-label="Link to workflow"
             href={workflowURL}
             target="_blank" // Open in tab
+            onClick={(e) => e.stopPropagation()}
           >
             <Link2 />
           </IconButton>
