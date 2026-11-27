@@ -1,4 +1,11 @@
-import { Alert, Button, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  FormHelperText,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
 import {
   Beamline,
   Technique,
@@ -142,14 +149,21 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
             resourceDisplayList={resourceDisplayList[template]}
             setResourceParameters={setResourceParameters}
           />
-          <Button
-            disabled={!parameterConfigurationComponent || scanIds.length === 0}
-            variant="contained"
-            color="primary"
-            onClick={handleSubmitJob}
-          >
-            Submit job
-          </Button>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Button
+              disabled={
+                !parameterConfigurationComponent || scanIds.length === 0
+              }
+              variant="contained"
+              color="primary"
+              onClick={handleSubmitJob}
+            >
+              Submit job
+            </Button>
+            {scanIds.length === 0 && (
+              <FormHelperText error={true}>Please select a scan</FormHelperText>
+            )}
+          </Stack>
         </>
       ) : (
         <Typography>No templates available</Typography>
