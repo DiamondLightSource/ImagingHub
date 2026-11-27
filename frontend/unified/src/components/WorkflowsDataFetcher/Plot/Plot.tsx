@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
+import { CircularProgress } from "@mui/material";
 import { ArtifactSelector, Artifact } from "./ArtifactSelector";
 import { NDT } from "@diamondlightsource/davidia";
 import ndarray from "ndarray";
@@ -116,6 +117,17 @@ export const Plot: React.FC<PlotProps> = ({ workflowName, queryData }) => {
               />
             )}
           </>
+        );
+      } else if (
+        artifactData === null ||
+        (artifactData !== null && artifactData.length === 0)
+      ) {
+        return (
+          <div
+            style={{ display: "flex", justifyContent: "center", marginTop: 10 }}
+          >
+            <CircularProgress enableTrackSlot size={80} />
+          </div>
         );
       }
     }
