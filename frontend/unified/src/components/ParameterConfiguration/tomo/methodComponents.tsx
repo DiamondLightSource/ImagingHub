@@ -370,6 +370,43 @@ export const PaganinFilterParameterConfiguration: React.FC<
   );
 };
 
+type ToggleablePaganinFilterParameterConfigurationProps =
+  PaganinFilterParameterConfigurationProps & {
+    toggleable: {
+      active: boolean;
+      setActive: (_: boolean) => void;
+    };
+  };
+
+export const ToggleablePaganinFilterParameterConfiguration: React.FC<
+  ToggleablePaganinFilterParameterConfigurationProps
+> = ({ toggleable = null, parameters, setParameters }) => {
+  return (
+    <Card variant="outlined" sx={{ padding: 2 }}>
+      {toggleable !== null && (
+        <FormGroup>
+          <FormControlLabel
+            label="Apply paganin filter"
+            control={
+              <Switch
+                checked={toggleable.active}
+                onChange={(e) => toggleable.setActive(e.target.checked)}
+                slotProps={{ input: { "aria-label": "controlled" } }}
+              />
+            }
+          />
+          {toggleable !== null && toggleable.active && (
+            <PaganinFilterParameterConfiguration
+              parameters={parameters}
+              setParameters={setParameters}
+            />
+          )}
+        </FormGroup>
+      )}
+    </Card>
+  );
+};
+
 export type SweepParameters = {
   start: number;
   stop: number;
