@@ -16,7 +16,7 @@ import {
   I13180360AbsorptionPipelineConfigurationComponent,
 } from "./I13180360AbsorptionParameterConfiguration";
 import {
-  getDefaultPaganin180FixedParameterValues,
+  DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
   I13180360PaganinPipelineParameterConfig,
   I13180360PaganinPipelineConfigurationComponent,
 } from "./I13180360PaganinParameterConfiguration";
@@ -156,8 +156,7 @@ export const I13180360PipelineConfigurationComponent: React.FC<
                     .centeringMode === CenteringMode.Auto
                 ) {
                   params = {
-                    paganin:
-                      getDefaultPaganin180FixedParameterValues(magnification),
+                    paganin: DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
                     centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
                   };
                 } else if (
@@ -166,8 +165,7 @@ export const I13180360PipelineConfigurationComponent: React.FC<
                 ) {
                   params = {
                     loader: DEFAULT_LOADER_PREVIEW,
-                    paganin:
-                      getDefaultPaganin180FixedParameterValues(magnification),
+                    paganin: DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
                     recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
                   };
                 }

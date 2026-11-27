@@ -66,30 +66,20 @@ type I13180PaganinPipelineParameterConfig =
       };
     };
 
-export const getDefaultPaganin180FixedParameterValues = (
-  magnification: (typeof Magnification)[number]
-) => {
-  return {
-    ratioDeltaBeta: 100,
-    pixelSize: 3.25 / magnification,
-    distance: 0.1,
-    energy: 27.0,
-  };
+export const DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES = {
+  ratioDeltaBeta: 100,
+  distance: 0.1,
+  energy: 27.0,
 };
 
-export const getDefaultPaganin180SweepParameterValues = (
-  magnification: (typeof Magnification)[number]
-) => {
-  return {
-    ratioDeltaBeta: {
-      start: 1,
-      stop: 1000,
-      step: 10,
-    },
-    pixelSize: 3.25 / magnification,
-    distance: 0.1,
-    energy: 27.0,
-  };
+export const DEFAULT_PAGANIN_180_SWEEP_PARAMETER_VALUES = {
+  ratioDeltaBeta: {
+    start: 1,
+    stop: 1000,
+    step: 10,
+  },
+  distance: 0.1,
+  energy: 27.0,
 };
 
 type I13360PaganinPipelineParameterConfig =
@@ -242,7 +232,7 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
         parameters: {
           ratio_delta_beta:
             config.degreesConfig.parameters.paganin.ratioDeltaBeta,
-          pixel_size: config.degreesConfig.parameters.paganin.pixelSize,
+          pixel_size: 3.25 / magnification,
           distance: config.degreesConfig.parameters.paganin.distance,
           energy: config.degreesConfig.parameters.paganin.energy,
           calculate_padding_value_method: "next_power_of_2",
@@ -355,10 +345,7 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
                       paganinMode: PaganinMode.Fixed,
                       parameters: {
                         ...config.degreesConfig.parameters,
-                        paganin:
-                          getDefaultPaganin180FixedParameterValues(
-                            magnification
-                          ),
+                        paganin: DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
                       },
                     },
                   });
@@ -372,10 +359,7 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
                         ...config.degreesConfig.parameters,
                         // TODO: deduplicate this information that is hardcoded elsewhere
                         loader: { start: 589, stop: 599 },
-                        paganin:
-                          getDefaultPaganin180SweepParameterValues(
-                            magnification
-                          ),
+                        paganin: DEFAULT_PAGANIN_180_SWEEP_PARAMETER_VALUES,
                       },
                     },
                   });
