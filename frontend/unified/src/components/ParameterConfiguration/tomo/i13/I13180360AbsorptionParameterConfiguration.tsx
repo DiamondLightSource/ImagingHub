@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  Card,
   Stack,
   TextField,
   ToggleButton,
@@ -293,21 +294,23 @@ export const I13180360AbsorptionPipelineConfigurationComponent: React.FC<
                 });
               }}
             />
-            <ParameterSweepConfiguration
-              parameters={degreesConfig.parameters.center}
-              setParameters={(params) =>
-                setConfig({
-                  degreesType: CenteringMethodType[180],
-                  degreesConfig: {
-                    centeringMode: CenteringMode.Sweep,
-                    parameters: {
-                      ...degreesConfig.parameters,
-                      center: params,
+            <Card sx={{ paddingTop: 1 }}>
+              <ParameterSweepConfiguration
+                parameters={degreesConfig.parameters.center}
+                setParameters={(params) =>
+                  setConfig({
+                    degreesType: CenteringMethodType[180],
+                    degreesConfig: {
+                      centeringMode: CenteringMode.Sweep,
+                      parameters: {
+                        ...degreesConfig.parameters,
+                        center: params,
+                      },
                     },
-                  },
-                })
-              }
-            />
+                  })
+                }
+              />
+            </Card>
           </>
         );
       case "Fixed":
@@ -344,8 +347,22 @@ export const I13180360AbsorptionPipelineConfigurationComponent: React.FC<
   };
 
   return (
-    <>
-      <Stack direction="row" spacing={2} display="flex" alignItems="center">
+    <Card
+      variant="outlined"
+      sx={{
+        mb: 2,
+        p: 2,
+        border: "1px solid #89987880",
+        borderRadius: "4px",
+      }}
+    >
+      <Stack
+        direction="row"
+        spacing={2}
+        display="flex"
+        alignItems="center"
+        marginBottom={1}
+      >
         <Stack direction="row" spacing={2} display="flex" alignItems="center">
           <Typography>Centering</Typography>
           <ToggleButtonGroup
@@ -394,6 +411,6 @@ export const I13180360AbsorptionPipelineConfigurationComponent: React.FC<
         </Stack>
       </Stack>
       {displayPipelineParameterConfigurator()}
-    </>
+    </Card>
   );
 };

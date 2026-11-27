@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Card,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
@@ -110,11 +111,24 @@ export const I13ParameterConfiguration: React.FC<TemplateComponentProps> = ({
         </ToggleButtonGroup>
       </Stack>
       {displayScanTypeConfigurationComponent()}
-      <OutputFolderConfiguration
-        visitDirpath={visitDirpath}
-        outputFolder={outputFolder}
-        setOutputFolder={setOutputFolder}
-      />
+      <Card
+        variant="outlined"
+        sx={{
+          mb: 2,
+          p: 2,
+          border: "1px solid #89987880",
+          borderRadius: "4px",
+        }}
+      >
+        <Typography gutterBottom variant="h6" color="primary">
+          <strong>Output</strong>
+        </Typography>
+        <OutputFolderConfiguration
+          visitDirpath={visitDirpath}
+          outputFolder={outputFolder}
+          setOutputFolder={setOutputFolder}
+        />
+      </Card>
     </Stack>
   );
 };
