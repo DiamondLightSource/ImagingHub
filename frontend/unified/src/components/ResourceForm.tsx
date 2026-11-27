@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Checkbox,
   Card,
+  Typography,
 } from "@mui/material";
 import { ResourceParameters } from "../types";
 
@@ -49,6 +50,15 @@ export const ResourceForm = ({
             borderRadius: "4px",
           }}
         >
+          <Typography
+            gutterBottom
+            variant="h6"
+            color="primary"
+            component="div"
+            sx={{ display: "flex", alignItems: "center" }}
+          >
+            <strong>Resources</strong>
+          </Typography>
           <Stack direction="column" spacing={2}>
             {resourceDisplayList.memory && (
               <TextField
