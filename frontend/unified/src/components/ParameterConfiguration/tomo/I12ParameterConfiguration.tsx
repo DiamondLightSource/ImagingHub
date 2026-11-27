@@ -11,10 +11,10 @@ import {
   DistortionCorrectionParameterConfiguration,
   DistortionCorrectionParameters,
   OutputFolderConfiguration,
-  PaganinFilterParameterConfiguration,
   PaganinFilterParameters,
   StripeRemovalParameterConfiguration,
   StripeRemovalParameters,
+  ToggleablePaganinFilterParameterConfiguration,
 } from "./methodComponents";
 
 export const I12ParameterConfiguration: React.FC<TemplateComponentProps> = ({
@@ -211,7 +211,8 @@ export const I12ParameterConfiguration: React.FC<TemplateComponentProps> = ({
               parameters={centeringMethodParameters}
               setParameters={setCenteringMethodParameters}
             />
-            <PaganinFilterParameterConfiguration
+            <ToggleablePaganinFilterParameterConfiguration
+              toggleable={null}
               parameters={paganinFilterParameters}
               setParameters={setPaganinFilterParameters}
             />

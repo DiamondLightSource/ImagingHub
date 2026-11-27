@@ -316,57 +316,54 @@ export const PaganinFilterParameterConfiguration: React.FC<
   PaganinFilterParameterConfigurationProps
 > = ({ parameters, setParameters }) => {
   return (
-    <Card variant="outlined" sx={{ padding: 2 }}>
-      <Typography gutterBottom>Paganin filter</Typography>
-      <Stack spacing={2} direction="row">
-        <TextField
-          variant="outlined"
-          size="small"
-          label="pixel_size"
-          value={parameters.pixelSize}
-          type="number"
-          onChange={(e) =>
-            setParameters({
-              ...parameters,
-              pixelSize: Number(e.target.value),
-            })
-          }
-        />
-        <TextField
-          variant="outlined"
-          size="small"
-          label="distance"
-          value={parameters.distance}
-          type="number"
-          onChange={(e) =>
-            setParameters({ ...parameters, distance: Number(e.target.value) })
-          }
-        />
-        <TextField
-          variant="outlined"
-          size="small"
-          label="energy"
-          value={parameters.energy}
-          type="number"
-          onChange={(e) =>
-            setParameters({ ...parameters, energy: Number(e.target.value) })
-          }
-        />
-        <TextField
-          variant="outlined"
-          size="small"
-          label="ratio_delta_beta"
-          value={parameters.ratioDeltaBeta}
-          type="number"
-          onChange={(e) =>
-            setParameters({
-              ...parameters,
-              ratioDeltaBeta: Number(e.target.value),
-            })
-          }
-        />
-      </Stack>
-    </Card>
+    <Stack spacing={2} direction="row">
+      <TextField
+        variant="outlined"
+        size="small"
+        label="pixel_size"
+        value={parameters.pixelSize}
+        type="number"
+        onChange={(e) =>
+          setParameters({
+            ...parameters,
+            pixelSize: Number(e.target.value),
+          })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        label="distance"
+        value={parameters.distance}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, distance: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        label="energy"
+        value={parameters.energy}
+        type="number"
+        onChange={(e) =>
+          setParameters({ ...parameters, energy: Number(e.target.value) })
+        }
+      />
+      <TextField
+        variant="outlined"
+        size="small"
+        label="ratio_delta_beta"
+        value={parameters.ratioDeltaBeta}
+        type="number"
+        onChange={(e) =>
+          setParameters({
+            ...parameters,
+            ratioDeltaBeta: Number(e.target.value),
+          })
+        }
+      />
+    </Stack>
   );
 };
 
@@ -375,7 +372,7 @@ type ToggleablePaganinFilterParameterConfigurationProps =
     toggleable: {
       active: boolean;
       setActive: (_: boolean) => void;
-    };
+    } | null;
   };
 
 export const ToggleablePaganinFilterParameterConfiguration: React.FC<
@@ -402,6 +399,15 @@ export const ToggleablePaganinFilterParameterConfiguration: React.FC<
             />
           )}
         </FormGroup>
+      )}
+      {toggleable === null && (
+        <>
+          <Typography gutterBottom>Paganin filter</Typography>
+          <PaganinFilterParameterConfiguration
+            parameters={parameters}
+            setParameters={setParameters}
+          />
+        </>
       )}
     </Card>
   );
