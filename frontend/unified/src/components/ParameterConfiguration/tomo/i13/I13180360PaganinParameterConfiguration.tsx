@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  Card,
   Stack,
   TextField,
   ToggleButton,
@@ -496,97 +497,113 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
           }
         />
       </Stack>
-      <Stack direction="row" spacing={2} display="flex" alignItems="center">
-        <Typography>Centering</Typography>
-        <ToggleButtonGroup
-          exclusive
-          value={config.degreesConfig.centeringMode}
-          aria-label="i13-180-paganin-centering-mode-toggle"
-          onChange={(
-            _: React.MouseEvent<HTMLElement>,
-            newValue: string | null
-          ) => {
-            if (newValue) {
-              if (newValue === "Auto") {
-                setConfig({
-                  degreesType: CenteringMethodType[180],
-                  degreesConfig: {
-                    centeringMode: CenteringMode.Auto,
-                    paganinMode: config.degreesConfig.paganinMode,
-                    parameters: {
-                      ...config.degreesConfig.parameters,
-                      centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
-                    },
-                  },
-                });
-              } else {
-                setConfig({
-                  degreesType: CenteringMethodType[180],
-                  degreesConfig: {
-                    centeringMode: CenteringMode.Fixed,
-                    paganinMode: config.degreesConfig.paganinMode,
-                    parameters: {
-                      ...config.degreesConfig.parameters,
-                      recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
-                    },
-                  },
-                });
-              }
-            }
-          }}
+      <Card
+        variant="outlined"
+        sx={{
+          mb: 2,
+          p: 2,
+          border: "1px solid #89987880",
+          borderRadius: "4px",
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          display="flex"
+          alignItems="center"
+          marginBottom={1}
         >
-          {Object.keys(CenteringMode)
-            .filter((mode) => mode !== CenteringMode.Sweep)
-            .map((val) => (
-              <ToggleButton key={val} value={val}>
-                {val}
-              </ToggleButton>
-            ))}
-        </ToggleButtonGroup>
-      </Stack>
-      {config.degreesConfig.centeringMode === CenteringMode.Auto && (
-        <Centering180ParameterConfiguration
-          parameters={config.degreesConfig.parameters.centering}
-          setParameters={(params) =>
-            setConfig({
-              degreesType: CenteringMethodType[180],
-              degreesConfig: {
-                centeringMode: CenteringMode.Auto,
-                paganinMode: config.degreesConfig.paganinMode,
-                parameters: {
-                  ...config.degreesConfig.parameters,
-                  centering: params,
-                },
-              },
-            })
-          }
-        />
-      )}
-
-      {config.degreesConfig.centeringMode === CenteringMode.Fixed && (
-        <TextField
-          variant="outlined"
-          size="small"
-          value={config.degreesConfig.parameters.recon.center}
-          label="centre of rotation"
-          type="number"
-          onChange={(e) =>
-            setConfig({
-              degreesType: CenteringMethodType[180],
-              degreesConfig: {
-                paganinMode: config.degreesConfig.paganinMode,
-                centeringMode: CenteringMode.Fixed,
-                parameters: {
-                  ...config.degreesConfig.parameters,
-                  recon: {
-                    center: Number(e.target.value),
+          <Typography>Centering</Typography>
+          <ToggleButtonGroup
+            exclusive
+            value={config.degreesConfig.centeringMode}
+            aria-label="i13-180-paganin-centering-mode-toggle"
+            onChange={(
+              _: React.MouseEvent<HTMLElement>,
+              newValue: string | null
+            ) => {
+              if (newValue) {
+                if (newValue === "Auto") {
+                  setConfig({
+                    degreesType: CenteringMethodType[180],
+                    degreesConfig: {
+                      centeringMode: CenteringMode.Auto,
+                      paganinMode: config.degreesConfig.paganinMode,
+                      parameters: {
+                        ...config.degreesConfig.parameters,
+                        centering: DEFAULT_CENTERING_180_AUTO_PARAMETER_VALUES,
+                      },
+                    },
+                  });
+                } else {
+                  setConfig({
+                    degreesType: CenteringMethodType[180],
+                    degreesConfig: {
+                      centeringMode: CenteringMode.Fixed,
+                      paganinMode: config.degreesConfig.paganinMode,
+                      parameters: {
+                        ...config.degreesConfig.parameters,
+                        recon: DEFAULT_CENTERING_180_FIXED_PARAMETER_VALUES,
+                      },
+                    },
+                  });
+                }
+              }
+            }}
+          >
+            {Object.keys(CenteringMode)
+              .filter((mode) => mode !== CenteringMode.Sweep)
+              .map((val) => (
+                <ToggleButton key={val} value={val}>
+                  {val}
+                </ToggleButton>
+              ))}
+          </ToggleButtonGroup>
+        </Stack>
+        {config.degreesConfig.centeringMode === CenteringMode.Auto && (
+          <Centering180ParameterConfiguration
+            parameters={config.degreesConfig.parameters.centering}
+            setParameters={(params) =>
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  centeringMode: CenteringMode.Auto,
+                  paganinMode: config.degreesConfig.paganinMode,
+                  parameters: {
+                    ...config.degreesConfig.parameters,
+                    centering: params,
                   },
                 },
-              },
-            })
-          }
-        />
-      )}
+              })
+            }
+          />
+        )}
+
+        {config.degreesConfig.centeringMode === CenteringMode.Fixed && (
+          <TextField
+            variant="outlined"
+            size="small"
+            value={config.degreesConfig.parameters.recon.center}
+            label="centre of rotation"
+            type="number"
+            onChange={(e) =>
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  paganinMode: config.degreesConfig.paganinMode,
+                  centeringMode: CenteringMode.Fixed,
+                  parameters: {
+                    ...config.degreesConfig.parameters,
+                    recon: {
+                      center: Number(e.target.value),
+                    },
+                  },
+                },
+              })
+            }
+          />
+        )}
+      </Card>
     </>
   );
 };
