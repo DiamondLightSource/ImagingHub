@@ -327,31 +327,83 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
 
   return (
     <>
-      <Stack direction="row" spacing={2} display="flex" alignItems="center">
-        <Stack direction="row" spacing={2} display="flex" alignItems="center">
-          <Typography>Paganin filter</Typography>
-          <ToggleButtonGroup
-            exclusive
-            value={config.degreesConfig.paganinMode}
-            aria-label="i13-180-paganin-centering-mode-toggle"
-            onChange={(
-              _: React.MouseEvent<HTMLElement>,
-              newValue: string | null
-            ) => {
-              if (newValue) {
-                if (newValue === "Fixed") {
-                  setConfig({
-                    degreesType: CenteringMethodType[180],
-                    degreesConfig: {
-                      centeringMode: config.degreesConfig.centeringMode,
-                      paganinMode: PaganinMode.Fixed,
-                      parameters: {
-                        ...config.degreesConfig.parameters,
-                        paganin: DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
+      <Card
+        variant="outlined"
+        sx={{
+          mb: 2,
+          p: 2,
+          border: "1px solid #89987880",
+          borderRadius: "4px",
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          display="flex"
+          alignItems="center"
+          marginBottom={1}
+        >
+          <Stack direction="row" spacing={2} display="flex" alignItems="center">
+            <Typography>Paganin filter</Typography>
+            <ToggleButtonGroup
+              exclusive
+              value={config.degreesConfig.paganinMode}
+              aria-label="i13-180-paganin-centering-mode-toggle"
+              onChange={(
+                _: React.MouseEvent<HTMLElement>,
+                newValue: string | null
+              ) => {
+                if (newValue) {
+                  if (newValue === "Fixed") {
+                    setConfig({
+                      degreesType: CenteringMethodType[180],
+                      degreesConfig: {
+                        centeringMode: config.degreesConfig.centeringMode,
+                        paganinMode: PaganinMode.Fixed,
+                        parameters: {
+                          ...config.degreesConfig.parameters,
+                          paganin: DEFAULT_PAGANIN_180_FIXED_PARAMETER_VALUES,
+                        },
                       },
-                    },
-                  });
-                } else {
+                    });
+                  } else {
+                    setConfig({
+                      degreesType: CenteringMethodType[180],
+                      degreesConfig: {
+                        centeringMode: config.degreesConfig.centeringMode,
+                        paganinMode: PaganinMode.Sweep,
+                        parameters: {
+                          ...config.degreesConfig.parameters,
+                          // TODO: deduplicate this information that is hardcoded elsewhere
+                          loader: { start: 589, stop: 599 },
+                          paganin: DEFAULT_PAGANIN_180_SWEEP_PARAMETER_VALUES,
+                        },
+                      },
+                    });
+                  }
+                }
+              }}
+            >
+              {Object.keys(PaganinMode).map((val) => (
+                <ToggleButton key={val} value={val}>
+                  {val}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Stack>
+        </Stack>
+        {config.degreesConfig.paganinMode === PaganinMode.Sweep && (
+          <>
+            <Stack
+              direction="row"
+              spacing={2}
+              alignItems="center"
+              marginBottom={1}
+            >
+              <Typography>Loader / detector Y</Typography>
+              <LoaderParameterConfiguration
+                parameters={config.degreesConfig.parameters.loader}
+                setParameters={(params) => {
                   setConfig({
                     degreesType: CenteringMethodType[180],
                     degreesConfig: {
@@ -359,144 +411,120 @@ export const I13180360PaganinPipelineConfigurationComponent: React.FC<
                       paganinMode: PaganinMode.Sweep,
                       parameters: {
                         ...config.degreesConfig.parameters,
-                        // TODO: deduplicate this information that is hardcoded elsewhere
-                        loader: { start: 589, stop: 599 },
-                        paganin: DEFAULT_PAGANIN_180_SWEEP_PARAMETER_VALUES,
+                        loader: params,
                       },
                     },
                   });
+                }}
+              />
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={2}
+              alignItems="center"
+              marginBottom={1}
+            >
+              <Typography>ratio_delta_beta</Typography>
+              <ParameterSweepConfiguration
+                parameters={
+                  config.degreesConfig.parameters.paganin.ratioDeltaBeta
                 }
-              }
-            }}
-          >
-            {Object.keys(PaganinMode).map((val) => (
-              <ToggleButton key={val} value={val}>
-                {val}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </Stack>
-      </Stack>
-      {config.degreesConfig.paganinMode === PaganinMode.Sweep && (
-        <>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography>Loader / detector Y</Typography>
-            <LoaderParameterConfiguration
-              parameters={config.degreesConfig.parameters.loader}
-              setParameters={(params) => {
-                setConfig({
-                  degreesType: CenteringMethodType[180],
-                  degreesConfig: {
-                    centeringMode: config.degreesConfig.centeringMode,
-                    paganinMode: PaganinMode.Sweep,
-                    parameters: {
-                      ...config.degreesConfig.parameters,
-                      loader: params,
-                    },
-                  },
-                });
-              }}
-            />
-          </Stack>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography>ratio_delta_beta</Typography>
-            <ParameterSweepConfiguration
-              parameters={
-                config.degreesConfig.parameters.paganin.ratioDeltaBeta
-              }
-              setParameters={(sweepParams) => {
-                setConfig({
-                  degreesType: CenteringMethodType[180],
-                  degreesConfig: {
-                    centeringMode: config.degreesConfig.centeringMode,
-                    paganinMode: PaganinMode.Sweep,
-                    parameters: {
-                      ...config.degreesConfig.parameters,
-                      paganin: {
-                        ...config.degreesConfig.parameters.paganin,
-                        ratioDeltaBeta: sweepParams,
+                setParameters={(sweepParams) => {
+                  setConfig({
+                    degreesType: CenteringMethodType[180],
+                    degreesConfig: {
+                      centeringMode: config.degreesConfig.centeringMode,
+                      paganinMode: PaganinMode.Sweep,
+                      parameters: {
+                        ...config.degreesConfig.parameters,
+                        paganin: {
+                          ...config.degreesConfig.parameters.paganin,
+                          ratioDeltaBeta: sweepParams,
+                        },
                       },
                     },
-                  },
-                });
-              }}
-            />
-          </Stack>
-        </>
-      )}
-      {config.degreesConfig.paganinMode === PaganinMode.Fixed && (
-        <TextField
-          variant="outlined"
-          size="small"
-          label="ratio_delta_beta"
-          value={config.degreesConfig.parameters.paganin.ratioDeltaBeta}
-          type="number"
-          onChange={(e) =>
-            setConfig({
-              degreesType: CenteringMethodType[180],
-              degreesConfig: {
-                centeringMode: config.degreesConfig.centeringMode,
-                paganinMode: PaganinMode.Fixed,
-                parameters: {
-                  ...config.degreesConfig.parameters,
-                  paganin: {
-                    ...config.degreesConfig.parameters.paganin,
-                    ratioDeltaBeta: Number(e.target.value),
-                  },
-                },
-              },
-            })
-          }
-        />
-      )}
-      <Stack spacing={2} direction="row">
-        <TextField
-          variant="outlined"
-          size="small"
-          label="distance"
-          value={config.degreesConfig.parameters.paganin.distance}
-          type="number"
-          onChange={(e) =>
-            setConfig({
-              degreesType: CenteringMethodType[180],
-              degreesConfig: {
-                centeringMode: config.degreesConfig.centeringMode,
-                paganinMode: config.degreesConfig.paganinMode,
-                parameters: {
-                  ...config.degreesConfig.parameters,
-                  paganin: {
-                    ...config.degreesConfig.parameters.paganin,
-                    distance: Number(e.target.value),
+                  });
+                }}
+              />
+            </Stack>
+          </>
+        )}
+        {config.degreesConfig.paganinMode === PaganinMode.Fixed && (
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            label="ratio_delta_beta"
+            value={config.degreesConfig.parameters.paganin.ratioDeltaBeta}
+            type="number"
+            sx={{ marginBottom: 1 }}
+            onChange={(e) =>
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  centeringMode: config.degreesConfig.centeringMode,
+                  paganinMode: PaganinMode.Fixed,
+                  parameters: {
+                    ...config.degreesConfig.parameters,
+                    paganin: {
+                      ...config.degreesConfig.parameters.paganin,
+                      ratioDeltaBeta: Number(e.target.value),
+                    },
                   },
                 },
-              },
-            })
-          }
-        />
-        <TextField
-          variant="outlined"
-          size="small"
-          label="energy"
-          value={config.degreesConfig.parameters.paganin.energy}
-          type="number"
-          onChange={(e) =>
-            setConfig({
-              degreesType: CenteringMethodType[180],
-              degreesConfig: {
-                centeringMode: config.degreesConfig.centeringMode,
-                paganinMode: config.degreesConfig.paganinMode,
-                parameters: {
-                  ...config.degreesConfig.parameters,
-                  paganin: {
-                    ...config.degreesConfig.parameters.paganin,
-                    energy: Number(e.target.value),
+              })
+            }
+          />
+        )}
+        <Stack spacing={2} direction="row">
+          <TextField
+            variant="outlined"
+            size="small"
+            label="distance"
+            value={config.degreesConfig.parameters.paganin.distance}
+            type="number"
+            onChange={(e) =>
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  centeringMode: config.degreesConfig.centeringMode,
+                  paganinMode: config.degreesConfig.paganinMode,
+                  parameters: {
+                    ...config.degreesConfig.parameters,
+                    paganin: {
+                      ...config.degreesConfig.parameters.paganin,
+                      distance: Number(e.target.value),
+                    },
                   },
                 },
-              },
-            })
-          }
-        />
-      </Stack>
+              })
+            }
+          />
+          <TextField
+            variant="outlined"
+            size="small"
+            label="energy"
+            value={config.degreesConfig.parameters.paganin.energy}
+            type="number"
+            onChange={(e) =>
+              setConfig({
+                degreesType: CenteringMethodType[180],
+                degreesConfig: {
+                  centeringMode: config.degreesConfig.centeringMode,
+                  paganinMode: config.degreesConfig.paganinMode,
+                  parameters: {
+                    ...config.degreesConfig.parameters,
+                    paganin: {
+                      ...config.degreesConfig.parameters.paganin,
+                      energy: Number(e.target.value),
+                    },
+                  },
+                },
+              })
+            }
+          />
+        </Stack>
+      </Card>
       <Card
         variant="outlined"
         sx={{
