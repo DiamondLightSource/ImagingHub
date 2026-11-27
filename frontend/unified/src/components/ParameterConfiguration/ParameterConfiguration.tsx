@@ -143,7 +143,7 @@ export const ParameterConfiguration: React.FC<ParameterConfigurationProps> = ({
             setResourceParameters={setResourceParameters}
           />
           <Button
-            disabled={!parameterConfigurationComponent}
+            disabled={!parameterConfigurationComponent || scanIds.length === 0}
             variant="contained"
             color="primary"
             onClick={handleSubmitJob}
